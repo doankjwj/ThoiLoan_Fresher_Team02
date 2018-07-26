@@ -290,8 +290,8 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
             for (i = 0; i < Amount; i += 1)
             {
                 this.map.BDH_1.push(new Object());
-                this.map.BDH_1[i].row = this.getByte();
-                this.map.BDH_1[i].col = this.getByte();
+                this.map.BDH_1[i].X = this.getByte();
+                this.map.BDH_1[i].Y = this.getByte();
             }
 
             /* Player */
@@ -313,12 +313,12 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
                 this.player.troopAmount.push(this.getShort());
             }
 
-            cc.log(JSON.stringify(this));
+            //cc.log(JSON.stringify(this));
             gv.jsonInfo = this;
-            cc.log(gv.jsonInfo["map"]["TOW_1"][0]["X"]);
-            cc.log(gv.jsonInfo["map"]["TOW_1"].length);
-            cc.log(gv.jsonInfo["map"]["BDH_1"].length);
-            cc.log(gv.jsonInfo["map"]["STO_1"].length);
+            //cc.log(gv.jsonInfo["map"]["TOW_1"][0]["X"]);
+            //cc.log(gv.jsonInfo["map"]["TOW_1"].length);
+            //cc.log(gv.jsonInfo["map"]["BDH_1"].length);
+            //cc.log(gv.jsonInfo["map"]["STO_1"].length);
         }
     }
 );

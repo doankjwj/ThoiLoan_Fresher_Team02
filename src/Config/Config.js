@@ -194,17 +194,33 @@ cf.tagToItem = function(tag, lvl, posX, posY, existed){
     }
 };
 
-cf.stringToItemInit = function(str) {
+cf.stringToItemInit = function(str, index) {
     switch(str)
     {
         case "TOW_1":
-            return new TownHall(20, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true);
+            return new TownHall(cf.user._buildingListCount[0], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
         case "BDH_1":
-            return new BuilderHut(21, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true);
+            return new BuilderHut(cf.user._buildingListCount[11], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
+        case "STO_1":
+            return new Resource(cf.user._buildingListCount[1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, 1);
+        case "STO_2":
+            return new Resource(cf.user._buildingListCount[2], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, 2);
         case "RES_1":
-            return new Resource(22, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true, 1);
+            return new Resource(cf.user._buildingListCount[4], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, 1);
+        case "RES_2":
+            return new Resource(cf.user._buildingListCount[5], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, 2);
         case "AMC_1":
-            return new ArmyCamp(24, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true);
-        default: return null;
+            return new ArmyCamp(cf.user._buildingListCount[8], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
+
+
+        //case "TOW_1":
+        //    return new TownHall(20, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true);
+        //case "BDH_1":
+        //    return new BuilderHut(21, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true);
+        //case "RES_1":
+        //    return new Resource(22, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true, 1);
+        //case "AMC_1":
+        //    return new ArmyCamp(24, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true);
+        //default: return null;
     }
 };

@@ -20,7 +20,33 @@ var Map = cc.Node.extend({
         this._width = (this._bgBotLeft.width + this._bgBotRight.width)*cf.bgSCALE;
         this._height = (this._bgBotLeft.height + this._bgTopLeft.height)*cf.bgSCALE;
         this.initTileLocation();
-        this.add_building();
+        this.addBuildingFromServer();
+        //this.add_building();
+    },
+
+    addBuildingFromServer: function()
+    {
+        var self = this;
+        for (var key in gv.jsonInfo["map"])
+        {
+            if (gv.jsonInfo["map"].hasOwnProperty(key))
+            {
+                for (var j=0; j < gv.jsonInfo["map"][key].length ; j++)
+                {
+                    var building = cf.stringToItemInit(key, j);
+                    if (building != null)
+                    {
+                        self.addChild(building);
+                        self.addBuildingToUserBuildingList(building);
+                        var tag = (building._orderInUserBuildingList + 1) * 100 + cf.user._buildingListCount[building._orderInUserBuildingList];
+                        building.setTag(tag);
+                        building._id = tag;
+                        if(building._existed) building.locate_map_array(building);
+                        //building.locate_map_array(building._row, building._col, building._size);
+                    }
+                }
+            }
+        }
     },
 
     add_building: function()

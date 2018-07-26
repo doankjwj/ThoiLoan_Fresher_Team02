@@ -25,20 +25,19 @@ var MainLayer = cc.Layer.extend({
     },
 
     init: function() {
-        // var bg = cc.Sprite("res/Art/BG/Capture.PNG");
-        // bg.setAnchorPoint(cc.p(0, 0))
-        // this.addChild(bg, 0, this._TAG_BG);
-        //
-        // var size = cc.director.getVisibleSize();
-        // var yBtn = 2*size.height/3;
-        // var btnLogin = gv.commonButton(200, 64, size.width/4, yBtn,"Login");
-        // this.addChild(btnLogin, 1, this._TAG_LOGIN);
-        // btnLogin.addClickEventListener(this.onSelectLogin.bind(this));
+         var bg = cc.Sprite("res/Art/BG/Capture.PNG");
+         bg.setAnchorPoint(cc.p(0, 0))
+         this.addChild(bg, 0, this._TAG_BG);
+
+         var size = cc.director.getVisibleSize();
+         var yBtn = 2*size.height/3;
+         var btnLogin = gv.commonButton(200, 64, size.width/4, yBtn,"Login");
+         this.addChild(btnLogin, 1, this._TAG_LOGIN);
+         btnLogin.addClickEventListener(this.onSelectLogin.bind(this));
 
         this.loadJson();
         this.initUser();
-        this.initMap();
-        this.initMainGUI();
+
     },
 
     onSelectLogin: function()
@@ -52,10 +51,6 @@ var MainLayer = cc.Layer.extend({
         cc.log("=============== " + "Connect Success => Send Handshake");
         this.removeChildByTag(this._TAG_BG, false);
         this.removeChildByTag(this._TAG_LOGIN, false);
-        this.loadJson();
-        this.initUser();
-        this.initMap();
-        this.initMainGUI();
     },
 
     onConnectFail: function()
@@ -68,6 +63,14 @@ var MainLayer = cc.Layer.extend({
         // this.lblLog.setString("Finish login!");
         //this._gameNode.setVisible(true);
         cc.log("=============== " + "Finish Login");
+    },
+
+    onReceiveUserInfo: function()
+    {
+        //this.removeChildByTag(this._TAG_MAP);
+        this.initMap();
+        this.initUser();
+        this.initMainGUI();
     },
 
     initMap: function()
