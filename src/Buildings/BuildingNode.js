@@ -316,8 +316,10 @@ var BuildingNode = cc.Node.extend({
             self.getParent().removeChild(self);
         });
         this._gui_commit_build.addClickEventListener(function(){
-            self.startBuild();
-            cf.isDeciding = false;
+            if(!self._red.visible) {
+                self.startBuild();
+                cf.isDeciding = false;
+            }
         });
     },
 
