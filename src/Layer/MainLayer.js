@@ -15,6 +15,9 @@ var MainLayer = cc.Layer.extend({
     _action1Push: null,
     _action2Push: null,
 
+    _TAG_BG: 242342,
+    _TAG_LOGIN: 534534,
+
     ctor:function () {
         this._super();
         this.setTag(1000000);
@@ -22,10 +25,49 @@ var MainLayer = cc.Layer.extend({
     },
 
     init: function() {
+        var bg = cc.Sprite("res/Art/BG/Capture.PNG");
+        bg.setAnchorPoint(cc.p(0, 0))
+        this.addChild(bg, 0, this._TAG_BG);
+
+        var size = cc.director.getVisibleSize();
+        var yBtn = 2*size.height/3;
+        var btnLogin = gv.commonButton(200, 64, size.width/4, yBtn,"Login");
+        this.addChild(btnLogin, 1, this._TAG_LOGIN);
+        btnLogin.addClickEventListener(this.onSelectLogin.bind(this));
+
+        // this.loadJson();
+        // this.initUser();
+        // this.initMap();
+        // this.initMainGUI();
+    },
+
+    onSelectLogin: function()
+    {
+        cc.log("=============== " + "Start Connect");
+        gv.gameClient.connect()
+    },
+
+    onConnectSuccess: function()
+    {
+        cc.log("=============== " + "Connect Success => Send Handshake");
+        this.removeChildByTag(this._TAG_BG, false);
+        this.removeChildByTag(this._TAG_LOGIN, false);
         this.loadJson();
         this.initUser();
         this.initMap();
         this.initMainGUI();
+    },
+
+    onConnectFail: function()
+    {
+        cc.log("=============== " + "Connect Fail");
+    },
+
+    onFinishLogin:function()
+    {
+        // this.lblLog.setString("Finish login!");
+        //this._gameNode.setVisible(true);
+        cc.log("=============== " + "Finish Login");
     },
 
     initMap: function()
@@ -99,9 +141,9 @@ var MainLayer = cc.Layer.extend({
     },
 
     showListBotButton: function() {
-        var moveToPos1 = cc.MoveTo(0.1, cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - cf.offSetGui, this._guiButtonBuildingInfo.height/2*this.scale + cf.offSetGui));
+        var moveToPos1 = cc.MoveTo(0.1, cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - 2 * cf.offSetGui, this._guiButtonBuildingInfo.height/2*this.scale + cf.offSetGui));
         this._guiButtonBuildingInfo.runAction(moveToPos1);
-        var moveToPos2 = cc.MoveTo(0.1, cc.p(cc.winSize.width/2 + this._guiButtonBuildingUpgrade.width/2 + cf.offSetGui, this._guiButtonBuildingUpgrade.height/2*this.scale + cf.offSetGui));
+        var moveToPos2 = cc.MoveTo(0.1, cc.p(cc.winSize.width/2 + this._guiButtonBuildingUpgrade.width/2 + 2 * cf.offSetGui, this._guiButtonBuildingUpgrade.height/2*this.scale + cf.offSetGui));
         this._guiButtonBuildingUpgrade.runAction(moveToPos2);
     },
 

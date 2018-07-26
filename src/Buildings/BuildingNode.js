@@ -324,7 +324,7 @@ var BuildingNode = cc.Node.extend({
     startBuild: function() {
         this._existed = true;
         this.locate_map_array(this);
-        this._time_remaining = this.getTimeRequire()/60;
+        this._time_remaining = this.getTimeRequire();
         this._time_total = this._time_remaining;
         this._is_active = false;
 
