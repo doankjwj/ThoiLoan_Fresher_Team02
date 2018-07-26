@@ -41,6 +41,7 @@
 
         "src/GUI/ResourceBar.js",
         "src/GUI/IconActionBuilding.js",
+        "src/GUI/BuilderBar.js",
 
         "src/NetWork/framework/Utility/ClientConfig.js",
         "src/NetWork/framework/Utility/Localization.js",

@@ -1,11 +1,12 @@
 var MainLayer = cc.Layer.extend({
     _map: null,
     _shop: null,
+
     _resBarGold: null,
     _resBarElixir: null,
     _resBarDarkElixir: null,
-    _resBarDarkElixir: null,
     _resBarCoin: null,
+    _builderBar: null,
 
     _guiButtonBuildingInfo: null,
     _guiButtonBuildingUpgrade: null,
@@ -19,6 +20,7 @@ var MainLayer = cc.Layer.extend({
     _TAG_LOGIN: 534534,
 
     _TAG_MAP: 45345,
+    _TAG_BUILDER_BAR: 23423,
 
     ctor:function () {
         this._super();
@@ -38,8 +40,6 @@ var MainLayer = cc.Layer.extend({
          btnLogin.addClickEventListener(this.onSelectLogin.bind(this));
 
         this.loadJson();
-        this.initUser();
-
     },
 
     onSelectLogin: function()
@@ -70,8 +70,8 @@ var MainLayer = cc.Layer.extend({
     onReceiveUserInfo: function()
     {
         //this.removeChildByTag(this._TAG_MAP);
-        this.initMap();
         this.initUser();
+        this.initMap();
         this.initMainGUI();
     },
 
@@ -93,13 +93,56 @@ var MainLayer = cc.Layer.extend({
         this.addBuildingButtons();
         this.addResourceBar();
         this.addUserInfo();
+        this.addBuilderBar();
     },
 
     initUser: function()
     {
-        cf.user = new User("uId00001", "GSN Fresher 9 - Team 2");
+        cf.user = new User();
     },
 
+    addResourceBar: function() {
+        this._resBarGold = new GUI_ResourceBar(1);
+        this._resBarGold.attr({
+            x: cc.winSize.width - cf.offSetGui,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 30,
+        });
+        this.addChild(this._resBarGold);
+
+        this._resBarElixir = new GUI_ResourceBar(2);
+        this._resBarElixir.attr({
+            x: cc.winSize.width - cf.offSetGui,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 80,
+        });
+        this.addChild(this._resBarElixir);
+
+        this._resBarDarkElixir = new GUI_ResourceBar(3);
+        this._resBarDarkElixir.attr({
+            x: cc.winSize.width - cf.offSetGui,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 130,
+        });
+        this.addChild(this._resBarDarkElixir);
+
+        this._resBarCoin = new GUI_ResourceBar(4);
+        this._resBarCoin.attr({
+            x: cc.winSize.width - cf.offSetGui,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 180,
+        });
+        this.addChild(this._resBarCoin);
+    },
+
+    addBuilderBar: function()
+    {
+        this._builderBar = new BuilderBar();
+        this._builderBar.attr({
+        anchorX: 0.5,
+        anchorY: 1,
+        x: cc.winSize.width/2,
+        y: cc.winSize.height - cf.offSetGui*1.5}
+        );
+
+        this.addChild(this._builderBar, 1, this._TAG_BUILDER_BAR)
+    },
     addShopButton: function(){
         var title = cc.LabelBMFont.create('CỬA HÀNG',  font.soji20);
         var shopButton = new ccui.Button();
@@ -153,35 +196,7 @@ var MainLayer = cc.Layer.extend({
     },
 
     //gold,dElixir, Elixir, G visualize
-    addResourceBar: function() {
-        this._resBarGold = new GUI_ResourceBar(1);
-        this._resBarGold.attr({
-            x: cc.winSize.width - cf.offSetGui,
-            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 30,
-        });
-        this.addChild(this._resBarGold);
 
-        this._resBarElixir = new GUI_ResourceBar(2);
-        this._resBarElixir.attr({
-            x: cc.winSize.width - cf.offSetGui,
-            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 80,
-        });
-        this.addChild(this._resBarElixir);
-
-        this._resBarDarkElixir = new GUI_ResourceBar(3);
-        this._resBarDarkElixir.attr({
-            x: cc.winSize.width - cf.offSetGui,
-            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 130,
-        });
-        this.addChild(this._resBarDarkElixir);
-
-        this._resBarCoin = new GUI_ResourceBar(4);
-        this._resBarCoin.attr({
-            x: cc.winSize.width - cf.offSetGui,
-            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 180,
-        });
-        this.addChild(this._resBarCoin);
-    },
 
     //Exp, Trophy, Username, UserInfo
     addUserInfo: function() {

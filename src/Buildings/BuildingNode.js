@@ -60,7 +60,6 @@ var BuildingNode = cc.Node.extend({
         if(cf.user._buildingListCount[this._orderInUserBuildingList] >= 10) {
             tmp += cf.user._buildingListCount[this._orderInUserBuildingList].toString();
         } else tmp = tmp + "0" + cf.user._buildingListCount[this._orderInUserBuildingList].toString();
-        cc.log(tmp);
         var tag= parseInt(tmp);
         this.setTag(tag);
         this._id = tag;

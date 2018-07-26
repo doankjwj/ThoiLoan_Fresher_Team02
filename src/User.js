@@ -17,6 +17,10 @@ var User = cc.Class.extend({
 
     _buildingList: [],
     _buildingListCount: [],
+
+    _builderTotal: null,
+    _builderFree: null,
+
     /*
     0: TownHall
     1: Gold Storage
@@ -36,12 +40,15 @@ var User = cc.Class.extend({
     {
         //this._super();
         this._id = id;
-        this._name = name;
+        this._name = gv.jsonInfo["player"]["name"];
 
-        this._currentCapacityGold = cf.jsonInitGame["player"]["gold"];
-        this._currentCapacityElixir = cf.jsonInitGame["player"]["elixir"];
-        this._currentCapacityDarkElixir = cf.jsonInitGame["player"]["darkElixir"];
-        this._currentCapacityCoin = cf.jsonInitGame["player"]["coin"];
+        this._builderFree = 5;
+        this._builderTotal = 5;
+
+        this._currentCapacityGold = gv.jsonInfo["player"]["gold"];
+        this._currentCapacityElixir = gv.jsonInfo["player"]["elixir"];
+        this._currentCapacityDarkElixir = gv.jsonInfo["player"]["darkElixir"];
+        this._currentCapacityCoin = gv.jsonInfo["player"]["coin"];
         this.initBuildingList();
     },
 
@@ -59,5 +66,10 @@ var User = cc.Class.extend({
         for(var i = 0; i<cf.MAX_BUILDING_TYPE; i++) {
             cc.log(this._buildingListCount[i]);
         }
+    },
+
+    updateResource: function()
+    {
+
     }
 });
