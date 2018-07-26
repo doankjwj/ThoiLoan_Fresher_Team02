@@ -8,6 +8,7 @@ var BuildingNode = cc.Node.extend({
     _type: null,
     _is_active: true,
     _finishing_time: null,
+    _nameText: null,
 
     _center_building: null,
     _grass: null,
@@ -47,6 +48,12 @@ var BuildingNode = cc.Node.extend({
         this._col = col;
         this._level = level;
 
+        this._nameText = cc.LabelBMFont("", font.soji20);
+        this._nameText.setColor(cc.color(189,183,107, 255));
+        this.addChild(this._nameText, 50);
+        this._nameText.setAnchorPoint(cc.p(0.5, 0.5));
+
+        this._nameText.visible = true;
 
         //grass
         this._grass = new grass(this._size);
@@ -66,6 +73,7 @@ var BuildingNode = cc.Node.extend({
             scale: 0
         });
         this.addChild(this._arrow, this._grassShadow.getLocalZOrder() + 1);
+
 
         //green
         this._green = cc.Sprite(res.map_BG + "GREEN_" + (this._size ) + ".png");
@@ -169,6 +177,7 @@ var BuildingNode = cc.Node.extend({
 
             onTouchEnded: function(touch, event) {
                 if(!cf.isMapMoving) {
+                    self.getParent().getParent().showListBotButton();
                     self.onClick();
                     self.showBuildingButton();
                     cf.building_selected = self._id;
@@ -212,7 +221,7 @@ var BuildingNode = cc.Node.extend({
         {
             this.onCompleteBuild();
             this._is_active = true;
-            this.return;
+            return;
         }
         this._time_remaining -= 1;
         this._txt_time_remaining.setString(Math.floor(this._time_remaining / 60) + "m" + (this._time_remaining % 60) + "s");
@@ -286,7 +295,6 @@ var BuildingNode = cc.Node.extend({
     },
 
     onClick: function() {
-        this.getParent().getParent().showListBotButton();
         this._arrow.visible = true;
         this._green.visible = true;
         var scale_out = cc.scaleTo(0.25, 1.0);
@@ -421,7 +429,7 @@ var BuildingNode = cc.Node.extend({
                     cf.current_r = self._row;
                     cf.current_c = self._col;
                     self.unlocate_map_array(cf.current_r, cf.current_c, size);
-                    return true
+                    return true;
                 }
                 else
                 {
@@ -439,6 +447,7 @@ var BuildingNode = cc.Node.extend({
                         self._col = cf.current_c;
                         self.x = cf.tileLocation[self._row][self._col].x;
                         self.y = cf.tileLocation[self._row][self._col].y - (size / 2) * cf.tileSize.height;
+                        self.locate_map_array(self);
                     }
                     else
                     {
@@ -453,7 +462,7 @@ var BuildingNode = cc.Node.extend({
             },
             onTouchMoved: function(touch, event)
             {
-                if (self._id != cf.building_selected) return;
+                if (self._id !== cf.building_selected) return;
                 //if (b.id != cf.building_selected) return;
                 var location_touch = touch.getLocation();
                 var tile_location = null;

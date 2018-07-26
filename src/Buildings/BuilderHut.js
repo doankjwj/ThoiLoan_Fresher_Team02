@@ -6,7 +6,7 @@ var BuilderHut = BuildingNode.extend({
         this._orderInUserBuildingList = 11;
 
         this._super(id, order, row, col, existed);
-
+        this._nameText.setString("Nhà thợ xây");
         /* Add Center Building */
         this.addCenterBuilding(this._CENTER_BUILDING_STR);
     }

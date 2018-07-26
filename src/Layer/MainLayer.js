@@ -25,20 +25,20 @@ var MainLayer = cc.Layer.extend({
     },
 
     init: function() {
-        var bg = cc.Sprite("res/Art/BG/Capture.PNG");
-        bg.setAnchorPoint(cc.p(0, 0))
-        this.addChild(bg, 0, this._TAG_BG);
+        // var bg = cc.Sprite("res/Art/BG/Capture.PNG");
+        // bg.setAnchorPoint(cc.p(0, 0))
+        // this.addChild(bg, 0, this._TAG_BG);
+        //
+        // var size = cc.director.getVisibleSize();
+        // var yBtn = 2*size.height/3;
+        // var btnLogin = gv.commonButton(200, 64, size.width/4, yBtn,"Login");
+        // this.addChild(btnLogin, 1, this._TAG_LOGIN);
+        // btnLogin.addClickEventListener(this.onSelectLogin.bind(this));
 
-        var size = cc.director.getVisibleSize();
-        var yBtn = 2*size.height/3;
-        var btnLogin = gv.commonButton(200, 64, size.width/4, yBtn,"Login");
-        this.addChild(btnLogin, 1, this._TAG_LOGIN);
-        btnLogin.addClickEventListener(this.onSelectLogin.bind(this));
-
-        // this.loadJson();
-        // this.initUser();
-        // this.initMap();
-        // this.initMainGUI();
+        this.loadJson();
+        this.initUser();
+        this.initMap();
+        this.initMainGUI();
     },
 
     onSelectLogin: function()
@@ -136,8 +136,8 @@ var MainLayer = cc.Layer.extend({
 
     hideListBotButton: function()
     {
-        this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2 - cf.offSetGui*2, -200));
-        this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2 + cf.offSetGui*2, -200));
+        this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - 2 * cf.offSetGui, -200));
+        this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2 + this._guiButtonBuildingUpgrade.width/2 + 2 * cf.offSetGui, -200));
     },
 
     showListBotButton: function() {

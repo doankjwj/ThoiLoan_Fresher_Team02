@@ -6,8 +6,8 @@ var Resource = BuildingNode.extend({
         this._CENTER_BUILDING_STR = (type == 1) ? "RES_1_" : "RES_2_"
         this._size = (type == 1) ? this._size = cf.jsonResource["RES_1"][level]["width"] : cf.jsonResource["RES_2"][level]["width"];
         this._orderInUserBuildingList = (type == 1) ? 4 : 5;
-
         this._super(id, level, row, col, existed);
+        this._nameText.setString("Mỏ " + (type === 1 ? "vàng" : "dầu"));
         this._type =  type;
 
         /* Init Animation If Not Exist*/

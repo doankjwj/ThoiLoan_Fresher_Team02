@@ -6,6 +6,7 @@ var TownHall = BuildingNode.extend({
         this._orderInUserBuildingList = 0;
 
         this._super(id, level, row, col, existed);
+        this._nameText.setString("Nhà chính");
 
         /* Init Animation If Not Exist*/
         this.initAnimation();

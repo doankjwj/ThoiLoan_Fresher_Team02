@@ -8,7 +8,7 @@ var ArmyCamp = BuildingNode.extend({
         this._orderInUserBuildingList = 8;
 
         this._super(id, level, row, col, existed);
-
+        this._nameText.setString("Trại lính");
         /* Init Animation If Not Exist*/
         this.initAnimation();
 

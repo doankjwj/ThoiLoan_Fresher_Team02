@@ -3,8 +3,8 @@ var Barrack = BuildingNode.extend({
         this._size = cf.jsonBarrack["BAR_1"][level]["width"];
         this._CENTER_BUILDING_STR = "BAR_1_";
         this._orderInUserBuildingList = 9;
-
         this._super(id, level, row, col, existed);
+        this._nameText.setString("Nhà lính");
         /* Init Animation If Not Exist*/
         this.initAnimation();
         cc.log(cf.animationBarrack[this._level]);

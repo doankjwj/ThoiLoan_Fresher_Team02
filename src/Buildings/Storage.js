@@ -11,6 +11,7 @@ var Storage = BuildingNode.extend({
         this._orderInUserBuildingList = (type === 1) ? 1 : 2;
 
         this._super(id, level, row, col, existed);
+        this._nameText.setString("Kho " + (type === 1 ? "vàng" : "dầu"));
         this._type =  type;
 
         /* Init Animation If Not Exist*/
