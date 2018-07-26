@@ -55,6 +55,16 @@ var BuildingNode = cc.Node.extend({
 
         this._nameText.visible = true;
 
+        //Set Id
+        var tmp = (this._orderInUserBuildingList + 1).toString();
+        if(cf.user._buildingListCount[this._orderInUserBuildingList] >= 10) {
+            tmp += cf.user._buildingListCount[this._orderInUserBuildingList].toString();
+        } else tmp = tmp + "0" + cf.user._buildingListCount[this._orderInUserBuildingList].toString();
+        cc.log(tmp);
+        var tag= parseInt(tmp);
+        this.setTag(tag);
+        this._id = tag;
+
         //grass
         this._grass = new grass(this._size);
         this.addChild(this._grass, 0);
@@ -325,7 +335,10 @@ var BuildingNode = cc.Node.extend({
         });
         this._gui_commit_build.addClickEventListener(function(){
             if(!self._red.visible) {
+                self.locate_map_array(self);
+                self.getParent().logMapArray();
                 self.startBuild();
+                self.getParent().addBuildingToUserBuildingList(self);
                 cf.isDeciding = false;
             }
         });
@@ -333,7 +346,7 @@ var BuildingNode = cc.Node.extend({
 
     startBuild: function() {
         this._existed = true;
-        this.locate_map_array(this);
+        //this.locate_map_array(this);
         this._time_remaining = this.getTimeRequire();
         this._time_total = this._time_remaining;
         this._is_active = false;

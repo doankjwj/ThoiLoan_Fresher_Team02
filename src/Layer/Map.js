@@ -38,9 +38,6 @@ var Map = cc.Node.extend({
                     {
                         self.addChild(building);
                         self.addBuildingToUserBuildingList(building);
-                        var tag = (building._orderInUserBuildingList + 1) * 100 + cf.user._buildingListCount[building._orderInUserBuildingList];
-                        building.setTag(tag);
-                        building._id = tag;
                         if(building._existed) building.locate_map_array(building);
                         //building.locate_map_array(building._row, building._col, building._size);
                     }
@@ -49,29 +46,29 @@ var Map = cc.Node.extend({
         }
     },
 
-    add_building: function()
-    {
-        var self = this;
-        for(var key in cf.jsonInitGame["map"]) {
-            if(cf.jsonInitGame["map"].hasOwnProperty(key)) {
-                var building = cf.stringToItemInit(key);
-                if(building !== null) {
-                    self.addChild(building);
-                    self.addBuildingToUserBuildingList(building);
-                    var tag = building._orderInUserBuildingList*100 + cf.user._buildingListCount[building._orderInUserBuildingList]
-                    building.setTag(tag);
-                    building._id = tag;
-                }
-            }
-        }
-        for (var i = 0; i < Object.keys(cf.jsonInitGame["obs"]).length; i++)
-        {
-            var obs = cf.jsonInitGame["obs"][i+1];
-            var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"], true);
-            tag = i*500;
-            this.addChild(obstacle, 2, tag);
-        }
-    },
+    //add_building: function()
+    //{
+    //    var self = this;
+    //    for(var key in cf.jsonInitGame["map"]) {
+    //        if(cf.jsonInitGame["map"].hasOwnProperty(key)) {
+    //            var building = cf.stringToItemInit(key);
+    //            if(building !== null) {
+    //                self.addChild(building);
+    //                self.addBuildingToUserBuildingList(building);
+    //                var tag = building._orderInUserBuildingList*100 + cf.user._buildingListCount[building._orderInUserBuildingList]
+    //                building.setTag(tag);
+    //                building._id = tag;
+    //            }
+    //        }
+    //    }
+    //    for (var i = 0; i < Object.keys(cf.jsonInitGame["obs"]).length; i++)
+    //    {
+    //        var obs = cf.jsonInitGame["obs"][i+1];
+    //        var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"], true);
+    //        tag = i*500;
+    //        this.addChild(obstacle, 2, tag);
+    //    }
+    //},
 
     addBuildingToUserBuildingList: function(b)
     {

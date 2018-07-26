@@ -18,6 +18,8 @@ var MainLayer = cc.Layer.extend({
     _TAG_BG: 242342,
     _TAG_LOGIN: 534534,
 
+    _TAG_MAP: 45345,
+
     ctor:function () {
         this._super();
         this.setTag(1000000);
@@ -80,7 +82,7 @@ var MainLayer = cc.Layer.extend({
         this._map.anchorY = 0;
         var centering = cc.p(-this._map._width/2 * this._map.scale + cc.winSize.width/2, -this._map._height/2 * this._map.scale + cc.winSize.height/2)
         this._map.setPosition(centering);
-        this.addChild(this._map, 0, "MAP");
+        this.addChild(this._map, 0, this._TAG_MAP);
         this.moveMap();
     },
 
@@ -292,8 +294,8 @@ var MainLayer = cc.Layer.extend({
             case ccui.Widget.TOUCH_BEGAN:
                 var map = this._map;
                 if (cf.building_selected !== 0) {
-                    var buildingSelected = map.getChildByTag(cf.building_selected);
-                    buildingSelected.onEndClick();
+                        var buildingSelected = map.getChildByTag(cf.building_selected);
+                        if(buildingSelected !== null) buildingSelected.onEndClick();
                 }
                 sender.setScale(sender.scale*1.1);
                 break;
