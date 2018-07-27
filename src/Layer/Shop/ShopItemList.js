@@ -136,12 +136,12 @@ var ShopItemList = cc.Layer.extend({
         this._scrollView.setBounceEnabled(true);
         this._scrollView.setAnchorPoint(cc.p(0.5, 0.5));
         this._scrollView.setContentSize(cc.size(item.width*item.scale, item.height*item.scale));
-        this._scrollView.setInnerContainerSize(cc.size(item.width*item.scale * cf.ShopItemList["ShopList"][this._shopName].length, item.height*item.scale));
+        this._scrollView.setInnerContainerSize(cc.size(item.width*item.scale * gv.json.shopItemList["ShopList"][this._shopName].length, item.height*item.scale));
         this._scrollView.setAnchorPoint(cc.p(0, 0));
         this._scrollView.setPosition(cc.p(25, cc.winSize.height/2 - item.height*item.scale/2));
 
         var shopItem = [];
-        for(var i=0; i<cf.ShopItemList["ShopList"][this._shopName].length; i++) {
+        for(var i=0; i<gv.json.shopItemList["ShopList"][this._shopName].length; i++) {
             shopItem.push(new ShopItem(this._shopName, i));
         }
         for(var j =0 ; j<shopItem.length; j++){

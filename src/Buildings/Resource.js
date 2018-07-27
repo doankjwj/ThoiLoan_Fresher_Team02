@@ -4,7 +4,7 @@ var Resource = BuildingNode.extend({
     ctor: function(id, level, row, col, existed, type)
     {
         this._buildingSTR = (type == 1) ? gv.buildingSTR.resource_1 : gv.buildingSTR.resource_2;
-        this._size = gv.json.Resource[this._buildingSTR][level]["width"];
+        this._size = gv.json.resource[this._buildingSTR][level]["width"];
         this._orderInUserBuildingList = (type == 1) ? gv.orderInUserBuildingList.resource_1 : gv.orderInUserBuildingList.resource_2;
         this._name = (type == 1) ? gv.buildingName.resource_1 : gv.buildingName.resource_2;
 

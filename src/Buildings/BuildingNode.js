@@ -39,6 +39,7 @@ var BuildingNode = cc.Node.extend({
     _orderInUserBuildingList: null,
 
     _listener: null,
+    _listenerMove: null,
 
     ctor: function(id, level, row, col, existed) {
         this._super();
@@ -76,7 +77,7 @@ var BuildingNode = cc.Node.extend({
         this._grassShadow.scale = this._grass.scale;
 
         //arrow
-        this._arrow = cc.Sprite(res.map_BG + "arrowmove" + (this._size ) + ".png")
+        this._arrow = cc.Sprite(res.buildingOnMoveGUI(gv.buildOnMoveGUI.arrow, this._size))
         this._arrow.attr({
             anchorX: 0.5,
             anchorY: 0.5,
@@ -86,7 +87,7 @@ var BuildingNode = cc.Node.extend({
 
 
         //green
-        this._green = cc.Sprite(res.map_BG + "GREEN_" + (this._size ) + ".png");
+        this._green = cc.Sprite(res.buildingOnMoveGUI(gv.buildOnMoveGUI.green, this._size));
         this._green.attr({
             anchorX: 0.5,
             anchorY: 0.5,
@@ -96,7 +97,7 @@ var BuildingNode = cc.Node.extend({
         this.addChild(this._green, this._arrow.getLocalZOrder() + 1);
 
         //red
-        this._red = cc.Sprite(res.map_BG + "RED_" + (this._size ) + ".png");
+        this._red = cc.Sprite(res.buildingOnMoveGUI(gv.buildOnMoveGUI.red, this._size));
         this._red.attr({
             anchorX: 0.5,
             anchorY: 0.5,
@@ -106,7 +107,7 @@ var BuildingNode = cc.Node.extend({
         this.addChild(this._red, this._green.getLocalZOrder() + 1);
 
         //defence
-        this._defence = cc.Sprite(res.map_obj + "upgrading.png");
+        this._defence = cc.Sprite(buildingGUI.defence);
         this._defence.attr({
             anchorX: 0.5,
             anchorY: 0.75,
@@ -116,7 +117,7 @@ var BuildingNode = cc.Node.extend({
         this.addChild(this._defence, 20);
 
         //Button commit build
-        this._gui_commit_build = ccui.Button(res.folder_gui_action_building + "accept.png");
+        this._gui_commit_build = ccui.Button(buildingGUI.buildCommit);
         this._gui_commit_build.attr({
             anchorX: 0.5,
             anchorY: 0.5,
@@ -127,7 +128,7 @@ var BuildingNode = cc.Node.extend({
         this.addChild(this._gui_commit_build, this._defence.getLocalZOrder() + 1);
 
         //Button cancel build
-        this._gui_cancel_build = ccui.Button(res.folder_gui_action_building + "cancel.png");
+        this._gui_cancel_build = ccui.Button(buildingGUI.buildCancel);
         this._gui_cancel_build.attr({
             anchorX: 0.5,
             anchorY: 0.5,
@@ -156,8 +157,8 @@ var BuildingNode = cc.Node.extend({
 
         /* Add event listener */
 
-        var listenerMove = this.get_event_listener(this);
-        cc.eventManager.addListener(listenerMove, this);
+        this._listenerMove = this.get_event_listener(this);
+        cc.eventManager.addListener(this._listenerMove, this);
         var self = this;
         this._listener = cc.EventListener.create({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
@@ -177,7 +178,7 @@ var BuildingNode = cc.Node.extend({
                     self.onEndClick();
                     self.hideBuildingButton();
                     cf.building_selected = 0;
-                    listenerMove.setEnabled(false);
+                    self._listenerMove.setEnabled(false);
                     return false
                 }
                 cf.r_old = self._row;
@@ -193,14 +194,14 @@ var BuildingNode = cc.Node.extend({
                     cf.building_selected = self._id;
                     cf.current_r = self._row;
                     cf.current_c = self._col;
-                    listenerMove.setEnabled(true);
+                    self._listenerMove.setEnabled(true);
                     this.setEnabled(false);
                 }
             }
         });
-        if(this._existed) listenerMove.setEnabled(false);
+        if(this._existed) this._listenerMove.setEnabled(false);
         else {
-            listenerMove.setEnabled(true);
+            this._listenerMove.setEnabled(true);
             this._listener.setEnabled(false);
             cf.current_c = self._col;
             cf.current_r = self._row;
@@ -230,15 +231,16 @@ var BuildingNode = cc.Node.extend({
         if (this._time_remaining <= 0)
         {
             this.onCompleteBuild();
-            this._is_active = true;
             return;
         }
         this._time_remaining -= 1;
-        this._txt_time_remaining.setString(Math.floor(this._time_remaining / 60) + "m" + (this._time_remaining % 60) + "s");
+        var timeRemaining = Math.floor(this._time_total / 60 / 60/ 24) + "d" + Math.floor(this._time_total / 60 / 60) + "h" + Math.floor(this._time_total / 60) + "m" + (this._time_total % 60) + "s"
+        this._txt_time_remaining.setString(timeRemaining);
         this._info_bar_bg.setTextureRect(cc.rect(0, 0, this._BAR_WIDTH * (this._time_total - this._time_remaining) / this._time_total, this._BAR_HEIGHT))
     },
 
     onCompleteBuild: function() {
+        this._is_active = true;
         this._effect_level_up.visible = true;
         if (cf.animationConstructLevelUp == null)
         {
@@ -248,8 +250,8 @@ var BuildingNode = cc.Node.extend({
         this._info_bar.visible = false;
         this._info_bar_bg.visible = false;
         this._defence.visible = false;
-
         this._effect_level_up.runAction(cc.Sequence(MainLayer.get_animation("effect_construct_levelup ", 6).clone()).clone());
+        cf.user.updateResource();
     },
 
     addCenterBuilding: function() {
@@ -335,7 +337,10 @@ var BuildingNode = cc.Node.extend({
             if(!self._red.visible) {
                 self.locate_map_array(self);
                 self.startBuild();
+                self.onEndClick();
+                self.hideBuildingButton();
                 self.getParent().addBuildingToUserBuildingList(self);
+                cf.building_selected = 0;
                 cf.isDeciding = false;
                 testnetwork.connector.sendBuild(self._id, self._row, self._col);
             }
@@ -370,7 +375,11 @@ var BuildingNode = cc.Node.extend({
         this.addChild(this._info_bar_bg, this._defence.getLocalZOrder() + 1);
 
         /* Time Text */
-        this._txt_time_remaining = cc.LabelBMFont.create(Math.floor(this._time_total / 60) + "m" + (this._time_total % 60) + "s",  font.soji20);
+        //var h = Math.floor(this._time_total / 60 / 60);
+        //var m = this._time_total - h * 60 * 60;
+        //var txt = new Time
+        var timeRemaining = Math.floor(this._time_total / 60 / 60/ 24) + "d" + Math.floor(this._time_total / 60 / 60) + "h" + Math.floor(this._time_total / 60) + "m" + (this._time_total % 60) + "s"
+        this._txt_time_remaining = cc.LabelBMFont.create(timeRemaining,  font.soji20);
         this._txt_time_remaining.attr({
             anchorX: 0.5,
             anchorY: 0,
@@ -388,24 +397,24 @@ var BuildingNode = cc.Node.extend({
         var json = null;
         switch (this._buildingSTR)
         {
-            case buildingSTR.townHall:
+            case gv.buildingSTR.townHall:
                 json = cf.jsonTownHall;
 
-            case buildingSTR.armyCamp_1:
-                json = cf.jsonArmyCamp;
-            case buildingSTR.barrack_1:
-                json = cf.jsonBarrack;
-            case buildingSTR.resource_1:
-                json = cf.jsonResource
-            case buildingSTR.resource_2:
-                json = cf.jsonResource;
-            case buildingSTR.storage_1:
-                json = cf.jsonStorage;
-            case buildingSTR.storage_2:
-                json = cf.jsonStorage;
+            case gv.buildingSTR.armyCamp_1:
+                json = gv.json.ArmyCamp;
+            case gv.buildingSTR.barrack_1:
+                json = gv.json.Barrack;
+            case gv.buildingSTR.resource_1:
+                json = gv.json.Resource;
+            case gv.buildingSTR.resource_2:
+                json = gv.json.Resource;
+            case gv.buildingSTR.storage_1:
+                json = gv.json.Storage;
+            case gv.buildingSTR.storage_2:
+                json = gv.json.Storage;
             case "canon_":
                 return this._level * 150;
-            case buildingSTR.builderHut:
+            case gv.buildingSTR.builderHut:
                 return 0;
             default:
                 break;

@@ -2,7 +2,7 @@ var TownHall = BuildingNode.extend({
     ctor: function(id, level, row, col, existed)
     {
         this._buildingSTR = gv.buildingSTR.townHall;
-        this._size = gv.json.TownHall[this._buildingSTR][level]["width"];
+        this._size = gv.json.townHall[this._buildingSTR][level]["width"];
         this._orderInUserBuildingList = gv.orderInUserBuildingList.townHall;
         this._name = gv.buildingName.townHall;
 

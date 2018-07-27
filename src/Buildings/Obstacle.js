@@ -5,7 +5,7 @@ var Obstacle = BuildingNode.extend({
     ctor: function(id, type, row, col, existed)
     {
         this._buildingSTR = gv.buildingSTR.obstacle;
-        this._size = gv.json.Obstacle[type][1]["width"];
+        this._size = gv.json.obstacle[type][1]["width"];
         this._orderInUserBuildingList = gv.orderInUserBuildingList.obstacle;
         this._name = gv.buildingName.obstacle;
 

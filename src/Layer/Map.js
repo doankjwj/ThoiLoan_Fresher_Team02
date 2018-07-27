@@ -21,6 +21,7 @@ var Map = cc.Node.extend({
         this._height = (this._bgBotLeft.height + this._bgTopLeft.height)*cf.bgSCALE;
         this.initTileLocation();
         this.addBuildingFromServer();
+        cf.user.updateResource();
         //this.add_building();
     },
 
@@ -45,9 +46,10 @@ var Map = cc.Node.extend({
             }
         }
 
-        for (var i = 0; i < Object.keys(gv.json.InitGame["obs"]).length; i++)
+
+        for (var i = 0; i < Object.keys(gv.json.initGame["obs"]).length; i++)
                {
-                   var obs = gv.json.InitGame["obs"][i+1];
+                   var obs = gv.json.initGame["obs"][i+1];
                    var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"], true);
                    tag = i*500;
                    this.addChild(obstacle, 2, tag);

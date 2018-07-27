@@ -20,7 +20,11 @@ var MainLayer = cc.Layer.extend({
     _TAG_LOGIN: 534534,
 
     _TAG_MAP: 45345,
-    _TAG_BUILDER_BAR: 23423,
+    _TAG_BUILDER_BAR: 2342,
+    _TAG_RESOURCE_BAR_GOLD: 4343,
+    _TAG_RESOURCE_BAR_ELIXIR: 4231,
+    _TAG_RESOURCE_BAR_DARK_ELIXIR: 1457,
+    _TAG_RESOURCE_BAR_COIN: 5469,
 
     ctor:function () {
         this._super();
@@ -72,8 +76,8 @@ var MainLayer = cc.Layer.extend({
         //this.removeChildByTag(this._TAG_MAP);
         this.initUser();
         this.initMap();
-        this.initMainGUI();
         cf.user.updateResource();
+        this.initMainGUI();
     },
 
     initMap: function()
@@ -108,28 +112,28 @@ var MainLayer = cc.Layer.extend({
             x: cc.winSize.width - cf.offSetGui,
             y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 30,
         });
-        this.addChild(this._resBarGold);
+        this.addChild(this._resBarGold, 0, this._TAG_RESOURCE_BAR_GOLD);
 
         this._resBarElixir = new GUI_ResourceBar(2);
         this._resBarElixir.attr({
             x: cc.winSize.width - cf.offSetGui,
             y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 80,
         });
-        this.addChild(this._resBarElixir);
+        this.addChild(this._resBarElixir, 0, this._TAG_RESOURCE_BAR_ELIXIR);
 
         this._resBarDarkElixir = new GUI_ResourceBar(3);
         this._resBarDarkElixir.attr({
             x: cc.winSize.width - cf.offSetGui,
             y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 130,
         });
-        this.addChild(this._resBarDarkElixir);
+        this.addChild(this._resBarDarkElixir, 0, this._TAG_RESOURCE_BAR_DARK_ELIXIR);
 
         this._resBarCoin = new GUI_ResourceBar(4);
         this._resBarCoin.attr({
             x: cc.winSize.width - cf.offSetGui,
             y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 180,
         });
-        this.addChild(this._resBarCoin);
+        this.addChild(this._resBarCoin, 0, this._TAG_RESOURCE_BAR_COIN);
     },
 
     addBuilderBar: function()
@@ -375,44 +379,44 @@ var MainLayer = cc.Layer.extend({
 
     loadJson:function () {
         cc.loader.loadJson(res.armyCampJson, function(err, data){
-            gv.json.ArmyCamp = data;
+            gv.json.armyCamp = data;
         });
         cc.loader.loadJson(res.barrackJson, function(err, data){
-            gv.json.Barrack = data;
+            gv.json.barrack = data;
         });
         cc.loader.loadJson(res.builderHutJson, function(err, data){
-            gv.json.BuilderHut = data;
+            gv.json.builderHut = data;
         });
         cc.loader.loadJson(res.initGameJson, function(err, data){
-            gv.json.InitGame = data;
+            gv.json.initGame = data;
         });
         cc.loader.loadJson(res.laboratoryJson, function(err, data){
-            gv.json.Laboratory = data;
+            gv.json.laboratory = data;
         });
         cc.loader.loadJson(res.resourceJson, function(err, data){
-            gv.json.Resource = data;
+            gv.json.resource = data;
         });
         cc.loader.loadJson(res.storageJson, function(err, data){
-            gv.json.Storage = data;
+            gv.json.storage = data;
         });
         cc.loader.loadJson(res.townHallJson, function(err, data){
-            gv.json.TownHall = data;
+            gv.json.townHall = data;
         });
         cc.loader.loadJson(res.troopJson, function(err, data){
-            gv.json.Troop = data;
+            gv.json.troop = data;
         });
         cc.loader.loadJson(res.troopBaseJson, function(err, data){
-            gv.json.TroopBase = data;
+            gv.json.troopBase = data;
         });
-        //cc.loader.loadJson(res.shopListJson, function(error, data){
-        //    gv.json.ShopItemList = data;
+        cc.loader.loadJson(res.shopItemList, function(error, data){
+            gv.json.shopItemList = data;
+        });
+
+        //cc.loader.loadJson("res/ConfigJson/ShopList.json", function(error, data){
+        //    cf.ShopItemList = data;
         //});
-        cc.loader.loadJson("res/ConfigJson/ShopList.json", function(error, data){
-            cf.ShopItemList = data;
-        });
-        //cc.log(gv.json.ShopItemList["ShopList"]["ARMY"][0]["key"] + "Shop")
         cc.loader.loadJson(res.obstacleJson, function(error, data){
-            gv.json.Obstacle = data;
+            gv.json.obstacle = data;
         });
     }
 });

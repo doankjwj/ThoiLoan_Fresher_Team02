@@ -71,8 +71,37 @@ var User = cc.Class.extend({
 
     updateResource: function()
     {
-        var capacity = this._buildingList[0][0]._level;
         this._maxCapacityGold = 0;
+        this._maxCapacityElixir = 0;
+        this._maxCapacityDarkElixir = 0;
+
+        /* Add Resource from Town Hall */
+        var townHallLevel = this._buildingList[gv.orderInUserBuildingList.townHall][0]._level;
+        this._maxCapacityGold += gv.json.townHall[gv.buildingSTR.townHall][townHallLevel][gv.capacity.gold];
+        this._maxCapacityElixir += gv.json.townHall[gv.buildingSTR.townHall][townHallLevel][gv.capacity.elixir];
+        this._maxCapacityDarkElixir += gv.json.townHall[gv.buildingSTR.townHall][townHallLevel][gv.capacity.darkElixir];
+
+        /* Add Resource from Gold Storage */
+        var storage = null;
+        for (var i = 0; i < this._buildingListCount[gv.orderInUserBuildingList.storage_1]; i++)
+        {
+            storage = this._buildingList[gv.orderInUserBuildingList.storage_1][i];
+            this._maxCapacityGold += gv.json.resource[gv.buildingSTR.storage_1][storage._level][gv.capacity.gold];
+        }
+
+        /* Add Resource from Elixir Storage */
+        for (var i = 0; i < this._buildingListCount[gv.orderInUserBuildingList.storage_2]; i++)
+        {
+            storage = this._buildingList[gv.orderInUserBuildingList.storage_2][i];
+            this._maxCapacityElixir += gv.json.resource[gv.buildingSTR.storage_2][storage._level][gv.capacity.elixir];
+        }
+
+        /* Add Resource from Dark Elixir Storage */
+        for (var i = 0; i < this._buildingListCount[gv.orderInUserBuildingList.storage_3]; i++)
+        {
+            storage = this._buildingList[gv.orderInUserBuildingList.storage_3][i];
+            this._maxCapacityDarkElixir += gv.json.resource[gv.buildingSTR.storage_3][storage._level][gv.capacity.darkElixir];
+        }
     },
 
 });

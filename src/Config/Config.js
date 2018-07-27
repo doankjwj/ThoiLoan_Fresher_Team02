@@ -75,19 +75,19 @@ cf.shopType = {
 
 gv.json =
 {
-    ArmyCamp: null,
-    Barrack: null,
-    BuilderHut: null,
-    Obstacle: null,
-    InitGame: null,
-    Laboratory: null,
-    Resource: null,
-    ShopItemList: null,
-    Storage: null,
-    TownHall: null,
-    Troop: null,
-    TroopBase: null,
-    ItemList: null,
+    armyCamp: null,
+    barrack: null,
+    builderHut: null,
+    obstacle: null,
+    initGame: null,
+    laboratory: null,
+    resource: null,
+    shopItemList: null,
+    storage: null,
+    townHall: null,
+    troop: null,
+    troopBase: null,
+    itemList: null,
 };
 
 //cf.ShopItemList = null;
@@ -151,7 +151,12 @@ gv.buildingSTR = {
     obstacle: "OBS",
     canon: "canon",
 };
-
+gv.buildOnMoveGUI =
+{
+    arrow: "arrowmove",
+    red: "RED",
+    green: "GREEN"
+};
 gv.buildingName =
 {
     townHall: "Nhà Chính",
@@ -170,7 +175,6 @@ gv.buildingName =
     canon: "Pháo thần công"
 
 }
-
 gv.orderInUserBuildingList =
 {
     townHall: 0,
@@ -190,6 +194,13 @@ gv.orderInUserBuildingList =
 
 };
 
+/* Capacity */
+gv.capacity =
+{
+    gold: "capacityGold",
+    elixir: "capacityElixir",
+    darkElixir: "capacityDarkElixir"
+}
 
 //function
 cf.shopTagToName = function (tag) {
@@ -238,20 +249,20 @@ cf.getJsonConfigFile = function (str) {
     var substr = str.substring(0, 3);
     switch(substr)
     {
-        case "TOW": return gv.json.TownHall;
-        case "LAB": return gv.json.Laboratory;
+        case "TOW": return gv.json.townHall;
+        case "LAB": return gv.json.laboratory;
         case "BDH":
-            return gv.json.BuilderHut;
+            return gv.json.builderHut;
         case "RES":
-            return gv.json.Resource;
+            return gv.json.resource;
         case "STO":
-            return gv.json.Storage;
+            return gv.json.storage;
         case "AMC":
-            return gv.json.ArmyCamp;
+            return gv.json.armyCamp;
         case "DEF":
             return null;
         case "BAR":
-            return gv.json.Barrack;
+            return gv.json.barrack;
     }
 
 };
