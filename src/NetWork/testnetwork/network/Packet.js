@@ -8,6 +8,7 @@ gv.CMD.USER_LOGIN = 1;
 
 gv.CMD.USER_INFO = 1001;
 gv.CMD.MOVE = 2001;
+gv.CMD.BUILD = 2010;
 
 testnetwork = testnetwork||{};
 testnetwork.packetMap = {};
@@ -63,6 +64,25 @@ CmdSendLogin = fr.OutPacket.extend(
     }
 )
 
+CmdSendBuild = fr.OutPacket.extend(
+    {
+        ctor:function()
+        {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.BUILD);
+        },
+        pack:function(id, row, col){
+            cc.log(id + " " + row + " " + col)
+            this.packHeader();
+            this.putShort(id);
+            this.putShort(row);
+            this.putShort(col);
+            this.updateSize();
+        }
+    }
+);
+
 CmdSendMove = fr.OutPacket.extend(
     {
         ctor:function()
@@ -71,9 +91,11 @@ CmdSendMove = fr.OutPacket.extend(
             this.initData(100);
             this.setCmdId(gv.CMD.MOVE);
         },
-        pack:function(direction){
+        pack:function(id, row, col){
             this.packHeader();
-            this.putShort(direction);
+            this.putShort(id);
+            this.putShort(row);
+            this.putShort(col);
             this.updateSize();
         }
     }

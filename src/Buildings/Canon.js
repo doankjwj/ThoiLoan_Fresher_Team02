@@ -4,12 +4,13 @@ var Canon = BuildingNode.extend({
     ctor: function(id, level, row, col, ori, existed)
     {
         this._size = 3;
-        this._CENTER_BUILDING_STR = "canon_";
+        this._buildingSTR = gv.buildingSTR.canon;
+        this._name = gv.buildingName.canon;
 
         this._super(id, level, row, col, existed);
 
         /* Add Center Building */
-        this.addCenterBuilding(this._CENTER_BUILDING_STR, ori);
+        this.addCenterBuilding();
 
         /* Add Defense Base */
         this._defense_base = cc.Sprite(res.folder_defense_base + "DEF_1_" + this._level + "_Shadow.png");

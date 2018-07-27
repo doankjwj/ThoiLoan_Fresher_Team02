@@ -28,6 +28,7 @@ var res = {
     townHallJson: jsonFolder + "TownHall.json",
     troopJson: jsonFolder + "Troop.json",
     troopBaseJson: jsonFolder + "TroopBase.json",
+    obstacleJson: jsonFolder + "Obstacle.json",
 
     folder_builder_hut: buildingsFolder + "builder hut/",
     folder_army_camp: buildingsFolder + "army camp/",
@@ -58,6 +59,7 @@ var font = {
     soji20: fontFolder + "soji_20.fnt"
 
 };
+
 
 
 var shopGUI = {

@@ -1,4 +1,5 @@
 var cf = cf || {};
+var gv = gv || {};
 
 cf.BIG_MAP_SCALE = 0.5;
 
@@ -72,17 +73,34 @@ cf.shopType = {
     }
 };
 
-cf.ShopItemList = null;
-cf.jsonArmyCamp = null;
-cf.jsonBarrack = null;
-cf.jsonBuilderHut = null;
-cf.jsonTownHall = null;
-cf.jsonInitGame = null;
-cf.jsonLaboratory = null;
-cf.jsonResource = null;
-cf.jsonStorage = null;
-cf.jsonTroop = null;
-cf.jsonTroopBase = null;;
+gv.json =
+{
+    ArmyCamp: null,
+    Barrack: null,
+    BuilderHut: null,
+    Obstacle: null,
+    InitGame: null,
+    Laboratory: null,
+    Resource: null,
+    ShopItemList: null,
+    Storage: null,
+    TownHall: null,
+    Troop: null,
+    TroopBase: null,
+    ItemList: null,
+};
+
+//cf.ShopItemList = null;
+//cf.jsonArmyCamp = null;
+//cf.jsonBarrack = null;
+//cf.jsonBuilderHut = null;
+//cf.jsonTownHall = null;
+//cf.jsonInitGame = null;
+//cf.jsonLaboratory = null;
+//cf.jsonResource = null;
+//cf.jsonStorage = null;
+//cf.jsonTroop = null;
+//cf.jsonTroopBase = null;;
 cf.ShopItemList = null;
 cf.defaultLevel = 1;
 
@@ -115,6 +133,64 @@ cf.shopResourceItem = {
     ResDarkElixir: 34543,
     ResCoin: 2342
 };
+
+/* Building Info */
+gv.buildingSTR = {
+    townHall: "TOW_1",
+    storage_1: "STO_1",
+    storage_2: "STO_2",
+    storage_3: "STO_3",
+    resource_1: "RES_1",
+    resource_2: "RES_2",
+    resource_3: "RES_3",
+    lap: "LAB_1",
+    armyCamp_1: "AMC_1",
+    barrack_1: "BAR_1",
+    barrack_2: "BAR_2",
+    builderHut: "BDH_1",
+    obstacle: "OBS",
+    canon: "canon",
+};
+
+gv.buildingName =
+{
+    townHall: "Nhà Chính",
+    storage_1: "Kho vàng",
+    storage_2: "Kho dầu",
+    storage_3: "Kho dầu đen",
+    resource_1: "Mỏ vàng",
+    resource_2: "Mỏ dầu",
+    resource_3: "Mỏ dầu đen",
+    lap: "Nhà nâng cấp lính",
+    armyCamp_1: "Trại lính",
+    barrack_1: "Nhà Lính",
+    barrack_2: "Nhà lính đen",
+    builderHut: "Nhà thợ xây",
+    obstacle: "Vật cản",
+    canon: "Pháo thần công"
+
+}
+
+gv.orderInUserBuildingList =
+{
+    townHall: 0,
+    storage_1: 1,
+    storage_2: 2,
+    storage_3: 3,
+    resource_1: 4,
+    resource_2: 5,
+    resource_3: 6,
+    lap: 7,
+    armyCamp_1: 8,
+    barrack_1: 9,
+    barrack_2: 10,
+    builderHut: 11,
+    obstacle: 12,
+    canon: 13
+
+};
+
+
 //function
 cf.shopTagToName = function (tag) {
     switch (tag) {
@@ -162,20 +238,20 @@ cf.getJsonConfigFile = function (str) {
     var substr = str.substring(0, 3);
     switch(substr)
     {
-        case "TOW": return cf.jsonTownHall;
-        case "LAB": return cf.jsonLaboratory;
+        case "TOW": return gv.json.TownHall;
+        case "LAB": return gv.json.Laboratory;
         case "BDH":
-            return cf.jsonBuilderHut;
+            return gv.json.BuilderHut;
         case "RES":
-            return cf.jsonResource;
+            return gv.json.Resource;
         case "STO":
-            return cf.jsonStorage;
+            return gv.json.Storage;
         case "AMC":
-            return cf.jsonArmyCamp;
+            return gv.json.ArmyCamp;
         case "DEF":
             return null;
         case "BAR":
-            return cf.jsonBarrack;
+            return gv.json.Barrack;
     }
 
 };

@@ -4,9 +4,9 @@
 var User = cc.Class.extend({
     _id: null,
     _name: "User Name",
-    _maxCapacityGold: 2000,
-    _maxCapacityElixir: 2000,
-    _maxCapacityDarkElixir: 2000,
+    _maxCapacityGold: 0,
+    _maxCapacityElixir: 0,
+    _maxCapacityDarkElixir: 0,
 
     _currentCapacityGold: null,
     _currentCapacityElixir: null,
@@ -34,6 +34,7 @@ var User = cc.Class.extend({
     9: Barrack 1
     10: Barrack 2
     11: Builder Hut
+    12: Obstacle
      */
 
     ctor: function(id, name)
@@ -70,6 +71,8 @@ var User = cc.Class.extend({
 
     updateResource: function()
     {
+        var capacity = this._buildingList[0][0]._level;
+        this._maxCapacityGold = 0;
+    },
 
-    }
 });

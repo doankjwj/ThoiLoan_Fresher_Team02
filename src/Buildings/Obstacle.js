@@ -4,10 +4,14 @@
 var Obstacle = BuildingNode.extend({
     ctor: function(id, type, row, col, existed)
     {
-        this._size = 2;
-        this._orderInUserBuildingList = 12;
+        this._buildingSTR = gv.buildingSTR.obstacle;
+        this._size = gv.json.Obstacle[type][1]["width"];
+        this._orderInUserBuildingList = gv.orderInUserBuildingList.obstacle;
+        this._name = gv.buildingName.obstacle;
+
         this._super(id, type, row, col, existed);
         this._grassShadow.visible = false;
-        this.addCenterBuilding("OBS_", 0);
+        this._txtName.visible = false;
+        this.addCenterBuilding();
     }
 });

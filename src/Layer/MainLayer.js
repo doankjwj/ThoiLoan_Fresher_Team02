@@ -73,6 +73,7 @@ var MainLayer = cc.Layer.extend({
         this.initUser();
         this.initMap();
         this.initMainGUI();
+        cf.user.updateResource();
     },
 
     initMap: function()
@@ -374,38 +375,44 @@ var MainLayer = cc.Layer.extend({
 
     loadJson:function () {
         cc.loader.loadJson(res.armyCampJson, function(err, data){
-            cf.jsonArmyCamp = data;
+            gv.json.ArmyCamp = data;
         });
-
         cc.loader.loadJson(res.barrackJson, function(err, data){
-            cf.jsonBarrack = data;
+            gv.json.Barrack = data;
         });
         cc.loader.loadJson(res.builderHutJson, function(err, data){
-            cf.jsonBuilderHut = data;
+            gv.json.BuilderHut = data;
         });
         cc.loader.loadJson(res.initGameJson, function(err, data){
-            cf.jsonInitGame = data;
+            gv.json.InitGame = data;
         });
         cc.loader.loadJson(res.laboratoryJson, function(err, data){
-            cf.jsonLaboratory = data;
+            gv.json.Laboratory = data;
         });
         cc.loader.loadJson(res.resourceJson, function(err, data){
-            cf.jsonResource = data;
+            gv.json.Resource = data;
         });
         cc.loader.loadJson(res.storageJson, function(err, data){
-            cf.jsonStorage = data;
+            gv.json.Storage = data;
         });
         cc.loader.loadJson(res.townHallJson, function(err, data){
-            cf.jsonTownHall = data;
+            gv.json.TownHall = data;
         });
         cc.loader.loadJson(res.troopJson, function(err, data){
-            cf.jsonTroop = data;
+            gv.json.Troop = data;
         });
         cc.loader.loadJson(res.troopBaseJson, function(err, data){
-            cf.jsonTroopBase = data;
+            gv.json.TroopBase = data;
         });
+        //cc.loader.loadJson(res.shopListJson, function(error, data){
+        //    gv.json.ShopItemList = data;
+        //});
         cc.loader.loadJson("res/ConfigJson/ShopList.json", function(error, data){
             cf.ShopItemList = data;
+        });
+        //cc.log(gv.json.ShopItemList["ShopList"]["ARMY"][0]["key"] + "Shop")
+        cc.loader.loadJson(res.obstacleJson, function(error, data){
+            gv.json.Obstacle = data;
         });
     }
 });

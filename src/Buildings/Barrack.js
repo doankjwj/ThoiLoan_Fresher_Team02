@@ -1,19 +1,20 @@
 var Barrack = BuildingNode.extend({
-    ctor: function(id, level, row, col, existed) {
-        this._size = cf.jsonBarrack["BAR_1"][level]["width"];
-        this._CENTER_BUILDING_STR = "BAR_1_";
-        this._orderInUserBuildingList = 9;
+    ctor: function(id, level, row, col, existed)
+    {
+        this._buildingSTR = gv.buildingSTR.barrack_1;
+        this._size = gv.json.Barrack[this._buildingSTR][level]["width"];
+        this._orderInUserBuildingList = gv.orderInUserBuildingList.barrack_1;
+        this._name = gv.buildingName.barrack_1;
 
         this._super(id, level, row, col, existed);
-        this._nameText.setString("Nhà lính");
+
         /* Init Animation If Not Exist*/
         this.initAnimation();
         cc.log(cf.animationBarrack[this._level]);
         /* Add Center Building */
-        this.addCenterBuilding(this._CENTER_BUILDING_STR);
+        this.addCenterBuilding();
 
         /* Add Effect */
-
         if (this._level >= 4) {
             var effect = cc.Sprite(res.tmp_effect);
             effect.anchorX = 0.5;

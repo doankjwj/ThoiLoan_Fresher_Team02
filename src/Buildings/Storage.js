@@ -6,19 +6,19 @@ var Storage = BuildingNode.extend({
 
     ctor: function(id, level, row, col, existed, type)
     {
-        this._CENTER_BUILDING_STR = (type === 1) ? "STO_1_" : "STO_2_"
-        this._size = (type === 1) ? this._size = cf.jsonStorage["STO_1"][level]["width"] : cf.jsonStorage["STO_2"][level]["width"];
-        this._orderInUserBuildingList = (type === 1) ? 1 : 2;
+        this._buildingSTR = (type === 1) ? gv.buildingSTR.storage_1 : gv.buildingSTR.storage_2;
+        this._size = gv.json.Storage[this._buildingSTR][level]["width"];
+        this._orderInUserBuildingList = (type === 1) ? gv.orderInUserBuildingList.storage_1 : gv.orderInUserBuildingList.storage_2;
+        this._name = (type == 1) ? gv.buildingName.storage_1 : gv.buildingName.storage_2;
 
         this._super(id, level, row, col, existed);
-        this._nameText.setString("Kho " + (type === 1 ? "vàng" : "dầu"));
         this._type =  type;
 
         /* Init Animation If Not Exist*/
         //this.initAnimation();
 
         /* Add Center Building */
-        this.addCenterBuilding(this._CENTER_BUILDING_STR);
+        this.addCenterBuilding();
 
     },
 

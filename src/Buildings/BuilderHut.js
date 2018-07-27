@@ -1,13 +1,13 @@
 var BuilderHut = BuildingNode.extend({
     ctor: function(id, order, row, col, existed)
     {
-        this._size = cf.jsonBuilderHut["BDH_1"][order]["width"];
-        this._CENTER_BUILDING_STR = "BDH_1";
-        this._orderInUserBuildingList = 11;
+        this._buildingSTR = gv.buildingSTR.builderHut;
+        this._size = gv.json.BuilderHut[this._buildingSTR][order]["width"];
+        this._orderInUserBuildingList = gv.orderInUserBuildingList.builderHut;
+        this._name =gv.buildingName.builderHut;
 
         this._super(id, order, row, col, existed);
-        this._nameText.setString("Nhà thợ xây");
         /* Add Center Building */
-        this.addCenterBuilding(this._CENTER_BUILDING_STR);
+        this.addCenterBuilding();
     }
 })

@@ -1,81 +1,81 @@
 {
-	"ShopList": 
-	{
-			"ARMY" 		:
-			[
-				{
-					"key": "BAR_1",
-					"name": "Nhà Lính",
-					"jsonConfigFile": "Barrack.json",
-					"iconPath" : "res/Art/GUIs/icons/shop_gui/icon/BAR_1.png",
-					"priceCurrency" : "elixir",
-					"tag": 900
-				},
-				{
-					"key": "AMC_1",
-					"name": "Trại Lính",
-					"jsonConfigFile": "ArmyCamp.json",
-					"iconPath": "res/Art/GUIs/icons/shop_gui/icon/AMC_1.png",
-					"priceCurrency" : "elixir",
-					"tag": 800
-				}
-			],
-			"RES"		:
-			[
-				{
-					"key": "RES_1",
-					"name": "Mỏ vàng",
-					"jsonConfigFile": "Resource.json",
-					"iconPath" : "res/Art/GUIs/icons/shop_gui/icon/RES_1.png",
-					"priceCurrency" : "elixir",
-					"tag": 400
-				},
-				{
-					"key": "RES_2",
-					"name": "Mỏ dầu",
-					"jsonConfigFile": "Resource.json",
-					"iconPath" : "res/Art/GUIs/icons/shop_gui/icon/RES_2.png",
-					"priceCurrency" : "gold",
-					"tag": 500
-				},
-				{
-					"key": "STO_1",
-					"name": "Kho vàng",
-					"jsonConfigFile": "Storage.json",
-					"iconPath" : "res/Art/GUIs/icons/shop_gui/icon/STO_1.png",
-					"priceCurrency" : "elixir",
-					"tag": 100
-				},
-				{
-					"key": "STO_2",
-					"name": "Kho dầu",
-					"jsonConfigFile": "Storage.json",
-					"iconPath" : "res/Art/GUIs/icons/shop_gui/icon/STO_2.png",
-					"priceCurrency" : "gold",
-					"tag": 200
-				},
-				{
-					"key": "BDH_1",
-					"name": "Nhà thợ xây",
-					"jsonConfigFile": "BuilderHut.json",
-					"iconPath" : "res/Art/GUIs/icons/shop_gui/icon/BDH_1.png",
-					"priceCurrency" : "coin",
-					"tag": 1100
-				}
-			],
-			"BUY_RES"	: [],
-			"DEFENSE"	:
-			[
-				{
-					"key": "DEF_1",
-					"name": "Pháo",
-					"jsonConfigFile": "Defense.json",
-					"iconPath" : "res/Art/GUIs/icons/shop_gui/icon/DEF_1.png",
-					"priceCurrency" : "gold",
-					"tag": 1200
-				}
-			],
-			"DC": [],
-			"SHIELD": []
-	}
+  "ShopList":
+  {
+	"ARMY" 		:
+	[
+	  {
+		"key": "BAR_1",
+		"name": "Nhà Lính",
+		"jsonConfigFile": "Barrack.json",
+		"iconPath" : "res/Art/GUIs/icons/shop_gui/icon/BAR_1.png",
+		"priceCurrency" : "elixir",
+		"tag": 900
+	  },
+	  {
+		"key": "AMC_1",
+		"name": "Trại Lính",
+		"jsonConfigFile": "ArmyCamp.json",
+		"iconPath": "res/Art/GUIs/icons/shop_gui/icon/AMC_1.png",
+		"priceCurrency" : "elixir",
+		"tag": 800
+	  }
+	],
+	"RES"		:
+	[
+	  {
+		"key": "RES_1",
+		"name": "Mỏ vàng",
+		"jsonConfigFile": "Resource.json",
+		"iconPath" : "res/Art/GUIs/icons/shop_gui/icon/RES_1.png",
+		"priceCurrency" : "elixir",
+		"tag": 400
+	  },
+	  {
+		"key": "RES_2",
+		"name": "Mỏ dầu",
+		"jsonConfigFile": "Resource.json",
+		"iconPath" : "res/Art/GUIs/icons/shop_gui/icon/RES_2.png",
+		"priceCurrency" : "gold",
+		"tag": 500
+	  },
+	  {
+		"key": "STO_1",
+		"name": "Kho vàng",
+		"jsonConfigFile": "Storage.json",
+		"iconPath" : "res/Art/GUIs/icons/shop_gui/icon/STO_1.png",
+		"priceCurrency" : "elixir",
+		"tag": 100
+	  },
+	  {
+		"key": "STO_2",
+		"name": "Kho dầu",
+		"jsonConfigFile": "Storage.json",
+		"iconPath" : "res/Art/GUIs/icons/shop_gui/icon/STO_2.png",
+		"priceCurrency" : "gold",
+		"tag": 200
+	  },
+	  {
+		"key": "BDH_1",
+		"name": "Nhà thợ xây",
+		"jsonConfigFile": "BuilderHut.json",
+		"iconPath" : "res/Art/GUIs/icons/shop_gui/icon/BDH_1.png",
+		"priceCurrency" : "coin",
+		"tag": 1100
+	  }
+	],
+	"BUY_RES"	: [],
+	"DEFENSE"	:
+	[
+	  {
+		"key": "DEF_1",
+		"name": "Pháo",
+		"jsonConfigFile": "Defense.json",
+		"iconPath" : "res/Art/GUIs/icons/shop_gui/icon/DEF_1.png",
+		"priceCurrency" : "gold",
+		"tag": 1200
+	  }
+	],
+	"DC": [],
+	"SHIELD": []
+  }
 }

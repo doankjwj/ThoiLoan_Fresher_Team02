@@ -8,7 +8,7 @@ var BuildingNode = cc.Node.extend({
     _type: null,
     _is_active: true,
     _finishing_time: null,
-    _nameText: null,
+    _name: null,
 
     _center_building: null,
     _grass: null,
@@ -17,6 +17,7 @@ var BuildingNode = cc.Node.extend({
     _green:null,
     _red: null,
     _defence: null,
+    _txtName: null,
 
     /* Button Commit & Cancel Build */
     _gui_commit_build: null,
@@ -32,7 +33,7 @@ var BuildingNode = cc.Node.extend({
     _BAR_HEIGHT: 36,
     _effect_level_up: null,
 
-    _CENTER_BUILDING_STR: null,
+    _buildingSTR: null,
 
     /* Order In User Building List */
     _orderInUserBuildingList: null,
@@ -48,12 +49,12 @@ var BuildingNode = cc.Node.extend({
         this._col = col;
         this._level = level;
 
-        this._nameText = cc.LabelBMFont("", font.soji20);
-        this._nameText.setColor(cc.color(189,183,107, 255));
-        this.addChild(this._nameText, 50);
-        this._nameText.setAnchorPoint(cc.p(0.5, 0.5));
+        this._txtName = cc.LabelBMFont(this._name, font.soji20);
+        this._txtName.setColor(cc.color(189,183,107, 255));
+        this.addChild(this._txtName, 50);
+        this._txtName.setAnchorPoint(cc.p(0.5, 0.5));
 
-        this._nameText.visible = true;
+        this._txtName.visible = true;
 
         //Set Id
         var tmp = (this._orderInUserBuildingList + 1).toString();
@@ -251,44 +252,42 @@ var BuildingNode = cc.Node.extend({
         this._effect_level_up.runAction(cc.Sequence(MainLayer.get_animation("effect_construct_levelup ", 6).clone()).clone());
     },
 
-    addCenterBuilding: function(str) {
-
-        this._CENTER_BUILDING_STR = str;
-
-        if (this._CENTER_BUILDING_STR !== "OBS_")
+    addCenterBuilding: function() {
+        if (this._buildingSTR !== gv.buildingSTR.obstacle)
         {
             cc.eventManager.addListener(this._listener, this);
         }
+        var str = this._buildingSTR;
         switch(str)
         {
-            case "TOW_1_":
-                this._center_building = cc.Sprite(res.folder_town_hall + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+            case gv.buildingSTR.townHall:
+                this._center_building = cc.Sprite(res.folder_town_hall + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
-            case "BDH_1":
+            case gv.buildingSTR.builderHut:
                 this._center_building = cc.Sprite(res.folder_builder_hut + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
-            case "AMC_1_":
-                this._center_building = cc.Sprite(res.folder_army_camp + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+            case gv.buildingSTR.armyCamp_1:
+                this._center_building = cc.Sprite(res.folder_army_camp + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);;
                 break;
-            case "BAR_1_":
-                this._center_building = cc.Sprite(res.folder_barrack + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+            case gv.buildingSTR.barrack_1:
+                this._center_building = cc.Sprite(res.folder_barrack + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
-            case "RES_1_":
-                this._center_building = cc.Sprite(res.folder_gold_mine + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+            case gv.buildingSTR.resource_1:
+                this._center_building = cc.Sprite(res.folder_gold_mine + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
-            case "RES_2_":
-                this._center_building = cc.Sprite(res.folder_elixir_collector + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+            case gv.buildingSTR.resource_2:
+                this._center_building = cc.Sprite(res.folder_elixir_collector + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
-            case "STO_1_":
-                this._center_building = cc.Sprite(res.folder_gold_storage + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+            case gv.buildingSTR.storage_1:
+                this._center_building = cc.Sprite(res.folder_gold_storage + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
-            case "STO_2_":
-                this._center_building = cc.Sprite(res.folder_elixir_storage + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+            case gv.buildingSTR.storage_2:
+                this._center_building = cc.Sprite(res.folder_elixir_storage + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
-            case "canon_":
-                this._center_building = cc.Sprite(res.folder_canon + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+            case gv.buildingSTR.canon:
+                this._center_building = cc.Sprite(res.folder_canon + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
-            case "OBS_":
+            case gv.buildingSTR.obstacle:
                 this._center_building = cc.Sprite(res.folder_obs + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             default:
@@ -338,6 +337,7 @@ var BuildingNode = cc.Node.extend({
                 self.startBuild();
                 self.getParent().addBuildingToUserBuildingList(self);
                 cf.isDeciding = false;
+                testnetwork.connector.sendBuild(self._id, self._row, self._col);
             }
         });
     },
@@ -385,29 +385,34 @@ var BuildingNode = cc.Node.extend({
     },
 
     getTimeRequire: function() {
-        switch (this._CENTER_BUILDING_STR)
+        var json = null;
+        switch (this._buildingSTR)
         {
-            case "TOW_1_":
-                return (cf.jsonTownHall["TOW_1"][this._level]["buildTime"]);
-            case "BDH_1":
-                return 0;
-            case "AMC_1_":
-                return (cf.jsonArmyCamp["AMC_1"][this._level]["buildTime"]);
-            case "BAR_1_":
-                return (cf.jsonBarrack["BAR_1"][this._level]["buildTime"]);
-            case "RES_1_":
-                return (cf.jsonResource["RES_1"][this._level]["buildTime"]);
-            case "RES_2_":
-                return (cf.jsonResource["RES_2"][this._level]["buildTime"]);
-            case "STO_1_":
-                return (cf.jsonStorage["STO_1"][this._level]["buildTime"]);
-            case "STO_2_":
-                return (cf.jsonStorage["STO_2"][this._level]["buildTime"]);
+            case buildingSTR.townHall:
+                json = cf.jsonTownHall;
+
+            case buildingSTR.armyCamp_1:
+                json = cf.jsonArmyCamp;
+            case buildingSTR.barrack_1:
+                json = cf.jsonBarrack;
+            case buildingSTR.resource_1:
+                json = cf.jsonResource
+            case buildingSTR.resource_2:
+                json = cf.jsonResource;
+            case buildingSTR.storage_1:
+                json = cf.jsonStorage;
+            case buildingSTR.storage_2:
+                json = cf.jsonStorage;
             case "canon_":
                 return this._level * 150;
+            case buildingSTR.builderHut:
+                return 0;
             default:
                 break;
         }
+
+        return (json[this._buildingSTR][this._level]["buildTime"]);
+
     },
 
     hideBuildingButton: function() {
@@ -459,11 +464,13 @@ var BuildingNode = cc.Node.extend({
                         self.x = cf.tileLocation[self._row][self._col].x;
                         self.y = cf.tileLocation[self._row][self._col].y - (size / 2) * cf.tileSize.height;
                         self.locate_map_array(self);
+
                     }
                     else
                     {
                         self.unlocate_map_array(cf.current_r, cf.current_c, size);
                         self.locate_map_array(self);
+                        testnetwork.connector.sendMove(self._id, self._row, self._col);
                     }
                     return false;
                 }

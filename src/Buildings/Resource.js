@@ -3,18 +3,19 @@ var Resource = BuildingNode.extend({
 
     ctor: function(id, level, row, col, existed, type)
     {
-        this._CENTER_BUILDING_STR = (type == 1) ? "RES_1_" : "RES_2_"
-        this._size = (type == 1) ? this._size = cf.jsonResource["RES_1"][level]["width"] : cf.jsonResource["RES_2"][level]["width"];
-        this._orderInUserBuildingList = (type == 1) ? 4 : 5;
+        this._buildingSTR = (type == 1) ? gv.buildingSTR.resource_1 : gv.buildingSTR.resource_2;
+        this._size = gv.json.Resource[this._buildingSTR][level]["width"];
+        this._orderInUserBuildingList = (type == 1) ? gv.orderInUserBuildingList.resource_1 : gv.orderInUserBuildingList.resource_2;
+        this._name = (type == 1) ? gv.buildingName.resource_1 : gv.buildingName.resource_2;
+
         this._super(id, level, row, col, existed);
-        this._nameText.setString("Mỏ " + (type === 1 ? "vàng" : "dầu"));
         this._type =  type;
 
         /* Init Animation If Not Exist*/
         this.initAnimation();
 
         /* Add Center Building */
-        this.addCenterBuilding(this._CENTER_BUILDING_STR);
+        this.addCenterBuilding();
 
         /* Effect */
         var effect = cc.Sprite(res.tmp_effect);

@@ -64,7 +64,7 @@ var ShopItem = ccui.Button.extend({
         timeLabel.setPosition(cc.p(this._timeIcon.x + this._timeIcon.width + 20, this._timeIcon.y));
 
         this._currentQuantity = 0;
-        this._capacity = (this._configItem["key"].substring(0,3) !== "BDH") ? cf.jsonTownHall['TOW_1']["1"][this._configItem["key"]] : "5";
+        this._capacity = (this._configItem["key"].substring(0,3) !== "BDH") ? gv.json.TownHall['TOW_1']["1"][this._configItem["key"]] : "5";
 
         var currentQuantityText = this._currentQuantity.toString() + "/" + this._capacity.toString();
         var currentQuantityLabel = cc.LabelBMFont(currentQuantityText, font.soji20);

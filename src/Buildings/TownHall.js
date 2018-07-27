@@ -1,18 +1,18 @@
 var TownHall = BuildingNode.extend({
     ctor: function(id, level, row, col, existed)
     {
-        this._size = cf.jsonTownHall["TOW_1"][level]["width"];
-        this._CENTER_BUILDING_STR = "TOW_1_";
-        this._orderInUserBuildingList = 0;
+        this._buildingSTR = gv.buildingSTR.townHall;
+        this._size = gv.json.TownHall[this._buildingSTR][level]["width"];
+        this._orderInUserBuildingList = gv.orderInUserBuildingList.townHall;
+        this._name = gv.buildingName.townHall;
 
         this._super(id, level, row, col, existed);
-        this._nameText.setString("Nhà chính");
 
         /* Init Animation If Not Exist*/
         this.initAnimation();
 
         /* Add Center Building */
-        this.addCenterBuilding(this._CENTER_BUILDING_STR);
+        this.addCenterBuilding();
 
         /* Effect */
         var effect = cc.Sprite(res.tmp_effect);
