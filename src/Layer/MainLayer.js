@@ -19,7 +19,7 @@ var MainLayer = cc.Layer.extend({
     _TAG_BG: 242342,
     _TAG_LOGIN: 534534,
 
-    _TAG_MAP: 45345,
+    //_TAG_MAP: 45345,
     _TAG_BUILDER_BAR: 2342,
     _TAG_RESOURCE_BAR_GOLD: 4343,
     _TAG_RESOURCE_BAR_ELIXIR: 4231,
@@ -75,9 +75,9 @@ var MainLayer = cc.Layer.extend({
     {
         //this.removeChildByTag(this._TAG_MAP);
         this.initUser();
+        this.initMainGUI();
         this.initMap();
         cf.user.updateResource();
-        this.initMainGUI();
     },
 
     initMap: function()
@@ -87,7 +87,7 @@ var MainLayer = cc.Layer.extend({
         this._map.anchorY = 0;
         var centering = cc.p(-this._map._width/2 * this._map.scale + cc.winSize.width/2, -this._map._height/2 * this._map.scale + cc.winSize.height/2)
         this._map.setPosition(centering);
-        this.addChild(this._map, 0, this._TAG_MAP);
+        this.addChild(this._map, 0, gv.tag.TAG_MAP);
         this.moveMap();
     },
 
@@ -112,28 +112,28 @@ var MainLayer = cc.Layer.extend({
             x: cc.winSize.width - cf.offSetGui,
             y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 30,
         });
-        this.addChild(this._resBarGold, 0, this._TAG_RESOURCE_BAR_GOLD);
+        this.addChild(this._resBarGold, 1, gv.tag.TAG_RESOURCE_BAR_GOLD);
 
         this._resBarElixir = new GUI_ResourceBar(2);
         this._resBarElixir.attr({
             x: cc.winSize.width - cf.offSetGui,
             y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 80,
         });
-        this.addChild(this._resBarElixir, 0, this._TAG_RESOURCE_BAR_ELIXIR);
+        this.addChild(this._resBarElixir, 1, gv.tag.TAG_RESOURCE_BAR_ELIXIR);
 
         this._resBarDarkElixir = new GUI_ResourceBar(3);
         this._resBarDarkElixir.attr({
             x: cc.winSize.width - cf.offSetGui,
             y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 130,
         });
-        this.addChild(this._resBarDarkElixir, 0, this._TAG_RESOURCE_BAR_DARK_ELIXIR);
+        this.addChild(this._resBarDarkElixir, 1, gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR);
 
         this._resBarCoin = new GUI_ResourceBar(4);
         this._resBarCoin.attr({
             x: cc.winSize.width - cf.offSetGui,
             y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 180,
         });
-        this.addChild(this._resBarCoin, 0, this._TAG_RESOURCE_BAR_COIN);
+        this.addChild(this._resBarCoin, 1, gv.tag.TAG_RESOURCE_BAR_COIN);
     },
 
     addBuilderBar: function()

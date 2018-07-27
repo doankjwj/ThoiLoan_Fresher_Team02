@@ -21,7 +21,6 @@ var Map = cc.Node.extend({
         this._height = (this._bgBotLeft.height + this._bgTopLeft.height)*cf.bgSCALE;
         this.initTileLocation();
         this.addBuildingFromServer();
-        cf.user.updateResource();
         //this.add_building();
     },
 
@@ -51,7 +50,7 @@ var Map = cc.Node.extend({
                {
                    var obs = gv.json.initGame["obs"][i+1];
                    var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"], true);
-                   tag = i*500;
+                   var tag = i*500;
                    this.addChild(obstacle, 2, tag);
                }
     },

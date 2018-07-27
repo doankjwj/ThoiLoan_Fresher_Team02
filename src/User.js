@@ -69,6 +69,7 @@ var User = cc.Class.extend({
         }
     },
 
+    /* Update Storage Capacity from User Building (Town Hall + Storage) */
     updateResource: function()
     {
         this._maxCapacityGold = 0;
@@ -86,22 +87,67 @@ var User = cc.Class.extend({
         for (var i = 0; i < this._buildingListCount[gv.orderInUserBuildingList.storage_1]; i++)
         {
             storage = this._buildingList[gv.orderInUserBuildingList.storage_1][i];
-            this._maxCapacityGold += gv.json.resource[gv.buildingSTR.storage_1][storage._level][gv.capacity.gold];
+            this._maxCapacityGold += gv.json.storage[gv.buildingSTR.storage_1][storage._level][gv.capacity.capacity];
         }
 
         /* Add Resource from Elixir Storage */
         for (var i = 0; i < this._buildingListCount[gv.orderInUserBuildingList.storage_2]; i++)
         {
             storage = this._buildingList[gv.orderInUserBuildingList.storage_2][i];
-            this._maxCapacityElixir += gv.json.resource[gv.buildingSTR.storage_2][storage._level][gv.capacity.elixir];
+            this._maxCapacityElixir += gv.json.storage[gv.buildingSTR.storage_2][storage._level][gv.capacity.capacity];
         }
 
         /* Add Resource from Dark Elixir Storage */
         for (var i = 0; i < this._buildingListCount[gv.orderInUserBuildingList.storage_3]; i++)
         {
             storage = this._buildingList[gv.orderInUserBuildingList.storage_3][i];
-            this._maxCapacityDarkElixir += gv.json.resource[gv.buildingSTR.storage_3][storage._level][gv.capacity.darkElixir];
+            this._maxCapacityDarkElixir += gv.json.storage[gv.buildingSTR.storage_3][storage._level][gv.capacity.capacity];
         }
+
+        //cc.log(this._maxCapacityGold);
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
     },
 
+    /* Update Storage Capacity from Single Building */
+    updateSingleResource: function(id)
+    {
+        var typeInBuildingList = Math.floor(id /100) - 1;
+        var orderInType = id % 100;
+        var building = this._buildingList[typeInBuildingList][orderInType];
+
+        switch (typeInBuildingList)
+        {
+            case gv.orderInUserBuildingList.townHall:
+                this._maxCapacityGold += gv.json.townHall[gv.buildingSTR.townHall][building._level][gv.capacity.gold] - gv.json.townHall[gv.buildingSTR.townHall][building._level - 1][gv.capacity.gold] ;
+                this._maxCapacityElixir += gv.json.townHall[gv.buildingSTR.townHall][building._level][gv.capacity.elixir] - gv.json.townHall[gv.buildingSTR.townHall][building._level - 1][gv.capacity.elixir];
+                this._maxCapacityDarkElixir += gv.json.townHall[gv.buildingSTR.townHall][building._level][gv.capacity.darkElixir] - gv.json.townHall[gv.buildingSTR.townHall][building._level - 1][gv.capacity.darkElixir];
+                break;
+            case gv.orderInUserBuildingList.storage_1:
+                if (building._level == 1)
+                    this._maxCapacityGold += gv.json.storage[gv.buildingSTR.storage_1][1][gv.capacity.capacity];
+                else
+                    this._maxCapacityGold += gv.json.storage[gv.buildingSTR.storage_1][building._level][gv.capacity.capacity] - gv.json.storage_1[gv.buildingSTR.storage_1][building._level - 1][gv.capacity.capacity] ;
+                break;
+            case gv.orderInUserBuildingList.storage_2:
+                if (building._level == 1)
+                    this._maxCapacityElixir += gv.json.storage[gv.buildingSTR.storage_2][1][gv.capacity.capacity];
+                else
+                    this._maxCapacityElixir += gv.json.storage[gv.buildingSTR.storage_2][building._level][gv.capacity.capacity] - gv.json.storage_2[gv.buildingSTR.storage_2][building._level - 1][gv.capacity.capacity] ;
+                break;
+            case gv.orderInUserBuildingList.storage_3:
+                if (building._level == 1)
+                    this._maxCapacityDarkElixir += gv.json.storage[gv.buildingSTR.storage_3][1][gv.capacity.capacity];
+                else
+                    this._maxCapacityDarkElixir += gv.json.storage[gv.buildingSTR.storage_3][building._level][gv.capacity.capacity] - gv.json.storage_3[gv.buildingSTR.storage_3][building._level - 1][gv.capacity.capacity] ;
+                break;
+        };
+
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+    }
 });

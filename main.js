@@ -28,7 +28,7 @@ cc.game.onStart = function(){
         gv.poolObjects  = new PoolObject();
         testnetwork.connector = new testnetwork.Connector(gv.gameClient);
 
-        fr.view(MainLayer)
+        fr.view(MainLayer);
         // cc.director.runScene(new MainLayer.scene());
         // gv.gameClient.connect();
     }, this);

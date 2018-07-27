@@ -144,7 +144,8 @@ var BuildingNode = cc.Node.extend({
 
 
         //Update zOrder
-        if(this._existed) this.updateZOrder();
+        if(this._existed)
+            this.updateZOrder();
         else this.setLocalZOrder(200);
 
         /* Effect Level Up */
@@ -234,7 +235,7 @@ var BuildingNode = cc.Node.extend({
             return;
         }
         this._time_remaining -= 1;
-        var timeRemaining = Math.floor(this._time_total / 60 / 60/ 24) + "d" + Math.floor(this._time_total / 60 / 60) + "h" + Math.floor(this._time_total / 60) + "m" + (this._time_total % 60) + "s"
+        var timeRemaining = Math.floor(this._time_remaining / 60 / 60/ 24) + "d" + Math.floor(this._time_remaining / 60 / 60) + "h" + Math.floor(this._time_remaining / 60) + "m" + (this._time_remaining % 60) + "s"
         this._txt_time_remaining.setString(timeRemaining);
         this._info_bar_bg.setTextureRect(cc.rect(0, 0, this._BAR_WIDTH * (this._time_total - this._time_remaining) / this._time_total, this._BAR_HEIGHT))
     },
@@ -251,7 +252,95 @@ var BuildingNode = cc.Node.extend({
         this._info_bar_bg.visible = false;
         this._defence.visible = false;
         this._effect_level_up.runAction(cc.Sequence(MainLayer.get_animation("effect_construct_levelup ", 6).clone()).clone());
-        cf.user.updateResource();
+        //cf.user.updateResource();
+
+        var order = this._orderInUserBuildingList;
+        if (order == gv.orderInUserBuildingList.townHall || order == gv.orderInUserBuildingList.storage_1 || order == gv.orderInUserBuildingList.storage_2 || order == gv.orderInUserBuildingList.storage_3)
+        cf.user.updateSingleResource(this._id);
+
+    },
+
+    startBuild: function() {
+        this._existed = true;
+        //this.locate_map_array(this);
+        this._time_remaining = this.getTimeRequire();
+        this._time_total = this._time_remaining;
+        this._is_active = false;
+
+        /* Time Bar */
+        this._info_bar = cc.Sprite(res.folder_gui_build + "info_bar.png", cc.rect(0,0, this._BAR_WIDTH, this._BAR_HEIGHT));
+        this._info_bar.scale = 0.5 * cf.SCALE;
+        this._info_bar.attr({
+            anchorX: 0,
+            anchorY: 1,
+            x: - this._BAR_WIDTH / 2 * this._info_bar.scale,
+            y: cf.tileSize.height * cf.SCALE * 2
+        });
+        this.addChild(this._info_bar, this._defence.getLocalZOrder() + 1);
+        this._info_bar_bg = cc.Sprite(res.folder_gui_build + "info_bar_BG.png", cc.rect(0,0, 0, this._BAR_HEIGHT));
+        this._info_bar_bg.scale = 0.5 * cf.SCALE;
+        this._info_bar_bg.attr({
+            anchorX: 0,
+            anchorY: 1,
+            x: - this._BAR_WIDTH / 2 * this._info_bar_bg.scale,
+            y: cf.tileSize.height * cf.SCALE * 2
+        });
+        this.addChild(this._info_bar_bg, this._defence.getLocalZOrder() + 1);
+
+        /* Time Text */
+        //var h = Math.floor(this._time_total / 60 / 60);
+        //var m = this._time_total - h * 60 * 60;
+        //var txt = new Time
+        var timeRemaining = Math.floor(this._time_total / 60 / 60/ 24) + "d" + Math.floor(this._time_total / 60 / 60) + "h" + Math.floor(this._time_total / 60) + "m" + (this._time_total % 60) + "s"
+        this._txt_time_remaining = cc.LabelBMFont.create(timeRemaining,  font.soji20);
+        this._txt_time_remaining.attr({
+            anchorX: 0.5,
+            anchorY: 0,
+            x: 0,
+            y: cf.tileSize.height * cf.SCALE * 2
+        })
+        this.addChild(this._txt_time_remaining, this._defence.getLocalZOrder() + 1);
+
+        this._defence.visible = true;
+
+        this.hideBuildingButton();
+    },
+
+    getTimeRequire: function() {
+        var json = null;
+        switch (this._buildingSTR)
+        {
+            case gv.buildingSTR.townHall:
+                json = gv.json.townHall;
+                break;
+            case gv.buildingSTR.armyCamp_1:
+                json = gv.json.armyCamp;
+                break;
+            case gv.buildingSTR.barrack_1:
+                json = gv.json.barrack;
+                break;
+            case gv.buildingSTR.resource_1:
+                json = gv.json.resource;
+                break;
+            case gv.buildingSTR.resource_2:
+                json = gv.json.resource;
+                break;
+            case gv.buildingSTR.storage_1:
+                json = gv.json.storage;
+                break;
+            case gv.buildingSTR.storage_2:
+                json = gv.json.storage;
+                break;
+            case "canon_":
+                return this._level * 150;
+            case gv.buildingSTR.builderHut:
+                return 0;
+            default:
+                break;
+        }
+
+        return (json[this._buildingSTR][this._level]["buildTime"]);
+
     },
 
     addCenterBuilding: function() {
@@ -340,6 +429,7 @@ var BuildingNode = cc.Node.extend({
                 self.onEndClick();
                 self.hideBuildingButton();
                 self.getParent().addBuildingToUserBuildingList(self);
+                self.updateZOrder();
                 cf.building_selected = 0;
                 cf.isDeciding = false;
                 testnetwork.connector.sendBuild(self._id, self._row, self._col);
@@ -347,82 +437,7 @@ var BuildingNode = cc.Node.extend({
         });
     },
 
-    startBuild: function() {
-        this._existed = true;
-        //this.locate_map_array(this);
-        this._time_remaining = this.getTimeRequire();
-        this._time_total = this._time_remaining;
-        this._is_active = false;
 
-        /* Time Bar */
-        this._info_bar = cc.Sprite(res.folder_gui_build + "info_bar.png", cc.rect(0,0, this._BAR_WIDTH, this._BAR_HEIGHT));
-        this._info_bar.scale = 0.5 * cf.SCALE;
-        this._info_bar.attr({
-            anchorX: 0,
-            anchorY: 1,
-            x: - this._BAR_WIDTH / 2 * this._info_bar.scale,
-            y: cf.tileSize.height * cf.SCALE * 2
-        });
-        this.addChild(this._info_bar, this._defence.getLocalZOrder() + 1);
-        this._info_bar_bg = cc.Sprite(res.folder_gui_build + "info_bar_BG.png", cc.rect(0,0, 0, this._BAR_HEIGHT));
-        this._info_bar_bg.scale = 0.5 * cf.SCALE;
-        this._info_bar_bg.attr({
-            anchorX: 0,
-            anchorY: 1,
-            x: - this._BAR_WIDTH / 2 * this._info_bar_bg.scale,
-            y: cf.tileSize.height * cf.SCALE * 2
-        });
-        this.addChild(this._info_bar_bg, this._defence.getLocalZOrder() + 1);
-
-        /* Time Text */
-        //var h = Math.floor(this._time_total / 60 / 60);
-        //var m = this._time_total - h * 60 * 60;
-        //var txt = new Time
-        var timeRemaining = Math.floor(this._time_total / 60 / 60/ 24) + "d" + Math.floor(this._time_total / 60 / 60) + "h" + Math.floor(this._time_total / 60) + "m" + (this._time_total % 60) + "s"
-        this._txt_time_remaining = cc.LabelBMFont.create(timeRemaining,  font.soji20);
-        this._txt_time_remaining.attr({
-            anchorX: 0.5,
-            anchorY: 0,
-            x: 0,
-            y: cf.tileSize.height * cf.SCALE * 2
-        })
-        this.addChild(this._txt_time_remaining, this._defence.getLocalZOrder() + 1);
-
-        this._defence.visible = true;
-
-        this.hideBuildingButton();
-    },
-
-    getTimeRequire: function() {
-        var json = null;
-        switch (this._buildingSTR)
-        {
-            case gv.buildingSTR.townHall:
-                json = cf.jsonTownHall;
-
-            case gv.buildingSTR.armyCamp_1:
-                json = gv.json.ArmyCamp;
-            case gv.buildingSTR.barrack_1:
-                json = gv.json.Barrack;
-            case gv.buildingSTR.resource_1:
-                json = gv.json.Resource;
-            case gv.buildingSTR.resource_2:
-                json = gv.json.Resource;
-            case gv.buildingSTR.storage_1:
-                json = gv.json.Storage;
-            case gv.buildingSTR.storage_2:
-                json = gv.json.Storage;
-            case "canon_":
-                return this._level * 150;
-            case gv.buildingSTR.builderHut:
-                return 0;
-            default:
-                break;
-        }
-
-        return (json[this._buildingSTR][this._level]["buildTime"]);
-
-    },
 
     hideBuildingButton: function() {
         this._gui_cancel_build.visible = false;

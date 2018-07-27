@@ -199,8 +199,21 @@ gv.capacity =
 {
     gold: "capacityGold",
     elixir: "capacityElixir",
-    darkElixir: "capacityDarkElixir"
+    darkElixir: "capacityDarkElixir",
+
+    capacity: "capacity"
 }
+
+/* Main Layer Tag */
+gv.tag =
+{
+    TAG_MAP: 4535,
+    TAG_BUILDER_BAR: 2342,
+    TAG_RESOURCE_BAR_GOLD: 4343,
+    TAG_RESOURCE_BAR_ELIXIR: 4231,
+    TAG_RESOURCE_BAR_DARK_ELIXIR: 1457,
+    TAG_RESOURCE_BAR_COIN: 5469,
+};
 
 //function
 cf.shopTagToName = function (tag) {
@@ -274,13 +287,13 @@ cf.tagToItem = function(tag, lvl, posX, posY, existed){
         case 800:
             return new ArmyCamp(21, lvl, posX, posY, existed);
         case 400:
-            return new Resource(22, lvl, posX, posY, existed, 1);
+            return new Resource(22, lvl, posX, posY, existed, gv.buildingSTR.resource_1);
         case 500:
-            return new Resource(23, lvl, posX, posY, existed, 2);
+            return new Resource(23, lvl, posX, posY, existed, gv.buildingSTR.resource_2);
         case 100:
-            return new Storage(24, lvl, posX, posY, existed, 1);
+            return new Storage(24, lvl, posX, posY, existed, gv.buildingSTR.storage_1);
         case 200:
-            return new Storage(25, lvl, posX, posY, existed, 2);
+            return new Storage(25, lvl, posX, posY, existed, gv.buildingSTR.storage_2);
         case 1100:
             return new BuilderHut(26, lvl, posX, posY, existed);
 
@@ -291,19 +304,19 @@ cf.stringToItemInit = function(str, index) {
     switch(str)
     {
         case "TOW_1":
-            return new TownHall(cf.user._buildingListCount[0], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
+            return new TownHall(cf.user._buildingListCount[gv.orderInUserBuildingList.townHall], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
         case "BDH_1":
-            return new BuilderHut(cf.user._buildingListCount[11], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
+            return new BuilderHut(cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
         case "STO_1":
-            return new Resource(cf.user._buildingListCount[1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, 1);
+            return new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.storage_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.storage_1);
         case "STO_2":
-            return new Resource(cf.user._buildingListCount[2], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, 2);
+            return new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.storage_2], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.storage_2);
         case "RES_1":
-            return new Resource(cf.user._buildingListCount[4], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, 1);
+            return new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.resource_1);
         case "RES_2":
-            return new Resource(cf.user._buildingListCount[5], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, 2);
+            return new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_2], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.resource_2);
         case "AMC_1":
-            return new ArmyCamp(cf.user._buildingListCount[8], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
+            return new ArmyCamp(cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
 
 
         //case "TOW_1":

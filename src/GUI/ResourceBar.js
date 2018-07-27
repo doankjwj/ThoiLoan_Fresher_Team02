@@ -30,34 +30,34 @@ var GUI_ResourceBar = cc.Node.extend({
         this.setAnchorPoint(cc.p(1, 1));
         this.setPosition(cc.p(cc.winSize.width, cc.winSize.height - 50));
 
-        this._currentCapacity = (type == 1) ? cf.user._currentCapacityGold : (type == 2)? cf.user._currentCapacityElixir : (type == 3) ? cf.user._currentCapacityDarkElixir : cf.user._currentCapacityCoin;
-        this._maxCapacity = (type == 1) ? cf.user._maxCapacityGold : (type == 2) ? cf.user._maxCapacityElixir : (type == 3) ? cf.user._maxCapacityDarkElixir : 0;
+        //this._currentCapacity = (type == 1) ? cf.user._currentCapacityGold : (type == 2)? cf.user._currentCapacityElixir : (type == 3) ? cf.user._currentCapacityDarkElixir : cf.user._currentCapacityCoin;
+        //this._maxCapacity = (type == 1) ? cf.user._maxCapacityGold : (type == 2) ? cf.user._maxCapacityElixir : (type == 3) ? cf.user._maxCapacityDarkElixir : 0;
 
         switch (type)
         {
             case 1:
                 this._icon = cc.Sprite(mainGUI.goldIcon);
                 this._bar = cc.Sprite(mainGUI.goldBar);
-                this._txtCurrent = cc.LabelBMFont(cf.user._currentCapacityGold, font.soji20);
-                this._txtMax = cc.LabelBMFont("Max: " + cf.user._maxCapacityGold, font.soji20);
+                this._txtCurrent = cc.LabelBMFont("", font.soji20);
+                this._txtMax = cc.LabelBMFont("", font.soji20);
                 break;
             case 2:
                 this._icon = cc.Sprite(mainGUI.elixirIcon);
                 this._bar = cc.Sprite(mainGUI.elixirBar);
-                this._txtCurrent = cc.LabelBMFont(cf.user._currentCapacityElixir, font.soji20);
-                this._txtMax = cc.LabelBMFont("Max: " + cf.user._maxCapacityElixir, font.soji20);
+                this._txtCurrent = cc.LabelBMFont("", font.soji20);
+                this._txtMax = cc.LabelBMFont("", font.soji20);
                 break;
             case 3:
                 this._icon = cc.Sprite(mainGUI.darkElixirIcon);
                 this._bar = cc.Sprite(mainGUI.darkElixirBar);
-                this._txtCurrent = cc.LabelBMFont(cf.user._currentCapacityDarkElixir, font.soji20);
-                this._txtMax = cc.LabelBMFont("Max: " + cf.user._maxCapacityDarkElixir, font.soji20);
+                this._txtCurrent = cc.LabelBMFont("", font.soji20);
+                this._txtMax = cc.LabelBMFont("", font.soji20);
                 break;
             case 4:
                 this._icon = cc.Sprite(mainGUI.gIcon);
                 this._bar = cc.Sprite(mainGUI.gBar);
-                this._txtCurrent = cc.LabelBMFont(cf.user._currentCapacityCoin, font.soji20);
-                this._txtMax = cc.LabelBMFont(0, font.soji20);
+                this._txtCurrent = cc.LabelBMFont("", font.soji20);
+                this._txtMax = cc.LabelBMFont("", font.soji20);
                 break;
         };
         this._icon.attr({
@@ -109,11 +109,15 @@ var GUI_ResourceBar = cc.Node.extend({
             this._bar.visible = false;
         }
 
-        this.updateStatus();
+        //this.updateStatus();
     },
 
     updateStatus: function()
     {
+        this._currentCapacity = (this._type == 1) ? cf.user._currentCapacityGold : (this._type == 2)? cf.user._currentCapacityElixir : (this._type == 3) ? cf.user._currentCapacityDarkElixir : cf.user._currentCapacityCoin;
+        this._maxCapacity = (this._type == 1) ? cf.user._maxCapacityGold : (this._type == 2) ? cf.user._maxCapacityElixir : (this._type == 3) ? cf.user._maxCapacityDarkElixir : 0;
+
+
         if(this._type != 4)
         {
             this._bar.setTextureRect(cc.rect(0, 0, this._bar.width * this._currentCapacity / this._maxCapacity, this._bar.height));
