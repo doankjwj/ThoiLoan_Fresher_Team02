@@ -7,7 +7,7 @@
       "elixir": 300,
       "gold": 0,
       "darkElixir": 0,
-      "buildTime": 900,
+      "buildTime": 2,
       "townHallLevelRequired": 1,
       "width": 3,
       "height": 3
@@ -141,7 +141,7 @@
       "elixir": 0,
       "gold": 300,
       "darkElixir": 0,
-      "buildTime": 900,
+      "buildTime": 2,
       "townHallLevelRequired": 1,
       "width": 3,
       "height": 3

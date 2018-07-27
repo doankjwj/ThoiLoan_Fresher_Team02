@@ -174,7 +174,7 @@ gv.buildingName =
     obstacle: "Vật cản",
     canon: "Pháo thần công"
 
-}
+};
 gv.orderInUserBuildingList =
 {
     townHall: 0,
@@ -193,6 +193,7 @@ gv.orderInUserBuildingList =
     canon: 13
 
 };
+gv.buildingTypeCount = 14;
 
 /* Capacity */
 gv.capacity =

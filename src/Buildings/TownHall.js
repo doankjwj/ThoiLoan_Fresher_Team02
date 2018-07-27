@@ -29,6 +29,7 @@ var TownHall = BuildingNode.extend({
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_townhall_flame.plist", res.folder_effect + "effect_townhall_flame.png");
             cf.animationTownHall = MainLayer.get_animation("effect_townhall_flame ", 12);
+            cf.animationTownHall.retain();
         }
     }
 })

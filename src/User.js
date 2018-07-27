@@ -69,8 +69,8 @@ var User = cc.Class.extend({
         }
     },
 
-    /* Update Storage Capacity from User Building (Town Hall + Storage) */
-    updateResource: function()
+    /* Update Storage Capacity from User Buildings (Town Hall + Storage) */
+    updateMaxStorage: function()
     {
         this._maxCapacityGold = 0;
         this._maxCapacityElixir = 0;
@@ -112,7 +112,7 @@ var User = cc.Class.extend({
     },
 
     /* Update Storage Capacity from Single Building */
-    updateSingleResource: function(id)
+    updateMaxStorageSingle: function(id)
     {
         var typeInBuildingList = Math.floor(id /100) - 1;
         var orderInType = id % 100;
@@ -149,5 +149,32 @@ var User = cc.Class.extend({
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+    },
+
+    /* Update Builder from User Buildings (All building) */
+    updateBuilder: function()
+    {
+        var builderBusy = 0;
+
+        this._builderTotal = this._buildingListCount[gv.orderInUserBuildingList.builderHut];
+        for(var i = 0; i < gv.buildingTypeCount; i++)
+        {
+            for(var j = 0; j < this._buildingListCount[i]; j++)
+            {
+                if (this._buildingList[i][j]._is_active == false) builderBusy ++;
+            }
+        }
+
+        this._builderFree = this._builderTotal - builderBusy;
+
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_BUILDER_BAR).updateStatus();
+    },
+
+    /* Update Builder from Single Building */
+    updateSingleBuilder: function()
+    {
+        this._builderTotal = this._buildingListCount[gv.orderInUserBuildingList.builderHut];
+
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_BUILDER_BAR).updateStatus();
     }
 });

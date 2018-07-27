@@ -54,8 +54,8 @@ var BuildingNode = cc.Node.extend({
         this._txtName.setColor(cc.color(189,183,107, 255));
         this.addChild(this._txtName, 50);
         this._txtName.setAnchorPoint(cc.p(0.5, 0.5));
-
-        this._txtName.visible = true;
+        this._txtName.setPosition(cc.p(0, this._size * cf.tileSize.height / 2))
+        this._txtName.visible = false;
 
         //Set Id
         var tmp = (this._orderInUserBuildingList + 1).toString();
@@ -173,7 +173,11 @@ var BuildingNode = cc.Node.extend({
                 var y = locationNote.y;
                 var polygon = [ [ -w, 0 ], [ 0, h ], [ w, 0 ], [ 0, -h ] ];
 
-                if (MainLayer.inside([x, y], polygon) && (cf.building_selected !== self._id)) return true;
+                if (MainLayer.inside([x, y], polygon) && (cf.building_selected !== self._id))
+                {
+                    self._txtName.visible = true;
+                    return true;
+                }
                 else
                 {
                     self.onEndClick();
@@ -235,7 +239,18 @@ var BuildingNode = cc.Node.extend({
             return;
         }
         this._time_remaining -= 1;
-        var timeRemaining = Math.floor(this._time_remaining / 60 / 60/ 24) + "d" + Math.floor(this._time_remaining / 60 / 60) + "h" + Math.floor(this._time_remaining / 60) + "m" + (this._time_remaining % 60) + "s"
+
+        var seconds = this._time_remaining;
+
+        var days = Math.floor(seconds / (3600*24));
+        seconds  -= days*3600*24;
+        var hrs   = Math.floor(seconds / 3600);
+        seconds  -= hrs*3600;
+        var mnts = Math.floor(seconds/ 60);
+        seconds  -= mnts*60;
+        var timeRemaining = (days !== 0 ? (days.toString() + "d") : "" ) + (hrs !== 0 ? (hrs.toString() + "h") : "") + (mnts !== 0 ? (mnts.toString() + "m") : "") + seconds.toString() + "s";
+
+        //var timeRemaining = Math.floor(this._time_remaining / 60 / 60/ 24) + "d" + Math.floor(this._time_remaining / 60 / 60) + "h" + Math.floor(this._time_remaining / 60) + "m" + (this._time_remaining % 60) + "s"
         this._txt_time_remaining.setString(timeRemaining);
         this._info_bar_bg.setTextureRect(cc.rect(0, 0, this._BAR_WIDTH * (this._time_total - this._time_remaining) / this._time_total, this._BAR_HEIGHT))
     },
@@ -256,7 +271,11 @@ var BuildingNode = cc.Node.extend({
 
         var order = this._orderInUserBuildingList;
         if (order == gv.orderInUserBuildingList.townHall || order == gv.orderInUserBuildingList.storage_1 || order == gv.orderInUserBuildingList.storage_2 || order == gv.orderInUserBuildingList.storage_3)
-        cf.user.updateSingleResource(this._id);
+
+        /* Update user infor && GUI */
+        cf.user._builderFree ++;
+        cf.user.updateSingleBuilder();
+        cf.user.updateMaxStorageSingle(this._id);
 
     },
 
@@ -288,10 +307,16 @@ var BuildingNode = cc.Node.extend({
         this.addChild(this._info_bar_bg, this._defence.getLocalZOrder() + 1);
 
         /* Time Text */
-        //var h = Math.floor(this._time_total / 60 / 60);
-        //var m = this._time_total - h * 60 * 60;
-        //var txt = new Time
-        var timeRemaining = Math.floor(this._time_total / 60 / 60/ 24) + "d" + Math.floor(this._time_total / 60 / 60) + "h" + Math.floor(this._time_total / 60) + "m" + (this._time_total % 60) + "s"
+        var seconds = this._time_total;
+        var days = Math.floor(seconds / (3600*24));
+        seconds  -= days*3600*24;
+        var hrs   = Math.floor(seconds / 3600);
+        seconds  -= hrs*3600;
+        var mnts = Math.floor(seconds/ 60);
+        seconds  -= mnts*60;
+        var timeRemaining = (days !== 0 ? (days.toString() + "d") : "" ) + (hrs !== 0 ? (hrs.toString() + "h") : "") + (mnts !== 0 ? (mnts.toString() + "m") : "") + seconds.toString() + "s";
+
+        //var timeRemaining = Math.floor(this._time_total / 60 / 60/ 24) + "d" + Math.floor(this._time_total / 60 / 60) + "h" + Math.floor(this._time_total / 60) + "m" + (this._time_total % 60) + "s"
         this._txt_time_remaining = cc.LabelBMFont.create(timeRemaining,  font.soji20);
         this._txt_time_remaining.attr({
             anchorX: 0.5,
@@ -302,6 +327,10 @@ var BuildingNode = cc.Node.extend({
         this.addChild(this._txt_time_remaining, this._defence.getLocalZOrder() + 1);
 
         this._defence.visible = true;
+
+        /* Update Builder */
+        cf.user._builderFree --;
+        cf.user.updateSingleBuilder();
 
         this.hideBuildingButton();
     },
@@ -407,6 +436,7 @@ var BuildingNode = cc.Node.extend({
         this._arrow.runAction(scale_in);
         this._green.visible = false;
         this._arrow.visible = false;
+        this._txtName.visible = false;
         this._arrow.setLocalZOrder(this._grassShadow.getLocalZOrder() + 1);
         // this.getParent().getParent().pullBuildingButtons();
     },

@@ -20,11 +20,11 @@ var MainLayer = cc.Layer.extend({
     _TAG_LOGIN: 534534,
 
     //_TAG_MAP: 45345,
-    _TAG_BUILDER_BAR: 2342,
-    _TAG_RESOURCE_BAR_GOLD: 4343,
-    _TAG_RESOURCE_BAR_ELIXIR: 4231,
-    _TAG_RESOURCE_BAR_DARK_ELIXIR: 1457,
-    _TAG_RESOURCE_BAR_COIN: 5469,
+    //_TAG_BUILDER_BAR: 2342,
+    //_TAG_RESOURCE_BAR_GOLD: 4343,
+    //_TAG_RESOURCE_BAR_ELIXIR: 4231,
+    //_TAG_RESOURCE_BAR_DARK_ELIXIR: 1457,
+    //_TAG_RESOURCE_BAR_COIN: 5469,
 
     ctor:function () {
         this._super();
@@ -77,7 +77,23 @@ var MainLayer = cc.Layer.extend({
         this.initUser();
         this.initMainGUI();
         this.initMap();
-        cf.user.updateResource();
+        this.updateGUIandUserInfo();
+
+    },
+
+    initUser: function()
+    {
+        cf.user = new User();
+    },
+
+    initMainGUI: function() {
+        this.addShopButton();
+        this.addSettingButton();
+        this.addInventoryButton();
+        this.addBuildingButtons();
+        this.addResourceBar();
+        this.addUserInfo();
+        this.addBuilderBar();
     },
 
     initMap: function()
@@ -91,19 +107,10 @@ var MainLayer = cc.Layer.extend({
         this.moveMap();
     },
 
-    initMainGUI: function() {
-        this.addShopButton();
-        this.addSettingButton();
-        this.addInventoryButton();
-        this.addBuildingButtons();
-        this.addResourceBar();
-        this.addUserInfo();
-        this.addBuilderBar();
-    },
-
-    initUser: function()
+    updateGUIandUserInfo: function()
     {
-        cf.user = new User();
+        cf.user.updateMaxStorage();
+        cf.user.updateBuilder();
     },
 
     addResourceBar: function() {
@@ -146,7 +153,7 @@ var MainLayer = cc.Layer.extend({
         y: cc.winSize.height - cf.offSetGui*1.5}
         );
 
-        this.addChild(this._builderBar, 1, this._TAG_BUILDER_BAR)
+        this.addChild(this._builderBar, 1, gv.tag.TAG_BUILDER_BAR);
     },
     addShopButton: function(){
         var title = cc.LabelBMFont.create('CỬA HÀNG',  font.soji20);
