@@ -282,6 +282,7 @@ cf.getJsonConfigFile = function (str) {
 };
 
 cf.tagToItem = function(tag, lvl, posX, posY, existed){
+    cc.log(tag);
     switch(tag){
         case 900:
             return new Barrack(20, lvl, posX, posY, existed);

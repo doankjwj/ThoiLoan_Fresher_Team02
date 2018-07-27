@@ -140,16 +140,16 @@ var ShopItemList = cc.Layer.extend({
         this._scrollView.setAnchorPoint(cc.p(0, 0));
         this._scrollView.setPosition(cc.p(25, cc.winSize.height/2 - item.height*item.scale/2));
 
-        var shopItem = [];
+        this.shopItem = [];
         for(var i=0; i<gv.json.shopItemList["ShopList"][this._shopName].length; i++) {
-            shopItem.push(new ShopItem(this._shopName, i));
+            this.shopItem.push(new ShopItem(this._shopName, i));
         }
-        for(var j =0 ; j<shopItem.length; j++){
+        for(var j=0 ; j<this.shopItem.length; j++){
             // cc.log(shopItem[j]._itemName);
-            shopItem[j].scale = 1.5;
-            this._scrollView.addChild(shopItem[j]);
-            shopItem[j].setAnchorPoint(cc.p(0.5, 0.5));
-            shopItem[j].setPosition(cc.p((j+0.5) * item.width * item.scale, this._scrollView.height/2));
+            this.shopItem[j].scale = 1.5;
+            this._scrollView.addChild(this.shopItem[j]);
+            this.shopItem[j].setAnchorPoint(cc.p(0.5, 0.5));
+            this.shopItem[j].setPosition(cc.p((j+0.5) * item.width * item.scale, this._scrollView.height/2));
         }
         this.addChild(this._scrollView);
         this._scrollView.width = cc.winSize.width;
@@ -157,8 +157,16 @@ var ShopItemList = cc.Layer.extend({
 
     },
 
+    updateStatus: function() {
+
+        for(var j = 0; j < this.shopItem.length; j++) {
+            this.shopItem[j].updateStatus();
+        }
+    },
+
     onAppear: function(){
         this.visible = true;
+        this.updateStatus();
         this._swallowTouch.setEnabled(true);
     },
 

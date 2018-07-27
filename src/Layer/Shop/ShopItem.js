@@ -19,6 +19,7 @@ var ShopItem = ccui.Button.extend({
     _priceIcon: null,
     _jsonConfig: null,
     _shopListJson: null,
+    _key: null,
 
     ctor: function(str, num){
         this._super();
@@ -63,12 +64,43 @@ var ShopItem = ccui.Button.extend({
         var timeLabel = cc.LabelBMFont.create(this._timeText,  font.soji20);
         timeLabel.setPosition(cc.p(this._timeIcon.x + this._timeIcon.width + 20, this._timeIcon.y));
 
-        this._currentQuantity = 0;
-        this._capacity = (this._configItem["key"].substring(0,3) !== "BDH") ? gv.json.townHall['TOW_1']["1"][this._configItem["key"]] : "5";
+        this._key = this._configItem["key"];
+
+        switch(this._key) {
+            case gv.buildingSTR.townHall:
+                break;
+            case gv.buildingSTR.barrack_1:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.barrack_1];
+                break;
+            case gv.buildingSTR.armyCamp_1:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1];
+                break;
+            case gv.buildingSTR.resource_1:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.resource_1];
+                break;
+            case gv.buildingSTR.resource_2:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.resource_2];
+                break;
+            case gv.buildingSTR.storage_1:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.storage_1];
+                break;
+            case gv.buildingSTR.storage_2:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.storage_2];
+                break;
+            case gv.buildingSTR.builderHut:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut];
+                break;
+            default:
+                break;
+        }
+        this._capacity = (this._configItem["key"].substring(0,3) !== "BDH") ? gv.json.townHall[gv.buildingSTR.townHall][cf.user._buildingList[gv.orderInUserBuildingList.townHall][0]._level][this._configItem["key"]] : "5";
 
         var currentQuantityText = this._currentQuantity.toString() + "/" + this._capacity.toString();
-        var currentQuantityLabel = cc.LabelBMFont(currentQuantityText, font.soji20);
-        currentQuantityLabel.setPosition(cc.p(this.width - 50, timeLabel.y));
+        this._currentQuantityLabel = cc.LabelBMFont(currentQuantityText, font.soji20);
+        this._currentQuantityLabel.setPosition(cc.p(this.width - 50, timeLabel.y));
+
+
+        this._priceCurrency = this._configItem["priceCurrency"];
 
         if(this._configItem["priceCurrency"] === "gold") this._priceIcon = cc.Sprite(shopGUI.gold);
         else if(this._configItem["priceCurrency"] === "elixir") this._priceIcon = cc.Sprite(shopGUI.elixir);
@@ -76,9 +108,13 @@ var ShopItem = ccui.Button.extend({
 
         this._priceIcon.setPosition(cc.p(this.width - this._priceIcon.width - 10, 35));
 
-        this._priceText = this._jsonConfig[this._configItem["key"]]["1"][this._configItem["priceCurrency"]];
-        var priceLabel = cc.LabelBMFont(this._priceText.toString(), font.soji20);
-        priceLabel.setPosition(cc.p(this._priceIcon.x - priceLabel.width, this._priceIcon.y));
+        if(this._key !== gv.buildingSTR.builderHut) this._priceText = this._jsonConfig[this._configItem["key"]]["1"][this._configItem["priceCurrency"]];
+        else {
+            this._priceText = this._jsonConfig[this._configItem["key"]][(this._currentQuantity + 1).toString()][this._configItem["priceCurrency"]];
+        }
+
+        this._priceLabel = cc.LabelBMFont(this._priceText.toString(), font.soji20);
+        this._priceLabel.setPosition(cc.p(this._priceIcon.x - this._priceLabel.width, this._priceIcon.y));
 
         this._itemName = this._configItem["name"];
         var itemNameLabel = cc.LabelBMFont(this._itemName, font.soji20);
@@ -91,9 +127,9 @@ var ShopItem = ccui.Button.extend({
         this.addChild(this._itemIcon, 2);
         this.addChild(this._timeIcon, 1);
         this.addChild(timeLabel, 1);
-        this.addChild(currentQuantityLabel, 1);
+        this.addChild(this._currentQuantityLabel, 1);
         this.addChild(this._priceIcon, 1);
-        this.addChild(priceLabel, 1);
+        this.addChild(this._priceLabel, 1);
         this.addChild(itemNameLabel, 1);
 
         this.init();
@@ -102,6 +138,67 @@ var ShopItem = ccui.Button.extend({
 
     init: function(){
         this.addTouchEventListener(this.touchBuyItem, this);
+    },
+
+    updateStatus: function()
+    {
+        switch(this._key) {
+            case gv.buildingSTR.townHall:
+                break;
+            case gv.buildingSTR.barrack_1:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.barrack_1];
+                break;
+            case gv.buildingSTR.armyCamp_1:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1];
+                break;
+            case gv.buildingSTR.resource_1:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.resource_1];
+                break;
+            case gv.buildingSTR.resource_2:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.resource_2];
+                break;
+            case gv.buildingSTR.storage_1:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.storage_1];
+                break;
+            case gv.buildingSTR.storage_2:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.storage_2];
+                break;
+            case gv.buildingSTR.builderHut:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut];
+                break;
+            default:
+                break;
+        }
+        this._capacity = (this._configItem["key"].substring(0,3) !== "BDH") ? gv.json.townHall[gv.buildingSTR.townHall][cf.user._buildingList[gv.orderInUserBuildingList.townHall][0]._level][this._configItem["key"]] : "5";
+        var currentQuantityText = this._currentQuantity.toString() + "/" + this._capacity.toString();
+        this._currentQuantityLabel.setString(currentQuantityText);
+        if(this._currentQuantity >= this._capacity) {
+            this.setTouchEnabled(false);
+            this.setEnabled(false);
+            this.setBright(false);
+            var act = cc.tintTo(0, 127.5, 127.5, 127.5 );
+            act.retain();
+            this._itemIcon.runAction(act.clone());
+            this._priceIcon.runAction(act.clone());
+        }
+        else {
+            this.setTouchEnabled(true);
+            this.setEnabled(true);
+            this.setBright(true);
+            var act = cc.tintTo(0, 255, 255, 255);
+            act.retain();
+            this._itemIcon.runAction(act.clone());
+            this._priceIcon.runAction(act.clone());
+        }
+
+        if(this._priceCurrency === "gold") {
+            if(cf.user._currentCapacityGold < this._priceText) this._priceLabel.setColor(cc.color.RED);
+        } else if(this._priceCurrency === "elixir") {
+            if(cf.user._currentCapacityElixir < this._priceText) this._priceLabel.setColor(cc.color.RED);
+        } else if(this._priceCurrency === "coin") {
+            if(cf.user._currentCapacityCoin < this._priceText) this._priceLabel.setColor(cc.color.RED);
+        }
+
     },
 
     touchBuyItem: function(sender, type) {
@@ -140,9 +237,7 @@ var ShopItem = ccui.Button.extend({
         cf.isDeciding = true;
         var building;
         for(var i = 0; i<this._shopListJson.length; i++){
-
             if(tag === this._shopListJson[i]["tag"]) {
-
                 var buildingConfig = cf.getJsonConfigFile(this._shopListJson[i]["key"]);
                 var size = buildingConfig[this._shopListJson[i]["key"]]["1"]["width"];
                 var pos = map.get_avaiable_position(size);
