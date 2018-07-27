@@ -86,7 +86,7 @@ var ShopItemList = cc.Layer.extend({
         var dis = cc.winSize.width / 5;
         this._resourceBackground = cc.Sprite(shopGUI.resInfo);
         this._resourceBackground.setAnchorPoint(cc.p(0.5, 0.5));
-        this._resourceBackground.scale = 1.5;
+        this._resourceBackground.scale = 1.6;
         this._resourceBackground.setPosition(cc.p(cc.winSize.width/2, this._resourceBackground.height /2 * this._resourceBackground.scale));
         this.addChild(this._resourceBackground, 0);
 
