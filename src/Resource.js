@@ -59,6 +59,7 @@ var font = {
 
 };
 
+
 var shopGUI = {
     back:               guiFolder + "shop_gui/back.png",
     catalogyBg:         guiFolder + "shop_gui/catalogy_bg.png",

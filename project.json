@@ -24,6 +24,7 @@
         "src/Layer/Shop/ShopCategory.js",
         "src/Layer/Shop/ShopItem.js",
         "src/Layer/Shop/ShopItemList.js",
+        "src/Layer/Shop/ResourceItem.js",
         "src/Resource.js",
 
         "src/Buildings/Building.js",

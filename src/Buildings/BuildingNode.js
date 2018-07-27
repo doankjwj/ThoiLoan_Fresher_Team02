@@ -335,7 +335,6 @@ var BuildingNode = cc.Node.extend({
         this._gui_commit_build.addClickEventListener(function(){
             if(!self._red.visible) {
                 self.locate_map_array(self);
-                self.getParent().logMapArray();
                 self.startBuild();
                 self.getParent().addBuildingToUserBuildingList(self);
                 cf.isDeciding = false;

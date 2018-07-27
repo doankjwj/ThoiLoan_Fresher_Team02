@@ -5,6 +5,12 @@ var ShopItemList = cc.Layer.extend({
     _swallowTouch: null,
     _shopName: null,
     _scrollView: null,
+    _resourceBackground: null,
+    _resGold: null,
+    _resElixir: null,
+    _resDarkELixir: null,
+    _resCoin: null,
+
     ctor: function(tag){
         this._super();
         this._shopName = cf.shopTagToName(tag);
@@ -76,7 +82,36 @@ var ShopItemList = cc.Layer.extend({
             }
         }, this);
 
+        /* Resource Bar */
+        var dis = cc.winSize.width / 5;
+        this._resourceBackground = cc.Sprite(shopGUI.resInfo);
+        this._resourceBackground.setAnchorPoint(cc.p(0.5, 0.5));
+        this._resourceBackground.scale = 1.5;
+        this._resourceBackground.setPosition(cc.p(cc.winSize.width/2, this._resourceBackground.height /2 * this._resourceBackground.scale));
+        this.addChild(this._resourceBackground, 0);
 
+        this._resGold = new ResourceItem(cf.shopResourceItem.ResGold);
+        this._resGold.setAnchorPoint(cc.p(0.5, 0.5));
+        this._resGold.setPosition(dis, this._resourceBackground.y);
+
+        this._resElixir = new ResourceItem(cf.shopResourceItem.ResElixir);
+        this._resElixir.setAnchorPoint(cc.p(0.5, 0.5));
+        this._resElixir.setPosition(dis * 2, this._resourceBackground.y);
+
+        this._resDarkELixir = new ResourceItem(cf.shopResourceItem.ResDarkElixir);
+        this._resDarkELixir.setAnchorPoint(cc.p(0.5, 0.5));
+        this._resDarkELixir.setPosition(dis * 3, this._resourceBackground.y);
+
+        this._resCoin = new ResourceItem(cf.shopResourceItem.ResCoin);
+        this._resCoin.setAnchorPoint(cc.p(0.5, 0.5));
+        this._resCoin.setPosition(dis * 2, this._resourceBackground.y);
+
+        this.addChild(this._resGold, 1);
+        this.addChild(this._resElixir, 1);
+        this.addChild(this._resDarkELixir, 1);
+        // this.addChild(this._resCoin, 1);
+
+        /* Close */
         this._titleBackground.addChild(close);
         this.addChild(this._titleBackground);
         this.addChild(color, -1);

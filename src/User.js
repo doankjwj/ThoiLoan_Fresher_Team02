@@ -48,7 +48,7 @@ var User = cc.Class.extend({
         this._currentCapacityGold = gv.jsonInfo["player"]["gold"];
         this._currentCapacityElixir = gv.jsonInfo["player"]["elixir"];
         this._currentCapacityDarkElixir = gv.jsonInfo["player"]["darkElixir"];
-        this._currentCapacityCoin = gv.jsonInfo["player"]["coin"];
+        this._currentCapacityCoin = (gv.jsonInfo["player"]["coin"] == null) ? 0 : gv.jsonInfo["player"]["coin"];
         this.initBuildingList();
     },
 

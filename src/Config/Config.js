@@ -109,6 +109,12 @@ cf.animationConstructLevelUp = null;
 cf.MAX_BUILDING_TYPE = 20;
 cf.MAX_BUILDING_LEVEL = 20;
 
+cf.shopResourceItem = {
+    ResGold: 34324,
+    ResElixir: 3423,
+    ResDarkElixir: 34543,
+    ResCoin: 2342
+};
 //function
 cf.shopTagToName = function (tag) {
     switch (tag) {

@@ -5,6 +5,7 @@ var Obstacle = BuildingNode.extend({
     ctor: function(id, type, row, col, existed)
     {
         this._size = 2;
+        this._orderInUserBuildingList = 12;
         this._super(id, type, row, col, existed);
         this._grassShadow.visible = false;
         this.addCenterBuilding("OBS_", 0);

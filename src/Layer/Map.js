@@ -44,6 +44,14 @@ var Map = cc.Node.extend({
                 }
             }
         }
+
+        for (var i = 0; i < Object.keys(cf.jsonInitGame["obs"]).length; i++)
+               {
+                   var obs = cf.jsonInitGame["obs"][i+1];
+                   var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"], true);
+                   tag = i*500;
+                   this.addChild(obstacle, 2, tag);
+               }
     },
 
     //add_building: function()
