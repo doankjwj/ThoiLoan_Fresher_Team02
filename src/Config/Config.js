@@ -19,7 +19,7 @@ cf.time_refresh = 0.1;
 cf.isDeciding = false;
 
 /* Move Building */
-gv.building_selected = 0;
+gv.building_selected = null;
 cf.move_able = false;
 cf.moved = false;
 cf.r_old = null;
@@ -214,6 +214,7 @@ gv.tag =
     TAG_RESOURCE_BAR_ELIXIR: 4231,
     TAG_RESOURCE_BAR_DARK_ELIXIR: 1457,
     TAG_RESOURCE_BAR_COIN: 5469,
+    TAG_CENTER_BUILDING: 23423,
 };
 
 //function

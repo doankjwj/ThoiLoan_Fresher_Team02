@@ -206,6 +206,8 @@ var MainLayer = cc.Layer.extend({
         this._guiButtonBuildingUpgrade.addClickEventListener(function()
         {
             cc.log(gv.building_selected  + " Select Upgrade");
+            if (gv.building_selected != undefined)
+                cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)].onStartBuild();
         }.bind(this))
     },
 
