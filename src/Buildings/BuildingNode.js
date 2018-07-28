@@ -271,11 +271,12 @@ var BuildingNode = cc.Node.extend({
 
         var order = this._orderInUserBuildingList;
         if (order == gv.orderInUserBuildingList.townHall || order == gv.orderInUserBuildingList.storage_1 || order == gv.orderInUserBuildingList.storage_2 || order == gv.orderInUserBuildingList.storage_3)
+            cf.user.updateMaxStorageSingle(this._id);
 
         /* Update user infor && GUI */
-        cf.user._builderFree ++;
+            cf.user._builderFree ++;
         cf.user.updateSingleBuilder();
-        cf.user.updateMaxStorageSingle(this._id);
+
 
     },
 

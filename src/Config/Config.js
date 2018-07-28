@@ -19,7 +19,7 @@ cf.time_refresh = 0.1;
 cf.isDeciding = false;
 
 /* Move Building */
-cf.building_selected = 0;
+gv.building_selected = 0;
 cf.move_able = false;
 cf.moved = false;
 cf.r_old = null;

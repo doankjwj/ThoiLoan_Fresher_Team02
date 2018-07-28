@@ -57,9 +57,6 @@ var Shop = cc.Layer.extend({
     },
 
     onAppear: function(){
-        cf.user._currentCapacityGold = 0;
-        cf.user._currentCapacityElixir = 0;
-        cf.user._currentCapacityCoin = 0;
         this.visible = true;
         this._swallowTouch.setEnabled(true);
     },

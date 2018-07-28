@@ -18,13 +18,7 @@ var MainLayer = cc.Layer.extend({
 
     _TAG_BG: 242342,
     _TAG_LOGIN: 534534,
-
-    //_TAG_MAP: 45345,
-    //_TAG_BUILDER_BAR: 2342,
-    //_TAG_RESOURCE_BAR_GOLD: 4343,
-    //_TAG_RESOURCE_BAR_ELIXIR: 4231,
-    //_TAG_RESOURCE_BAR_DARK_ELIXIR: 1457,
-    //_TAG_RESOURCE_BAR_COIN: 5469,
+    _TAG_OFFLINE_MODE: 454535,
 
     ctor:function () {
         this._super();
@@ -43,6 +37,9 @@ var MainLayer = cc.Layer.extend({
          this.addChild(btnLogin, 1, this._TAG_LOGIN);
          btnLogin.addClickEventListener(this.onSelectLogin.bind(this));
 
+         var btnOfflineMode = gv.commonButton(200, 64, size.width/4, yBtn/2, "Offline Mode");
+         this.addChild(btnOfflineMode, 1, this._TAG_OFFLINE_MODE);
+         btnOfflineMode.addClickEventListener(this.onSelectOfflineMode.bind(this));
         this.loadJson();
     },
 
@@ -52,11 +49,21 @@ var MainLayer = cc.Layer.extend({
         gv.gameClient.connect()
     },
 
+    onSelectOfflineMode: function()
+    {
+        this.initUser();
+        this.initMainGUI();
+        this.initMap();
+        this.updateGUIandUserInfo();
+
+    },
+
     onConnectSuccess: function()
     {
         cc.log("=============== " + "Connect Success => Send Handshake");
         this.removeChildByTag(this._TAG_BG, false);
         this.removeChildByTag(this._TAG_LOGIN, false);
+        this.removeChildByTag(this._TAG_OFFLINE_MODE, false);
     },
 
     onConnectFail: function()
@@ -92,7 +99,7 @@ var MainLayer = cc.Layer.extend({
         this.addInventoryButton();
         this.addBuildingButtons();
         this.addResourceBar();
-        this.addUserInfo();
+        this.addUserBar();
         this.addBuilderBar();
     },
 
@@ -175,6 +182,7 @@ var MainLayer = cc.Layer.extend({
     },
 
     addBuildingButtons: function() {
+        /* Button Info */
         this._guiButtonBuildingInfo = new IconActionBuilding(cf.CODE_BUILDING_INFO);
         this._guiButtonBuildingInfo.attr({
             anchorX: 0.5,
@@ -184,6 +192,8 @@ var MainLayer = cc.Layer.extend({
         });
         this.addChild(this._guiButtonBuildingInfo, 2);
 
+
+        /* Button Upgrade */
         this._guiButtonBuildingUpgrade = new IconActionBuilding(cf.CODE_BUILDING_UPGRADE);
         this._guiButtonBuildingUpgrade.attr({
             anchorX: 0.5,
@@ -192,6 +202,11 @@ var MainLayer = cc.Layer.extend({
             y: -200
         });
         this.addChild(this._guiButtonBuildingUpgrade, 2);
+
+        this._guiButtonBuildingUpgrade.addClickEventListener(function()
+        {
+            cc.log(gv.building_selected  + " Select Upgrade");
+        }.bind(this))
     },
 
     hideListBotButton: function()
@@ -207,15 +222,12 @@ var MainLayer = cc.Layer.extend({
         this._guiButtonBuildingUpgrade.runAction(moveToPos2);
     },
 
-    //gold,dElixir, Elixir, G visualize
-
-
     //Exp, Trophy, Username, UserInfo
-    addUserInfo: function() {
+    addUserBar: function() {
         var userName = cc.LabelBMFont(cf.user._name, font.soji20);
         userName.setAnchorPoint(cc.p(0, 1));
         userName.setPosition(cc.p(cf.offSetGui, cc.winSize.height - cf.offSetGui));
-        this.addChild(userName)
+        this.addChild(userName, 1)
     },
 
     addSettingButton: function() {
@@ -261,7 +273,7 @@ var MainLayer = cc.Layer.extend({
             onTouchMoved: function(touch, event) {
                 // var self = event.getCurrentTarget()
                 cf.isMapMoving = true;
-                if (cf.building_selected !== 0)
+                if (gv.building_selected !== 0)
                     return
                 var delta = touch.getDelta();
                 var curPos = cc.p(self._map.x, self._map.y);
@@ -320,8 +332,8 @@ var MainLayer = cc.Layer.extend({
         switch (type){
             case ccui.Widget.TOUCH_BEGAN:
                 var map = this._map;
-                if (cf.building_selected !== 0) {
-                        var buildingSelected = map.getChildByTag(cf.building_selected);
+                if (gv.building_selected !== 0) {
+                        var buildingSelected = map.getChildByTag(gv.building_selected);
                         if(buildingSelected !== null) buildingSelected.onEndClick();
                 }
                 sender.setScale(sender.scale*1.1);

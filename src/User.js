@@ -42,7 +42,6 @@ var User = cc.Class.extend({
         //this._super();
         this._id = id;
         this._name = gv.jsonInfo["player"]["name"];
-
         this._builderFree = 5;
         this._builderTotal = 5;
 
