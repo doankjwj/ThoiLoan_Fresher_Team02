@@ -2,7 +2,6 @@ var cf = cf || {};
 var gv = gv || {};
 
 cf.BIG_MAP_SCALE = 0.5;
-
 cf.SCALE = 1;
 cf.bgSCALE = cf.SCALE*2;
 cf.squareSize = 50*cf.SCALE;
@@ -193,6 +192,28 @@ gv.orderInUserBuildingList =
     canon: 13
 
 };
+gv.buildingMaxLevel = {
+    townHall: 11,
+    storage_1: 11,
+    storage_2: 11,
+    storage_3: 6,
+    resource_1: 11,
+    resource_2: 11,
+    resource_3: 6,
+    lap: 9,
+    armyCamp_1: 8,
+    barrack_1: 12,
+    barrack_2: 6,
+    builderHut: 5,
+    obstacle: 27,
+    canon: 0
+}
+gv.constructType =
+{
+    info: 1231,
+    upgrade: 3423,
+};
+
 gv.buildingTypeCount = 14;
 
 /* Capacity */
@@ -205,17 +226,22 @@ gv.capacity =
     capacity: "capacity"
 }
 
-/* Main Layer Tag */
+/* Main Tag */
 gv.tag =
 {
-    TAG_MAP: 4535,
-    TAG_BUILDER_BAR: 2342,
-    TAG_RESOURCE_BAR_GOLD: 4343,
-    TAG_RESOURCE_BAR_ELIXIR: 4231,
-    TAG_RESOURCE_BAR_DARK_ELIXIR: 1457,
-    TAG_RESOURCE_BAR_COIN: 5469,
-    TAG_CENTER_BUILDING: 23423,
+    TAG_MAP: 1800,
+    TAG_CENTER_BUILDING: 1801,
+    TAG_BUILDER_BAR: 1900,
+    TAG_RESOURCE_BAR_GOLD: 1901,
+    TAG_RESOURCE_BAR_ELIXIR: 1902,
+    TAG_RESOURCE_BAR_DARK_ELIXIR: 1903,
+    TAG_RESOURCE_BAR_COIN: 1904,
+    TAG_POPUP: 2000,
+    TAG_POPUP_TXT_CONTENT: 2001,
 };
+
+/* Pop Up */
+gv.popUpConstruct = null;
 
 //function
 cf.shopTagToName = function (tag) {
@@ -320,16 +346,16 @@ cf.stringToItemInit = function(str, index) {
             return new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_2], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.resource_2);
         case "AMC_1":
             return new ArmyCamp(cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
-
-
-        //case "TOW_1":
-        //    return new TownHall(20, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true);
-        //case "BDH_1":
-        //    return new BuilderHut(21, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true);
-        //case "RES_1":
-        //    return new Resource(22, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true, 1);
-        //case "AMC_1":
-        //    return new ArmyCamp(24, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true);
-        //default: return null;
     }
 };
+
+cf.secondsToLongTime = function(seconds)
+{
+    var days = Math.floor(seconds / (3600*24));
+    seconds  -= days*3600*24;
+    var hrs   = Math.floor(seconds / 3600);
+    seconds  -= hrs*3600;
+    var mnts = Math.floor(seconds/ 60);
+    seconds  -= mnts*60;
+    return (days !== 0 ? (days.toString() + "d") : "" ) + (hrs !== 0 ? (hrs.toString() + "h") : "") + (mnts !== 0 ? (mnts.toString() + "m") : "") + ((seconds!=0) ? (seconds.toString() + "s") : "" );
+}

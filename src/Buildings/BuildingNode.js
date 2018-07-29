@@ -289,7 +289,7 @@ var BuildingNode = cc.Node.extend({
     onUpdateBuildStatus: function() {
         if (this._is_active)
         {
-            this._effect_level_up.visible = false;
+            // this._effect_level_up.visible = false;
             return;
         }
         if (this._time_remaining <= 0)
@@ -325,7 +325,9 @@ var BuildingNode = cc.Node.extend({
         this._info_bar.visible = false;
         this._info_bar_bg.visible = false;
         this._defence.visible = false;
-        this._effect_level_up.runAction(cc.Sequence(MainLayer.get_animation("effect_construct_levelup ", 6).clone()).clone());
+        this._effect_level_up.runAction(cc.Sequence.create(cc.CallFunc(function(){this._effect_level_up.visible = true}, this),
+            MainLayer.get_animation("effect_construct_levelup ", 6).clone(),
+            cc.CallFunc(function(){this._effect_level_up.visible = false}, this)));
         //cf.user.updateResource();
 
         /* Update Max capacity if Building is Storage or Town Hall */
@@ -481,7 +483,7 @@ var BuildingNode = cc.Node.extend({
         this._green.visible = true;
         var scale_out = cc.scaleTo(0.25, 1.0);
         this._arrow.runAction(scale_out);
-        this._arrow.setGlobalZOrder(50);
+        // this._arrow.setGlobalZOrder(50);
     },
 
     onEndClick: function() {

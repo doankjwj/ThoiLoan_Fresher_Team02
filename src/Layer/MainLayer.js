@@ -10,6 +10,7 @@ var MainLayer = cc.Layer.extend({
 
     _guiButtonBuildingInfo: null,
     _guiButtonBuildingUpgrade: null,
+    _popUp: null,
 
     _action1Pull: null,
     _action2Pull: null,
@@ -19,6 +20,7 @@ var MainLayer = cc.Layer.extend({
     _TAG_BG: 242342,
     _TAG_LOGIN: 534534,
     _TAG_OFFLINE_MODE: 454535,
+
 
     ctor:function () {
         this._super();
@@ -40,7 +42,8 @@ var MainLayer = cc.Layer.extend({
          var btnOfflineMode = gv.commonButton(200, 64, size.width/4, yBtn/2, "Offline Mode");
          this.addChild(btnOfflineMode, 1, this._TAG_OFFLINE_MODE);
          btnOfflineMode.addClickEventListener(this.onSelectOfflineMode.bind(this));
-        this.loadJson();
+         this.loadJson();
+
     },
 
     onSelectLogin: function()
@@ -182,6 +185,7 @@ var MainLayer = cc.Layer.extend({
     },
 
     addBuildingButtons: function() {
+        var self = this;
         /* Button Info */
         this._guiButtonBuildingInfo = new IconActionBuilding(cf.CODE_BUILDING_INFO);
         this._guiButtonBuildingInfo.attr({
@@ -191,7 +195,19 @@ var MainLayer = cc.Layer.extend({
             y: -200
         });
         this.addChild(this._guiButtonBuildingInfo, 2);
-
+        this._guiButtonBuildingInfo.addClickEventListener(function()
+        {
+            self.hideListBotButton();
+            if (gv.building_selected == undefined) return;
+            if (!self.getChildByTag(gv.tag.TAG_POPUP))
+            {
+                var popUp = PopUpConstruct.getOrCreate();
+                self.addChild(popUp, 1, gv.tag.TAG_POPUP);
+            }
+            self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width/2, cc.winSize.height/2);
+            self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
+            self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.info);
+        }. bind(this));
 
         /* Button Upgrade */
         this._guiButtonBuildingUpgrade = new IconActionBuilding(cf.CODE_BUILDING_UPGRADE);
@@ -205,9 +221,22 @@ var MainLayer = cc.Layer.extend({
 
         this._guiButtonBuildingUpgrade.addClickEventListener(function()
         {
-            cc.log(gv.building_selected  + " Select Upgrade");
-            if (gv.building_selected != undefined)
-                cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)].onStartBuild();
+            self.hideListBotButton();
+            if (gv.building_selected == undefined) return;
+            var order = (cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)]._orderInUserBuildingList);
+            var orderBuilderHut = (gv.orderInUserBuildingList.builderHut);
+            if (order == orderBuilderHut) return;
+            // if (cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)]._orderInUserBuildingList = gv.orderInUserBuildingList.builderHut)
+            //     return;
+            cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)].onStartBuild();
+            if (!self.getChildByTag(gv.tag.TAG_POPUP))
+            {
+                var popUp = PopUpConstruct.getOrCreate();
+                self.addChild(popUp, 1, gv.tag.TAG_POPUP);
+            }
+            self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width/2, cc.winSize.height/2);
+            self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
+            self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
         }.bind(this))
     },
 

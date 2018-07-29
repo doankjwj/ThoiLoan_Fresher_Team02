@@ -44,6 +44,8 @@
         "src/GUI/IconActionBuilding.js",
         "src/GUI/BuilderBar.js",
 
+        "src/GUI/PopUpConstruct.js",
+
         "src/NetWork/framework/Utility/ClientConfig.js",
         "src/NetWork/framework/Utility/Localization.js",
         "src/NetWork/framework/Utility/StringUtils.js",

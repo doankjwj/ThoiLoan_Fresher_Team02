@@ -5,8 +5,8 @@ var fontFolder = "res/Art/Fonts/";
 var guiFolder = "res/Art/GUIs/";
 var jsonFolder = "res/ConfigJson/";
 var effectFolder = "res/SS/";
-var folderBuildingActionicon = "res/Art/GUIs/Action_Building_Icon/"
-
+var folderBuildingActionicon = "res/Art/GUIs/Action_Building_Icon/";
+var folderUpgradeBuildingGUI = guiFolder + "upgrade_building_gui/";
 var res = {
     image_postfix_1: "idle/image000",
     image_postfix_2: ".png",
@@ -53,6 +53,12 @@ var res = {
     map_BG: mapFolder + "map_obj_bg/BG/",
     map_obj: mapFolder + "map_obj_bg/",
 
+
+    popUp : {
+        bg: guiFolder + "upgrade_building_gui/BG.png",
+        btnClose: guiFolder + "upgrade_building_gui/close.png",
+        btnOk: guiFolder + "upgrade_building_gui/button.png",
+    }
 };
 
 var font = {
@@ -135,6 +141,17 @@ var buildingGUI = {
     buildCancel: res.folder_gui_action_building + "cancel.png",
     defence: res.map_obj + "upgrading.png",
 };
+
+var upgradeBuildingGUI = {
+    infoBar: folderUpgradeBuildingGUI + "info_bar_BG.png",
+    infoBarBG: folderUpgradeBuildingGUI + "info_bar.png",
+    hpIcon: folderUpgradeBuildingGUI + "small/Hitpoints_Icon.png",
+    iconGold: folderUpgradeBuildingGUI + "small/BUFF_GOLD.png",
+    iconElixir: folderUpgradeBuildingGUI + "small/BUFF_ELIXIR.png",
+    iconDarkElixir: folderUpgradeBuildingGUI + "small/BUFF_DARK.png",
+    iconCoin: folderUpgradeBuildingGUI + "small/2.png"
+};
+
 var g_preload= [
     res.tilemap_tmx,
     res.bgBotLeft,
