@@ -7,7 +7,7 @@ gv.CMD.HAND_SHAKE = 0;
 gv.CMD.USER_LOGIN = 1;
 
 gv.CMD.USER_INFO = 1001;
-gv.CMD.MOVE = 2001;
+gv.CMD.MOVE = 2310;
 gv.CMD.BUILD = 2010;
 
 testnetwork = testnetwork||{};
@@ -56,9 +56,9 @@ CmdSendLogin = fr.OutPacket.extend(
             this.initData(100);
             this.setCmdId(gv.CMD.USER_LOGIN);
         },
-        pack:function(user){
+        pack:function(username){
             this.packHeader();
-            this.putString(user);
+            this.putString(username);
             this.updateSize();
         }
     }
@@ -73,11 +73,12 @@ CmdSendBuild = fr.OutPacket.extend(
             this.setCmdId(gv.CMD.BUILD);
         },
         pack:function(id, row, col){
-            cc.log(id + " " + row + " " + col)
+            var _id = Math.floor(id/100) - 1;
+            cc.log(_id + " " + row + " " + col);
             this.packHeader();
-            this.putShort(id);
-            this.putShort(row);
-            this.putShort(col);
+            this.putByte(_id);
+            this.putByte(row);
+            this.putByte(col);
             this.updateSize();
         }
     }
@@ -93,9 +94,13 @@ CmdSendMove = fr.OutPacket.extend(
         },
         pack:function(id, row, col){
             this.packHeader();
-            this.putShort(id);
-            this.putShort(row);
-            this.putShort(col);
+            var _id = Math.floor(id/100) - 1;
+            cc.log(_id + " " + row + " " + col);
+            var _slot = id%100;
+            this.putByte(_id);
+            this.putByte(_slot);
+            this.putByte(row);
+            this.putByte(col);
             this.updateSize();
         }
     }
@@ -335,7 +340,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
                 this.player.troopAmount.push(this.getShort());
             }
 
-            // cc.log(JSON.stringify(this));
+            cc.log(JSON.stringify(this));
             gv.jsonInfo = this;
             //cc.log(gv.jsonInfo["map"]["TOW_1"][0]["X"]);
             //cc.log(gv.jsonInfo["map"]["TOW_1"].length);

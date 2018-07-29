@@ -332,7 +332,7 @@ var BuildingNode = cc.Node.extend({
 
         /* Update Max capacity if Building is Storage or Town Hall */
         var order = this._orderInUserBuildingList;
-        if (order == gv.orderInUserBuildingList.townHall || order == gv.orderInUserBuildingList.storage_1 || order == gv.orderInUserBuildingList.storage_2 || order == gv.orderInUserBuildingList.storage_3)
+        if (order === gv.orderInUserBuildingList.townHall || order === gv.orderInUserBuildingList.storage_1 || order === gv.orderInUserBuildingList.storage_2 || order === gv.orderInUserBuildingList.storage_3)
             cf.user.updateMaxStorageSingle(this._id);
         /* Update user infor && GUI */
         cf.user._builderFree ++;
@@ -519,6 +519,18 @@ var BuildingNode = cc.Node.extend({
                 gv.building_selected = 0;
                 cf.isDeciding = false;
                 testnetwork.connector.sendBuild(self._id, self._row, self._col);
+                if(cf.currentItemCurrency === "gold") {
+                    cf.user._currentCapacityGold -= cf.currentItemPrice;
+                } else if(cf.currentItemCurrency === "elixir") {
+                    cf.user._currentCapacityElixir -= cf.currentItemPrice;
+                } else if(cf.currentItemCurrency === "coin") {
+                    cf.user._currentCapacityCoin -= cf.currentItemPrice;
+                }
+                fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+                fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+                fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+                cf.currentItemCurrency = null;
+                cf.currentItemPrice = null;
             }
         }.bind(this));
     },

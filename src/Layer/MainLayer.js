@@ -2,6 +2,9 @@ var MainLayer = cc.Layer.extend({
     _map: null,
     _shop: null,
 
+    _usernameField: null,
+    _passwordField: null,
+
     _resBarGold: null,
     _resBarElixir: null,
     _resBarDarkElixir: null,
@@ -18,8 +21,9 @@ var MainLayer = cc.Layer.extend({
     _action2Push: null,
 
     _TAG_BG: 242342,
-    _TAG_LOGIN: 534534,
-    _TAG_OFFLINE_MODE: 454535,
+    _TAG_USERNAME_FIELD: 30000,
+    _TAG_PASSWORD_FIELD: 30001,
+    _TAG_LOGIN_BUTTON  : 30002,
 
 
     ctor:function () {
@@ -32,24 +36,50 @@ var MainLayer = cc.Layer.extend({
          var bg = cc.Sprite("res/Art/BG/Capture.PNG");
          bg.setAnchorPoint(cc.p(0, 0))
          this.addChild(bg, 0, this._TAG_BG);
+         //
+         // var size = cc.director.getVisibleSize();
+         // var yBtn = 2*size.height/3;
+         // var btnLogin = gv.commonButton(200, 64, size.width/4, yBtn,"Login");
+         // this.addChild(btnLogin, 1, this._TAG_LOGIN);
+         // btnLogin.addClickEventListener(this.onSelectLogin.bind(this));
+         //
+         // var btnOfflineMode = gv.commonButton(200, 64, size.width/4, yBtn/2, "Offline Mode");
+         // this.addChild(btnOfflineMode, 1, this._TAG_OFFLINE_MODE);
+         // btnOfflineMode.addClickEventListener(this.onSelectOfflineMode.bind(this));
 
-         var size = cc.director.getVisibleSize();
-         var yBtn = 2*size.height/3;
-         var btnLogin = gv.commonButton(200, 64, size.width/4, yBtn,"Login");
-         this.addChild(btnLogin, 1, this._TAG_LOGIN);
-         btnLogin.addClickEventListener(this.onSelectLogin.bind(this));
+        var size = cc.winSize;
 
-         var btnOfflineMode = gv.commonButton(200, 64, size.width/4, yBtn/2, "Offline Mode");
-         this.addChild(btnOfflineMode, 1, this._TAG_OFFLINE_MODE);
-         btnOfflineMode.addClickEventListener(this.onSelectOfflineMode.bind(this));
-         this.loadJson();
+        this._usernameField = new ccui.TextField();
+        this._usernameField .setTouchEnabled(true);
+        this._usernameField .fontName = "Arial";
+        this._usernameField .setPlaceHolder("Username");
+        this._usernameField .fontSize = 30;
+        this._usernameField .x = size.width/2;
+        this._usernameField .y = size.height/2 + this._usernameField .height/2;
+        this.addChild(this._usernameField, 1, this._TAG_USERNAME_FIELD);
+
+        this._passwordField = new ccui.TextField();
+        this._passwordField.setTouchEnabled(true);
+        this._passwordField.fontName = "Arial";
+        this._passwordField.setPlaceHolder("Password");
+        this._passwordField.fontSize = 30;
+        this._passwordField.x = size.width/2;
+        this._passwordField.y = this._usernameField.y - this._usernameField.height - 10;
+        this._passwordField.setPasswordEnabled(true);
+        this.addChild(this._passwordField, 1, this._TAG_PASSWORD_FIELD);
+
+        var login = gv.commonButton(200, 64, size.width/2, this._passwordField.y - this._passwordField.height - 40,"Login");
+        login.addClickEventListener(this.onSelectLogin.bind(this));
+        this.addChild(login, 1, this._TAG_LOGIN_BUTTON);
+        this.loadJson();
 
     },
 
     onSelectLogin: function()
     {
         cc.log("=============== " + "Start Connect");
-        gv.gameClient.connect()
+        gv.usernameSendToServer = this._usernameField.string;
+        gv.gameClient.connect();
     },
 
     onSelectOfflineMode: function()
@@ -58,15 +88,15 @@ var MainLayer = cc.Layer.extend({
         this.initMainGUI();
         this.initMap();
         this.updateGUIandUserInfo();
-
     },
 
     onConnectSuccess: function()
     {
         cc.log("=============== " + "Connect Success => Send Handshake");
-        this.removeChildByTag(this._TAG_BG, false);
-        this.removeChildByTag(this._TAG_LOGIN, false);
-        this.removeChildByTag(this._TAG_OFFLINE_MODE, false);
+        this.getChildByTag(this._TAG_USERNAME_FIELD).visible = false;
+        this.getChildByTag(this._TAG_PASSWORD_FIELD).visible = false;
+        this.getChildByTag(this._TAG_LOGIN_BUTTON).visible = false;
+        this.getChildByTag(this._TAG_BG).visible = false;
     },
 
     onConnectFail: function()
@@ -76,8 +106,6 @@ var MainLayer = cc.Layer.extend({
 
     onFinishLogin:function()
     {
-        // this.lblLog.setString("Finish login!");
-        //this._gameNode.setVisible(true);
         cc.log("=============== " + "Finish Login");
     },
 
@@ -444,6 +472,7 @@ var MainLayer = cc.Layer.extend({
             gv.json.laboratory = data;
         });
         cc.loader.loadJson(res.resourceJson, function(err, data){
+            cc.log(data.length);
             gv.json.resource = data;
         });
         cc.loader.loadJson(res.storageJson, function(err, data){

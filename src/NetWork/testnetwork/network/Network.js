@@ -45,7 +45,7 @@ testnetwork.Connector = cc.Class.extend({
     sendLoginRequest: function () {
         cc.log("sendLoginRequest");
         var pk = this.gameClient.getOutPacket(CmdSendLogin);
-        pk.pack(this._userName);
+        pk.pack(gv.usernameSendToServer);
         this.gameClient.sendPacket(pk);
     },
     sendBuild: function(id, row, col)

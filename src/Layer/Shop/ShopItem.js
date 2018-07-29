@@ -193,10 +193,13 @@ var ShopItem = ccui.Button.extend({
 
         if(this._priceCurrency === "gold") {
             if(cf.user._currentCapacityGold < this._priceText) this._priceLabel.setColor(cc.color.RED);
+            else this._priceLabel.setColor(cc.color.WHITE);
         } else if(this._priceCurrency === "elixir") {
             if(cf.user._currentCapacityElixir < this._priceText) this._priceLabel.setColor(cc.color.RED);
+            else this._priceLabel.setColor(cc.color.WHITE);
         } else if(this._priceCurrency === "coin") {
             if(cf.user._currentCapacityCoin < this._priceText) this._priceLabel.setColor(cc.color.RED);
+            else this._priceLabel.setColor(cc.color.WHITE);
         }
 
     },
@@ -225,12 +228,13 @@ var ShopItem = ccui.Button.extend({
         building = this.createBuildingFromTag(map, tag);
         map.addChild(building);
         var tmp = (building._orderInUserBuildingList + 1)*100 + cf.user._buildingListCount[building._orderInUserBuildingList];
+        cf.currentItemCurrency = this._priceCurrency;
+        cf.currentItemPrice = this._priceText;
         cf.building_selected = tmp;
         building.setTag(tmp);
         building._id = tmp;
         building.onClick();
         building.showBuildingButton();
-
     },
 
     createBuildingFromTag: function(map, tag){

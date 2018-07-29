@@ -7,6 +7,11 @@ cf.bgSCALE = cf.SCALE*2;
 cf.squareSize = 50*cf.SCALE;
 cf.buildingScale = cf.SCALE;
 
+gv.usernameSendToServer = null;
+
+cf.currentItemCurrency = null;
+cf.currentItemPrice = null;
+
 cf.offSetGui = 25;
 
 cf.tileSize = {
@@ -86,7 +91,7 @@ gv.json =
     townHall: null,
     troop: null,
     troopBase: null,
-    itemList: null,
+    itemList: null
 };
 
 //cf.ShopItemList = null;
@@ -337,9 +342,9 @@ cf.stringToItemInit = function(str, index) {
         case "BDH_1":
             return new BuilderHut(cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
         case "STO_1":
-            return new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.storage_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.storage_1);
+            return new Storage(cf.user._buildingListCount[gv.orderInUserBuildingList.storage_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.storage_1);
         case "STO_2":
-            return new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.storage_2], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.storage_2);
+            return new Storage(cf.user._buildingListCount[gv.orderInUserBuildingList.storage_2], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.storage_2);
         case "RES_1":
             return new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.resource_1);
         case "RES_2":

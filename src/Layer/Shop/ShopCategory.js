@@ -8,6 +8,9 @@ var ShopCategory = ccui.Button.extend({
         this._super();
         this.loadTextures(shopGUI.slotCatalogy, shopGUI.slotCatalogy);
         this._title = cc.LabelBMFont.create(cf.shopType.army.str,  font.soji20);
+        this._titleBackground = new cc.Sprite(shopGUI.titleBackground);
+        var act = cc.tintTo(0, 127.5, 127.5, 127.5 );
+        act.retain();
         var tp;
         switch(type){
             case cf.shopType.army.name:
@@ -24,11 +27,19 @@ var ShopCategory = ccui.Button.extend({
                 tp=shopGUI.typeShield;
                 this._title.setString(cf.shopType.shield.str);
                 this._tag = cf.shopType.shield.tag;
+                this.setTouchEnabled(false);
+                this.setEnabled(false);
+                this.setBright(false);
+                this._titleBackground.runAction(act.clone());
                 break;
             case cf.shopType.dc.name:
                 tp=shopGUI.typeDC;
                 this._title.setString(cf.shopType.dc.str);
                 this._tag = cf.shopType.dc.tag;
+                this.setTouchEnabled(false);
+                this.setEnabled(false);
+                this.setBright(false);
+                this._titleBackground.runAction(act.clone());
                 break;
             case cf.shopType.defense.name:
                 tp=shopGUI.typeDefense;
@@ -39,13 +50,21 @@ var ShopCategory = ccui.Button.extend({
                 tp=shopGUI.typeBuyRes;
                 this._title.setString(cf.shopType.buyRes.str);
                 this._tag = cf.shopType.buyRes.tag;
+                this.setTouchEnabled(false);
+                this.setEnabled(false);
+                this.setBright(false);
+                this._titleBackground.runAction(act.clone());
                 break;
             default:
                 break;
         }
         this._typeImage = new cc.Sprite(tp);
+
+        if(tp === shopGUI.typeBuyRes || tp === shopGUI.typeDC || tp === shopGUI.typeShield) {
+            this._typeImage.runAction(act.clone());
+        }
+
         this._catalogyBg = new cc.Sprite(shopGUI.catalogyBg);
-        this._titleBackground = new cc.Sprite(shopGUI.titleBackground);
         this.init();
     },
 
