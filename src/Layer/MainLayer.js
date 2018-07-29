@@ -251,12 +251,14 @@ var MainLayer = cc.Layer.extend({
         {
             self.hideListBotButton();
             if (gv.building_selected == undefined) return;
-            var order = (cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)]._orderInUserBuildingList);
+            var building = cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)];
+            var order = (building._orderInUserBuildingList);
             var orderBuilderHut = (gv.orderInUserBuildingList.builderHut);
             if (order == orderBuilderHut) return;
+            if (building._is_active == false) return;
             // if (cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)]._orderInUserBuildingList = gv.orderInUserBuildingList.builderHut)
             //     return;
-            cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)].onStartBuild();
+
             if (!self.getChildByTag(gv.tag.TAG_POPUP))
             {
                 var popUp = PopUpConstruct.getOrCreate();
@@ -265,7 +267,21 @@ var MainLayer = cc.Layer.extend({
             self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width/2, cc.winSize.height/2);
             self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
             self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
-        }.bind(this))
+        }.bind(this));
+    },
+
+    popUpMessage: function(msg)
+    {
+        if (gv.building_selected == undefined) return;
+        if (!this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE))
+        {
+            var popUp = PopUPMessage.getOrCreate();
+            this.addChild(popUp, 1, gv.tag.TAG_POPUP_MESSAGE);
+        }
+        this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setPosition(cc.winSize.width/2, cc.winSize.height/2);
+        // this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).visible = true;
+        this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setMessage(msg);
+        this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).show();
     },
 
     hideListBotButton: function()

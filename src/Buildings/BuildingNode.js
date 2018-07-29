@@ -332,7 +332,7 @@ var BuildingNode = cc.Node.extend({
 
         /* Update Max capacity if Building is Storage or Town Hall */
         var order = this._orderInUserBuildingList;
-        if (order === gv.orderInUserBuildingList.townHall || order === gv.orderInUserBuildingList.storage_1 || order === gv.orderInUserBuildingList.storage_2 || order === gv.orderInUserBuildingList.storage_3)
+        if (order == gv.orderInUserBuildingList.townHall || order == gv.orderInUserBuildingList.storage_1 || order == gv.orderInUserBuildingList.storage_2 || order == gv.orderInUserBuildingList.storage_3)
             cf.user.updateMaxStorageSingle(this._id);
         /* Update user infor && GUI */
         cf.user._builderFree ++;
@@ -509,6 +509,11 @@ var BuildingNode = cc.Node.extend({
             self.getParent().removeChild(self);
         }.bind(this));
         this._gui_commit_build.addClickEventListener(function(){
+            if (cf.user._builderFree <= 0)
+            {
+                self.getParent().getParent().popUpMessage("Tất cả thợ đang bận");
+                return;
+            }
             if(!self._red.visible) {
                 self.locate_map_array(self);
                 self.onStartBuild();
@@ -518,24 +523,90 @@ var BuildingNode = cc.Node.extend({
                 self.updateZOrder();
                 gv.building_selected = 0;
                 cf.isDeciding = false;
+                this.updateResource();
                 testnetwork.connector.sendBuild(self._id, self._row, self._col);
-                if(cf.currentItemCurrency === "gold") {
-                    cf.user._currentCapacityGold -= cf.currentItemPrice;
-                } else if(cf.currentItemCurrency === "elixir") {
-                    cf.user._currentCapacityElixir -= cf.currentItemPrice;
-                } else if(cf.currentItemCurrency === "coin") {
-                    cf.user._currentCapacityCoin -= cf.currentItemPrice;
-                }
-                fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
-                fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
-                fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
-                cf.currentItemCurrency = null;
-                cf.currentItemPrice = null;
             }
         }.bind(this));
     },
 
+    updateResource: function()
+    {
+        var str = this._buildingSTR;
+        var level = this._level;
+        var gold = 0;
+        var elixir = 0;
+        var darkElixir = 0;
+        var coin = 0;
 
+        switch(str)
+        {
+            case gv.buildingSTR.townHall:
+                gold = gv.json.townHall[str][level]["gold"];
+                elixir = 0;
+                darkElixir = 0;
+                coin = 0;
+                break;
+            case gv.buildingSTR.builderHut:
+                gold = 0;
+                elixir = 0;
+                darkElixir = 0;
+                coin = gv.json.builderHut[str][level]["coin"];
+                break;
+            case gv.buildingSTR.armyCamp_1:
+                gold = 0;
+                elixir = gv.json.armyCamp[str][level]["elixir"];
+                darkElixir = gv.json.armyCamp[str][level]["darkElixir"];
+                coin = 0;
+                break;
+            case gv.buildingSTR.barrack_1:
+                gold = 0;
+                elixir = gv.json.barrack[str][level]["elixir"];
+                darkElixir = gv.json.barrack[str][level]["darkElixir"];
+                coin = 0;
+                break;
+            case gv.buildingSTR.resource_1:
+                gold = gv.json.resource[str][level]["gold"];
+                elixir = gv.json.resource[str][level]["elixir"];
+                darkElixir = gv.json.resource[str][level]["darkElixir"];
+                coin = 0;
+                break;
+            case gv.buildingSTR.resource_2:
+                gold = gv.json.resource[str][level]["gold"];
+                elixir = gv.json.resource[str][level]["elixir"];
+                darkElixir = gv.json.resource[str][level]["darkElixir"];
+                coin = 0;
+                break;
+            case gv.buildingSTR.storage_1:
+                gold = gv.json.storage[str][level]["gold"];
+                elixir = gv.json.storage[str][level]["elixir"];
+                darkElixir = gv.json.storage[str][level]["darkElixir"];
+                coin = 0;
+                break;
+            case gv.buildingSTR.storage_2:
+                gold = gv.json.storage[str][level]["gold"];
+                elixir = gv.json.storage[str][level]["elixir"];
+                darkElixir = gv.json.storage[str][level]["darkElixir"];
+                coin = 0;
+                break;
+            case gv.buildingSTR.canon:
+                break;
+            case gv.buildingSTR.obstacle:
+                break;
+            default:
+                break;
+        };
+        // cc.log(hp + " " + hpMax + " " + time);
+        // cc.log(gold + " " + elixir + " " + darkElixir + " " + coin);
+        cf.user._currentCapacityGold -= gold;
+        cf.user._currentCapacityElixir -= elixir;
+        cf.user._currentCapacityDarkElixir -= darkElixir;
+        cf.user._currentCapacityCoin -= coin;
+
+        this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+        this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+        this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+        this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+    },
 
     hideBuildingButton: function() {
         this._gui_cancel_build.visible = false;

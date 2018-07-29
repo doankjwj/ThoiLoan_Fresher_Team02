@@ -1,11 +1,14 @@
 var PopUpConstruct = cc.Node.extend({
     _constructType: null,
+    _buildingId: null,
 
     _bg: null,
     _titleBar: null,
     _txtTitle: null,
     _btnClose: null,
     _btnOk: null,
+
+    _uprgradeAble: null,
 
     _icon: null,
     _grass: null,
@@ -15,6 +18,13 @@ var PopUpConstruct = cc.Node.extend({
     _hpTXT: null,
     _hpIcon: null,
     _timeRequireTXT: null,
+
+    _cost: {
+        gold: 0,
+        elixir: 0,
+        darkElixir: 0,
+        coin: 0
+    },
 
     _bgScale: 2,
 
@@ -66,6 +76,30 @@ var PopUpConstruct = cc.Node.extend({
         this.addChild(this._btnOk, 1);
         this._btnOk.addClickEventListener(function(){
             self.setPosition(cc.p(0, - cc.winSize.height));
+            if (!gv.upgradeAble)
+            {
+                self.getParent().popUpMessage("Chưa đủ tài nguyên");
+                return;
+            };
+            if (cf.user._builderFree <= 0)
+            {
+                self.getParent().popUpMessage("Tất cả thợ đang bận");
+                return;
+            }
+
+            cc.log("Upgrade")
+
+            cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)].onStartBuild();
+            /* Update User Infor + Resource Bar */
+            cf.user._currentCapacityGold -= self._cost.gold;
+            cf.user._currentCapacityElixir -= self._cost.elixir;
+            cf.user._currentCapacityDarkElixir -= self._cost.darkElixir;
+            cf.user._currentCapacityCoin -= self._cost.coin;
+
+            self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+            self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+            self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+            self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
         });
 
         /* Building Icon */
@@ -133,7 +167,23 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._hpTXT, 2, this._TAG_HP_TXT);
     },
-    //
+
+    showPopUpMessage: function(msg)
+    {
+        // if (gv.building_selected == undefined) return;
+        // if (!this.getParent().getChildByTag(gv.tag.TAG_POPUP_MESSAGE))
+        // {
+        //     var popUp = PopUPMessage.getOrCreate();
+        //     this.getParent().addChild(popUp, 1, gv.tag.TAG_POPUP_MESSAGE);
+        // }
+        // this.getParent().getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setPosition(cc.winSize.width/2, cc.winSize.height/2);
+        // // this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).visible = true;
+        // this.getParent().getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setMessage(msg);
+        // this.getParent().getChildByTag(gv.tag.TAG_POPUP_MESSAGE).show();
+        // self.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).updateContent(gv.building_selected, gv.constructType.info);
+    },
+
+
     // onEnter:function()
     // {
     //     cc.registerTargetedDelegate(-100, true, this);
@@ -147,7 +197,9 @@ var PopUpConstruct = cc.Node.extend({
 
     updateContent: function(id, constructType)
     {
+        this._buildingId = id;
         this._constructType = constructType;
+        gv.upgradeAble = true;
         if (constructType == gv.constructType.info)
         {
             this._btnOk.visible = false;
@@ -273,6 +325,11 @@ var PopUpConstruct = cc.Node.extend({
         };
         // cc.log(hp + " " + hpMax + " " + time);
         // cc.log(gold + " " + elixir + " " + darkElixir + " " + coin);
+        this._cost.gold = gold;
+        this._cost.elixir = elixir;
+        this._cost.darkElixir = darkElixir;
+        this._cost.coin = coin;
+
         this._hpTXT.setString("Máu: " + hp + "/" + hpMax);
         this._hpBar.setTextureRect(cc.rect(0,0, hp/hpMax * 311, 36));
 
@@ -406,6 +463,11 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             this.txtGold.setColor(cc.color(255, 255, 255, 255));
             this.txtGold.setAnchorPoint(1, 0.5);
             this.txtGold.setPosition(cc.p(0, sum / 2 * this.txtGold.height));
+            if (gold >= cf.user._currentCapacityGold)
+            {
+                this.txtGold.setColor(cc.color(255, 0, 0, 255));
+                gv.upgradeAble = false;
+            }
             this.addChild(this.txtGold, 0);
 
             this.iconGold = cc.Sprite(upgradeBuildingGUI.iconGold);
@@ -419,6 +481,11 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             this.txtElixir.setColor(cc.color(255, 255, 255, 255));
             this.txtElixir.setAnchorPoint(1, 0.5);
             this.txtElixir.setPosition(cc.p(0, (sum-1) / 2 * this.txtElixir.height));
+            if (elixir >= cf.user._currentCapacityElixir)
+            {
+                this.txtElixir.setColor(cc.color(255, 0, 0, 255));
+                gv.upgradeAble = false;
+            }
             this.addChild(this.txtElixir, 0);
 
             this.iconElixir = cc.Sprite(upgradeBuildingGUI.iconElixir);
@@ -432,6 +499,11 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             this.txtDarkElixir.setColor(cc.color(255, 255, 255, 255));
             this.txtDarkElixir.setAnchorPoint(1, 0.5);
             this.txtDarkElixir.setPosition(cc.p(0, -(sum-1) / 2 * this.txtDarkElixir.height));
+            if (darkElixir >= cf.user._currentCapacityDarkElixir)
+            {
+                this.txtDarkElixir.setColor(cc.color(255, 0, 0, 255));
+                gv.upgradeAble = false;
+            }
             this.addChild(this.txtDarkElixir, 0);
 
             this.iconDarkElixir = cc.Sprite(upgradeBuildingGUI.iconDarkElixir);
@@ -445,6 +517,11 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             this.txtCoin.setColor(cc.color(255, 255, 255, 255));
             this.txtCoin.setAnchorPoint(1, 0.5);
             this.txtCoin.setPosition(cc.p(0, -sum / 2 * this.txtCoin.height));
+            if (coin >= cf.user._currentCapacityCoin)
+            {
+                this.txtCoin.setColor(cc.color(255, 0, 0, 255));
+                gv.upgradeAble = false;
+            }
             this.addChild(this.txtCoin, 0);
 
             this.iconCoin = cc.Sprite(upgradeBuildingGUI.iconCoin);

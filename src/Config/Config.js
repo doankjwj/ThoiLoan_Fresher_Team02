@@ -233,20 +233,20 @@ gv.capacity =
 
 /* Main Tag */
 gv.tag =
-{
-    TAG_MAP: 1800,
-    TAG_CENTER_BUILDING: 1801,
-    TAG_BUILDER_BAR: 1900,
-    TAG_RESOURCE_BAR_GOLD: 1901,
-    TAG_RESOURCE_BAR_ELIXIR: 1902,
-    TAG_RESOURCE_BAR_DARK_ELIXIR: 1903,
-    TAG_RESOURCE_BAR_COIN: 1904,
-    TAG_POPUP: 2000,
-    TAG_POPUP_TXT_CONTENT: 2001,
-};
-
+    {
+        TAG_MAP: 1800,
+        TAG_CENTER_BUILDING: 1801,
+        TAG_BUILDER_BAR: 1900,
+        TAG_RESOURCE_BAR_GOLD: 1901,
+        TAG_RESOURCE_BAR_ELIXIR: 1902,
+        TAG_RESOURCE_BAR_DARK_ELIXIR: 1903,
+        TAG_RESOURCE_BAR_COIN: 1904,
+        TAG_POPUP: 2000,
+        TAG_POPUP_MESSAGE: 2001,
+    };
 /* Pop Up */
 gv.popUpConstruct = null;
+gv.popUpMessage = null;
 
 //function
 cf.shopTagToName = function (tag) {

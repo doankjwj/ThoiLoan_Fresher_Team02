@@ -58,7 +58,7 @@ CmdSendLogin = fr.OutPacket.extend(
         },
         pack:function(username){
             this.packHeader();
-            this.putString(username);
+            // this.putString(username);
             this.updateSize();
         }
     }

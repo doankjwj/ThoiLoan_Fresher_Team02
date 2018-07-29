@@ -45,6 +45,7 @@
         "src/GUI/BuilderBar.js",
 
         "src/GUI/PopUpConstruct.js",
+        "src/GUI/PopUpMessage.js",
 
         "src/NetWork/framework/Utility/ClientConfig.js",
         "src/NetWork/framework/Utility/Localization.js",
