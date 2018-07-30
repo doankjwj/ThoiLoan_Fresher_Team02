@@ -242,8 +242,10 @@ var BuildingNode = cc.Node.extend({
         this._existed = true;
         this._is_active = false;
         //this.locate_map_array(this);
+        cc.log(startConstructType);
         if (startConstructType == gv.startConstructType.newConstruct) {
             this._time_remaining = this.getTimeRequire();
+            cc.log(this._name);
         }
         else
 
@@ -252,6 +254,8 @@ var BuildingNode = cc.Node.extend({
         }
 
         this._time_total = this._time_remaining;
+
+        cc.log(this._time_total);
 
         /* Time Bar */
         this._info_bar = cc.Sprite(res.folder_gui_build + "info_bar.png", cc.rect(0,0, this._BAR_WIDTH, this._BAR_HEIGHT));

@@ -101,7 +101,7 @@ var PopUpConstruct = cc.Node.extend({
 
             cc.log("Upgrade");
             self.onDisappear();
-            cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)].onStartBuild();
+            cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)].onStartBuild(gv.startConstructType.newConstruct);
             /* Update User Infor + Resource Bar */
             cf.user._currentCapacityGold -= self._cost.gold;
             cf.user._currentCapacityElixir -= self._cost.elixir;
@@ -230,6 +230,7 @@ var PopUpConstruct = cc.Node.extend({
 
     updateContent: function(id, constructType)
     {
+
         this._buildingId = id;
         this._constructType = constructType;
         gv.upgradeAble = true;
@@ -245,10 +246,10 @@ var PopUpConstruct = cc.Node.extend({
         var level = b._level;
         if (constructType == gv.constructType.upgrade)
             level++;
-        this.updateIcon(b._buildingSTR, level, b._size, b._name);
+        this.updateIcon(b._buildingSTR, level, b._size, b._name, b._is_active);
     },
 
-    updateIcon: function(str, level, size, name)
+    updateIcon: function(str, level, size, name, status)
     {
         if(this.getChildByTag(this._TAG_ICON))
             this.removeChildByTag(this._TAG_ICON);
@@ -256,6 +257,8 @@ var PopUpConstruct = cc.Node.extend({
             this.removeChildByTag(this._TAG_GRASS);
         if (this.getChildByTag(this._TAG_EFFECT))
             this.removeChildByTag(this._TAG_EFFECT);
+
+        if (!status) level--;
 
         /* Title Bar */
         this._txtTitle.setString(((this._constructType == gv.constructType.upgrade) ? "Nâng lên " : "") + name + " cấp " + level);

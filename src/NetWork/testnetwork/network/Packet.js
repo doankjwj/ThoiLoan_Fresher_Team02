@@ -207,6 +207,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
                 this.map.RES_1[i].Y = this.getByte();
                 this.map.RES_1[i].level = this.getByte();
                 this.map.RES_1[i].lastHarvestTime = this.getLong();
+                cc.log(this.map.RES_1[i].lastHarvestTime - new Date().getTime());
             }
 
             /* Resource 2 */
