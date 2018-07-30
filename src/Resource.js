@@ -30,6 +30,7 @@ var res = {
     troopBaseJson: jsonFolder + "TroopBase.json",
     obstacleJson: jsonFolder + "Obstacle.json",
     shopItemList: jsonFolder + "ShopList.json",
+    defenceJson: jsonFolder + "Defence.json",
 
     folder_builder_hut: buildingsFolder + "builder hut/",
     folder_army_camp: buildingsFolder + "army camp/",
@@ -39,7 +40,7 @@ var res = {
     folder_gold_storage: buildingsFolder + "gold storage/",
     folder_elixir_collector: buildingsFolder + "elixir collector/",
     folder_elixir_storage: buildingsFolder + "elixir storage/",
-    folder_canon: buildingsFolder + "cannon/",
+    folder_canon: buildingsFolder + "cannon/canon_",
     folder_defense_base: buildingsFolder + "defense_base/",
     folder_obs: buildingsFolder + "obstacle/",
 

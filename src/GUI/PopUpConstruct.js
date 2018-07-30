@@ -513,7 +513,7 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
         };
         if (coin != 0)
         {
-            this.txtCoin = cc.LabelBMFont(Coin, font.soji20);
+            this.txtCoin = cc.LabelBMFont(coin, font.soji20);
             this.txtCoin.setColor(cc.color(255, 255, 255, 255));
             this.txtCoin.setAnchorPoint(1, 0.5);
             this.txtCoin.setPosition(cc.p(0, -sum / 2 * this.txtCoin.height));

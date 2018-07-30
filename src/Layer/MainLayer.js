@@ -576,6 +576,10 @@ var MainLayer = cc.Layer.extend({
             gv.json.shopItemList = data;
         });
 
+        cc.loader.loadJson(res.defenceJson, function(err, data) {
+           gv.json.defence = data;
+        });
+
         //cc.loader.loadJson("res/ConfigJson/ShopList.json", function(error, data){
         //    cf.ShopItemList = data;
         //});

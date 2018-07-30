@@ -9,6 +9,7 @@ var BuildingNode = cc.Node.extend({
     _is_active: true,
     _finishing_time: null,
     _name: null,
+    _constructAble: true,
 
     _center_building: null,
     _grass: null,
@@ -232,7 +233,6 @@ var BuildingNode = cc.Node.extend({
         if (!this._is_active)
         {
             this.onStartBuild(gv.startConstructType.loadConstruct);
-            cc.log(this._name + " Build This");
         }
     },
 
@@ -243,14 +243,12 @@ var BuildingNode = cc.Node.extend({
         this._is_active = false;
         //this.locate_map_array(this);
         if (startConstructType == gv.startConstructType.newConstruct) {
-            cc.log(this._name + " New Build");
             this._time_remaining = this.getTimeRequire();
         }
         else
 
         {
             this._time_remaining = Math.floor((this._finishing_time - new Date().getTime()) / 1000);
-            cc.log(this._name + " Load Build");
         }
 
         this._time_total = this._time_remaining;
@@ -313,7 +311,6 @@ var BuildingNode = cc.Node.extend({
         }
         if (this._time_remaining <= 0 && !this._is_active)
         {
-            cc.log(this._name);
             this.onCompleteBuild();
             return;
         }
@@ -335,7 +332,6 @@ var BuildingNode = cc.Node.extend({
     },
 
     onCompleteBuild: function() {
-        cc.log(this._name);
         this._is_active = true;
         this._effect_level_up.visible = true;
         if (cf.animationConstructLevelUp == null)
@@ -439,8 +435,9 @@ var BuildingNode = cc.Node.extend({
             case gv.buildingSTR.storage_2:
                 json = gv.json.storage;
                 break;
-            case "canon_":
-                return this._level * 150;
+            case gv.buildingSTR.defence_1:
+                json = gv.json.defence;
+                break;
             case gv.buildingSTR.builderHut:
                 return 0;
             default:
@@ -489,6 +486,9 @@ var BuildingNode = cc.Node.extend({
             case gv.buildingSTR.obstacle:
                 this._center_building = cc.Sprite(res.folder_obs + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
+            case gv.buildingSTR.defence_1:
+                this._center_building = cc.Sprite(res.folder_canon + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
             default:
                 break;
         }
@@ -532,17 +532,23 @@ var BuildingNode = cc.Node.extend({
             self.getParent().removeChild(self);
         }.bind(this));
         this._gui_commit_build.addClickEventListener(function(){
-            //cc.log(cf.user._builderFree)
             if (cf.user._builderFree <= 0)
             {
                 self.getParent().getParent().popUpMessage("Tất cả thợ đang bận");
                 return;
             }
             if(!self._red.visible) {
-                self.locate_map_array(self);
-                self.onStartBuild(gv.startConstructType.newConstruct);
                 self.onEndClick();
                 self.hideBuildingButton();
+                this.checkResource();
+                if (!this._constructAble)
+                {
+                    self.getParent().getParent().popUpMessage("Chưa đủ tài nguyên");
+                    return;
+                };
+                self.locate_map_array(self);
+                self.onStartBuild(gv.startConstructType.newConstruct);
+
                 self.getParent().addBuildingToUserBuildingList(self);
                 self.updateZOrder();
                 gv.building_selected = 0;
@@ -553,8 +559,9 @@ var BuildingNode = cc.Node.extend({
         }.bind(this));
     },
 
-    updateResource: function()
+    checkResource: function()
     {
+        this._constructAble = true;
         var str = this._buildingSTR;
         var level = this._level;
         var gold = 0;
@@ -574,7 +581,7 @@ var BuildingNode = cc.Node.extend({
                 gold = 0;
                 elixir = 0;
                 darkElixir = 0;
-                coin = gv.json.builderHut[str][level]["coin"];
+                coin = gv.json.builderHut[str][cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut] + 1]["coin"];
                 break;
             case gv.buildingSTR.armyCamp_1:
                 gold = 0;
@@ -612,15 +619,95 @@ var BuildingNode = cc.Node.extend({
                 darkElixir = gv.json.storage[str][level]["darkElixir"];
                 coin = 0;
                 break;
-            case gv.buildingSTR.canon:
+            case gv.buildingSTR.defence_1:
+                gold = gv.json.defence[str][level]["gold"];
+                elixir = 0;
+                darkElixir = gv.json.defence[str][level]["darkElixir"];
+                coin = 0;
                 break;
             case gv.buildingSTR.obstacle:
                 break;
             default:
                 break;
         };
-        // cc.log(hp + " " + hpMax + " " + time);
-        // cc.log(gold + " " + elixir + " " + darkElixir + " " + coin);
+
+        if(cf.user._currentCapacityGold < gold) this._constructAble = false;
+        if(cf.user._currentCapacityElixir < elixir) this._constructAble = false;
+        if(cf.user._currentCapacityDarkElixir < darkElixir) this._constructAble = false;
+        if(cf.user._currentCapacityCoin < coin) this._constructAble = false;
+    },
+
+    updateResource: function()
+    {
+        var str = this._buildingSTR;
+        var level = this._level;
+        var gold = 0;
+        var elixir = 0;
+        var darkElixir = 0;
+        var coin = 0;
+
+        switch(str)
+        {
+            case gv.buildingSTR.townHall:
+                gold = gv.json.townHall[str][level]["gold"];
+                elixir = 0;
+                darkElixir = 0;
+                coin = 0;
+                break;
+            case gv.buildingSTR.builderHut:
+                gold = 0;
+                elixir = 0;
+                darkElixir = 0;
+                coin = gv.json.builderHut[str][cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut]]["coin"];
+                break;
+            case gv.buildingSTR.armyCamp_1:
+                gold = 0;
+                elixir = gv.json.armyCamp[str][level]["elixir"];
+                darkElixir = gv.json.armyCamp[str][level]["darkElixir"];
+                coin = 0;
+                break;
+            case gv.buildingSTR.barrack_1:
+                gold = 0;
+                elixir = gv.json.barrack[str][level]["elixir"];
+                darkElixir = gv.json.barrack[str][level]["darkElixir"];
+                coin = 0;
+                break;
+            case gv.buildingSTR.resource_1:
+                gold = gv.json.resource[str][level]["gold"];
+                elixir = gv.json.resource[str][level]["elixir"];
+                darkElixir = gv.json.resource[str][level]["darkElixir"];
+                coin = 0;
+                break;
+            case gv.buildingSTR.resource_2:
+                gold = gv.json.resource[str][level]["gold"];
+                elixir = gv.json.resource[str][level]["elixir"];
+                darkElixir = gv.json.resource[str][level]["darkElixir"];
+                coin = 0;
+                break;
+            case gv.buildingSTR.storage_1:
+                gold = gv.json.storage[str][level]["gold"];
+                elixir = gv.json.storage[str][level]["elixir"];
+                darkElixir = gv.json.storage[str][level]["darkElixir"];
+                coin = 0;
+                break;
+            case gv.buildingSTR.storage_2:
+                gold = gv.json.storage[str][level]["gold"];
+                elixir = gv.json.storage[str][level]["elixir"];
+                darkElixir = gv.json.storage[str][level]["darkElixir"];
+                coin = 0;
+                break;
+            case gv.buildingSTR.defence_1:
+                gold = gv.json.defence[str][level]["gold"];
+                elixir = 0;
+                darkElixir = gv.json.defence[str][level]["darkElixir"];
+                coin = 0;
+                break;
+            case gv.buildingSTR.obstacle:
+                break;
+            default:
+                break;
+        };
+        
         cf.user._currentCapacityGold -= gold;
         cf.user._currentCapacityElixir -= elixir;
         cf.user._currentCapacityDarkElixir -= darkElixir;

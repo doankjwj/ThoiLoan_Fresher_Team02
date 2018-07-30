@@ -91,7 +91,8 @@ gv.json =
     townHall: null,
     troop: null,
     troopBase: null,
-    itemList: null
+    itemList: null,
+    defence: null
 };
 
 //cf.ShopItemList = null;
@@ -157,7 +158,7 @@ gv.buildingSTR = {
     barrack_2: "BAR_2",
     builderHut: "BDH_1",
     obstacle: "OBS",
-    canon: "canon",
+    defence_1: "DEF_1"
 };
 gv.buildOnMoveGUI =
 {
@@ -180,7 +181,7 @@ gv.buildingName =
     barrack_2: "Nhà lính đen",
     builderHut: "Nhà thợ xây",
     obstacle: "Vật cản",
-    canon: "Pháo thần công"
+    defence_1: "Pháo thần công"
 
 };
 gv.orderInUserBuildingList =
@@ -198,7 +199,7 @@ gv.orderInUserBuildingList =
     barrack_2: 10,
     builderHut: 11,
     obstacle: 12,
-    canon: 13
+    defence_1: 13
 
 };
 gv.buildingMaxLevel = {
@@ -215,7 +216,7 @@ gv.buildingMaxLevel = {
     barrack_2: 6,
     builderHut: 5,
     obstacle: 27,
-    canon: 0
+    defence_1: 17
 }
 gv.constructType =
 {
@@ -316,7 +317,7 @@ cf.getJsonConfigFile = function (str) {
         case "AMC":
             return gv.json.armyCamp;
         case "DEF":
-            return null;
+            return gv.json.defence;
         case "BAR":
             return gv.json.barrack;
     }
@@ -340,7 +341,8 @@ cf.tagToItem = function(tag, lvl, posX, posY, existed){
             return new Storage(25, lvl, posX, posY, existed, gv.buildingSTR.storage_2);
         case 1100:
             return new BuilderHut(26, lvl, posX, posY, existed);
-
+        case 1200:
+            return new Defence(27, lvl, posX, posY, existed, gv.buildingSTR.defence_1);
     }
 };
 

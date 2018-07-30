@@ -69,7 +69,7 @@
 	  {
 		"key": "DEF_1",
 		"name": "Pháo",
-		"jsonConfigFile": "Defense.json",
+		"jsonConfigFile": "Defence.json",
 		"iconPath" : "res/Art/GUIs/icons/shop_gui/icon/DEF_1.png",
 		"priceCurrency" : "gold",
 		"tag": 1200
