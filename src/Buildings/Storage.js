@@ -17,7 +17,10 @@ var Storage = BuildingNode.extend({
         /* Add Center Building */
         this.addCenterBuilding();
 
+
     },
+
+    /* when building is still build */
 
     initAnimation: function()
     {

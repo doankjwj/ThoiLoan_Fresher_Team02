@@ -138,6 +138,10 @@ cf.shopResourceItem = {
     ResCoin: 2342
 };
 
+
+/* time */
+gv.time = null;
+
 /* Building Info */
 gv.buildingSTR = {
     townHall: "TOW_1",
@@ -218,6 +222,12 @@ gv.constructType =
     info: 1231,
     upgrade: 3423,
 };
+/* Build Status */
+gv.startConstructType =
+{
+    newConstruct: 3123,
+    loadConstruct: 5421,
+}
 
 gv.buildingTypeCount = 14;
 
@@ -335,23 +345,57 @@ cf.tagToItem = function(tag, lvl, posX, posY, existed){
 };
 
 cf.stringToItemInit = function(str, index) {
+    var building = null;
+    var currentTime = new Date().getTime();
+    var finishTime = null;
+
     switch(str)
     {
         case "TOW_1":
-            return new TownHall(cf.user._buildingListCount[gv.orderInUserBuildingList.townHall], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
+            finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
+            building = new TownHall(cf.user._buildingListCount[gv.orderInUserBuildingList.townHall], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
+            building._finishing_time = finishTime;
+            building._is_active = (finishTime <= currentTime);
+            break;
         case "BDH_1":
-            return new BuilderHut(cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
+            finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"]
+            building = new BuilderHut(cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
+            building._finishing_time = finishTime;
+            building._is_active = true;
+            break;
         case "STO_1":
-            return new Storage(cf.user._buildingListCount[gv.orderInUserBuildingList.storage_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.storage_1);
+            finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
+            building = new Storage(cf.user._buildingListCount[gv.orderInUserBuildingList.storage_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.storage_1);
+            building._finishing_time = finishTime;
+            building._is_active = (finishTime <= currentTime);
+
+            break;
         case "STO_2":
-            return new Storage(cf.user._buildingListCount[gv.orderInUserBuildingList.storage_2], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.storage_2);
+            finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
+            building = new Storage(cf.user._buildingListCount[gv.orderInUserBuildingList.storage_2], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.storage_2);
+            building._finishing_time = finishTime;
+            building._is_active = (finishTime <= currentTime);
+            break;
         case "RES_1":
-            return new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.resource_1);
+            finishTime = gv.jsonInfo["map"][str][index]["lastHarvestTime"];
+            building = new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.resource_1);
+            building._finishing_time = finishTime;
+            building._is_active = (finishTime <= currentTime);
+            break;
         case "RES_2":
-            return new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_2], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.resource_2);
+            finishTime = gv.jsonInfo["map"][str][index]["lastHarvestTime"]
+            building = new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_2], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.resource_2);
+            building._finishing_time = finishTime;
+            building._is_active = (finishTime <= currentTime);
+            break;
         case "AMC_1":
-            return new ArmyCamp(cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
+            finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
+            building =  new ArmyCamp(cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
+            building._finishing_time = finishTime;
+            building._is_active = (finishTime <= currentTime);
+            break;
     }
+    return building;
 };
 
 cf.secondsToLongTime = function(seconds)

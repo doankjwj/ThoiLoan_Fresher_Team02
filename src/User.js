@@ -160,7 +160,11 @@ var User = cc.Class.extend({
         {
             for(var j = 0; j < this._buildingListCount[i]; j++)
             {
-                if (this._buildingList[i][j]._is_active == false) builderBusy ++;
+                if (this._buildingList[i][j]._is_active == false)
+                {
+                    builderBusy ++;
+                    cc.log(this._buildingList[i][j]._name);
+                }
             }
         }
 

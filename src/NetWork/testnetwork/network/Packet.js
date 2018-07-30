@@ -58,7 +58,7 @@ CmdSendLogin = fr.OutPacket.extend(
         },
         pack:function(username){
             this.packHeader();
-            // this.putString(username);
+            this.putString(username);
             this.updateSize();
         }
     }
@@ -144,6 +144,12 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
         },
         readData:function()
         {
+            gv.time = new Date();
+            gv.time = gv.time.getTime();
+
+
+            //cc.log(time);
+
             /* Town Hall */
             this.map = new Object();
             this.map.TOW_1 = [];
@@ -153,10 +159,12 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
             this.map.TOW_1[0].level = this.getByte();
             this.map.TOW_1[0].finishBuildOrUpgradeTime = this.getLong();
 
+
+
             /* Storage 1 */
             var Amount = this.getByte();
             this.map.STO_1 = [];
-            for (i = 0; i < Amount; i += 1)
+            for (var i = 0; i < Amount; i += 1)
             {
                 this.map.STO_1.push(new Object());
                 this.map.STO_1[i].X = this.getByte();
@@ -168,7 +176,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
             /* Storage 2 */
             Amount = this.getByte();
             this.map.STO_2 = [];
-            for (i = 0; i < Amount; i += 1)
+            for (var i = 0; i < Amount; i += 1)
             {
                 this.map.STO_2.push(new Object());
                 this.map.STO_2[i].X = this.getByte();
@@ -180,7 +188,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
             /* Storage 3 */
             Amount = this.getByte();
             this.map.STO_3 = [];
-            for (i = 0; i < Amount; i += 1)
+            for (var i = 0; i < Amount; i += 1)
             {
                 this.map.STO_3.push(new Object());
                 this.map.STO_3[i].X = this.getByte();
@@ -192,7 +200,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
             /* Resource 1 */
             Amount = this.getByte();
             this.map.RES_1 = [];
-            for (i = 0; i < Amount; i += 1)
+            for (var i = 0; i < Amount; i += 1)
             {
                 this.map.RES_1.push(new Object());
                 this.map.RES_1[i].X = this.getByte();
@@ -204,7 +212,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
             /* Resource 2 */
             Amount = this.getByte();
             this.map.RES_2 = [];
-            for (i = 0; i < Amount; i += 1)
+            for (var i = 0; i < Amount; i += 1)
             {
                 this.map.RES_2.push(new Object());
                 this.map.RES_2[i].X = this.getByte();
@@ -216,7 +224,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
             /* Resource 3 */
             Amount = this.getByte();
             this.map.RES_3 = [];
-            for (i = 0; i < Amount; i += 1)
+            for (var i = 0; i < Amount; i += 1)
             {
                 this.map.RES_3.push(new Object());
                 this.map.RES_3[i].X = this.getByte();
@@ -246,7 +254,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
             /* Army Camp 1 */
             Amount = this.getByte();
             this.map.AMC_1 = [];
-            for (i = 0; i < Amount; i += 1)
+            for (var i = 0; i < Amount; i += 1)
             {
                 this.map.AMC_1.push(new Object());
                 this.map.AMC_1[i].X = this.getByte();
@@ -259,7 +267,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
             Amount = this.getByte();//Amount of BAR_1
             if (Amount > 0)
                 this.map.BAR_1 = [];
-            for (i = 0; i < Amount; i += 1)
+            for (var i = 0; i < Amount; i += 1)
             {
                 this.map.BAR_1.push(new Object());
                 this.map.BAR_1[i].X = this.getByte();
@@ -287,7 +295,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
             Amount = this.getByte();//Amount of BAR_2
             if (Amount > 0)
                 this.map.BAR_2 = [];
-            for (i = 0; i < Amount; i += 1)
+            for (var i = 0; i < Amount; i += 1)
             {
                 this.map.BAR_2.push(new Object());
                 this.map.BAR_2[i].X = this.getByte();
@@ -314,7 +322,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
             /* Builder Hut 1 */
             Amount = this.getByte();//Amount of builderHut
             this.map.BDH_1 = [];
-            for (i = 0; i < Amount; i += 1)
+            for (var i = 0; i < Amount; i += 1)
             {
                 this.map.BDH_1.push(new Object());
                 this.map.BDH_1[i].X = this.getByte();
@@ -334,7 +342,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
 
             this.player.troopLevel = [];
             this.player.troopAmount = [];
-            for (i = 0; i < 18; i += 1)
+            for (var i = 0; i < 18; i += 1)
             {
                 this.player.troopLevel.push(this.getByte());
                 this.player.troopAmount.push(this.getShort());

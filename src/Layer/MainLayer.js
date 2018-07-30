@@ -115,6 +115,7 @@ var MainLayer = cc.Layer.extend({
         this.initUser();
         this.initMainGUI();
         this.initMap();
+        this.initRetainBuilding();
         this.updateGUIandUserInfo();
 
     },
@@ -143,6 +144,29 @@ var MainLayer = cc.Layer.extend({
         this._map.setPosition(centering);
         this.addChild(this._map, 0, gv.tag.TAG_MAP);
         this.moveMap();
+    },
+
+    initRetainBuilding: function()
+    {
+        var building = null;
+        for (var i = 0; i <= gv.buildingTypeCount; i++)
+            for (var j = 0; j < cf.user._buildingListCount[i]; j++)
+        {
+            building = cf.user._buildingList[i][j];
+            if (!building._is_active)
+            {
+                cc.log(building._name);
+                building.updateConstructType();
+
+            }
+        };
+
+        if (!building._is_active)
+        {
+            cc.log(building._name);
+            building.updateConstructType();
+
+        }
     },
 
     updateGUIandUserInfo: function()

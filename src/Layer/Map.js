@@ -39,6 +39,7 @@ var Map = cc.Node.extend({
                         self.addChild(building);
                         self.addBuildingToUserBuildingList(building);
                         if(building._existed) building.locate_map_array(building);
+
                         //building.locate_map_array(building._row, building._col, building._size);
                     }
                 }
@@ -46,13 +47,13 @@ var Map = cc.Node.extend({
         }
 
 
-        // for (var i = 0; i < Object.keys(gv.json.initGame["obs"]).length; i++)
-        //        {
-        //            var obs = gv.json.initGame["obs"][i+1];
-        //            var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"], true);
-        //            var tag = i*500;
-        //            this.addChild(obstacle, 2, tag);
-        //        }
+         //for (var i = 0; i < Object.keys(gv.json.initGame["obs"]).length; i++)
+         //       {
+         //           var obs = gv.json.initGame["obs"][i+1];
+         //           var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"], true);
+         //           var tag = i*500;
+         //           this.addChild(obstacle, 2, tag);
+         //       }
     },
 
     //add_building: function()

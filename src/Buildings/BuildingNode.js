@@ -227,14 +227,33 @@ var BuildingNode = cc.Node.extend({
         this.addChild(this._effect_level_up, this._defence.getLocalZOrder() + 1);
     },
 
-    onStartBuild: function() {
+    updateConstructType: function()
+    {
+        if (!this._is_active)
+        {
+            this.onStartBuild(gv.startConstructType.loadConstruct);
+            cc.log(this._name + " Build This");
+        }
+    },
+
+    onStartBuild: function(startConstructType) {
         if (this._existed)
             this._level ++;
         this._existed = true;
-        //this.locate_map_array(this);
-        this._time_remaining = this.getTimeRequire();
-        this._time_total = this._time_remaining;
         this._is_active = false;
+        //this.locate_map_array(this);
+        if (startConstructType == gv.startConstructType.newConstruct) {
+            cc.log(this._name + " New Build");
+            this._time_remaining = this.getTimeRequire();
+        }
+        else
+
+        {
+            this._time_remaining = Math.floor((this._finishing_time - new Date().getTime()) / 1000);
+            cc.log(this._name + " Load Build");
+        }
+
+        this._time_total = this._time_remaining;
 
         /* Time Bar */
         this._info_bar = cc.Sprite(res.folder_gui_build + "info_bar.png", cc.rect(0,0, this._BAR_WIDTH, this._BAR_HEIGHT));
@@ -292,8 +311,9 @@ var BuildingNode = cc.Node.extend({
             // this._effect_level_up.visible = false;
             return;
         }
-        if (this._time_remaining <= 0)
+        if (this._time_remaining <= 0 && !this._is_active)
         {
+            cc.log(this._name);
             this.onCompleteBuild();
             return;
         }
@@ -315,6 +335,7 @@ var BuildingNode = cc.Node.extend({
     },
 
     onCompleteBuild: function() {
+        cc.log(this._name);
         this._is_active = true;
         this._effect_level_up.visible = true;
         if (cf.animationConstructLevelUp == null)
@@ -392,6 +413,8 @@ var BuildingNode = cc.Node.extend({
     },
 
     getTimeRequire: function() {
+
+
         var json = null;
         switch (this._buildingSTR)
         {
@@ -509,6 +532,7 @@ var BuildingNode = cc.Node.extend({
             self.getParent().removeChild(self);
         }.bind(this));
         this._gui_commit_build.addClickEventListener(function(){
+            //cc.log(cf.user._builderFree)
             if (cf.user._builderFree <= 0)
             {
                 self.getParent().getParent().popUpMessage("Tất cả thợ đang bận");
@@ -516,7 +540,7 @@ var BuildingNode = cc.Node.extend({
             }
             if(!self._red.visible) {
                 self.locate_map_array(self);
-                self.onStartBuild();
+                self.onStartBuild(gv.startConstructType.newConstruct);
                 self.onEndClick();
                 self.hideBuildingButton();
                 self.getParent().addBuildingToUserBuildingList(self);

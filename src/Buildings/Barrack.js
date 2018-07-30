@@ -22,6 +22,12 @@ var Barrack = BuildingNode.extend({
             effect.scale = cf.SCALE;
             this.addChild(effect, this._center_building.getLocalZOrder() + 1);
             effect.runAction(cf.animationBarrack[this._level].clone().repeatForever());
+        };
+
+        if (!this._is_active)
+        {
+            this.onStartBuild(gv.startConstructType.loadConstruct);
+            cc.log(this._name + " Build This");
         }
     },
 

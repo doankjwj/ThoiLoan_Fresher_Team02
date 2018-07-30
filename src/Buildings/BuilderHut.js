@@ -9,5 +9,8 @@ var BuilderHut = BuildingNode.extend({
         this._super(id, order, row, col, existed);
         /* Add Center Building */
         this.addCenterBuilding();
+
+        //if (!this._is_active)
+        //    this.onStartBuild(gv.startConstructType.loadConstruct);
     }
 })

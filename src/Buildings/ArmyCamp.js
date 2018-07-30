@@ -23,6 +23,12 @@ var ArmyCamp = BuildingNode.extend({
         effect.scale = 2 * cf.SCALE;
         this.addChild(effect, this._center_building.getLocalZOrder() + 1);
         effect.runAction(cf.animationArmyCamp[2].clone().repeatForever());
+
+        if (!this._is_active)
+        {
+            this.onStartBuild(gv.startConstructType.loadConstruct);
+            cc.log(this._name + " Build This");
+        }
     },
 
     initAnimation: function()
