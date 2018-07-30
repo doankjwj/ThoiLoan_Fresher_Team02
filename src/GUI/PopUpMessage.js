@@ -45,6 +45,7 @@ var PopUPMessage = cc.Node.extend({
     hide: function()
     {
         this.setPosition(cc.p(cc.winSize.width/2, - cc.winSize.height/2));
+        this.getParent().getChildByTag(gv.tag.TAG_POPUP).onDisappear();
     }
 });
 

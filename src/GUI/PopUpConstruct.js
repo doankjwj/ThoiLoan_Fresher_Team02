@@ -8,6 +8,8 @@ var PopUpConstruct = cc.Node.extend({
     _btnClose: null,
     _btnOk: null,
 
+    _swallowTouch: null,
+
     _uprgradeAble: null,
 
     _icon: null,
@@ -27,6 +29,8 @@ var PopUpConstruct = cc.Node.extend({
     },
 
     _bgScale: 2,
+
+    _colorBG: null,
 
     _TAG_ICON: 1122,
     _TAG_GRASS: 3331,
@@ -51,6 +55,13 @@ var PopUpConstruct = cc.Node.extend({
         this._bg.scale = this._bgScale;
         this.addChild(this._bg, 0);
 
+        this._colorBG = cc.LayerColor(cc.color(127.5,127.5,127.5,0));
+        this._colorBG.width = cc.winSize.width;
+        this._colorBG.height = cc.winSize.height;
+        this._colorBG.setAnchorPoint(cc.p(0.5, 0.5));
+        this.addChild(this._colorBG, -1);
+        this.addTouchListener();
+
         /* Text Title */
         this._txtTitle = cc.LabelBMFont("Building Title", font.soji20);
         this._txtTitle.setAnchorPoint(cc.p(0.5, 0.5));
@@ -65,6 +76,7 @@ var PopUpConstruct = cc.Node.extend({
         this.addChild(this._btnClose, 1);
         this._btnClose.addClickEventListener(function(){
             self.setPosition(cc.p(0, - cc.winSize.height));
+            self.onDisappear();
         });
 
         /* Button Ok */
@@ -87,8 +99,8 @@ var PopUpConstruct = cc.Node.extend({
                 return;
             }
 
-            cc.log("Upgrade")
-
+            cc.log("Upgrade");
+            self.onDisappear();
             cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)].onStartBuild();
             /* Update User Infor + Resource Bar */
             cf.user._currentCapacityGold -= self._cost.gold;
@@ -166,6 +178,27 @@ var PopUpConstruct = cc.Node.extend({
             y: this._hpBarBG.y
         });
         this.addChild(this._hpTXT, 2, this._TAG_HP_TXT);
+    },
+
+    addTouchListener: function () {
+        var self = this;
+        this._swallowTouch = cc.EventListener.create({
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            swallowTouches: true,
+            onTouchBegan: function(touch, event){
+                return true;
+            }
+        });
+        this._swallowTouch.setEnabled(false);
+        cc.eventManager.addListener(this._swallowTouch, this._colorBG);
+    },
+
+    onAppear: function() {
+        this._swallowTouch.setEnabled(true);
+    },
+
+    onDisappear: function() {
+        this._swallowTouch.setEnabled(false);
     },
 
     showPopUpMessage: function(msg)

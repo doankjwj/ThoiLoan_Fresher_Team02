@@ -192,9 +192,9 @@ var BuildingNode = cc.Node.extend({
 
             onTouchEnded: function(touch, event) {
                 if(!cf.isMapMoving) {
-                    self.getParent().getParent().showListBotButton();
                     self.onClick();
                     gv.building_selected = self._id;
+                    self.getParent().getParent().showListBotButton();
                     cf.current_r = self._row;
                     cf.current_c = self._col;
                     self._listenerMove.setEnabled(true);
@@ -707,7 +707,7 @@ var BuildingNode = cc.Node.extend({
             default:
                 break;
         };
-        
+
         cf.user._currentCapacityGold -= gold;
         cf.user._currentCapacityElixir -= elixir;
         cf.user._currentCapacityDarkElixir -= darkElixir;

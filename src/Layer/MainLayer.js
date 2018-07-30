@@ -259,6 +259,8 @@ var MainLayer = cc.Layer.extend({
             self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width/2, cc.winSize.height/2);
             self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
             self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.info);
+            self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
+            cc.log(self.getChildByTag(gv.tag.TAG_POPUP)._swallowTouch.isEnabled());
         }. bind(this));
 
         /* Button Upgrade */
@@ -291,6 +293,7 @@ var MainLayer = cc.Layer.extend({
             self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width/2, cc.winSize.height/2);
             self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
             self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
+            self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
         }.bind(this));
     },
 
@@ -317,8 +320,11 @@ var MainLayer = cc.Layer.extend({
     showListBotButton: function() {
         var moveToPos1 = cc.MoveTo(0.1, cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - 2 * cf.offSetGui, this._guiButtonBuildingInfo.height/2*this.scale + cf.offSetGui));
         this._guiButtonBuildingInfo.runAction(moveToPos1);
-        var moveToPos2 = cc.MoveTo(0.1, cc.p(cc.winSize.width/2 + this._guiButtonBuildingUpgrade.width/2 + 2 * cf.offSetGui, this._guiButtonBuildingUpgrade.height/2*this.scale + cf.offSetGui));
-        this._guiButtonBuildingUpgrade.runAction(moveToPos2);
+        var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected % 100];
+        if (building._is_active) {
+            var moveToPos2 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + 2 * cf.offSetGui, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGui));
+            this._guiButtonBuildingUpgrade.runAction(moveToPos2);
+        }
     },
 
     //Exp, Trophy, Username, UserInfo
