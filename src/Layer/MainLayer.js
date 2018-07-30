@@ -305,18 +305,12 @@ var MainLayer = cc.Layer.extend({
             building = cf.user._buildingList[i][j];
             if (!building._is_active)
             {
-                cc.log(building._name);
+                cc.log("============= " +building._name);
                 building.updateConstructType();
 
             }
         };
 
-        if (!building._is_active)
-        {
-            cc.log(building._name);
-            building.updateConstructType();
-
-        }
     },
 
     updateGUIandUserInfo: function()
