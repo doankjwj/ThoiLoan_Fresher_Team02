@@ -8,11 +8,12 @@ var Barrack = BuildingNode.extend({
 
         this._super(id, level, row, col, existed);
 
-        /* Init Animation If Not Exist*/
-        this.initAnimation();
-        cc.log(cf.animationBarrack[this._level]);
+
         /* Add Center Building */
         this.addCenterBuilding();
+
+        /* Init Animation If Not Exist*/
+        this.initAnimation();
 
         /* Add Effect */
         if (this._level >= 4) {

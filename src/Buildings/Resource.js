@@ -9,12 +9,13 @@ var Resource = BuildingNode.extend({
 
         this._super(id, level, row, col, existed);
 
-        /* Init Animation If Not Exist*/
-        this.initAnimation();
+
 
         /* Add Center Building */
         this.addCenterBuilding();
 
+        /* Init Animation If Not Exist*/
+        this.initAnimation();
         /* Effect */
         var effect = cc.Sprite(res.tmp_effect);
         effect.anchorX = 0.5;

@@ -238,7 +238,6 @@ gv.capacity =
     gold: "capacityGold",
     elixir: "capacityElixir",
     darkElixir: "capacityDarkElixir",
-
     capacity: "capacity"
 }
 
