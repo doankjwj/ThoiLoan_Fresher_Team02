@@ -198,8 +198,8 @@ gv.orderInUserBuildingList =
     barrack_1: 9,
     barrack_2: 10,
     builderHut: 11,
-    obstacle: 12,
-    defence_1: 13
+    obstacle: 13,
+    defence_1: 12
 
 };
 gv.buildingMaxLevel = {
@@ -257,6 +257,9 @@ gv.tag =
 /* Pop Up */
 gv.popUpConstruct = null;
 gv.popUpMessage = null;
+
+//offset time
+gv.timeOffset = null;
 
 //function
 cf.shopTagToName = function (tag) {
@@ -392,6 +395,18 @@ cf.stringToItemInit = function(str, index) {
         case "AMC_1":
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
             building =  new ArmyCamp(cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
+            building._finishing_time = finishTime;
+            building._is_active = (finishTime <= currentTime);
+            break;
+        case "DEF_1":
+            finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
+            building =  new Defence(cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, "DEF_1");
+            building._finishing_time = finishTime;
+            building._is_active = (finishTime <= currentTime);
+            break;
+        case "BAR_1":
+            finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
+            building =  new Barrack(cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
             building._finishing_time = finishTime;
             building._is_active = (finishTime <= currentTime);
             break;

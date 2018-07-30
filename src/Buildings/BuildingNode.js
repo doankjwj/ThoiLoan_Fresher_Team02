@@ -357,7 +357,7 @@ var BuildingNode = cc.Node.extend({
             cf.user.updateMaxStorageSingle(this._id);
         /* Update user infor && GUI */
         cf.user._builderFree ++;
-        cf.user.updateSingleBuilder();
+        cf.user.updateBuilder();
 
         /* Update sprite */
         if (this._level > 1)
@@ -539,7 +539,10 @@ var BuildingNode = cc.Node.extend({
             if (cf.user._builderFree <= 0)
             {
                 self.getParent().getParent().popUpMessage("Tất cả thợ đang bận");
-                cc.log("busy");
+                self.hideBuildingButton();
+                self.getParent().removeChild(self);
+                gv.building_selected = 0;
+                cf.isDeciding = false;
                 return;
             }
             if(!self._red.visible) {
@@ -549,6 +552,10 @@ var BuildingNode = cc.Node.extend({
                 if (!this._constructAble)
                 {
                     self.getParent().getParent().popUpMessage("Chưa đủ tài nguyên");
+                    self.hideBuildingButton();
+                    self.getParent().removeChild(self);
+                    gv.building_selected = 0;
+                    cf.isDeciding = false;
                     return;
                 };
                 self.locate_map_array(self);

@@ -103,6 +103,11 @@ var User = cc.Class.extend({
             this._maxCapacityDarkElixir += gv.json.storage[gv.buildingSTR.storage_3][storage._level][gv.capacity.capacity];
         }
 
+        this._maxCapacityGold = Math.max(this._maxCapacityGold, this._currentCapacityGold);
+        this._maxCapacityElixir = Math.max(this._maxCapacityElixir, this._currentCapacityElixir);
+        this._maxCapacityDarkElixir = Math.max(this._maxCapacityDarkElixir, this._currentCapacityDarkElixir);
+
+
         //cc.log(this._maxCapacityGold);
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();

@@ -9,6 +9,7 @@ gv.CMD.USER_LOGIN = 1;
 gv.CMD.USER_INFO = 1001;
 gv.CMD.MOVE = 2310;
 gv.CMD.BUILD = 2010;
+gv.CMD.CHEAT = 2880;
 
 testnetwork = testnetwork||{};
 testnetwork.packetMap = {};
@@ -74,7 +75,6 @@ CmdSendBuild = fr.OutPacket.extend(
         },
         pack:function(id, row, col){
             var _id = Math.floor(id/100) - 1;
-            cc.log(_id + " " + row + " " + col);
             this.packHeader();
             this.putByte(_id);
             this.putByte(row);
@@ -95,12 +95,28 @@ CmdSendMove = fr.OutPacket.extend(
         pack:function(id, row, col){
             this.packHeader();
             var _id = Math.floor(id/100) - 1;
-            cc.log(_id + " " + row + " " + col);
             var _slot = id%100;
             this.putByte(_id);
             this.putByte(_slot);
             this.putByte(row);
             this.putByte(col);
+            this.updateSize();
+        }
+    }
+)
+
+CmdSendCheat = fr.OutPacket.extend(
+    {
+        ctor:function()
+        {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.CHEAT);
+        },
+        pack:function(type, num){
+            this.packHeader();
+            this.putByte(type);
+            this.putInt(num);
             this.updateSize();
         }
     }
@@ -144,20 +160,19 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
         },
         readData:function()
         {
-            gv.time = new Date();
-            gv.time = gv.time.getTime();
+            /* ServerTime */
+            this.currentServerTime = this.getLong();
 
+            gv.timeOffset = this.currentServerTime - (new Date().getTime());
 
-            //cc.log(time);
-
-            /* Town Hall */
+            /* TownHall */
             this.map = new Object();
             this.map.TOW_1 = [];
             this.map.TOW_1.push(new Object);
             this.map.TOW_1[0].X = this.getByte();
             this.map.TOW_1[0].Y = this.getByte();
             this.map.TOW_1[0].level = this.getByte();
-            this.map.TOW_1[0].finishBuildOrUpgradeTime = this.getLong();
+            this.map.TOW_1[0].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
 
 
 
@@ -170,7 +185,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
                 this.map.STO_1[i].X = this.getByte();
                 this.map.STO_1[i].Y = this.getByte();
                 this.map.STO_1[i].level = this.getByte();
-                this.map.STO_1[i].finishBuildOrUpgradeTime = this.getLong();
+                this.map.STO_1[i].finishBuildOrUpgradeTime = this.getLong()- gv.timeOffset;
             }
 
             /* Storage 2 */
@@ -182,7 +197,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
                 this.map.STO_2[i].X = this.getByte();
                 this.map.STO_2[i].Y = this.getByte();
                 this.map.STO_2[i].level = this.getByte();
-                this.map.STO_2[i].finishBuildOrUpgradeTime = this.getLong();
+                this.map.STO_2[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
             }
 
             /* Storage 3 */
@@ -194,7 +209,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
                 this.map.STO_3[i].X = this.getByte();
                 this.map.STO_3[i].Y = this.getByte();
                 this.map.STO_3[i].level = this.getByte();
-                this.map.STO_3[i].finishBuildOrUpgradeTime = this.getLong();
+                this.map.STO_3[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
             }
 
             /* Resource 1 */
@@ -206,8 +221,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
                 this.map.RES_1[i].X = this.getByte();
                 this.map.RES_1[i].Y = this.getByte();
                 this.map.RES_1[i].level = this.getByte();
-                this.map.RES_1[i].lastHarvestTime = this.getLong();
-                cc.log(this.map.RES_1[i].lastHarvestTime - new Date().getTime());
+                this.map.RES_1[i].lastHarvestTime = this.getLong() - gv.timeOffset;
             }
 
             /* Resource 2 */
@@ -219,7 +233,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
                 this.map.RES_2[i].X = this.getByte();
                 this.map.RES_2[i].Y = this.getByte();
                 this.map.RES_2[i].level = this.getByte();
-                this.map.RES_2[i].lastHarvestTime = this.getLong();
+                this.map.RES_2[i].lastHarvestTime = this.getLong() - gv.timeOffset;
             }
 
             /* Resource 3 */
@@ -231,7 +245,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
                 this.map.RES_3[i].X = this.getByte();
                 this.map.RES_3[i].Y = this.getByte();
                 this.map.RES_3[i].level = this.getByte();
-                this.map.RES_3[i].lastHarvestTime = this.getLong();
+                this.map.RES_3[i].lastHarvestTime = this.getLong()- gv.timeOffset;
             }
 
             /* Laboratory 1 */
@@ -243,10 +257,10 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
                 this.map.LAB_1[0].row = this.getByte();
                 this.map.LAB_1[0].col = this.getByte();
                 this.map.LAB_1[0].level = this.getByte();
-                this.map.LAB_1[0].finishBuildOrUpgradeTime = this.getLong();
+                this.map.LAB_1[0].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
                 if(this.map.LAB_1[0].finishBuildOrUpgradeTime == 0)
                 {
-                    this.map.LAB_1[0].finishResearchingTime = this.getLong();
+                    this.map.LAB_1[0].finishResearchingTime = this.getLong() - gv.timeOffset;
                     if(this.map.LAB_1[0].finishResearchingTime > 0)
                         this.map.LAB_1[0].researchingTroop = this.getByte();
                 }
@@ -261,7 +275,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
                 this.map.AMC_1[i].X = this.getByte();
                 this.map.AMC_1[i].Y = this.getByte();
                 this.map.AMC_1[i].level = this.getByte();
-                this.map.AMC_1[i].finishBuildOrUpgradeTime = this.getLong();
+                this.map.AMC_1[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
             }
 
             /* Barrack 1 */
@@ -274,10 +288,10 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
                 this.map.BAR_1[i].X = this.getByte();
                 this.map.BAR_1[i].Y = this.getByte();
                 this.map.BAR_1[i].level = this.getByte();
-                this.map.BAR_1[i].finishBuildOrUpgradeTime = this.getLong();
+                this.map.BAR_1[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
                 if (this.map.BAR_1[i].finishBuildOrUpgradeTime == 0)
                 {
-                    this.map.BAR_1[i].startTrainingTime = this.getLong();
+                    this.map.BAR_1[i].startTrainingTime = this.getLong() - gv.timeOffset;
                     if (this.map.BAR_1[i].startTrainingTime > 0)
                     {
                         var QueueSize = this.getByte();
@@ -302,10 +316,10 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
                 this.map.BAR_2[i].X = this.getByte();
                 this.map.BAR_2[i].Y = this.getByte();
                 this.map.BAR_2[i].level = this.getByte();
-                this.map.BAR_2[i].finishBuildOrUpgradeTime = this.getLong();
+                this.map.BAR_2[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
                 if (this.map.BAR_2[i].finishBuildOrUpgradeTime == 0)
                 {
-                    this.map.BAR_2[i].startTrainingTime = this.getLong();
+                    this.map.BAR_2[i].startTrainingTime = this.getLong() - gv.timeOffset;
                     if (this.map.BAR_2[i].startTrainingTime > 0)
                     {
                         var QueueSize = this.getByte();
@@ -330,6 +344,164 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
                 this.map.BDH_1[i].Y = this.getByte();
             }
 
+            /* Defence */
+
+
+            Amount = this.getByte();
+            this.map.DEF_1 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.DEF_1.push(new Object());
+                this.map.DEF_1[i].X = this.getByte();
+                this.map.DEF_1[i].Y = this.getByte();
+                this.map.DEF_1[i].level = this.getByte();
+                this.map.DEF_1[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
+            }
+
+
+            Amount = this.getByte();
+            this.map.DEF_2 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.DEF_2.push(new Object());
+                this.map.DEF_2[i].X = this.getByte();
+                this.map.DEF_2[i].Y = this.getByte();
+                this.map.DEF_2[i].level = this.getByte();
+                this.map.DEF_2[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
+            }
+
+
+            Amount = this.getByte();
+            this.map.DEF_3 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.DEF_3.push(new Object());
+                this.map.DEF_3[i].X = this.getByte();
+                this.map.DEF_3[i].Y = this.getByte();
+                this.map.DEF_3[i].level = this.getByte();
+                this.map.DEF_3[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
+            }
+
+
+            Amount = this.getByte();
+            this.map.DEF_4 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.DEF_4.push(new Object());
+                this.map.DEF_4[i].X = this.getByte();
+                this.map.DEF_4[i].Y = this.getByte();
+                this.map.DEF_4[i].level = this.getByte();
+                this.map.DEF_4[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
+            }
+
+
+            Amount = this.getByte();
+            this.map.DEF_5 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.DEF_5.push(new Object());
+                this.map.DEF_5[i].X = this.getByte();
+                this.map.DEF_5[i].Y = this.getByte();
+                this.map.DEF_5[i].level = this.getByte();
+                this.map.DEF_5[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
+            }
+
+
+            Amount = this.getByte();
+            this.map.DEF_6 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.DEF_6.push(new Object());
+                this.map.DEF_6[i].X = this.getByte();
+                this.map.DEF_6[i].Y = this.getByte();
+                this.map.DEF_6[i].level = this.getByte();
+                this.map.DEF_6[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
+            }
+
+
+            Amount = this.getByte();
+            this.map.DEF_7 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.DEF_7.push(new Object());
+                this.map.DEF_7[i].X = this.getByte();
+                this.map.DEF_7[i].Y = this.getByte();
+                this.map.DEF_7[i].level = this.getByte();
+                this.map.DEF_7[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
+            }
+
+
+            Amount = this.getByte();
+            this.map.DEF_8 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.DEF_8.push(new Object());
+                this.map.DEF_8[i].X = this.getByte();
+                this.map.DEF_8[i].Y = this.getByte();
+                this.map.DEF_8[i].level = this.getByte();
+                this.map.DEF_8[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
+            }
+
+
+            Amount = this.getByte();
+            this.map.DEF_9 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.DEF_9.push(new Object());
+                this.map.DEF_9[i].X = this.getByte();
+                this.map.DEF_9[i].Y = this.getByte();
+                this.map.DEF_9[i].level = this.getByte();
+                this.map.DEF_9[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
+            }
+
+
+            Amount = this.getByte();
+            this.map.DEF_10 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.DEF_10.push(new Object());
+                this.map.DEF_10[i].X = this.getByte();
+                this.map.DEF_10[i].Y = this.getByte();
+                this.map.DEF_10[i].level = this.getByte();
+                this.map.DEF_10[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
+            }
+
+
+            Amount = this.getByte();
+            this.map.DEF_11 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.DEF_11.push(new Object());
+                this.map.DEF_11[i].X = this.getByte();
+                this.map.DEF_11[i].Y = this.getByte();
+                this.map.DEF_11[i].level = this.getByte();
+                this.map.DEF_11[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
+            }
+
+
+            Amount = this.getByte();
+            this.map.DEF_12 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.DEF_12.push(new Object());
+                this.map.DEF_12[i].X = this.getByte();
+                this.map.DEF_12[i].Y = this.getByte();
+                this.map.DEF_12[i].level = this.getByte();
+                this.map.DEF_12[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
+            }
+
+
+            Amount = this.getByte();
+            this.map.DEF_13 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.DEF_13.push(new Object());
+                this.map.DEF_13[i].X = this.getByte();
+                this.map.DEF_13[i].Y = this.getByte();
+                this.map.DEF_13[i].level = this.getByte();
+                this.map.DEF_13[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
+            }
+
             /* Player */
             this.player = new Object();
             this.player.name = this.getString();
@@ -348,13 +520,8 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
                 this.player.troopLevel.push(this.getByte());
                 this.player.troopAmount.push(this.getShort());
             }
-
             cc.log(JSON.stringify(this));
             gv.jsonInfo = this;
-            //cc.log(gv.jsonInfo["map"]["TOW_1"][0]["X"]);
-            //cc.log(gv.jsonInfo["map"]["TOW_1"].length);
-            //cc.log(gv.jsonInfo["map"]["BDH_1"].length);
-            //cc.log(gv.jsonInfo["map"]["STO_1"].length);
         }
     }
 );

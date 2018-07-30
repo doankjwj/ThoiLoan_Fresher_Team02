@@ -62,6 +62,14 @@ testnetwork.Connector = cc.Class.extend({
         this.gameClient.sendPacket(pk);
     },
 
+    sendCheat: function( type, num)
+    {
+        cc.log("Cheat: Resource " + type + " " + num);
+        var pk = this.gameClient.getOutPacket(CmdSendCheat);
+        pk.pack(type, num);
+        this.gameClient.sendPacket(pk);
+    }
+
 });
 
 

@@ -15,6 +15,16 @@ var MainLayer = cc.Layer.extend({
     _guiButtonBuildingUpgrade: null,
     _popUp: null,
 
+    _addGoldButton: null,
+    _subGoldButton: null,
+
+    _addElixirButton: null,
+    _subElixirButton: null,
+
+    _addCoinButton: null,
+    _subCoinButton: null,
+
+
     _action1Pull: null,
     _action2Pull: null,
     _action1Push: null,
@@ -78,7 +88,9 @@ var MainLayer = cc.Layer.extend({
     onSelectLogin: function()
     {
         cc.log("=============== " + "Start Connect");
+
         gv.usernameSendToServer = this._usernameField.string;
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
         gv.gameClient.connect();
     },
 
@@ -137,7 +149,139 @@ var MainLayer = cc.Layer.extend({
             this._popUp = PopUpConstruct.getOrCreate();
             this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
             this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
-        }
+        };
+        this.addCheatButton();
+    },
+
+    updateResourceBar: function() {
+        this.getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+        this.getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+        this.getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+        this.getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+    },
+
+    addCheatButton: function() {
+
+        var self = this;
+        this._addGoldButton = gv.commonButton(80, 64, 70, cc.winSize.height-200, "+5kGd");
+        this._subGoldButton = gv.commonButton(80, 64, 70, this._addGoldButton.y - 70, "-5kGd");
+
+        this._addGoldButton.addTouchEventListener(function(sender, type) {
+            var cheatNumber = 5000;
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    cf.user._currentCapacityGold += cheatNumber;
+                    cf.user._maxCapacityGold = cf.user._maxCapacityGold + cheatNumber*2;
+                    self.updateResourceBar();
+                    testnetwork.connector.sendCheat(0, cheatNumber);
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+        }, this._addGoldButton);
+        this._subGoldButton.addTouchEventListener(function(sender, type) {
+            var cheatNumber = 5000;
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    cf.user._currentCapacityGold -= cheatNumber;
+                    testnetwork.connector.sendCheat(0, -cheatNumber);
+                    self.updateResourceBar();
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+        }, this._subGoldButton);
+
+        this.addChild(this._addGoldButton, 1);
+        this.addChild(this._subGoldButton, 1);
+
+        this._addCoinButton = gv.commonButton(80, 64, 70, this._subGoldButton.y - 70, "+5kG");
+        this._subCoinButton = gv.commonButton(80, 64, 70, this._addCoinButton.y - 70, "-5kG");
+
+        this._addCoinButton.addTouchEventListener(function(sender, type) {
+            var cheatNumber = 5000;
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    cf.user._currentCapacityCoin += cheatNumber;
+                    cf.user._maxCapacityGold = cf.user._maxCapacityGold + cheatNumber*2;
+                    testnetwork.connector.sendCheat(3, cheatNumber);
+                    self.updateResourceBar();
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+        }, this._addCoinButton);
+        this._subCoinButton.addTouchEventListener(function(sender, type) {
+            var cheatNumber = 5000;
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    cf.user._currentCapacityCoin -= cheatNumber;
+                    testnetwork.connector.sendCheat(3, -cheatNumber);
+                    self.updateResourceBar();
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+        }, this._subCoinButton);
+
+        this.addChild(this._addCoinButton, 1);
+        this.addChild(this._subCoinButton, 1);
+
+        this._addElixirButton = gv.commonButton(80, 64, 70, this._subCoinButton.y - 70, "+5kE");
+        this._subElixirButton = gv.commonButton(80, 64, 70, this._addElixirButton.y - 70, "-5kE");
+
+        this._addElixirButton.addTouchEventListener(function(sender, type) {
+            var cheatNumber = 5000;
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    cf.user._currentCapacityElixir += cheatNumber;
+                    cf.user._maxCapacityElixir = cf.user._maxCapacityElixir + cheatNumber*2;
+                    testnetwork.connector.sendCheat(1, cheatNumber);
+                    self.updateResourceBar();
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+        }, this._addElixirButton);
+        this._subElixirButton.addTouchEventListener(function(sender, type) {
+            var cheatNumber = 5000;
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    cf.user._currentCapacityElixir -= cheatNumber;
+                    testnetwork.connector.sendCheat(1, -cheatNumber);
+                    self.updateResourceBar();
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+        }, this._subElixirButton);
+
+        this.addChild(this._addElixirButton, 1);
+        this.addChild(this._subElixirButton, 1);
     },
 
     initMap: function()
