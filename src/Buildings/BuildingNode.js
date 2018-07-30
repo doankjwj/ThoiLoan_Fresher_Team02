@@ -539,6 +539,7 @@ var BuildingNode = cc.Node.extend({
             if (cf.user._builderFree <= 0)
             {
                 self.getParent().getParent().popUpMessage("Tất cả thợ đang bận");
+                cc.log("busy");
                 return;
             }
             if(!self._red.visible) {

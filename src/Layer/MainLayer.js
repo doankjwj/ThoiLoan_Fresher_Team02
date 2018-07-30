@@ -133,6 +133,11 @@ var MainLayer = cc.Layer.extend({
         this.addResourceBar();
         this.addUserBar();
         this.addBuilderBar();
+        {
+            this._popUp = PopUpConstruct.getOrCreate();
+            this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
+            this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
+        }
     },
 
     initMap: function()
@@ -144,6 +149,7 @@ var MainLayer = cc.Layer.extend({
         this._map.setPosition(centering);
         this.addChild(this._map, 0, gv.tag.TAG_MAP);
         this.moveMap();
+
     },
 
     initRetainBuilding: function()
@@ -285,11 +291,7 @@ var MainLayer = cc.Layer.extend({
             // if (cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)]._orderInUserBuildingList = gv.orderInUserBuildingList.builderHut)
             //     return;
 
-            if (!self.getChildByTag(gv.tag.TAG_POPUP))
-            {
-                var popUp = PopUpConstruct.getOrCreate();
-                self.addChild(popUp, 1, gv.tag.TAG_POPUP);
-            }
+
             self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width/2, cc.winSize.height/2);
             self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
             self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
@@ -299,14 +301,17 @@ var MainLayer = cc.Layer.extend({
 
     popUpMessage: function(msg)
     {
-        if (gv.building_selected == undefined) return;
+        if (gv.building_selected === undefined) {
+            return;
+        }
         if (!this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE))
         {
             var popUp = PopUPMessage.getOrCreate();
             this.addChild(popUp, 1, gv.tag.TAG_POPUP_MESSAGE);
         }
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setPosition(cc.winSize.width/2, cc.winSize.height/2);
-        // this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).visible = true;
+        cc.log("Pop Up ");
+        this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).visible = true;
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setMessage(msg);
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).show();
     },

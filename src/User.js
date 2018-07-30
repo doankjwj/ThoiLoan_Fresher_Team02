@@ -128,19 +128,19 @@ var User = cc.Class.extend({
                 if (building._level == 1)
                     this._maxCapacityGold += gv.json.storage[gv.buildingSTR.storage_1][1][gv.capacity.capacity];
                 else
-                    this._maxCapacityGold += gv.json.storage[gv.buildingSTR.storage_1][building._level][gv.capacity.capacity] - gv.json.storage_1[gv.buildingSTR.storage_1][building._level - 1][gv.capacity.capacity] ;
+                    this._maxCapacityGold += gv.json.storage[gv.buildingSTR.storage_1][building._level][gv.capacity.capacity] - gv.json.storage[gv.buildingSTR.storage_1][building._level - 1][gv.capacity.capacity] ;
                 break;
             case gv.orderInUserBuildingList.storage_2:
                 if (building._level == 1)
                     this._maxCapacityElixir += gv.json.storage[gv.buildingSTR.storage_2][1][gv.capacity.capacity];
                 else
-                    this._maxCapacityElixir += gv.json.storage[gv.buildingSTR.storage_2][building._level][gv.capacity.capacity] - gv.json.storage_2[gv.buildingSTR.storage_2][building._level - 1][gv.capacity.capacity] ;
+                    this._maxCapacityElixir += gv.json.storage[gv.buildingSTR.storage_2][building._level][gv.capacity.capacity] - gv.json.storage[gv.buildingSTR.storage_2][building._level - 1][gv.capacity.capacity] ;
                 break;
             case gv.orderInUserBuildingList.storage_3:
                 if (building._level == 1)
                     this._maxCapacityDarkElixir += gv.json.storage[gv.buildingSTR.storage_3][1][gv.capacity.capacity];
                 else
-                    this._maxCapacityDarkElixir += gv.json.storage[gv.buildingSTR.storage_3][building._level][gv.capacity.capacity] - gv.json.storage_3[gv.buildingSTR.storage_3][building._level - 1][gv.capacity.capacity] ;
+                    this._maxCapacityDarkElixir += gv.json.storage[gv.buildingSTR.storage_3][building._level][gv.capacity.capacity] - gv.json.storage[gv.buildingSTR.storage_3][building._level - 1][gv.capacity.capacity] ;
                 break;
         };
 
