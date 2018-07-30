@@ -352,6 +352,15 @@ var MainLayer = cc.Layer.extend({
         inventoryButton.addTouchEventListener(this.openInventory, this);
     },
 
+    repositioning: function(){
+        var self = this;
+        self._map.x = self._map.x >= 0 ? 0 : self._map.x;
+        self._map.y = self._map.y >= 0 ? 0 : self._map.y;
+
+        self._map.x = self._map.x <= cc.winSize.width - self._map._width * self._map.scale ? cc.winSize.width - self._map._width * self._map.scale : self._map.x;
+        self._map.y = self._map.y <= cc.winSize.height - self._map._height * self._map.scale + 42 ? cc.winSize.height - self._map._height * self._map.scale + 42 : self._map.y;
+    },
+
     moveMap: function() {
         var self = this;
         cc.eventManager.addListener({
@@ -380,11 +389,12 @@ var MainLayer = cc.Layer.extend({
                 self._map.x = curPos.x;
                 self._map.y = curPos.y;
 
-                self._map.x = self._map.x >= 0 ? 0 : self._map.x;
-                self._map.y = self._map.y >= 0 ? 0 : self._map.y;
-
-                self._map.x = self._map.x <= cc.winSize.width - self._map._width * self._map.scale ? cc.winSize.width - self._map._width * self._map.scale : self._map.x;
-                self._map.y = self._map.y <= cc.winSize.height - self._map._height * self._map.scale + 42 ? cc.winSize.height - self._map._height * self._map.scale + 42 : self._map.y;
+                self.repositioning();
+                //self._map.x = self._map.x >= 0 ? 0 : self._map.x;
+                //self._map.y = self._map.y >= 0 ? 0 : self._map.y;
+                //
+                //self._map.x = self._map.x <= cc.winSize.width - self._map._width * self._map.scale ? cc.winSize.width - self._map._width * self._map.scale : self._map.x;
+                //self._map.y = self._map.y <= cc.winSize.height - self._map._height * self._map.scale + 42 ? cc.winSize.height - self._map._height * self._map.scale + 42 : self._map.y;
 
                 // cc.log(self._map.y);
                 // cc.log(self._map.x >= cc.winSize.width - self._map._width);
@@ -402,28 +412,63 @@ var MainLayer = cc.Layer.extend({
         }, this)
     },
 
-    zoomMap: function(scale) {
+    distance: function(p, q) {
+        return Math.sqrt((p.x - q.x)*(p.x - q.x) + (p.y - q.y)*(p.y - q.y));
+    },
+
+    zoomMap: function() {
         var self = this;
-        var touchLocation;
-        var curPosInMap;
-        var newPosInMap;
+        var touchLocation_0;
+        var touchLocation_1;
+        var curMidPoint;
+        var newMidPoint;
         var newMapPos;
+        if(self === null) return;
+        // cc.eventManager.addListener({
+        //     event: cc.EventListener.TOUCH_ONE_BY_ONE,
+        //     onTouchBegan: function(touch, event) {
+        //         touchLocation = touch.getLocation();
+        //         curPosInMap = cc.p(touchLocation.x - self._map.x, touchLocation.y - self._map.y);
+        //         newPosInMap = cc.p(curPosInMap.x*scale, curPosInMap.y*scale);
+        //         newMapPos = cc.p(touchLocation.x - newPosInMap.x, touchLocation.y - newPosInMap.y);
+        //         return true;
+        //     },
+        //     onTouchMoved: function(touch, event) {
+        //     },
+        //     onTouchEnded: function(touch, event) {
+        //         self._map.setPosition(newMapPos);
+        //         self._map.scale *= scale;
+        //     }
+        // }, this)
+
         cc.eventManager.addListener({
-            event: cc.EventListener.TOUCH_ONE_BY_ONE,
-            onTouchBegan: function(touch, event) {
-                touchLocation = touch.getLocation();
-                curPosInMap = cc.p(touchLocation.x - self._map.x, touchLocation.y - self._map.y);
-                newPosInMap = cc.p(curPosInMap.x*scale, curPosInMap.y*scale);
-                newMapPos = cc.p(touchLocation.x - newPosInMap.x, touchLocation.y - newPosInMap.y);
+            event: cc.EventListener.TOUCH_ALL_AT_ONCE,
+            onTouchesBegan: function(touches, event) {
                 return true;
             },
-            onTouchMoved: function(touch, event) {
-            },
-            onTouchEnded: function(touch, event) {
-                self._map.setPosition(newMapPos);
+            onTouchesMoved: function(touches, event) {
+                if(touches.length < 2) return;
+                touchLocation_0 = touches[0].getLocation();
+                touchLocation_1 = touches[1].getLocation();
+                curMidPoint = cc.p(touchLocation_0.x/2 + touchLocation_1.x/2 - self._map.x, touchLocation_0.y/2 + touchLocation_1.y/2 - self._map.y);
+                var dis0 = self.distance(touchLocation_0, touchLocation_1);
+
+                var delta0 = touches[0].getDelta();
+                var delta1 = touches[1].getDelta();
+
+                var dis1 = self.distance(cc.pAddIn(touchLocation_0, delta0), cc.pAddIn(touchLocation_1, delta1));
+
+                var scale = dis1/dis0;
                 self._map.scale *= scale;
+                newMidPoint = cc.p(curMidPoint.x*scale, curMidPoint.y*scale);
+                newMapPos = cc.pSubIn(curMidPoint.x, newMidPoint);
+                self._map.setPosition(newMapPos);
+                self.repositioning();
+            },
+            onTouchesEnded: function(touches, event) {
             }
-        }, this)
+        }, this);
+
     },
 
     openShop: function(sender, type){

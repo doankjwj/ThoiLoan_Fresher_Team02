@@ -191,6 +191,14 @@ var ShopItem = ccui.Button.extend({
             this._priceIcon.runAction(act.clone());
         }
 
+        if(this._key !== gv.buildingSTR.builderHut) this._priceText = this._jsonConfig[this._configItem["key"]]["1"][this._configItem["priceCurrency"]];
+        else {
+
+            this._priceText = this._jsonConfig[this._configItem["key"]][(((this._currentQuantity + 1) <= this._capacity) ? this._currentQuantity + 1 : this._currentQuantity).toString()][this._configItem["priceCurrency"]];
+        }
+
+        this._priceLabel.setString(this._priceText);
+
         if(this._priceCurrency === "gold") {
             if(cf.user._currentCapacityGold < this._priceText) this._priceLabel.setColor(cc.color.RED);
             else this._priceLabel.setColor(cc.color.WHITE);
