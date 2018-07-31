@@ -145,7 +145,7 @@ var buildingGUI = {
 };
 
 var upgradeBuildingGUI = {
-    infoBar: folderUpgradeBuildingGUI + "info_bar_BG.png",
+    infoBar: folderUpgradeBuildingGUI + "info_bar_bg.png",
     infoBarBG: folderUpgradeBuildingGUI + "info_bar.png",
     hpIcon: folderUpgradeBuildingGUI + "small/Hitpoints_Icon.png",
     iconGold: folderUpgradeBuildingGUI + "small/BUFF_GOLD.png",

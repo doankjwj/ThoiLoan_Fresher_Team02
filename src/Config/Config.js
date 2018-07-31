@@ -263,7 +263,7 @@ gv.popUpConstruct = null;
 gv.popUpMessage = null;
 
 //offset time
-gv.timeOffset = null;
+gv.timeOffset = 0;
 
 //function
 cf.shopTagToName = function (tag) {

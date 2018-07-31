@@ -86,36 +86,90 @@ var PopUpConstruct = cc.Node.extend({
         this._btnOk.setPosition(cc.p(0, -this._bg.height*this._bgScale/2 + this._btnOk.height  *this._btnOk.scale / 2));
         // this._btnOk.setTextureName("Ok");
         this.addChild(this._btnOk, 1);
-        this._btnOk.addClickEventListener(function(){
-            self.setPosition(cc.p(0, - cc.winSize.height));
-            if (!gv.upgradeAble)
-            {
-                self.getParent().popUpMessage("Chưa đủ tài nguyên");
-                return;
-            };
-            if (cf.user._builderFree <= 0)
-            {
-                self.getParent().popUpMessage("Tất cả thợ đang bận");
-                return;
+
+        this._btnOk.addTouchEventListener(function(sender, type) {
+            var cheatNumber = 5000;
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    self.setPosition(cc.p(0, - cc.winSize.height));
+                    if (!gv.upgradeAble)
+                    {
+                        self.getParent().popUpMessage("Chưa đủ tài nguyên");
+                        return;
+                    };
+                    if (cf.user._builderFree <= 0)
+                    {
+                        self.getParent().popUpMessage("Tất cả thợ đang bận");
+                        return;
+                    }
+
+                    cc.log("Upgrade");
+                    self.onDisappear();
+                    cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)].onStartBuild(gv.startConstructType.newConstruct);
+                    /* Request */
+                    testnetwork.connector.sendUpgradeBuilding(gv.building_selected);
+
+                    /* Update User Infor + Resource Bar */
+                    cf.user._currentCapacityGold -= self._cost.gold;
+                    cf.user._currentCapacityElixir -= self._cost.elixir;
+                    cf.user._currentCapacityDarkElixir -= self._cost.darkElixir;
+                    cf.user._currentCapacityCoin -= self._cost.coin;
+
+                    cc.log("Update User Info 1");
+                    self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+                    cc.log("Update User Info 2");
+                    self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+                    cc.log("Update User Info 3");
+                    self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+                    cc.log("Update User Info 4");
+                    self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+                    cc.log("Update User Info 5");
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
             }
+        }, this._btnOk);
 
-            cc.log("Upgrade");
-            self.onDisappear();
-            cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)].onStartBuild(gv.startConstructType.newConstruct);
-            /* Request */
-            testnetwork.connector.sendUpgradeBuilding(gv.building_selected);
 
-            /* Update User Infor + Resource Bar */
-            cf.user._currentCapacityGold -= self._cost.gold;
-            cf.user._currentCapacityElixir -= self._cost.elixir;
-            cf.user._currentCapacityDarkElixir -= self._cost.darkElixir;
-            cf.user._currentCapacityCoin -= self._cost.coin;
-
-            self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
-            self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
-            self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
-            self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
-        });
+        //this._btnOk.addClickEventListener(function(){
+        //    self.setPosition(cc.p(0, - cc.winSize.height));
+        //    if (!gv.upgradeAble)
+        //    {
+        //        self.getParent().popUpMessage("Chưa đủ tài nguyên");
+        //        return;
+        //    };
+        //    if (cf.user._builderFree <= 0)
+        //    {
+        //        self.getParent().popUpMessage("Tất cả thợ đang bận");
+        //        return;
+        //    }
+        //
+        //    cc.log("Upgrade");
+        //    self.onDisappear();
+        //    cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)].onStartBuild(gv.startConstructType.newConstruct);
+        //    /* Request */
+        //    testnetwork.connector.sendUpgradeBuilding(gv.building_selected);
+        //
+        //    /* Update User Infor + Resource Bar */
+        //    cf.user._currentCapacityGold -= self._cost.gold;
+        //    cf.user._currentCapacityElixir -= self._cost.elixir;
+        //    cf.user._currentCapacityDarkElixir -= self._cost.darkElixir;
+        //    cf.user._currentCapacityCoin -= self._cost.coin;
+        //
+        //    cc.log("Update User Info 1");
+        //    self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+        //    cc.log("Update User Info 2");
+        //    self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+        //    cc.log("Update User Info 3");
+        //    self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+        //    cc.log("Update User Info 4");
+        //    self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+        //    cc.log("Update User Info 5");
+        //});
 
         /* Building Icon */
         this._icon = cc.Sprite(res.tmp_effect);
