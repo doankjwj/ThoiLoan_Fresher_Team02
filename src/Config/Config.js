@@ -228,7 +228,11 @@ gv.startConstructType =
 {
     newConstruct: 3123,
     loadConstruct: 5421,
-}
+};
+
+/* Offset with Server Position */
+gv.offSetBuildingVsServer = 1;
+
 
 gv.buildingTypeCount = 14;
 

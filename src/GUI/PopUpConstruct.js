@@ -448,7 +448,9 @@ var PopUpConstruct = cc.Node.extend({
         this.addChild(this._grass, 1, this._TAG_GRASS);
 
         /* Effect */
-        if ((str == gv.buildingSTR.barrack_1 && level <4) || str == gv.buildingSTR.builderHut) return;
+        //if ((str == gv.buildingSTR.barrack_1 && level <4) || str == gv.buildingSTR.builderHut || str == gv.buildingSTR.storage_1 || str == gv.buildingSTR.storage_2) return;
+        var arrNoEffect = [gv.buildingSTR.builderHut, gv.buildingSTR.storage_1, gv.buildingSTR.storage_2, gv.buildingSTR.storage_3, gv.buildingSTR.defence_1];
+        if ((str == gv.buildingSTR.barrack_1 && level <4) || arrNoEffect.indexOf(str) >= 0) return;
         if (str != "AMC_1" && str != "TOW_1")
             this._effect = cc.Sprite("res/Art/Effects/" + str + "_" + level + "_effect/00.png");
         if (str == "AMC_1")
