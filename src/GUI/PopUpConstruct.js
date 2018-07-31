@@ -102,6 +102,9 @@ var PopUpConstruct = cc.Node.extend({
             cc.log("Upgrade");
             self.onDisappear();
             cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)].onStartBuild(gv.startConstructType.newConstruct);
+            /* Request */
+            testnetwork.connector.sendUpgradeBuilding(gv.building_selected);
+
             /* Update User Infor + Resource Bar */
             cf.user._currentCapacityGold -= self._cost.gold;
             cf.user._currentCapacityElixir -= self._cost.elixir;

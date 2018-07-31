@@ -426,5 +426,5 @@ cf.secondsToLongTime = function(seconds)
     seconds  -= hrs*3600;
     var mnts = Math.floor(seconds/ 60);
     seconds  -= mnts*60;
-    return (days !== 0 ? (days.toString() + "d") : "" ) + (hrs !== 0 ? (hrs.toString() + "h") : "") + (mnts !== 0 ? (mnts.toString() + "m") : "") + ((seconds!=0) ? (seconds.toString() + "s") : "" );
+    return (days != 0 ? (days.toString() + "d") : "" ) + (hrs != 0 ? (hrs.toString() + "h") : "") + (mnts != 0 ? (mnts.toString() + "m") : "") + ((seconds!=0) ? (seconds.toString() + "s") : "" );
 }

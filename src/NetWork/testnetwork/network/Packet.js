@@ -9,6 +9,7 @@ gv.CMD.USER_LOGIN = 1;
 gv.CMD.USER_INFO = 1001;
 gv.CMD.MOVE = 2310;
 gv.CMD.BUILD = 2010;
+gv.CMD.UPGRADE_BUILDING = 2110;
 gv.CMD.CHEAT = 2880;
 
 testnetwork = testnetwork||{};
@@ -120,7 +121,25 @@ CmdSendCheat = fr.OutPacket.extend(
             this.updateSize();
         }
     }
-)
+);
+
+CmdSendUpgradeBuilding = fr.OutPacket.extend(
+    {
+        ctor:function()
+        {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.UPGRADE_BUILDING);
+        },
+        pack:function(id){
+            this.packHeader();
+            this.putByte(Math.floor(id / 100)-1);
+            this.putByte(id % 100);
+            this.updateSize();
+        }
+    }
+);
+
 
 /**
  * InPacket

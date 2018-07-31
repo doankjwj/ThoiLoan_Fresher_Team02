@@ -113,6 +113,7 @@ var ShopItem = ccui.Button.extend({
 
         if(this._key !== gv.buildingSTR.builderHut) this._priceText = this._jsonConfig[this._configItem["key"]]["1"][this._configItem["priceCurrency"]];
         else {
+            //cc.log(str);
             this._priceText = this._jsonConfig[this._configItem["key"]][(this._currentQuantity + 1).toString()][this._configItem["priceCurrency"]];
         }
 

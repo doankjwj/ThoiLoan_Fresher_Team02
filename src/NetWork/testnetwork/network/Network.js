@@ -55,6 +55,13 @@ testnetwork.Connector = cc.Class.extend({
         pk.pack(id, row, col);
         this.gameClient.sendPacket(pk);
     },
+    sendUpgradeBuilding: function(id)
+    {
+        cc.log("Send Upgrade: " + id);
+        var pk = this.gameClient.getOutPacket(CmdSendUpgradeBuilding);
+        pk.pack(id);
+        this.gameClient.sendPacket(pk);
+    },
     sendMove:function(id, row, col){
         cc.log("SendMove:" + id + " row: " + row + " col: " + col);
         var pk = this.gameClient.getOutPacket(CmdSendMove);

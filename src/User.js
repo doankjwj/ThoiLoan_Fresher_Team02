@@ -48,7 +48,7 @@ var User = cc.Class.extend({
         this._currentCapacityGold = gv.jsonInfo["player"]["gold"];
         this._currentCapacityElixir = gv.jsonInfo["player"]["elixir"];
         this._currentCapacityDarkElixir = gv.jsonInfo["player"]["darkElixir"];
-        this._currentCapacityCoin = (gv.jsonInfo["player"]["coin"] == null) ? 0 : gv.jsonInfo["player"]["coin"];
+        this._currentCapacityCoin = (gv.jsonInfo["player"]["coin"] === null) ? 0 : gv.jsonInfo["player"]["coin"];
         this.initBuildingList();
     },
 
@@ -130,19 +130,19 @@ var User = cc.Class.extend({
                 this._maxCapacityDarkElixir += gv.json.townHall[gv.buildingSTR.townHall][building._level][gv.capacity.darkElixir] - gv.json.townHall[gv.buildingSTR.townHall][building._level - 1][gv.capacity.darkElixir];
                 break;
             case gv.orderInUserBuildingList.storage_1:
-                if (building._level == 1)
+                if (building._level === 1)
                     this._maxCapacityGold += gv.json.storage[gv.buildingSTR.storage_1][1][gv.capacity.capacity];
                 else
                     this._maxCapacityGold += gv.json.storage[gv.buildingSTR.storage_1][building._level][gv.capacity.capacity] - gv.json.storage[gv.buildingSTR.storage_1][building._level - 1][gv.capacity.capacity] ;
                 break;
             case gv.orderInUserBuildingList.storage_2:
-                if (building._level == 1)
+                if (building._level === 1)
                     this._maxCapacityElixir += gv.json.storage[gv.buildingSTR.storage_2][1][gv.capacity.capacity];
                 else
                     this._maxCapacityElixir += gv.json.storage[gv.buildingSTR.storage_2][building._level][gv.capacity.capacity] - gv.json.storage[gv.buildingSTR.storage_2][building._level - 1][gv.capacity.capacity] ;
                 break;
             case gv.orderInUserBuildingList.storage_3:
-                if (building._level == 1)
+                if (building._level === 1)
                     this._maxCapacityDarkElixir += gv.json.storage[gv.buildingSTR.storage_3][1][gv.capacity.capacity];
                 else
                     this._maxCapacityDarkElixir += gv.json.storage[gv.buildingSTR.storage_3][building._level][gv.capacity.capacity] - gv.json.storage[gv.buildingSTR.storage_3][building._level - 1][gv.capacity.capacity] ;
@@ -165,7 +165,7 @@ var User = cc.Class.extend({
         {
             for(var j = 0; j < this._buildingListCount[i]; j++)
             {
-                if (this._buildingList[i][j]._is_active == false)
+                if (this._buildingList[i][j]._is_active === false)
                 {
                     builderBusy ++;
                     cc.log(this._buildingList[i][j]._name);

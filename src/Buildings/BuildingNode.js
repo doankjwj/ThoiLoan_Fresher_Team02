@@ -291,7 +291,6 @@ var BuildingNode = cc.Node.extend({
                 //    for (var c = 1; c < 41; c++)
                 //    {
 
-                        //===================
                         //tile_location = cf.tileLocation[r][c];
                         //var x = tile_location.x * cf.BIG_MAP_SCALE;
                         //var y = tile_location.y * cf.BIG_MAP_SCALE;
@@ -302,7 +301,7 @@ var BuildingNode = cc.Node.extend({
                 var c = loc.y;
                 var row = r - Math.floor(size / 2);
                             var col = c - Math.floor(size / 2);
-                            if (row === cf.r_old && col === cf.c_old) return;
+                            if (row == cf.r_old && col == cf.c_old) return;
                             if (!self.check_out_of_map(row, col, size)) return;
                             cf.r_old = row;
                             cf.c_old = col;
@@ -324,8 +323,6 @@ var BuildingNode = cc.Node.extend({
                             return true
                         //}
 
-                        // ==============
-                    //}
 
                 return true;
             },

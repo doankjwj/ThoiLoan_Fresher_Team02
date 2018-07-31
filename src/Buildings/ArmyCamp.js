@@ -33,7 +33,7 @@ var ArmyCamp = BuildingNode.extend({
 
     initAnimation: function()
     {
-        if (cf.animationArmyCamp.length === 0)
+        if (cf.animationArmyCamp.length == 0)
         {
             for (var i = 1; i < 3; i++)
             {

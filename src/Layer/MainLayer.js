@@ -105,7 +105,7 @@ var MainLayer = cc.Layer.extend({
 
     onSelectLogin: function()
     {
-        cc.log("=============== " + "Start Connect");
+        cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
         if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
@@ -122,7 +122,7 @@ var MainLayer = cc.Layer.extend({
 
     onConnectSuccess: function()
     {
-        cc.log("=============== " + "Connect Success => Send Handshake");
+        cc.log("================= " + "Connect Success => Send Handshake");
         this.getChildByTag(this._TAG_USERNAME_FIELD).visible = false;
         this.getChildByTag(this._TAG_PASSWORD_FIELD).visible = false;
         this.getChildByTag(this._TAG_LOGIN_BUTTON).visible = false;
@@ -131,12 +131,12 @@ var MainLayer = cc.Layer.extend({
 
     onConnectFail: function()
     {
-        cc.log("=============== " + "Connect Fail");
+        cc.log("================= " + "Connect Fail");
     },
 
     onFinishLogin:function()
     {
-        cc.log("=============== " + "Finish Login");
+        cc.log("================= " + "Finish Login");
     },
 
     onReceiveUserInfo: function()
@@ -323,7 +323,7 @@ var MainLayer = cc.Layer.extend({
             building = cf.user._buildingList[i][j];
             if (!building._is_active)
             {
-                cc.log("============= " +building._name);
+                cc.log("=============== " +building._name);
                 building.updateConstructType();
 
             }
@@ -412,7 +412,7 @@ var MainLayer = cc.Layer.extend({
         this._guiButtonBuildingInfo.addClickEventListener(function()
         {
             self.hideListBotButton();
-            if (gv.building_selected == undefined) return;
+            if (gv.building_selected === undefined) return;
             if (!self.getChildByTag(gv.tag.TAG_POPUP))
             {
                 var popUp = PopUpConstruct.getOrCreate();
@@ -438,12 +438,12 @@ var MainLayer = cc.Layer.extend({
         this._guiButtonBuildingUpgrade.addClickEventListener(function()
         {
             self.hideListBotButton();
-            if (gv.building_selected == undefined) return;
+            if (gv.building_selected === undefined) return;
             var building = cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)];
             var order = (building._orderInUserBuildingList);
             var orderBuilderHut = (gv.orderInUserBuildingList.builderHut);
-            if (order == orderBuilderHut) return;
-            if (building._is_active == false) return;
+            if (order === orderBuilderHut) return;
+            if (building._is_active === false) return;
             // if (cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)]._orderInUserBuildingList = gv.orderInUserBuildingList.builderHut)
             //     return;
 
