@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>frames</key>
+        <dict>
+            <key>effect_barrack_working (1).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,126},{62,60}}</string>
+                <key>offset</key>
+                <string>{3,-2}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{22,12},{62,60}}</string>
+                <key>sourceSize</key>
+                <string>{100,80}</string>
+            </dict>
+            <key>effect_barrack_working (2).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{66,66},{62,60}}</string>
+                <key>offset</key>
+                <string>{3,-2}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{22,12},{62,60}}</string>
+                <key>sourceSize</key>
+                <string>{100,80}</string>
+            </dict>
+            <key>effect_barrack_working (3).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,64},{62,60}}</string>
+                <key>offset</key>
+                <string>{3,-2}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{22,12},{62,60}}</string>
+                <key>sourceSize</key>
+                <string>{100,80}</string>
+            </dict>
+            <key>effect_barrack_working (4).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{66,2},{62,60}}</string>
+                <key>offset</key>
+                <string>{3,-2}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{22,12},{62,60}}</string>
+                <key>sourceSize</key>
+                <string>{100,80}</string>
+            </dict>
+            <key>effect_barrack_working (5).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,2},{62,60}}</string>
+                <key>offset</key>
+                <string>{3,-2}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{22,12},{62,60}}</string>
+                <key>sourceSize</key>
+                <string>{100,80}</string>
+            </dict>
+        </dict>
+        <key>metadata</key>
+        <dict>
+            <key>format</key>
+            <integer>2</integer>
+            <key>realTextureFileName</key>
+            <string>effect_barrack_working.png</string>
+            <key>size</key>
+            <string>{128,256}</string>
+            <key>smartupdate</key>
+            <string>$TexturePacker:SmartUpdate:5dadc3cf38f2e1fe6ee6b06b67583669:1/1$</string>
+            <key>textureFileName</key>
+            <string>effect_barrack_working.png</string>
+        </dict>
+    </dict>
+</plist>

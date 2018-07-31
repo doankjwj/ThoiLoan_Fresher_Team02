@@ -1,0 +1,76 @@
+{
+    "project_type": "javascript",
+    "debugMode": 1,
+    "showFPS": true,
+    "frameRate": 60,
+    "id": "gameCanvas",
+    "renderMode": 0,
+    "engineDir": "frameworks/cocos2d-html5",
+    "modules": [
+        "cocos2d",
+        "extensions",
+        "external"
+    ],
+    "jsListOrder": [
+        "src/**/*.js"
+    ],
+    "jsList": [
+        "src/User.js",
+
+        "src/Config/Config.js",
+        "src/Function/fn.js",
+        "src/GlobalVar/gv.js",
+
+        "src/Layer/MainLayer.js",
+        "src/Layer/Map.js",
+        "src/Layer/Shop/Shop.js",
+        "src/Layer/Shop/ShopCategory.js",
+        "src/Layer/Shop/ShopItem.js",
+        "src/Layer/Shop/ShopItemList.js",
+        "src/Layer/Shop/ResourceItem.js",
+        "src/Resource.js",
+
+        "src/Buildings/Building.js",
+        "src/Buildings/BuildingNode.js",
+        "src/Buildings/ArmyCamp.js",
+        "src/Buildings/Barrack.js",
+        "src/Buildings/Grass.js",
+        "src/Buildings/TownHall.js",
+        "src/Buildings/Resource.js",
+        "src/Buildings/BuilderHut.js",
+        "src/Buildings/Canon.js",
+        "src/Buildings/GrassShadow.js",
+        "src/Buildings/Storage.js",
+        "src/Buildings/Defence.js",
+        "src/Buildings/Obstacle.js",
+
+        "src/GUI/ResourceBar.js",
+        "src/GUI/IconActionBuilding.js",
+        "src/GUI/BuilderBar.js",
+
+        "src/GUI/PopUpConstruct.js",
+        "src/GUI/PopUpMessage.js",
+
+        "src/NetWork/framework/Utility/ClientConfig.js",
+        "src/NetWork/framework/Utility/Localization.js",
+        "src/NetWork/framework/Utility/StringUtils.js",
+        "src/NetWork/framework/Framework.js",
+        "src/NetWork/framework/GUI.js",
+        "src/NetWork/framework/PoolObject.js",
+
+        "src/NetWork/base/network/InPacketFactory.js",
+        "src/NetWork/base/network/GameClient.js",
+        "src/NetWork/base/network/GameClientListener.js",
+        "src/NetWork/base/Resource.js",
+        "src/NetWork/base/UIFactory.js",
+
+        "src/NetWork/libs/signals.js",
+        "src/NetWork/libs/md5.js",
+        "src/NetWork/libs/underscore.js",
+
+        "src/NetWork/testnetwork/network/Network.js",
+        "src/NetWork/testnetwork/network/Packet.js",
+        "src/NetWork/testnetwork/ScreenNetwork.js"
+
+    ]
+}
