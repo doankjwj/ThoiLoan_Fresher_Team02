@@ -8,3 +8,5 @@ gv.buildingMove =
     currentRow : null,
     currentCol : null,
 }
+
+gv.reloaded = false;

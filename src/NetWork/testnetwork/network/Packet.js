@@ -12,6 +12,8 @@ gv.CMD.BUILD = 2010;
 gv.CMD.UPGRADE_BUILDING = 2110;
 gv.CMD.CHEAT = 2880;
 
+gv.CMD.RESET_USER = 2890;
+
 testnetwork = testnetwork||{};
 testnetwork.packetMap = {};
 
@@ -135,6 +137,22 @@ CmdSendUpgradeBuilding = fr.OutPacket.extend(
             this.packHeader();
             this.putByte(Math.floor(id / 100)-1);
             this.putByte(id % 100);
+            this.updateSize();
+        }
+    }
+);
+
+
+CmdSendResetUser = fr.OutPacket.extend(
+    {
+        ctor:function()
+        {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.RESET_USER);
+        },
+        pack:function(){
+            this.packHeader();
             this.updateSize();
         }
     }

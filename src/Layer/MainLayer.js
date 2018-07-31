@@ -15,6 +15,8 @@ var MainLayer = cc.Layer.extend({
     _guiButtonBuildingUpgrade: null,
     _popUp: null,
 
+    _resetUserButton: null,
+
     _addGoldButton: null,
     _subGoldButton: null,
 
@@ -142,6 +144,9 @@ var MainLayer = cc.Layer.extend({
     onReceiveUserInfo: function()
     {
         //this.removeChildByTag(this._TAG_MAP);
+        //if (gv.reloaded) fr.view(this);
+        //gv.reloaded = true;
+
         this.initUser();
         this.initMainGUI();
         this.initMap();
@@ -181,6 +186,15 @@ var MainLayer = cc.Layer.extend({
     addCheatButton: function() {
 
         var self = this;
+
+        this._resetUserButton = gv.commonButton(80, 64, 70, cc.winSize.height-100, "+Reset");
+        this._resetUserButton.addClickEventListener(function()
+        {
+            testnetwork.connector.sendResetUser();
+        }.bind(this));
+
+        this.addChild(this._resetUserButton, 1);
+
         this._addGoldButton = gv.commonButton(80, 64, 70, cc.winSize.height-200, "+5kGd");
         this._subGoldButton = gv.commonButton(80, 64, 70, this._addGoldButton.y - 70, "-5kGd");
 
