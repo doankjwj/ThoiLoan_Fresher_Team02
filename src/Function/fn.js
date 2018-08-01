@@ -47,4 +47,82 @@ fn.getRowColFromPos = function(pos)
 fn.insideMap = function(row, col)
 {
     return (0<row && row<41 && 0<col && col<41);
-}
+};
+
+fn.getPrice = function(str, level) {
+
+    var price = {
+        gold: 0,
+        elixir: 0,
+        darkElixir: 0,
+        coin: 0
+    };
+
+    switch(str)
+    {
+        case gv.buildingSTR.townHall:
+            price.gold = gv.json.townHall[str][level]["gold"];
+            price.elixir = 0;
+            price.darkElixir = 0;
+            price.coin = 0;
+            break;
+        case gv.buildingSTR.builderHut:
+            price.gold = 0;
+            price.elixir = 0;
+            price.darkElixir = 0;
+            price.coin = gv.json.builderHut[str][level]["coin"];
+            break;
+        case gv.buildingSTR.armyCamp_1:
+            price.gold = 0;
+            price.elixir = gv.json.armyCamp[str][level]["elixir"];
+            price.darkElixir = gv.json.armyCamp[str][level]["darkElixir"];
+            price.coin = 0;
+            break;
+        case gv.buildingSTR.barrack_1:
+            price.gold = 0;
+            price.elixir = gv.json.barrack[str][level]["elixir"];
+            price.darkElixir = gv.json.barrack[str][level]["darkElixir"];
+            price.coin = 0;
+            break;
+        case gv.buildingSTR.resource_1:
+            price.gold = gv.json.resource[str][level]["gold"];
+            price.elixir = gv.json.resource[str][level]["elixir"];
+            price.darkElixir = gv.json.resource[str][level]["darkElixir"];
+            price.coin = 0;
+            break;
+        case gv.buildingSTR.resource_2:
+            price.gold = gv.json.resource[str][level]["gold"];
+            price.elixir = gv.json.resource[str][level]["elixir"];
+            price.darkElixir = gv.json.resource[str][level]["darkElixir"];
+            price.coin = 0;
+            break;
+        case gv.buildingSTR.storage_1:
+            price.gold = gv.json.storage[str][level]["gold"];
+            price.elixir = gv.json.storage[str][level]["elixir"];
+            price.darkElixir = gv.json.storage[str][level]["darkElixir"];
+            price.coin = 0;
+            break;
+        case gv.buildingSTR.storage_2:
+            price.gold = gv.json.storage[str][level]["gold"];
+            price.elixir = gv.json.storage[str][level]["elixir"];
+            price.darkElixir = gv.json.storage[str][level]["darkElixir"];
+            price.coin = 0;
+            break;
+        case gv.buildingSTR.defence_1:
+            price.gold = gv.json.storage[str][level]["gold"];
+            price.elixir = 0;
+            price.darkElixir = 0;
+            price.coin = 0;
+            break;
+        case gv.buildingSTR.obstacle:
+            hp = gv.json.obstacle[str][level]["hitpoints"];
+            hpMax = gv.json.obstacle[str][gv.buildingMaxLevel.obstacle]["hitpoints"];
+            time = gv.json.obstacle[str][level]["buildTime"];
+            break;
+        default:
+            break;
+    }
+
+    return price;
+
+};

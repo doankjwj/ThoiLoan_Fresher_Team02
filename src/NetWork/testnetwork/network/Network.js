@@ -81,6 +81,19 @@ testnetwork.Connector = cc.Class.extend({
         var pk = this.gameClient.getOutPacket(CmdSendResetUser);
         pk.pack();
         this.gameClient.sendPacket(pk);
+    },
+    sendInstantlyDone: function(id, pos)
+    {
+        cc.log("SEND INSTANTLY BUILD " + (id+1) + "" + pos);
+        var pk = this.gameClient.getOutPacket(CmdSendInstant);
+        pk.pack(id, pos);
+        this.gameClient.sendPacket(pk);
+    },
+    sendCancel: function(id, pos) {
+        cc.log("SEND CANCEL BUILD " + (id+1) + "" +pos);
+        var pk = this.gameClient.getOutPacket(CmdSendCancel);
+        pk.pack(id, pos);
+        this.gameClient.sendPacket(pk);
     }
 
 });

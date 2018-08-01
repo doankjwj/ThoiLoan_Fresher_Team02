@@ -38,6 +38,8 @@ cf.map_array = [];
 /* Code Button Building */
 cf.CODE_BUILDING_INFO = 324324;
 cf.CODE_BUILDING_UPGRADE = 2314234;
+cf.CODE_BUILDING_INSTANT = 131196;
+cf.CODE_BUILDING_CANCEL = 13121997;
 
 cf.user = null;
 
@@ -223,6 +225,14 @@ gv.constructType =
     info: 1231,
     upgrade: 3423,
 };
+
+/* PopUp GUI Construct*/
+cf.popUpGUI_Construct =
+{
+    barWidth: 311,
+    barHeight : 36,
+}
+
 /* Build Status */
 gv.startConstructType =
 {
@@ -361,7 +371,7 @@ cf.stringToItemInit = function(str, index) {
     {
         case "TOW_1":
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
-            building = new TownHall(cf.user._buildingListCount[gv.orderInUserBuildingList.townHall], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
+            building = new TownHall(cf.user._buildingListCount[gv.orderInUserBuildingList.townHall], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
             building._finishing_time = finishTime;
             building._is_active = (finishTime <= currentTime);
             break;
@@ -373,44 +383,43 @@ cf.stringToItemInit = function(str, index) {
             break;
         case "STO_1":
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
-            building = new Storage(cf.user._buildingListCount[gv.orderInUserBuildingList.storage_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.storage_1);
+            building = new Storage(cf.user._buildingListCount[gv.orderInUserBuildingList.storage_1], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.storage_1);
             building._finishing_time = finishTime;
             building._is_active = (finishTime <= currentTime);
-
             break;
         case "STO_2":
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
-            building = new Storage(cf.user._buildingListCount[gv.orderInUserBuildingList.storage_2], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.storage_2);
+            building = new Storage(cf.user._buildingListCount[gv.orderInUserBuildingList.storage_2], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.storage_2);
             building._finishing_time = finishTime;
             building._is_active = (finishTime <= currentTime);
             break;
         case "RES_1":
             finishTime = gv.jsonInfo["map"][str][index]["lastHarvestTime"];
-            building = new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.resource_1);
+            building = new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_1], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.resource_1);
             building._finishing_time = finishTime;
             building._is_active = (finishTime <= currentTime);
             break;
         case "RES_2":
             finishTime = gv.jsonInfo["map"][str][index]["lastHarvestTime"]
-            building = new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_2], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.resource_2);
+            building = new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_2], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.resource_2);
             building._finishing_time = finishTime;
             building._is_active = (finishTime <= currentTime);
             break;
         case "AMC_1":
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
-            building =  new ArmyCamp(cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
+            building =  new ArmyCamp(cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
             building._finishing_time = finishTime;
             building._is_active = (finishTime <= currentTime);
             break;
         case "DEF_1":
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
-            building =  new Defence(cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, "DEF_1");
+            building =  new Defence(cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, "DEF_1");
             building._finishing_time = finishTime;
             building._is_active = (finishTime <= currentTime);
             break;
         case "BAR_1":
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
-            building =  new Barrack(cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
+            building =  new Barrack(cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
             building._finishing_time = finishTime;
             building._is_active = (finishTime <= currentTime);
             break;

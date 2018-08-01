@@ -13,6 +13,8 @@ var MainLayer = cc.Layer.extend({
 
     _guiButtonBuildingInfo: null,
     _guiButtonBuildingUpgrade: null,
+    _guiInstantlyDone: null,
+    _guiCancelBuildButton: null,
     _popUp: null,
 
     _resetUserButton: null,
@@ -467,6 +469,80 @@ var MainLayer = cc.Layer.extend({
             self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
             self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
         }.bind(this));
+
+        this._guiCancelBuildButton = new IconActionBuilding(cf.CODE_BUILDING_CANCEL);
+        this._guiCancelBuildButton.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: this._guiButtonBuildingUpgrade.x,
+            y: this._guiButtonBuildingUpgrade.y
+        });
+
+        this.addChild(this._guiCancelBuildButton, 2);
+
+        this._guiCancelBuildButton.addClickEventListener(function(){
+
+            self.hideListBotButton();
+            if(gv.building_selected === undefined) return;
+            var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
+            var order = building._orderInUserBuildingList;
+            var orderBuilderHut = gv.orderInUserBuildingList.builderHut;
+            if(order === orderBuilderHut) return;
+
+            if(building._is_active) return;
+
+            var price = fn.getPrice(building._buildingSTR, building._level);
+
+            cf.user._currentCapacityCoin += price.coin/2;
+            cf.user._currentCapacityGold += price.gold/2;
+            cf.user._currentCapacityElixir += price.elixir/2;
+            cf.user._currentCapacityDarkElixir += price.darkElixir/2;
+
+            self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+            self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+            self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+            self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+
+            testnetwork.connector.sendCancel(Math.floor(gv.building_selected/100) - 1, gv.building_selected%100);
+
+            building.onCancelBuild();
+
+        }.bind(this));
+
+        this._guiInstantlyDone = new IconActionBuilding(cf.CODE_BUILDING_INSTANT);
+        this._guiInstantlyDone.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: this._guiCancelBuildButton.x + this._guiInstantlyDone.width/2*this._guiInstantlyDone.scale + 20,
+            y: this._guiCancelBuildButton.y
+        });
+
+        this.addChild(this._guiInstantlyDone, 2);
+
+        this._guiInstantlyDone.addClickEventListener(function () {
+
+            self.hideListBotButton();
+            if(gv.building_selected === undefined) return;
+            var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
+            var order = building._orderInUserBuildingList;
+            var orderBuilderHut = gv.orderInUserBuildingList.builderHut;
+            if(order === orderBuilderHut) return;
+
+            if(building._is_active) return;
+
+            var price = Math.ceil(building._time_remaining / 60);
+            if(cf.user._currentCapacityCoin < price) {
+                self.popUpMessage("Chưa đủ tài nguyên");
+            }
+            else {
+                cf.user._currentCapacityCoin -= price;
+                self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+                building._time_remaining = 0;
+                building.onCompleteBuild();
+                testnetwork.connector.sendInstantlyDone(Math.floor(gv.building_selected/100) - 1, gv.building_selected%100);
+            }
+        }.bind(this));
+
     },
 
     popUpMessage: function(msg)
@@ -490,15 +566,23 @@ var MainLayer = cc.Layer.extend({
     {
         this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - 2 * cf.offSetGui, -200));
         this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2 + this._guiButtonBuildingUpgrade.width/2 + 2 * cf.offSetGui, -200));
+        this._guiInstantlyDone.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGui, -200));
+        this._guiCancelBuildButton.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGui, -200));
     },
 
     showListBotButton: function() {
         var moveToPos1 = cc.MoveTo(0.1, cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - 2 * cf.offSetGui, this._guiButtonBuildingInfo.height/2*this.scale + cf.offSetGui));
         this._guiButtonBuildingInfo.runAction(moveToPos1);
-        var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected % 100];
+        var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
+        var moveToPos2 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + cf.offSetGui - 25, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGui));
         if (building._is_active) {
-            var moveToPos2 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + 2 * cf.offSetGui, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGui));
             this._guiButtonBuildingUpgrade.runAction(moveToPos2);
+        }
+        else {
+            this._guiCancelBuildButton.runAction(moveToPos2);
+            var moveToPos3 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + 2 * cf.offSetGui + this._guiInstantlyDone.width/2*this._guiInstantlyDone.scale + 20, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGui));
+            this._guiInstantlyDone.runAction(moveToPos3);
+            this._guiInstantlyDone.updateContent();
         }
     },
 
@@ -565,7 +649,7 @@ var MainLayer = cc.Layer.extend({
                 cf.isMapMoving = true;
                 // var self = event.getCurrentTarget()
                 if (gv.building_selected !== 0)
-                    return
+                    return;
                 var delta = touch.getDelta();
                 dis = cc.pAdd(delta, dis);
                 if(self.distance(delta, cc.p(0,0)) <= 10 && self.distance(dis, cc.p(0, 0)) <= 10) cf.isMapMoving = false;
@@ -576,22 +660,11 @@ var MainLayer = cc.Layer.extend({
                 self._map.y = curPos.y;
 
                 self.repositioning();
-                //self._map.x = self._map.x >= 0 ? 0 : self._map.x;
-                //self._map.y = self._map.y >= 0 ? 0 : self._map.y;
-                //
-                //self._map.x = self._map.x <= cc.winSize.width - self._map._width * self._map.scale ? cc.winSize.width - self._map._width * self._map.scale : self._map.x;
-                //self._map.y = self._map.y <= cc.winSize.height - self._map._height * self._map.scale + 42 ? cc.winSize.height - self._map._height * self._map.scale + 42 : self._map.y;
-
-                // cc.log(self._map.y);
-                // cc.log(self._map.x >= cc.winSize.width - self._map._width);
-
-                // cc.log(self.convertToWorldSpace().x + " " + self.convertToWorldSpace().y);
-                //
-                // cc.log(self._map.x + " " + self._map.y);
 
                 curPos = null;
             },
             onTouchEnded: function(touch, event) {
+                cf.isMapMoving = false;
                 return true;
             }
         }, this)

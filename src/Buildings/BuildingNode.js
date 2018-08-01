@@ -176,7 +176,7 @@ var BuildingNode = cc.Node.extend({
                 if (MainLayer.inside([x, y], polygon) && (gv.building_selected !== self._id))
                 {
                     self._txtName.visible = true;
-
+                    self.setLocalZOrder(200);
                     return true;
                 }
                 else
@@ -384,7 +384,7 @@ var BuildingNode = cc.Node.extend({
         //cc.log(this._time_total);
 
         /* Time Bar */
-        this._info_bar = cc.Sprite(upgradeBuildingGUI.infoBar, cc.rect(0,0, this._BAR_WIDTH, this._BAR_HEIGHT));
+        this._info_bar = cc.Sprite(res.upgradeBuildingGUI.infoBar, cc.rect(0,0, this._BAR_WIDTH, this._BAR_HEIGHT));
         this._info_bar.scale = 0.5 * cf.SCALE;
         this._info_bar.attr({
             anchorX: 0,
@@ -394,7 +394,7 @@ var BuildingNode = cc.Node.extend({
         });
         this.addChild(this._info_bar, this._defence.getLocalZOrder() + 2);
         //cc.log("++Pre Infor Bar");
-        this._info_bar_bg = cc.Sprite(upgradeBuildingGUI.infoBarBG, cc.rect(0,0, this._BAR_WIDTH, this._BAR_HEIGHT));
+        this._info_bar_bg = cc.Sprite(res.upgradeBuildingGUI.infoBarBG, cc.rect(0,0, this._BAR_WIDTH, this._BAR_HEIGHT));
         this._info_bar_bg.scale = 0.5 * cf.SCALE;
         this._info_bar_bg.attr({
             anchorX: 0,
@@ -432,7 +432,7 @@ var BuildingNode = cc.Node.extend({
             anchorY: 0,
             x: 0,
             y: cf.tileSize.height * cf.SCALE * 2
-        })
+        });
         this.addChild(this._txt_time_remaining, this._defence.getLocalZOrder() + 1);
 
         this._defence.visible = true;
@@ -478,6 +478,31 @@ var BuildingNode = cc.Node.extend({
         //this._info_bar.setTextureRect(cc.rect(0, 0, this._BAR_WIDTH * (this._time_total - this._time_remaining) / this._time_total, this._BAR_HEIGHT))
         this._info_bar.setScaleX((this._time_total - this._time_remaining) / this._time_total /2 * cf.SCALE);
         //cc.log("SCALE: " + (this._time_total - this._time_remaining) / this._time_total /2 * cf.SCALE);
+    },
+
+    onCancelBuild: function() {
+        this._is_active = true;
+
+        this._txt_time_remaining.visible = false;
+        this._info_bar.visible = false;
+        this._info_bar_bg.visible = false;
+        this._defence.visible = false;
+        //cf.user.updateResource();
+
+        /* Update user infor && GUI */
+        cf.user._builderFree++;
+        cf.user.updateBuilder();
+
+
+        /* Update sprite */
+        if (this._level > 1) {
+            this._level -= 1;
+        } else {
+            cf.user._buildingList[this._orderInUserBuildingList].splice(this._id%100, 1);
+            cf.user._buildingListCount[this._orderInUserBuildingList] -= 1;
+            this.unlocate_map_array(this._row, this._col, this._size);
+            this.getParent().removeChild(this);
+        }
     },
 
     onCompleteBuild: function() {

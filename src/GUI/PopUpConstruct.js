@@ -15,11 +15,26 @@ var PopUpConstruct = cc.Node.extend({
     _icon: null,
     _grass: null,
     _effect: null,
-    _hpBar: null,
-    _hpBarBG: null,
-    _hpTXT: null,
-    _hpIcon: null,
     _timeRequireTXT: null,
+
+    /* Hp bar */
+    _bar1: null,
+    _bar1BG: null,
+    _bar1TXT: null,
+    _bar1Icon: null,
+
+    /* Orther bar -Option */
+    _bar2: null,
+    _bar2BG: null,
+    _bar2TXT: null,
+    _bar2Icon: null,
+
+    _bar3: null,
+    _bar3BG: null,
+    _bar3TXT: null,
+    _bar3Icon: null,
+
+
 
     _cost: {
         gold: 0,
@@ -29,17 +44,33 @@ var PopUpConstruct = cc.Node.extend({
     },
 
     _bgScale: 2,
-
+    _offSetBar : 50,
     _colorBG: null,
 
     _TAG_ICON: 1122,
     _TAG_GRASS: 3331,
     _TAG_EFFECT: 4512,
     _TAG_TITLE: 9471,
-    _TAG_HP_TXT: 2323,
-    _TAG_HP_BAR: 9342,
-    _TAG_HP_BAR_BG: 8273,
-    _TAG_TXT_CONTENT: 4221,
+
+    _TAG_BAR1_ICON: 2321,
+    _TAG_BAR1: 9342,
+    _TAG_BAR1_TXT: 2323,
+    _TAG_BAR1_BG: 8273,
+    _TAG_BAR2_ICON: 2423,
+    _TAG_BAR2: 4353,
+    _TAG_BAR2_TXT: 7578,
+    _TAG_BAR2_BG: 7252,
+    _TAG_BAR3_ICON: 4535,
+    _TAG_BAR3: 8975,
+    _TAG_BAR3_TXT: 6432,
+    _TAG_BAR3_BG: 3453,
+
+    _orderBar: {
+        bar1: 0,
+        bar2: 1,
+        bar3: 2
+    },
+
     _TAG_TXT_TIME_REQUIRE: 9966,
     _TAG_CONTENT_REQUIRE: 8766,
 
@@ -110,7 +141,7 @@ var PopUpConstruct = cc.Node.extend({
                         return;
                     }
 
-                    cc.log("Upgrade");
+                    //cc.log("Upgrade");
                     self.onDisappear();
                     cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)].onStartBuild(gv.startConstructType.newConstruct);
                     /* Request */
@@ -122,15 +153,15 @@ var PopUpConstruct = cc.Node.extend({
                     cf.user._currentCapacityDarkElixir -= self._cost.darkElixir;
                     cf.user._currentCapacityCoin -= self._cost.coin;
 
-                    cc.log("Update User Info 1");
+                    //cc.log("Update User Info 1");
                     self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
-                    cc.log("Update User Info 2");
+                    //cc.log("Update User Info 2");
                     self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
-                    cc.log("Update User Info 3");
+                    //cc.log("Update User Info 3");
                     self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
-                    cc.log("Update User Info 4");
+                    //cc.log("Update User Info 4");
                     self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
-                    cc.log("Update User Info 5");
+                    //cc.log("Update User Info 5");
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;
@@ -185,7 +216,7 @@ var PopUpConstruct = cc.Node.extend({
         /* Time Require */
         this._timeRequireTXT = cc.LabelBMFont("10d23h", font.soji20);
         this._timeRequireTXT.setAnchorPoint(cc.p(0.5, 1));
-        this._timeRequireTXT.setPosition(cc.p(this._icon.x, this._icon.y - this._timeRequireTXT.height * 4));
+        this._timeRequireTXT.setPosition(cc.p(this._icon.x, this._icon.y - this._timeRequireTXT.height * 3));
         this._timeRequireTXT.visible = false;
         this.addChild(this._timeRequireTXT, 2, this._TAG_TXT_TIME_REQUIRE);
 
@@ -203,51 +234,150 @@ var PopUpConstruct = cc.Node.extend({
         this._effect.setPosition(- this._bg.width * this._bgScale / 4, this._bg.height * this._bgScale / 8);
         this.addChild(this._effect, 3, this._TAG_EFFECT);
 
-        //cc.log("++ Effect");
+        this.addBars();
+
+
+        //cc.log("++ HP TXT");
+    },
+
+    addBars: function()
+    {
+
+        // +++++ BAR 1 ===============================================
         /* HP Bar BG */
-        this._hpBarBG = cc.Sprite(upgradeBuildingGUI.infoBarBG);
-        this._hpBarBG.attr({
+        this._bar1BG = cc.Sprite(res.upgradeBuildingGUI.infoBarBG);
+        this._bar1BG.attr({
             anchorX: 0,
             anchorY: 0.5,
             x: 0.5 * this._bg.height * this._bgScale / 10,
             y: 0.5 * this._bg.height * this._bgScale / 2
         });
-        this.addChild(this._hpBarBG, 2, this._TAG_HP_BAR_BG);
-
+        this.addChild(this._bar1BG, 2, this._TAG_BAR1_BG);
 
         //cc.log("++ HP Bar BG");
         /* Hp Bar */
-        this._hpBar = cc.Sprite(upgradeBuildingGUI.infoBar);
-        this._hpBar.attr({
+        this._bar1 = cc.Sprite(res.upgradeBuildingGUI.infoBar);
+        this._bar1.attr({
             anchorX: 0,
             anchorY: 0.5,
             x: 0.5 * this._bg.height * this._bgScale / 10,
             y: 0.5 * this._bg.height * this._bgScale / 2
         });
-        this.addChild(this._hpBar, 2, this._TAG_HP_BAR);
+        this.addChild(this._bar1, 2, this._TAG_BAR1);
 
         //cc.log("++ HP Bar BG");
         /* Hp Icon */
-        this._hpIcon = cc.Sprite(upgradeBuildingGUI.hpIcon);
-        this._hpIcon.attr({
+        this._bar1Icon = cc.Sprite(res.upgradeBuildingGUI.hpIcon);
+        this._bar1Icon.attr({
             anchorX: 1,
             anchorY: 0.5,
             x: 0.5 * this._bg.height * this._bgScale / 10,
             y: 0.5 * this._bg.height * this._bgScale / 2
         });
-        this.addChild(this._hpIcon, 2);
+        this.addChild(this._bar1Icon, 2);
 
         //cc.log("++ HP Icon");
         /* Hp TXT */
-        this._hpTXT = cc.LabelBMFont("HP / HP Total", font.soji20);
-        this._hpTXT.attr({
+        this._bar1TXT = cc.LabelBMFont("Bar 1 Info", font.soji20);
+        this._bar1TXT.attr({
             anchorX:0.5,
             anchorY: 0,
-            x: this._hpBarBG.x + this._hpBar.width/2,
-            y: this._hpBarBG.y
+            x: this._bar1BG.x + this._bar1.width/2,
+            y: this._bar1BG.y
         });
-        this.addChild(this._hpTXT, 2, this._TAG_HP_TXT);
+        this.addChild(this._bar1TXT, 2, this._TAG_BAR1_TXT);
         //cc.log("++ HP TXT");
+
+        // +++++ BAR 2 =============================================
+        /* HP Bar BG */
+        this._bar2BG = cc.Sprite(res.upgradeBuildingGUI.infoBarBG);
+        this._bar2BG.attr({
+            anchorX: 0,
+            anchorY: 0.5,
+            x: 0.5 * this._bg.height * this._bgScale / 10,
+            y: this._bar1BG.y - this._offSetBar,
+        });
+        this.addChild(this._bar2BG, 2, this._TAG_BAR2_BG);
+
+
+        //cc.log("++ HP Bar BG");
+        /* Hp Bar */
+        this._bar2 = cc.Sprite(res.upgradeBuildingGUI.infoBar);
+        this._bar2.attr({
+            anchorX: 0,
+            anchorY: 0.5,
+            x: 0.5 * this._bg.height * this._bgScale / 10,
+            y: this._bar1BG.y - this._offSetBar,
+        });
+        this.addChild(this._bar2, 2, this._TAG_BAR2);
+
+        //cc.log("++ HP Bar BG");
+        /* Hp Icon */
+        this._bar2Icon = cc.Sprite(res.upgradeBuildingGUI.hpIcon);
+        this._bar2Icon.attr({
+            anchorX: 1,
+            anchorY: 0.5,
+            x: 0.5 * this._bg.height * this._bgScale / 10,
+            y: this._bar1BG.y - this._offSetBar,
+        });
+        this.addChild(this._bar2Icon, 2);
+
+        //cc.log("++ HP Icon");
+        /* Hp TXT */
+        this._bar2TXT = cc.LabelBMFont("Bar 2 Info", font.soji20);
+        this._bar2TXT.attr({
+            anchorX:0.5,
+            anchorY: 0,
+            x: this._bar2BG.x + this._bar2.width/2,
+            y: this._bar2BG.y
+        });
+        this.addChild(this._bar2TXT, 2, this._TAG_BAR2_TXT);
+        //cc.log("++ HP TXT");
+
+        // +++++ Bar 3 ==============================================
+        /* HP Bar BG */
+        this._bar3BG = cc.Sprite(res.upgradeBuildingGUI.infoBarBG);
+        this._bar3BG.attr({
+            anchorX: 0,
+            anchorY: 0.5,
+            x: 0.5 * this._bg.height * this._bgScale / 10,
+            y: this._bar1BG.y - this._offSetBar * 2,
+        });
+        this.addChild(this._bar3BG, 2, this._TAG_BAR3_BG);
+
+
+        //cc.log("++ HP Bar BG");
+        /* Hp Bar */
+        this._bar3 = cc.Sprite(res.upgradeBuildingGUI.infoBar);
+        this._bar3.attr({
+            anchorX: 0,
+            anchorY: 0.5,
+            x: 0.5 * this._bg.height * this._bgScale / 10,
+            y: this._bar1BG.y - this._offSetBar * 2,
+        });
+        this.addChild(this._bar3, 2, this._TAG_BAR3);
+
+        //cc.log("++ HP Bar BG");
+        /* Hp Icon */
+        this._bar3Icon = cc.Sprite(res.upgradeBuildingGUI.hpIcon);
+        this._bar3Icon.attr({
+            anchorX: 1,
+            anchorY: 0.5,
+            x: 0.5 * this._bg.height * this._bgScale / 10,
+            y: this._bar1BG.y - this._offSetBar * 2,
+        });
+        this.addChild(this._bar3Icon, 2);
+
+        //cc.log("++ HP Icon");
+        /* Hp TXT */
+        this._bar3TXT = cc.LabelBMFont("Bar 3 Info", font.soji20);
+        this._bar3TXT.attr({
+            anchorX:0.5,
+            anchorY: 0,
+            x: this._bar3BG.x + this._bar3.width/2,
+            y: this._bar3BG.y
+        });
+        this.addChild(this._bar3TXT, 2, this._TAG_BAR3_TXT);
     },
 
     addTouchListener: function () {
@@ -271,33 +401,6 @@ var PopUpConstruct = cc.Node.extend({
         this._swallowTouch.setEnabled(false);
     },
 
-    showPopUpMessage: function(msg)
-    {
-        // if (gv.building_selected == undefined) return;
-        // if (!this.getParent().getChildByTag(gv.tag.TAG_POPUP_MESSAGE))
-        // {
-        //     var popUp = PopUPMessage.getOrCreate();
-        //     this.getParent().addChild(popUp, 1, gv.tag.TAG_POPUP_MESSAGE);
-        // }
-        // this.getParent().getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setPosition(cc.winSize.width/2, cc.winSize.height/2);
-        // // this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).visible = true;
-        // this.getParent().getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setMessage(msg);
-        // this.getParent().getChildByTag(gv.tag.TAG_POPUP_MESSAGE).show();
-        // self.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).updateContent(gv.building_selected, gv.constructType.info);
-    },
-
-
-    // onEnter:function()
-    // {
-    //     cc.registerTargetedDelegate(-100, true, this);
-    //     this._super();
-    // },
-    // onExit:function()
-    // {
-    //     cc.unregisterTouchDelegate(this);
-    //     this._super();
-    // },
-
     updateContent: function(id, constructType)
     {
 
@@ -314,13 +417,228 @@ var PopUpConstruct = cc.Node.extend({
         }
         var b = cf.user._buildingList[Math.floor(id/100) - 1][Math.floor(id%100)];
         var level = b._level;
+
+
+
         if (constructType == gv.constructType.upgrade)
             level++;
-        this.updateIcon(b._buildingSTR, level, b._size, b._name, b._is_active);
+        this.updateIcon(b._buildingSTR, level, b._size, b._name, b._is_active, constructType);
+        this.updateBar(b._buildingSTR, level, b._size, b._name, b._is_active, constructType);
     },
 
-    updateIcon: function(str, level, size, name, status)
+    visibleBar: function(bool1, bool2, bool3)
     {
+        this._bar1.visible = bool1;
+        this._bar1BG.visible = bool1;
+        this._bar1Icon.visible = bool1;
+        this._bar1TXT.visible = bool1;
+
+        this._bar2.visible = bool2;
+        this._bar2BG.visible = bool2;
+        this._bar2Icon.visible = bool2;
+        this._bar2TXT.visible = bool2;
+
+        this._bar3.visible = bool3;
+        this._bar3BG.visible = bool3;
+        this._bar3Icon.visible = bool3;
+        this._bar3TXT.visible = bool3;
+    },
+
+    replaceIconBar: function(ord, url)
+    {
+        switch(ord)
+        {
+            case this._orderBar.bar1:
+                this.removeChild(this._bar1Icon);
+                this._bar1Icon = cc.Sprite(url);
+                this._bar1Icon = cc.Sprite(url);
+                this._bar1Icon.attr({
+                    anchorX: 1,
+                    anchorY: 0.5,
+                    x: 0.5 * this._bg.height * this._bgScale / 10,
+                    y: 0.5 * this._bg.height * this._bgScale / 2,
+                    visible :true,
+                });
+                this.addChild(this._bar1Icon, 2, this._TAG_BAR1_ICON);
+                break;
+            case this._orderBar.bar2:
+                this.removeChild(this._bar2Icon);
+                this._bar2Icon = cc.Sprite(url);
+                this._bar2Icon.attr({
+                    anchorX: 1,
+                    anchorY: 0.5,
+                    x: 0.5 * this._bg.height * this._bgScale / 10,
+                    y: this._bar1BG.y - this._offSetBar,
+                    visible: true,
+                });
+                this.addChild(this._bar2Icon, 2, this._TAG_BAR2_ICON);
+                break;
+            case this._orderBar.bar3:
+                this.removeChild(this._bar3Icon);
+                this._bar3Icon = cc.Sprite(url);
+                this._bar3Icon.attr({
+                    anchorX: 1,
+                    anchorY: 0.5,
+                    x: 0.5 * this._bg.height * this._bgScale / 10,
+                    y: this._bar1BG.y - this._offSetBar * 2,
+                    visible: true,
+                });
+                this.addChild(this._bar3Icon, 2, this._TAG_BAR3_ICON);
+                break;
+            default:
+                break;
+        }
+    },
+
+    updateBar: function(str, level, size, name, status, constructType)
+    {
+        var bar1Length = 1;
+        var bar1MaxLength = 1;
+        var bar2Length = 1;
+        var bar2MaxLength = 1;
+        var bar3Length = 1;
+        var bar3MaxLength = 1;
+
+        var preText1 = "";
+        var preText2 = "";
+        var preText3 = "";
+
+        if (!status) level--;
+
+        switch (str)
+        {
+            case gv.buildingSTR.townHall:
+                this.visibleBar(true, true, true);
+                bar1Length = gv.json.townHall[str][level]["hitpoints"];
+                bar1MaxLength = gv.json.townHall[str][gv.buildingMaxLevel.townHall]["hitpoints"];
+                bar2Length = gv.json.townHall[str][level]["capacityGold"];
+                bar2MaxLength = gv.json.townHall[str][gv.buildingMaxLevel.townHall]["capacityGold"];
+                bar3Length = gv.json.townHall[str][level]["capacityElixir"];
+                bar3MaxLength = gv.json.townHall[str][gv.buildingMaxLevel.townHall]["capacityElixir"];
+                this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
+                this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconCapacityGold);
+                this.replaceIconBar(this._orderBar.bar3, res.upgradeBuildingGUI.iconCapacityDarkElixir);
+                preText1 = "Máu: ";
+                preText2 = "Sức chứa: ";
+                preText3 = "Sức chứa: ";
+                break;
+            case gv.buildingSTR.builderHut:
+                this.visibleBar(true, false, false);
+                bar1Length = gv.json.builderHut[str][level]["hitpoints"];
+                bar1MaxLength = gv.json.builderHut[str][gv.buildingMaxLevel.builderHut]["hitpoints"];
+                this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
+                preText1 = "Máu: ";
+                break;
+            case gv.buildingSTR.armyCamp_1:
+                this.visibleBar(true, true, false);
+                bar1Length = gv.json.armyCamp[str][level]["hitpoints"];
+                bar1MaxLength = gv.json.armyCamp[str][gv.buildingMaxLevel.armyCamp_1]["hitpoints"];
+                bar2Length = gv.json.armyCamp[str][level]["capacity"];
+                bar2MaxLength = gv.json.armyCamp[str][gv.buildingMaxLevel.armyCamp_1]["capacity"];
+                this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
+                this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconTroopCapacity);
+                preText1 = "Máu: ";
+                preText2 = "Sức chứa: ";
+                break;
+            case gv.buildingSTR.barrack_1:
+                this.visibleBar(true, false, false);
+                bar1Length = gv.json.barrack[str][level]["hitpoints"];
+                bar1MaxLength = gv.json.barrack[str][gv.buildingMaxLevel.barrack_1]["hitpoints"];
+                this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
+                preText1 = "Máu: ";
+                break;
+            case gv.buildingSTR.resource_1:
+                this.visibleBar(true, true, true);
+                bar1Length = gv.json.resource[str][level]["hitpoints"];
+                bar1MaxLength = gv.json.resource[str][gv.buildingMaxLevel.resource_1]["hitpoints"];
+                bar2Length = gv.json.resource[str][level]["capacity"];
+                bar2MaxLength = gv.json.resource[str][gv.buildingMaxLevel.resource_1]["capacity"];
+                bar3Length = gv.json.resource[str][level]["productivity"];
+                bar3MaxLength = gv.json.resource[str][gv.buildingMaxLevel.resource_1]["productivity"];
+                this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
+                this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconCapacityGold);
+                this.replaceIconBar(this._orderBar.bar3, res.upgradeBuildingGUI.iconProductionRateGold);
+                preText1 = "Máu: ";
+                preText2 = "Sức chứa: ";
+                preText3 = "Sản lượng: ";
+                break;
+            case gv.buildingSTR.resource_2:
+                this.visibleBar(true, true, true);
+                bar1Length = gv.json.resource[str][level]["hitpoints"];
+                bar1MaxLength = gv.json.resource[str][gv.buildingMaxLevel.resource_2]["hitpoints"];
+                bar2Length = gv.json.resource[str][level]["capacity"];
+                bar2MaxLength = gv.json.resource[str][gv.buildingMaxLevel.resource_2]["capacity"];
+                bar3Length = gv.json.resource[str][level]["productivity"];
+                bar3MaxLength = gv.json.resource[str][gv.buildingMaxLevel.resource_2]["productivity"];
+                this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
+                this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconCapacityElixir);
+                this.replaceIconBar(this._orderBar.bar3, res.upgradeBuildingGUI.iconProductionRateElixir);
+                preText1 = "Máu: ";
+                preText2 = "Sức chứa: ";
+                preText3 = "Sản lượng: ";
+                break;
+            case gv.buildingSTR.storage_1:
+                this.visibleBar(true, true, false);
+                bar1Length = gv.json.storage[str][level]["hitpoints"];
+                bar1MaxLength = gv.json.storage[str][gv.buildingMaxLevel.storage_1]["hitpoints"];
+                bar2Length = gv.json.storage[str][level]["capacity"];
+                bar2MaxLength = gv.json.storage[str][gv.buildingMaxLevel.storage_1]["capacity"];
+                this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
+                this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconCapacityGold);
+                preText1 = "Máu: ";
+                preText2 = "Sức chứa: ";
+                break;
+            case gv.buildingSTR.storage_2:
+                this.visibleBar(true, true, false);
+                bar1Length = gv.json.storage[str][level]["hitpoints"];
+                bar1MaxLength = gv.json.storage[str][gv.buildingMaxLevel.storage_2]["hitpoints"];
+                bar2Length = gv.json.storage[str][level]["capacity"];
+                bar2MaxLength = gv.json.storage[str][gv.buildingMaxLevel.storage_2]["capacity"];
+                this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
+                this.replaceIconBar(this._orderBar.bar3, res.upgradeBuildingGUI.iconCapacityElixir);
+                preText1 = "Máu: ";
+                preText2 = "Sức chứa: ";
+                break;
+            case gv.buildingSTR.defence_1:
+                this.visibleBar(true, true, false);
+                bar1Length = gv.json.defence[str][level]["hitpoints"];
+                bar1MaxLength = gv.json.defence[str][gv.buildingMaxLevel.defence_1]["hitpoints"];
+                bar2Length = gv.json.defence[str][level]["damagePerShot"];
+                bar2MaxLength = gv.json.defence[str][gv.buildingMaxLevel.storage_2]["damagePerShot"];
+                this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
+                this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconDameDef);
+                preText1 = "Máu: ";
+                preText2 = "Sát thương: ";
+                break;
+            default:
+                break;
+        }
+
+
+        /* Nếu xem info thì bar1MaxLength = Hp */
+        if (constructType == gv.constructType.info)
+        {
+            bar1MaxLength = bar1Length;
+            bar2MaxLength = bar2Length;
+            bar3MaxLength = bar3Length;
+        }
+
+        this._bar1TXT.setString(preText1 + (bar1Length + "/" + bar1MaxLength));
+        this._bar1.setTextureRect(cc.rect(0, 0, bar1Length/bar1MaxLength * cf.popUpGUI_Construct.barWidth, cf.popUpGUI_Construct.barHeight));
+
+        this._bar2TXT.setString(preText2 + (bar2Length + "/" + bar2MaxLength));
+        this._bar2.setTextureRect(cc.rect(0, 0, bar2Length/bar2MaxLength * cf.popUpGUI_Construct.barWidth, cf.popUpGUI_Construct.barHeight));
+
+        this._bar3TXT.setString(preText3 + (bar3Length + "/" + bar3MaxLength));
+        this._bar3.setTextureRect(cc.rect(0, 0, bar3Length/bar3MaxLength * cf.popUpGUI_Construct.barWidth, cf.popUpGUI_Construct.barHeight));
+
+    },
+
+    updateIcon: function(str, level, size, name, status, constructType)
+    {
+        /* invisible All Bar */
+        this.visibleBar(false, false, false);
+
         if(this.getChildByTag(this._TAG_ICON))
             this.removeChildByTag(this._TAG_ICON);
         if (this.getChildByTag(this._TAG_GRASS))
@@ -329,6 +647,8 @@ var PopUpConstruct = cc.Node.extend({
             this.removeChildByTag(this._TAG_EFFECT);
 
         if (!status) level--;
+
+        //this._bar1Icon.setSpriteFrame(new cc.SpriteFrame(res.upgradeBuildingGUI.iconGold));
 
         /* Title Bar */
         this._txtTitle.setString(((this._constructType == gv.constructType.upgrade) ? "Nâng lên " : "") + name + " cấp " + level);
@@ -339,14 +659,19 @@ var PopUpConstruct = cc.Node.extend({
         var darkElixir = null;
         var coin = null;
         var time = null;
+
         /* Hp Bar */
-        var hp = null;
-        var hpMax = null;
+        var bar1Length = null;
+        var bar1MaxLength = null;
+        var bar2Length = null;
+        var bar2MaxLength = null;
+        var bar3Length = null;
+        var bar3MaxLength = null;
+
+
         switch(str)
         {
             case gv.buildingSTR.townHall:
-                hp = gv.json.townHall[str][level]["hitpoints"];
-                hpMax = gv.json.townHall[str][gv.buildingMaxLevel.townHall]["hitpoints"];
                 time = gv.json.townHall[str][level]["buildTime"];
                 gold = gv.json.townHall[str][level]["gold"];
                 elixir = 0;
@@ -354,8 +679,6 @@ var PopUpConstruct = cc.Node.extend({
                 coin = 0;
                 break;
             case gv.buildingSTR.builderHut:
-                hp = gv.json.builderHut[str][level]["hitpoints"];
-                hpMax = gv.json.builderHut[str][gv.buildingMaxLevel.builderHut]["hitpoints"];
                 time = 0;
                 gold = 0;
                 elixir = 0;
@@ -363,8 +686,6 @@ var PopUpConstruct = cc.Node.extend({
                 coin = gv.json.builderHut[str][level]["coin"];
                 break;
             case gv.buildingSTR.armyCamp_1:
-                hp = gv.json.armyCamp[str][level]["hitpoints"];
-                hpMax = gv.json.armyCamp[str][gv.buildingMaxLevel.armyCamp_1]["hitpoints"];
                 time = gv.json.armyCamp[str][level]["buildTime"];
                 gold = 0;
                 elixir = gv.json.armyCamp[str][level]["elixir"];
@@ -372,8 +693,6 @@ var PopUpConstruct = cc.Node.extend({
                 coin = 0;
                 break;
             case gv.buildingSTR.barrack_1:
-                hp = gv.json.barrack[str][level]["hitpoints"];
-                hpMax = gv.json.barrack[str][gv.buildingMaxLevel.barrack_1]["hitpoints"];
                 time = gv.json.barrack[str][level]["buildTime"];
                 gold = 0;
                 elixir = gv.json.barrack[str][level]["elixir"];
@@ -381,8 +700,6 @@ var PopUpConstruct = cc.Node.extend({
                 coin = 0;
                 break;
             case gv.buildingSTR.resource_1:
-                hp = gv.json.resource[str][level]["hitpoints"];
-                hpMax = gv.json.resource[str][gv.buildingMaxLevel.resource_1]["hitpoints"];
                 time = gv.json.resource[str][level]["buildTime"];
                 gold = gv.json.resource[str][level]["gold"];
                 elixir = gv.json.resource[str][level]["elixir"];
@@ -390,8 +707,6 @@ var PopUpConstruct = cc.Node.extend({
                 coin = 0;
                 break;
             case gv.buildingSTR.resource_2:
-                hp = gv.json.resource[str][level]["hitpoints"];
-                hpMax = gv.json.resource[str][gv.buildingMaxLevel.resource_2]["hitpoints"];
                 time = gv.json.resource[str][level]["buildTime"];
                 gold = gv.json.resource[str][level]["gold"];
                 elixir = gv.json.resource[str][level]["elixir"];
@@ -399,8 +714,6 @@ var PopUpConstruct = cc.Node.extend({
                 coin = 0;
                 break;
             case gv.buildingSTR.storage_1:
-                hp = gv.json.storage[str][level]["hitpoints"];
-                hpMax = gv.json.storage[str][gv.buildingMaxLevel.storage_1]["hitpoints"];
                 time = gv.json.storage[str][level]["buildTime"];
                 gold = gv.json.storage[str][level]["gold"];
                 elixir = gv.json.storage[str][level]["elixir"];
@@ -408,36 +721,33 @@ var PopUpConstruct = cc.Node.extend({
                 coin = 0;
                 break;
             case gv.buildingSTR.storage_2:
-                hp = gv.json.storage[str][level]["hitpoints"];
-                hpMax = gv.json.storage[str][gv.buildingMaxLevel.storage_2]["hitpoints"];
                 time = gv.json.storage[str][level]["buildTime"];
                 gold = gv.json.storage[str][level]["gold"];
                 elixir = gv.json.storage[str][level]["elixir"];
                 darkElixir = gv.json.storage[str][level]["darkElixir"];
                 coin = 0;
                 break;
-            case gv.buildingSTR.canon:
-                hp = gv.json.canon[str][level]["hitpoints"];
-                hpMax = gv.json.canon[str][gv.buildingMaxLevel.canon]["hitpoints"];
-                time = gv.json.canon[str][level]["buildTime"];
+            case gv.buildingSTR.defence_1:
+                time = gv.json.defence[str][level]["buildTime"];
+                gold = gv.json.defence[str][level]["gold"];
+                elixir = 0;
+                darkElixir = gv.json.defence[str][level]["darkElixir"];
+                coin = 0;
                 break;
             case gv.buildingSTR.obstacle:
-                hp = gv.json.obstacle[str][level]["hitpoints"];
-                hpMax = gv.json.obstacle[str][gv.buildingMaxLevel.obstacle]["hitpoints"];
                 time = gv.json.obstacle[str][level]["buildTime"];
                 break;
             default:
                 break;
         };
-        // cc.log(hp + " " + hpMax + " " + time);
+        // cc.log(bar1Length + " " + bar1MaxLength + " " + time);
         // cc.log(gold + " " + elixir + " " + darkElixir + " " + coin);
         this._cost.gold = gold;
         this._cost.elixir = elixir;
         this._cost.darkElixir = darkElixir;
         this._cost.coin = coin;
 
-        this._hpTXT.setString("Máu: " + hp + "/" + hpMax);
-        this._hpBar.setTextureRect(cc.rect(0,0, hp/hpMax * 311, 36));
+
 
         /* Time Require */
         if (this._constructType == gv.constructType.upgrade)
@@ -490,8 +800,8 @@ var PopUpConstruct = cc.Node.extend({
             case gv.buildingSTR.storage_2:
                 this._icon = cc.Sprite(res.folder_elixir_storage + str + "_" + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
-            case gv.buildingSTR.canon:
-                this._icon = cc.Sprite(res.folder_canon + str + "_" + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+            case gv.buildingSTR.defence_1:
+                this._icon = cc.Sprite(res.folder_canon + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case gv.buildingSTR.obstacle:
                 this._icon = cc.Sprite(res.folder_obs + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
@@ -521,16 +831,16 @@ var PopUpConstruct = cc.Node.extend({
         //if ((str == gv.buildingSTR.barrack_1 && level <4) || str == gv.buildingSTR.builderHut || str == gv.buildingSTR.storage_1 || str == gv.buildingSTR.storage_2) return;
         var arrNoEffect = [gv.buildingSTR.builderHut, gv.buildingSTR.storage_1, gv.buildingSTR.storage_2, gv.buildingSTR.storage_3, gv.buildingSTR.defence_1];
         if ((str == gv.buildingSTR.barrack_1 && level <4) || arrNoEffect.indexOf(str) >= 0) return;
-        if (str != "AMC_1" && str != "TOW_1")
+        if (str != gv.buildingSTR.armyCamp_1 && str != gv.buildingSTR.townHall)
             this._effect = cc.Sprite("res/Art/Effects/" + str + "_" + level + "_effect/00.png");
-        if (str == "AMC_1")
+        if (str == gv.buildingSTR.armyCamp_1)
             this._effect = cc.Sprite("res/Art/Effects/armycam_1/00.png");
-        if (str == "TOW_1")
+        if (str == gv.buildingSTR.townHall)
             this._effect = cc.Sprite("res/Art/Effects/towhall_flame/00.png")
         this._effect.attr({
             anchorX: 0.5,
-            anchorY: (str == "AMC_1") ? 0 : 0.5,
-            scale: 1
+            anchorY: (str == gv.buildingSTR.armyCamp_1) ? 0 : 0.5,
+            scale: (str == gv.buildingSTR.resource_1 || str == gv.buildingSTR.resource_2)? 0.75 : 1,
         });
         this._effect.setPosition(- this._bg.width * this._bgScale / 4, this._bg.height * this._bgScale / 8);
         this.addChild(this._effect, 2, this._TAG_EFFECT);
@@ -578,7 +888,7 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             }
             this.addChild(this.txtGold, 0);
 
-            this.iconGold = cc.Sprite(upgradeBuildingGUI.iconGold);
+            this.iconGold = cc.Sprite(res.upgradeBuildingGUI.iconGold);
             this.iconGold.setAnchorPoint(cc.p(1, 0.5));
             this.iconGold.setPosition(cc.p(40, this.txtGold.y));
             this.addChild(this.iconGold, 0);
@@ -596,7 +906,7 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             }
             this.addChild(this.txtElixir, 0);
 
-            this.iconElixir = cc.Sprite(upgradeBuildingGUI.iconElixir);
+            this.iconElixir = cc.Sprite(res.upgradeBuildingGUI.iconElixir);
             this.iconElixir.setAnchorPoint(cc.p(1, 0.5));
             this.iconElixir.setPosition(cc.p(40, this.txtElixir.y));
             this.addChild(this.iconElixir, 0);
@@ -614,7 +924,7 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             }
             this.addChild(this.txtDarkElixir, 0);
 
-            this.iconDarkElixir = cc.Sprite(upgradeBuildingGUI.iconDarkElixir);
+            this.iconDarkElixir = cc.Sprite(res.upgradeBuildingGUI.iconDarkElixir);
             this.iconDarkElixir.setAnchorPoint(cc.p(1, 0.5));
             this.iconDarkElixir.setPosition(cc.p(40, this.txtDarkElixir.y));
             this.addChild(this.iconDarkElixir, 0);
@@ -632,7 +942,7 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             }
             this.addChild(this.txtCoin, 0);
 
-            this.iconCoin = cc.Sprite(upgradeBuildingGUI.iconCoin);
+            this.iconCoin = cc.Sprite(res.upgradeBuildingGUI.iconCoin);
             this.iconCoin.setAnchorPoint(cc.p(1, 0.5));
             this.iconCoin.setPosition(cc.p(40, this.txtCoin.y));
             this.addChild(this.iconCoin, 0);

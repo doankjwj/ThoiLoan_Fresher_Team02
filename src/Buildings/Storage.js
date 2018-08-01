@@ -5,6 +5,7 @@ var Storage = BuildingNode.extend({
     ctor: function(id, level, row, col, existed, buildingSTR)
     {
         this._buildingSTR = buildingSTR;
+        if(level === 0) level = 1;
         this._size = gv.json.storage[this._buildingSTR][level]["width"];
         this._orderInUserBuildingList = (buildingSTR === gv.buildingSTR.storage_1) ? gv.orderInUserBuildingList.storage_1 : gv.orderInUserBuildingList.storage_2;
         this._name = (buildingSTR === gv.buildingSTR.storage_1) ? gv.buildingName.storage_1 : gv.buildingName.storage_2;

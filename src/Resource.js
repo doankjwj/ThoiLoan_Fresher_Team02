@@ -137,21 +137,37 @@ var mainGUI = {
 var buildingGUI = {
     iconInfo : folderBuildingActionicon + "info_icon.png",
     iconUpgrade: folderBuildingActionicon + "upgrade_icon.png",
+    instant: res.folder_gui_action_building + "quick_finish.png",
     bg: folderBuildingActionicon + "bg_button.png",
 
     buildCommit: res.folder_gui_action_building + "accept.png",
     buildCancel: res.folder_gui_action_building + "cancel.png",
-    defence: res.map_obj + "upgrading.png",
+    buildCancelIcon: res.folder_gui_action_building + "cancel_icon.png",
+    defence: res.map_obj + "upgrading.png"
 };
 
-var upgradeBuildingGUI = {
+var upgradeBuildingGUI_Small = folderUpgradeBuildingGUI + "small/";
+res.upgradeBuildingGUI = {
     infoBar: folderUpgradeBuildingGUI + "info_bar_bg.png",
     infoBarBG: folderUpgradeBuildingGUI + "info_bar.png",
     hpIcon: folderUpgradeBuildingGUI + "small/Hitpoints_Icon.png",
     iconGold: folderUpgradeBuildingGUI + "small/BUFF_GOLD.png",
     iconElixir: folderUpgradeBuildingGUI + "small/BUFF_ELIXIR.png",
     iconDarkElixir: folderUpgradeBuildingGUI + "small/BUFF_DARK.png",
-    iconCoin: folderUpgradeBuildingGUI + "small/2.png"
+    iconCoin: folderUpgradeBuildingGUI + "small/2.png",
+
+    iconCapacityGold: upgradeBuildingGUI_Small + "Gold_Capacity_Icon.png",
+    iconCapacityElixir: upgradeBuildingGUI_Small + "Elixir_Capacity_Icon.png",
+    iconCapacityDarkElixir: upgradeBuildingGUI_Small + "DarkElixir_Capacity_Icon.png",
+
+    iconProductionRateGold: upgradeBuildingGUI_Small + "Gold_ProductionRate_Icon.png",
+    iconProductionRateElixir: upgradeBuildingGUI_Small + "Elixir_ProductionRate_Icon.png",
+    iconProductionRateDarkElixir: upgradeBuildingGUI_Small + "DarkElixir_ProductionRate_Icon.png",
+
+    iconTroopCapacity : upgradeBuildingGUI_Small + "TroopCapacity_Icon.png",
+    iconDameDef: upgradeBuildingGUI_Small + "DAMA_DEF.png",
+
+
 };
 
 var logInGUI =

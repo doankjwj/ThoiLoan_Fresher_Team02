@@ -4,22 +4,48 @@
 var IconActionBuilding = ccui.Button.extend({
     _type: null,
     _txt: null,
+    _price: null,
+    _priceTxt: null,
 
     ctor: function(type)
     {
         switch(type)
         {
             case cf.CODE_BUILDING_INFO: this._super((buildingGUI.iconInfo));
-                this._txt = cc.LabelBMFont("Info", font.soji20);
+                this._txt = cc.LabelBMFont("THÔNG TIN", font.soji20);
                 break;
             case cf.CODE_BUILDING_UPGRADE: this._super(buildingGUI.iconUpgrade);
                 this._txt = cc.LabelBMFont("Upgrade", font.soji20);
+                break;
+            case cf.CODE_BUILDING_INSTANT:
+                this._super(buildingGUI.instant);
+                this._txt = cc.LabelBMFont("XONG NGAY", font.soji20);
+                break;
+            case cf.CODE_BUILDING_CANCEL:
+                this._super(buildingGUI.buildCancelIcon);
+                this._txt = cc.LabelBMFont("HỦY BỎ", font.soji20);
                 break;
             default:
                 break;
         }
 
+        this._priceTxt = cc.LabelBMFont("FREE", font.soji20);
+        this.addChild(this._priceTxt, 1);
+        this._priceTxt.setVisible(false);
+
+        if(type === cf.CODE_BUILDING_INSTANT) this._priceTxt.visible = true;
+
         this.scale = 1.5;
+
+        this._priceTxt.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: this.width/2,
+            scale: 1/1.5,
+            y: this.height - this._priceTxt.height/2
+        });
+
+
 
         this._txt.attr({
             anchorX: 0.5,
@@ -32,6 +58,16 @@ var IconActionBuilding = ccui.Button.extend({
 
         this.addTouchEventListener(this.updateBuilding, this);
 
+    },
+
+    updateContent: function(){
+        var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
+        var price = Math.ceil(building._time_remaining / 60);
+        this._priceTxt.setString(price.toString());
+        if(cf.user._currentCapacityCoin < price) {
+            this._priceTxt.setColor(cc.color.RED);
+        }
+        else this._priceTxt.setColor(cc.color.WHITE);
     },
 
     updateBuilding: function(sender, type) {

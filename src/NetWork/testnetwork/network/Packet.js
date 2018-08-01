@@ -11,6 +11,8 @@ gv.CMD.MOVE = 2310;
 gv.CMD.BUILD = 2010;
 gv.CMD.UPGRADE_BUILDING = 2110;
 gv.CMD.CHEAT = 2880;
+gv.CMD.SEND_INSTANT = 2150;
+gv.CMD.SEND_CANCEL = 2210;
 
 gv.CMD.RESET_USER = 2890;
 
@@ -86,6 +88,35 @@ CmdSendBuild = fr.OutPacket.extend(
         }
     }
 );
+
+CmdSendInstant = fr.OutPacket.extend({
+    ctor: function() {
+        this._super();
+        this.initData(100);
+        this.setCmdId(gv.CMD.SEND_INSTANT);
+    },
+    pack:function(id, pos){
+        this.packHeader();
+        this.putByte(id);
+        this.putByte(pos);
+        this.updateSize();
+    }
+});
+
+
+CmdSendCancel = fr.OutPacket.extend({
+    ctor: function() {
+        this._super();
+        this.initData(100);
+        this.setCmdId(gv.CMD.SEND_CANCEL);
+    },
+    pack:function(id, pos){
+        this.packHeader();
+        this.putByte(id);
+        this.putByte(pos);
+        this.updateSize();
+    }
+});
 
 CmdSendMove = fr.OutPacket.extend(
     {

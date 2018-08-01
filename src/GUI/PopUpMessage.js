@@ -56,4 +56,4 @@ PopUPMessage.getOrCreate = function()
         gv.popUpMessage = new PopUPMessage();
     }
     return gv.popUpMessage;
-}
+};

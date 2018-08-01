@@ -4,6 +4,7 @@ var ArmyCamp = BuildingNode.extend({
     ctor: function(id, level, row, col, existed)
     {
         this._buildingSTR = gv.buildingSTR.armyCamp_1;
+        if(level === 0) level = 1;
         this._size = gv.json.armyCamp[this._buildingSTR][level]["width"];
         this._orderInUserBuildingList = gv.orderInUserBuildingList.armyCamp_1;
         this._name = gv.buildingName.armyCamp_1;
