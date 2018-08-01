@@ -48,6 +48,7 @@ var PopUpConstruct = cc.Node.extend({
         this._super();
         var self = this;
 
+        //cc.log("++Pop Up Construct init");
         /* Background */
         this._bg = cc.Sprite(res.popUp.bg);
         this._bg.setAnchorPoint(cc.p(0.5, 0.5));
@@ -62,6 +63,7 @@ var PopUpConstruct = cc.Node.extend({
         this.addChild(this._colorBG, -1);
         this.addTouchListener();
 
+        //cc.log("++Color Bg");
         /* Text Title */
         this._txtTitle = cc.LabelBMFont("Building Title", font.soji20);
         this._txtTitle.setAnchorPoint(cc.p(0.5, 0.5));
@@ -87,6 +89,7 @@ var PopUpConstruct = cc.Node.extend({
         // this._btnOk.setTextureName("Ok");
         this.addChild(this._btnOk, 1);
 
+        //cc.log("++ Button close Added");
         this._btnOk.addTouchEventListener(function(sender, type) {
             var cheatNumber = 5000;
             switch (type){
@@ -134,6 +137,7 @@ var PopUpConstruct = cc.Node.extend({
             }
         }, this._btnOk);
 
+        //cc.log("++ Event Button");
 
         //this._btnOk.addClickEventListener(function(){
         //    self.setPosition(cc.p(0, - cc.winSize.height));
@@ -177,6 +181,7 @@ var PopUpConstruct = cc.Node.extend({
         this._icon.setPosition(- this._bg.width * this._bgScale / 4, this._bg.height * this._bgScale / 8);
         this.addChild(this._icon, 2, this._TAG_ICON);
 
+        //cc.log("++ Building Icon");
         /* Time Require */
         this._timeRequireTXT = cc.LabelBMFont("10d23h", font.soji20);
         this._timeRequireTXT.setAnchorPoint(cc.p(0.5, 1));
@@ -184,18 +189,21 @@ var PopUpConstruct = cc.Node.extend({
         this._timeRequireTXT.visible = false;
         this.addChild(this._timeRequireTXT, 2, this._TAG_TXT_TIME_REQUIRE);
 
+        //cc.log("++ TXT time require");
         /* Building Grass */
         this._grass = cc.Sprite(res.tmp_effect);
         this._grass.setAnchorPoint(cc.p(0.5, 0.5));
         this._grass.setPosition(- this._bg.width * this._bgScale / 4, this._bg.height * this._bgScale / 8);
         this.addChild(this._grass, 1, this._TAG_GRASS);
 
+        //cc.log("++ Grass");
         /* Builing Effect */
         this._effect = cc.Sprite(res.tmp_effect);
         this._effect.setAnchorPoint(cc.p(0.5, 0.5));
         this._effect.setPosition(- this._bg.width * this._bgScale / 4, this._bg.height * this._bgScale / 8);
         this.addChild(this._effect, 3, this._TAG_EFFECT);
 
+        //cc.log("++ Effect");
         /* HP Bar BG */
         this._hpBarBG = cc.Sprite(upgradeBuildingGUI.infoBarBG);
         this._hpBarBG.attr({
@@ -206,6 +214,8 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._hpBarBG, 2, this._TAG_HP_BAR_BG);
 
+
+        //cc.log("++ HP Bar BG");
         /* Hp Bar */
         this._hpBar = cc.Sprite(upgradeBuildingGUI.infoBar);
         this._hpBar.attr({
@@ -216,6 +226,7 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._hpBar, 2, this._TAG_HP_BAR);
 
+        //cc.log("++ HP Bar BG");
         /* Hp Icon */
         this._hpIcon = cc.Sprite(upgradeBuildingGUI.hpIcon);
         this._hpIcon.attr({
@@ -226,6 +237,7 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._hpIcon, 2);
 
+        //cc.log("++ HP Icon");
         /* Hp TXT */
         this._hpTXT = cc.LabelBMFont("HP / HP Total", font.soji20);
         this._hpTXT.attr({
@@ -235,6 +247,7 @@ var PopUpConstruct = cc.Node.extend({
             y: this._hpBarBG.y
         });
         this.addChild(this._hpTXT, 2, this._TAG_HP_TXT);
+        //cc.log("++ HP TXT");
     },
 
     addTouchListener: function () {

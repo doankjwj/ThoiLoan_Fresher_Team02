@@ -362,7 +362,7 @@ var BuildingNode = cc.Node.extend({
     },
 
     onStartBuild: function(startConstructType) {
-        cc.log("Started Build 1");
+        //cc.log("Started Build 1");
         if (this._existed)
             this._level ++;
         this._existed = true;
@@ -384,26 +384,17 @@ var BuildingNode = cc.Node.extend({
         //cc.log(this._time_total);
 
         /* Time Bar */
-        //this._info_bar = cc.Sprite(res.folder_gui_build + "info_bar.png", cc.rect(0,0, this._BAR_WIDTH, this._BAR_HEIGHT));
-        //this._info_bar.scale = 0.5 * cf.SCALE;
-        //this._info_bar.attr({
-        //    anchorX: 0,
-        //    anchorY: 1,
-        //    x: - this._BAR_WIDTH / 2 * this._info_bar.scale,
-        //    y: cf.tileSize.height * cf.SCALE * 2
-        //});
-        //this.addChild(this._info_bar, this._defence.getLocalZOrder() + 1);
-        //this._info_bar_bg = cc.Sprite(res.folder_gui_build + "info_bar_bg.png", cc.rect(0,0, 0, this._BAR_HEIGHT));
-        //this._info_bar_bg.scale = 0.5 * cf.SCALE;
-        //this._info_bar_bg.attr({
-        //    anchorX: 0,
-        //    anchorY: 1,
-        //    x: - this._BAR_WIDTH / 2 * this._info_bar_bg.scale,
-        //    y: cf.tileSize.height * cf.SCALE * 2
-        //});
-        //this.addChild(this._info_bar_bg, this._defence.getLocalZOrder() + 1);
-
-        this._info_bar_bg = cc.ProgressTimer.create(res.folder_gui_build + "info_bar.png", res.folder_gui_build + "info_bar_bg.png");;
+        this._info_bar = cc.Sprite(upgradeBuildingGUI.infoBar, cc.rect(0,0, this._BAR_WIDTH, this._BAR_HEIGHT));
+        this._info_bar.scale = 0.5 * cf.SCALE;
+        this._info_bar.attr({
+            anchorX: 0,
+            anchorY: 1,
+            x: - this._BAR_WIDTH / 2 * this._info_bar.scale,
+            y: cf.tileSize.height * cf.SCALE * 2
+        });
+        this.addChild(this._info_bar, this._defence.getLocalZOrder() + 2);
+        //cc.log("++Pre Infor Bar");
+        this._info_bar_bg = cc.Sprite(upgradeBuildingGUI.infoBarBG, cc.rect(0,0, this._BAR_WIDTH, this._BAR_HEIGHT));
         this._info_bar_bg.scale = 0.5 * cf.SCALE;
         this._info_bar_bg.attr({
             anchorX: 0,
@@ -412,6 +403,17 @@ var BuildingNode = cc.Node.extend({
             y: cf.tileSize.height * cf.SCALE * 2
         });
         this.addChild(this._info_bar_bg, this._defence.getLocalZOrder() + 1);
+        //cc.log("++After InfoBar");
+
+        //this._info_bar_bg = cc.ProgressTimer.create(res.folder_gui_build + "info_bar.png", res.folder_gui_build + "info_bar_bg.png");;
+        //this._info_bar_bg.scale = 0.5 * cf.SCALE;
+        //this._info_bar_bg.attr({
+        //    anchorX: 0,
+        //    anchorY: 1,
+        //    x: - this._BAR_WIDTH / 2 * this._info_bar_bg.scale,
+        //    y: cf.tileSize.height * cf.SCALE * 2
+        //});
+        //this.addChild(this._info_bar_bg, this._defence.getLocalZOrder() + 1);
 
         ///* Time Text */
         var seconds = this._time_total;
@@ -423,7 +425,7 @@ var BuildingNode = cc.Node.extend({
         seconds  -= mnts*60;
         var timeRemaining = (days !== 0 ? (days.toString() + "d") : "" ) + (hrs !== 0 ? (hrs.toString() + "h") : "") + (mnts !== 0 ? (mnts.toString() + "m") : "") + seconds.toString() + "s";
 
-        var timeRemaining = Math.floor(this._time_total / 60 / 60/ 24) + "d" + Math.floor(this._time_total / 60 / 60) + "h" + Math.floor(this._time_total / 60) + "m" + (this._time_total % 60) + "s"
+        //var timeRemaining = Math.floor(this._time_total / 60 / 60/ 24) + "d" + Math.floor(this._time_total / 60 / 60) + "h" + Math.floor(this._time_total / 60) + "m" + (this._time_total % 60) + "s"
         this._txt_time_remaining = cc.LabelBMFont.create(timeRemaining,  font.soji20);
         this._txt_time_remaining.attr({
             anchorX: 0.5,
@@ -442,7 +444,7 @@ var BuildingNode = cc.Node.extend({
         this._txtName.visible = false;
         this.hideBuildingButton();
 
-        cc.log("Started Build");
+        //cc.log("Started Build");
     },
 
     onUpdateBuildStatus: function() {
@@ -471,9 +473,11 @@ var BuildingNode = cc.Node.extend({
 
         //cc.log(timeRemaining + " Time Remaining");
 
-        var timeRemaining = Math.floor(this._time_remaining / 60 / 60/ 24) + "d" + Math.floor(this._time_remaining / 60 / 60) + "h" + Math.floor(this._time_remaining / 60) + "m" + (this._time_remaining % 60) + "s"
+        //var timeRemaining = Math.floor(this._time_remaining / 60 / 60/ 24) + "d" + Math.floor(this._time_remaining / 60 / 60) + "h" + Math.floor(this._time_remaining / 60) + "m" + (this._time_remaining % 60) + "s"
         this._txt_time_remaining.setString(timeRemaining);
-        //this._info_bar_bg.setTextureRect(cc.rect(0, 0, this._BAR_WIDTH * (this._time_total - this._time_remaining) / this._time_total, this._BAR_HEIGHT))
+        //this._info_bar.setTextureRect(cc.rect(0, 0, this._BAR_WIDTH * (this._time_total - this._time_remaining) / this._time_total, this._BAR_HEIGHT))
+        this._info_bar.setScaleX((this._time_total - this._time_remaining) / this._time_total /2 * cf.SCALE);
+        //cc.log("SCALE: " + (this._time_total - this._time_remaining) / this._time_total /2 * cf.SCALE);
     },
 
     onCompleteBuild: function() {
@@ -484,7 +488,7 @@ var BuildingNode = cc.Node.extend({
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_construct_levelup.plist", res.folder_effect + "effect_construct_levelup.png");
         }
         this._txt_time_remaining.visible = false;
-        //this._info_bar.visible = false;
+        this._info_bar.visible = false;
         this._info_bar_bg.visible = false;
         this._defence.visible = false;
         this._effect_level_up.runAction(cc.Sequence.create(cc.CallFunc(function(){this._effect_level_up.visible = true}, this),

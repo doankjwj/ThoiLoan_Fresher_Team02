@@ -201,7 +201,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
 
             gv.timeOffset = this.ServerTimeStamp - new Date().getTime();
 
-            cc.log(this.ServerTimeStamp - new Date().getTime());
+            //cc.log(this.ServerTimeStamp - new Date().getTime());
 
 
             /* Town Hall */

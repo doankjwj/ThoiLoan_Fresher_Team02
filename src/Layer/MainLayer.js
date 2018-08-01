@@ -436,7 +436,7 @@ var MainLayer = cc.Layer.extend({
             self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
             self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.info);
             self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
-            cc.log(self.getChildByTag(gv.tag.TAG_POPUP)._swallowTouch.isEnabled());
+            //cc.log(self.getChildByTag(gv.tag.TAG_POPUP)._swallowTouch.isEnabled());
         }. bind(this));
 
         /* Button Upgrade */
@@ -480,7 +480,7 @@ var MainLayer = cc.Layer.extend({
             this.addChild(popUp, 1, gv.tag.TAG_POPUP_MESSAGE);
         }
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setPosition(cc.winSize.width/2, cc.winSize.height/2);
-        cc.log("Pop Up ");
+        //cc.log("Pop Up ");
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).visible = true;
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setMessage(msg);
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).show();
@@ -544,10 +544,12 @@ var MainLayer = cc.Layer.extend({
 
     moveMap: function() {
         var self = this;
+        var dis = 0;
         cc.eventManager.addListener({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             swallowTouches: true,
             onTouchBegan: function(touch, event) {
+                dis = cc.p(0,0);
                 var target = event.getCurrentTarget();
                 var locationInNode = target.convertToNodeSpace(touch.getLocation());
                 var s = target.getContentSize();
@@ -560,11 +562,14 @@ var MainLayer = cc.Layer.extend({
                 return false;
             },
             onTouchMoved: function(touch, event) {
-                // var self = event.getCurrentTarget()
                 cf.isMapMoving = true;
+                // var self = event.getCurrentTarget()
                 if (gv.building_selected !== 0)
                     return
                 var delta = touch.getDelta();
+                dis = cc.pAdd(delta, dis);
+                if(self.distance(delta, cc.p(0,0)) <= 10 && self.distance(dis, cc.p(0, 0)) <= 10) cf.isMapMoving = false;
+                if(self.distance(dis, cc.p(0, 0)) > 10) cf.isMapMoving = true;
                 var curPos = cc.p(self._map.x, self._map.y);
                 curPos = cc.pAdd(curPos, delta);
                 self._map.x = curPos.x;
@@ -587,7 +592,6 @@ var MainLayer = cc.Layer.extend({
                 curPos = null;
             },
             onTouchEnded: function(touch, event) {
-                cf.isMapMoving = false;
                 return true;
             }
         }, this)
