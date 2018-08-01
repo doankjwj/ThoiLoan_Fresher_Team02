@@ -3,9 +3,10 @@ var TownHall = BuildingNode.extend({
     {
         this._buildingSTR = gv.buildingSTR.townHall;
         this._size = gv.json.townHall[this._buildingSTR][level]["width"];
+        this._jsonConfig = gv.json.townHall;
         this._orderInUserBuildingList = gv.orderInUserBuildingList.townHall;
         this._name = gv.buildingName.townHall;
-
+        this._maxLevel = gv.buildingMaxLevel.townHall;
         this._super(id, level, row, col, existed);
 
 

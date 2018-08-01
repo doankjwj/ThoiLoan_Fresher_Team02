@@ -4,6 +4,8 @@ var Barrack = BuildingNode.extend({
         this._buildingSTR = gv.buildingSTR.barrack_1;
         if(level === 0) level = 1;
         this._size = gv.json.barrack[this._buildingSTR][level]["width"];
+        this._jsonConfig = gv.json.barrack;
+        this._maxLevel = gv.buildingMaxLevel.barrack_1;
         this._orderInUserBuildingList = gv.orderInUserBuildingList.barrack_1;
         this._name = gv.buildingName.barrack_1;
 

@@ -4,9 +4,16 @@ var Resource = BuildingNode.extend({
         this._buildingSTR = buildingSTR;
         if(level === 0) this._size = gv.json.resource[this._buildingSTR][level+1]["width"];
         else this._size = gv.json.resource[this._buildingSTR][level]["width"];
+        if(this._buildingSTR === gv.buildingSTR.resource_1) {
+            this._maxLevel = gv.buildingMaxLevel.resource_1;
+        } else if(this._buildingSTR === gv.buildingSTR.resource_2) {
+            this._maxLevel = gv.buildingMaxLevel.resource_2;
+        } else if(this._buildingSTR === gv.buildingSTR.resource_3) {
+            this._maxLevel = gv.buildingMaxLevel.resource_3;
+        }
         this._orderInUserBuildingList = (buildingSTR == gv.buildingSTR.resource_1) ? gv.orderInUserBuildingList.resource_1 : gv.orderInUserBuildingList.resource_2;
         this._name = (buildingSTR == gv.buildingSTR.resource_1) ? gv.buildingName.resource_1 : gv.buildingName.resource_2;
-
+        this._jsonConfig = gv.json.resource;
         this._super(id, level, row, col, existed);
 
 

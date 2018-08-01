@@ -11,6 +11,10 @@ var BuildingNode = cc.Node.extend({
     _name: null,
     _constructAble: true,
 
+    _maxLevel: null,
+
+    _jsonConfig: null,
+
     _center_building: null,
     _grass: null,
     _grassShadow: null,

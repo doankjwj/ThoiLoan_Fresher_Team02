@@ -3,6 +3,8 @@ var BuilderHut = BuildingNode.extend({
     {
         this._buildingSTR = gv.buildingSTR.builderHut;
         this._size = gv.json.builderHut[this._buildingSTR][order]["width"];
+        this._jsonConfig = gv.json.builderHut;
+        this._maxLevel = 1;
         this._orderInUserBuildingList = gv.orderInUserBuildingList.builderHut;
         this._name =gv.buildingName.builderHut;
 

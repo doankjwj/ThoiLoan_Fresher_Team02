@@ -7,6 +7,8 @@ var Defence = BuildingNode.extend({
         this._buildingSTR = buildingSTR;
         if(level === 0) level = 1;
         this._size = gv.json.defence[this._buildingSTR][level]["width"];
+        this._jsonConfig = gv.json.defence;
+        this._maxLevel = gv.buildingMaxLevel.defence_1;
         this._orderInUserBuildingList = (buildingSTR == gv.buildingSTR.defence_1) ? gv.orderInUserBuildingList.defence_1 : gv.orderInUserBuildingList.defence_1;
         this._name = (buildingSTR == gv.buildingSTR.defence_1) ? gv.buildingName.defence_1 : gv.buildingName.defence_1;
 

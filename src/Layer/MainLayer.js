@@ -462,12 +462,30 @@ var MainLayer = cc.Layer.extend({
             if (building._is_active === false) return;
             // if (cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)]._orderInUserBuildingList = gv.orderInUserBuildingList.builderHut)
             //     return;
-
-
-            self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width/2, cc.winSize.height/2);
-            self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
-            self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
-            self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
+            var townHall = cf.user._buildingList[gv.orderInUserBuildingList.townHall][0];
+            var townHallLevel;
+            if(townHall._is_active) townHallLevel = townHall._level;
+            else townHallLevel = townHall._level - 1;
+            if(building._buildingSTR !== gv.buildingSTR.townHall) {
+                if (townHallLevel >= building._jsonConfig[building._buildingSTR][Math.min(building._level + 1, building._maxLevel)]["townHallLevelRequired"]) {
+                    self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
+                    self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
+                    self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
+                    self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
+                }
+                else if (building._level === building._maxLevel) {
+                    self.popUpMessage("Đã đạt cấp tối đa");
+                } else if (townHallLevel < building._jsonConfig[building._buildingSTR][Math.min(building._level + 1, building._maxLevel)]["townHallLevelRequired"]) {
+                    self.popUpMessage("Yêu cầu nhà chính cấp " + building._jsonConfig[building._buildingSTR][Math.min(building._level + 1, building._maxLevel)]["townHallLevelRequired"]);
+                }
+            } else if (building._level === building._maxLevel) {
+                self.popUpMessage("Đã đạt cấp tối đa");
+            } else {
+                self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
+                self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
+                self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
+                self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
+            }
         }.bind(this));
 
         this._guiCancelBuildButton = new IconActionBuilding(cf.CODE_BUILDING_CANCEL);

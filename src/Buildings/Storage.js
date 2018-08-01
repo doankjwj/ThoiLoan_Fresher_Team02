@@ -7,6 +7,14 @@ var Storage = BuildingNode.extend({
         this._buildingSTR = buildingSTR;
         if(level === 0) level = 1;
         this._size = gv.json.storage[this._buildingSTR][level]["width"];
+        this._jsonConfig = gv.json.storage;
+        if(this._buildingSTR === gv.buildingSTR.storage_1) {
+            this._maxLevel = gv.buildingMaxLevel.storage_1;
+        } else if(this._buildingSTR === gv.buildingSTR.storage_2) {
+            this._maxLevel = gv.buildingMaxLevel.storage_2;
+        } else if(this._buildingSTR === gv.buildingSTR.storage_3) {
+            this._maxLevel = gv.buildingMaxLevel.storage_3;
+        }
         this._orderInUserBuildingList = (buildingSTR === gv.buildingSTR.storage_1) ? gv.orderInUserBuildingList.storage_1 : gv.orderInUserBuildingList.storage_2;
         this._name = (buildingSTR === gv.buildingSTR.storage_1) ? gv.buildingName.storage_1 : gv.buildingName.storage_2;
 
