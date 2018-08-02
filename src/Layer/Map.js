@@ -178,6 +178,7 @@ var Map = cc.Node.extend({
     },
 
     logMapArray: function() {
+        cc.log("Map Aray");
         for (var r = 1; r < 41; r ++)
         {
             var s = "";

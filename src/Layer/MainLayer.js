@@ -48,9 +48,6 @@ var MainLayer = cc.Layer.extend({
 
     init: function() {
         this.addLoginGUI();
-        this.loadJson();
-
-        //cc.eventManager.getCCEventDispatcher().pauseEventListenersForTarget(this);
     },
 
     addLoginGUI: function()
@@ -59,16 +56,6 @@ var MainLayer = cc.Layer.extend({
         bg.setAnchorPoint(cc.p(0, 0));
         bg.scale = cc.winSize.width / bg.width;
         this.addChild(bg, 0, this._TAG_BG);
-        //
-        // var size = cc.director.getVisibleSize();
-        // var yBtn = 2*size.height/3;
-        // var btnLogin = gv.commonButton(200, 64, size.width/4, yBtn,"Login");
-        // this.addChild(btnLogin, 1, this._TAG_LOGIN);
-        // btnLogin.addClickEventListener(this.onSelectLogin.bind(this));
-        //
-        // var btnOfflineMode = gv.commonButton(200, 64, size.width/4, yBtn/2, "Offline Mode");
-        // this.addChild(btnOfflineMode, 1, this._TAG_OFFLINE_MODE);
-        // btnOfflineMode.addClickEventListener(this.onSelectOfflineMode.bind(this));
 
         var size = cc.winSize;
 
@@ -92,7 +79,6 @@ var MainLayer = cc.Layer.extend({
         this._passwordField.setPasswordEnabled(true);
         this.addChild(this._passwordField, 1, this._TAG_PASSWORD_FIELD);
 
-        //var login = gv.commonButton(200, 64, size.width/2, this._passwordField.y - this._passwordField.height - 40,"Login");
         var login = ccui.Button(logInGUI.btnOk);
         login.attr({
             anchorX: 0.5,
@@ -116,14 +102,6 @@ var MainLayer = cc.Layer.extend({
         gv.gameClient.connect();
     },
 
-    onSelectOfflineMode: function()
-    {
-        this.initUser();
-        this.initMainGUI();
-        this.initMap();
-        this.updateGUIandUserInfo();
-    },
-
     onConnectSuccess: function()
     {
         cc.log("================= " + "Connect Success => Send Handshake");
@@ -145,10 +123,6 @@ var MainLayer = cc.Layer.extend({
 
     onReceiveUserInfo: function()
     {
-        //this.removeChildByTag(this._TAG_MAP);
-        //if (gv.reloaded) fr.view(this);
-        //gv.reloaded = true;
-
         this.initUser();
         this.initMainGUI();
         this.initMap();
@@ -171,7 +145,7 @@ var MainLayer = cc.Layer.extend({
         this.addUserBar();
         this.addBuilderBar();
         {
-            this._popUp = PopUpConstruct.getOrCreate();
+            this._popUp = new PopUpConstruct;
             this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
             this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
         };
@@ -193,6 +167,14 @@ var MainLayer = cc.Layer.extend({
         this._resetUserButton.addClickEventListener(function()
         {
             testnetwork.connector.sendResetUser();
+            try
+            {
+                fr.view(MainLayer);
+            }
+            catch(e)
+            {
+                cc.log(e)
+            };
         }.bind(this));
 
         this.addChild(this._resetUserButton, 1);
@@ -339,9 +321,7 @@ var MainLayer = cc.Layer.extend({
             building = cf.user._buildingList[i][j];
             if (!building._is_active)
             {
-                cc.log("=============== " +building._name);
                 building.updateConstructType();
-
             }
         };
 
@@ -356,29 +336,29 @@ var MainLayer = cc.Layer.extend({
     addResourceBar: function() {
         this._resBarGold = new GUI_ResourceBar(1);
         this._resBarGold.attr({
-            x: cc.winSize.width - cf.offSetGui,
-            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 30,
+            x: cc.winSize.width - cf.offSetGuiResourceBar,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGuiResourceBar - 30,
         });
         this.addChild(this._resBarGold, 1, gv.tag.TAG_RESOURCE_BAR_GOLD);
 
         this._resBarElixir = new GUI_ResourceBar(2);
         this._resBarElixir.attr({
-            x: cc.winSize.width - cf.offSetGui,
-            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 80,
+            x: cc.winSize.width - cf.offSetGuiResourceBar,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGuiResourceBar - 80,
         });
         this.addChild(this._resBarElixir, 1, gv.tag.TAG_RESOURCE_BAR_ELIXIR);
 
         this._resBarDarkElixir = new GUI_ResourceBar(3);
         this._resBarDarkElixir.attr({
-            x: cc.winSize.width - cf.offSetGui,
-            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 130,
+            x: cc.winSize.width - cf.offSetGuiResourceBar,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGuiResourceBar - 130,
         });
         this.addChild(this._resBarDarkElixir, 1, gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR);
 
         this._resBarCoin = new GUI_ResourceBar(4);
         this._resBarCoin.attr({
-            x: cc.winSize.width - cf.offSetGui,
-            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 180,
+            x: cc.winSize.width - cf.offSetGuiResourceBar,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGuiResourceBar - 180,
         });
         this.addChild(this._resBarCoin, 1, gv.tag.TAG_RESOURCE_BAR_COIN);
     },
@@ -390,7 +370,7 @@ var MainLayer = cc.Layer.extend({
         anchorX: 0.5,
         anchorY: 1,
         x: cc.winSize.width/2,
-        y: cc.winSize.height - cf.offSetGui*1.5}
+        y: cc.winSize.height - cf.offSetGuiResourceBar*1.5}
         );
 
         this.addChild(this._builderBar, 1, gv.tag.TAG_BUILDER_BAR);
@@ -438,7 +418,6 @@ var MainLayer = cc.Layer.extend({
             self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
             self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.info);
             self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
-            //cc.log(self.getChildByTag(gv.tag.TAG_POPUP)._swallowTouch.isEnabled());
         }. bind(this));
 
         /* Button Upgrade */
@@ -574,7 +553,6 @@ var MainLayer = cc.Layer.extend({
             this.addChild(popUp, 1, gv.tag.TAG_POPUP_MESSAGE);
         }
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setPosition(cc.winSize.width/2, cc.winSize.height/2);
-        //cc.log("Pop Up ");
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).visible = true;
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setMessage(msg);
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).show();
@@ -582,23 +560,23 @@ var MainLayer = cc.Layer.extend({
 
     hideListBotButton: function()
     {
-        this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - 2 * cf.offSetGui, -200));
-        this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2 + this._guiButtonBuildingUpgrade.width/2 + 2 * cf.offSetGui, -200));
-        this._guiInstantlyDone.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGui, -200));
-        this._guiCancelBuildButton.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGui, -200));
+        this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - 2 * cf.offSetGuiResourceBar, -200));
+        this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2 + this._guiButtonBuildingUpgrade.width/2 + 2 * cf.offSetGuiResourceBar, -200));
+        this._guiInstantlyDone.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
+        this._guiCancelBuildButton.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
     },
 
     showListBotButton: function() {
-        var moveToPos1 = cc.MoveTo(0.1, cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - 2 * cf.offSetGui, this._guiButtonBuildingInfo.height/2*this.scale + cf.offSetGui));
+        var moveToPos1 = cc.MoveTo(0.1, cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - 2 * cf.offSetGuiResourceBar, this._guiButtonBuildingInfo.height/2*this.scale + cf.offSetGuiResourceBar));
         this._guiButtonBuildingInfo.runAction(moveToPos1);
         var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
-        var moveToPos2 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + cf.offSetGui - 25, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGui));
+        var moveToPos2 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + cf.offSetGuiResourceBar - 25, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
         if (building._is_active) {
             this._guiButtonBuildingUpgrade.runAction(moveToPos2);
         }
         else {
             this._guiCancelBuildButton.runAction(moveToPos2);
-            var moveToPos3 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + 2 * cf.offSetGui + this._guiInstantlyDone.width/2*this._guiInstantlyDone.scale + 20, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGui));
+            var moveToPos3 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + 2 * cf.offSetGuiResourceBar + this._guiInstantlyDone.width/2*this._guiInstantlyDone.scale + 20, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
             this._guiInstantlyDone.runAction(moveToPos3);
             this._guiInstantlyDone.updateContent();
         }
@@ -608,7 +586,7 @@ var MainLayer = cc.Layer.extend({
     addUserBar: function() {
         var userName = cc.LabelBMFont(cf.user._name, font.soji20);
         userName.setAnchorPoint(cc.p(0, 1));
-        userName.setPosition(cc.p(cf.offSetGui, cc.winSize.height - cf.offSetGui));
+        userName.setPosition(cc.p(cf.offSetGuiResourceBar, cc.winSize.height - cf.offSetGuiResourceBar));
         this.addChild(userName, 1)
     },
 
@@ -700,23 +678,6 @@ var MainLayer = cc.Layer.extend({
         var newMidPoint;
         var newMapPos;
         if(self === null) return;
-        // cc.eventManager.addListener({
-        //     event: cc.EventListener.TOUCH_ONE_BY_ONE,
-        //     onTouchBegan: function(touch, event) {
-        //         touchLocation = touch.getLocation();
-        //         curPosInMap = cc.p(touchLocation.x - self._map.x, touchLocation.y - self._map.y);
-        //         newPosInMap = cc.p(curPosInMap.x*scale, curPosInMap.y*scale);
-        //         newMapPos = cc.p(touchLocation.x - newPosInMap.x, touchLocation.y - newPosInMap.y);
-        //         return true;
-        //     },
-        //     onTouchMoved: function(touch, event) {
-        //     },
-        //     onTouchEnded: function(touch, event) {
-        //         self._map.setPosition(newMapPos);
-        //         self._map.scale *= scale;
-        //     }
-        // }, this)
-
         cc.eventManager.addListener({
             event: cc.EventListener.TOUCH_ALL_AT_ONCE,
             onTouchesBegan: function(touches, event) {
@@ -815,54 +776,6 @@ var MainLayer = cc.Layer.extend({
                 break;
         }
     },
-
-    loadJson:function () {
-        cc.loader.loadJson(res.armyCampJson, function(err, data){
-            gv.json.armyCamp = data;
-        });
-        cc.loader.loadJson(res.barrackJson, function(err, data){
-            gv.json.barrack = data;
-        });
-        cc.loader.loadJson(res.builderHutJson, function(err, data){
-            gv.json.builderHut = data;
-        });
-        cc.loader.loadJson(res.initGameJson, function(err, data){
-            gv.json.initGame = data;
-        });
-        cc.loader.loadJson(res.laboratoryJson, function(err, data){
-            gv.json.laboratory = data;
-        });
-        cc.loader.loadJson(res.resourceJson, function(err, data){
-            cc.log(data.length);
-            gv.json.resource = data;
-        });
-        cc.loader.loadJson(res.storageJson, function(err, data){
-            gv.json.storage = data;
-        });
-        cc.loader.loadJson(res.townHallJson, function(err, data){
-            gv.json.townHall = data;
-        });
-        cc.loader.loadJson(res.troopJson, function(err, data){
-            gv.json.troop = data;
-        });
-        cc.loader.loadJson(res.troopBaseJson, function(err, data){
-            gv.json.troopBase = data;
-        });
-        cc.loader.loadJson(res.shopItemList, function(error, data){
-            gv.json.shopItemList = data;
-        });
-
-        cc.loader.loadJson(res.defenceJson, function(err, data) {
-           gv.json.defence = data;
-        });
-
-        //cc.loader.loadJson("res/ConfigJson/ShopList.json", function(error, data){
-        //    cf.ShopItemList = data;
-        //});
-        cc.loader.loadJson(res.obstacleJson, function(error, data){
-            gv.json.obstacle = data;
-        });
-    }
 });
 
 MainLayer.scene = function(){
@@ -872,32 +785,3 @@ MainLayer.scene = function(){
     return scene;
 };
 
-MainLayer.inside = function(point, vs) {
-    // ray-casting algorithm based on
-    // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
-
-    var x = point[0], y = point[1];
-
-    var inside = false;
-    for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
-        var xi = vs[i][0], yi = vs[i][1];
-        var xj = vs[j][0], yj = vs[j][1];
-
-        var intersect = ((yi > y) != (yj > y))
-            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-        if (intersect) inside = !inside;
-    }
-
-    return inside;
-};
-
-MainLayer.get_animation = function(str, n)
-{
-    var arr_effect = [];
-    for (var i = 1; i <= n; i++)
-    {
-        var frame = cc.spriteFrameCache.getSpriteFrame(str + "(" + i + ").png");
-        arr_effect.push(frame)
-    };
-    return cc.Animate(new cc.Animation(arr_effect, cf.time_refresh))
-};

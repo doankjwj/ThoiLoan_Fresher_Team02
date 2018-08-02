@@ -41,7 +41,7 @@ var Barrack = BuildingNode.extend({
         if (cf.animationBarrack[this._level] == null)
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_barrack_1_" + this._level +".plist", res.folder_effect + "effect_barrack_1_" + this._level +".png");
-            cf.animationBarrack[this._level] = MainLayer.get_animation("effect_barrack_1_" + this._level + " ", 6);
+            cf.animationBarrack[this._level] = fn.getAnimation("effect_barrack_1_" + this._level + " ", 6);
             cf.animationBarrack[this._level].retain();
         }
     }

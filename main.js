@@ -3,10 +3,6 @@
 var gv = gv || {};
 
 cc.game.onStart = function(){
-    //var d = new Date(1532591493486);
-    //cc.log("date: " + d);
-    //cc.log("time: " + d.getTime())
-
     cc.view.enableRetina(false);
     // Adjust viewport meta
     cc.view.adjustViewPort(true);
@@ -27,10 +23,8 @@ cc.game.onStart = function(){
         gv.gameClient = new GameClient();
         gv.poolObjects  = new PoolObject();
         testnetwork.connector = new testnetwork.Connector(gv.gameClient);
-
+        fn.loadJson();
         fr.view(MainLayer);
-        // cc.director.runScene(new MainLayer.scene());
-        // gv.gameClient.connect();
     }, this);
 
 };

@@ -141,7 +141,7 @@ fr.Localization = cc.Class.extend(
         },
         getPathFileLang:function(code)
         {
-            return "localize/" + code + ".txt";
+            return "Localize/" + code + ".txt";
         },
         getFolderSearchPath:function()
         {

@@ -12,7 +12,7 @@ gv.usernameSendToServer = null;
 cf.currentItemCurrency = null;
 cf.currentItemPrice = null;
 
-cf.offSetGui = 25;
+cf.offSetGuiResourceBar = 25;
 
 cf.tileSize = {
     height: 57*cf.SCALE,
@@ -97,17 +97,6 @@ gv.json =
     defence: null
 };
 
-//cf.ShopItemList = null;
-//cf.jsonArmyCamp = null;
-//cf.jsonBarrack = null;
-//cf.jsonBuilderHut = null;
-//cf.jsonTownHall = null;
-//cf.jsonInitGame = null;
-//cf.jsonLaboratory = null;
-//cf.jsonResource = null;
-//cf.jsonStorage = null;
-//cf.jsonTroop = null;
-//cf.jsonTroopBase = null;;
 cf.ShopItemList = null;
 cf.defaultLevel = 1;
 

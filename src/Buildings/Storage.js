@@ -36,13 +36,13 @@ var Storage = BuildingNode.extend({
         if (this._buildingSTR === gv.buildingSTR.storage_1 && cf.animationRes1[this._level] === null)
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_res_1_" + this._level + ".plist", res.folder_effect + "effect_res_1_" + this._level + ".png");
-            cf.animationRes1[this._level] = MainLayer.get_animation("effect_res_1_" + this._level + " ", 10);
+            cf.animationRes1[this._level] = fn.getAnimation("effect_res_1_" + this._level + " ", 10);
         }
 
         if (this._buildingSTR === gv.buildingSTR.storage_2 && cf.animationRes2[this._level] === null)
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_res_2_" + this._level + ".plist", res.folder_effect + "effect_res_2_" + this._level + ".png");
-            cf.animationRes2[this._level] = MainLayer.get_animation("effect_res_2_" + this._level + " ", 10);
+            cf.animationRes2[this._level] = fn.getAnimation("effect_res_2_" + this._level + " ", 10);
         }
     }
 })

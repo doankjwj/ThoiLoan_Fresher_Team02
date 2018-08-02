@@ -57,14 +57,8 @@ var User = cc.Class.extend({
         for (var i = 0; i < cf.MAX_BUILDING_TYPE; i++)
         {
             var arr = [];
-            this._buildingList.push(arr);
-            this._buildingListCount.push(0);
-        }
-    },
-
-    logBuildingListCount: function(){
-        for(var i = 0; i<cf.MAX_BUILDING_TYPE; i++) {
-            cc.log(this._buildingListCount[i]);
+            this._buildingList[i] = arr;
+            this._buildingListCount[i] = 0;
         }
     },
 
@@ -108,7 +102,6 @@ var User = cc.Class.extend({
         this._maxCapacityDarkElixir = Math.max(this._maxCapacityDarkElixir, this._currentCapacityDarkElixir);
 
 
-        //cc.log(this._maxCapacityGold);
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
@@ -168,7 +161,6 @@ var User = cc.Class.extend({
                 if (this._buildingList[i][j]._is_active === false)
                 {
                     builderBusy ++;
-                    cc.log(this._buildingList[i][j]._name);
                 }
             }
         }

@@ -3,53 +3,119 @@
  */
 var fn = fn || {};
 
-fn.getRowColFromPos = function(pos)
-{
-    //cc.log(pos.x + " Click " + pos.y)
-    var loc = cc.p(0, 0);
-    //var x = pos.x - cf.tileLocation[1][1].x * cf.BIG_MAP_SCALE;
-    //var y = - pos.y + (cf.tileLocation[1][1].y * cf.BIG_MAP_SCALE + cf.tileSize.height / 2 * cf.BIG_MAP_SCALE);
-    //
-    //var pX = Math.floor(Math.abs(x / cf.tileSize.width / cf.BIG_MAP_SCALE * 2) + 1);
-    //pX = (x > 0) ? pX : -pX;
-    //cc.log("X: " + pX);
-    //
-    //var pY = Math.floor(Math.abs(y / (cf.tileSize.height * cf.BIG_MAP_SCALE / 2)));
-    //cc.log("Y: " + pY);
-    //
-    //loc.x = (parseInt((-y / cf.tileSize.height * 2).toFixed(0)) + parseInt((x /cf.tileSize.width *2 ).toFixed(0)));
-    //loc.y = (parseInt((-y / cf.tileSize.height * 2).toFixed(0)) - parseInt((x /cf.tileSize.width *2 ).toFixed(0)));
-    ////loc.y = (parseInt((-y / cf.tileSize.height * 2- x /cf.tileSize.width * 2).toFixed(0)));
-    //loc.x ++;
-    //loc.y ++;
+/* Đọc Json Config */
+fn.loadJson = function () {
+    cc.loader.loadJson(res.armyCampJson, function(err, data){
+        gv.json.armyCamp = data;
+    });
+    cc.loader.loadJson(res.barrackJson, function(err, data){
+        gv.json.barrack = data;
+    });
+    cc.loader.loadJson(res.builderHutJson, function(err, data){
+        gv.json.builderHut = data;
+    });
+    cc.loader.loadJson(res.initGameJson, function(err, data){
+        gv.json.initGame = data;
+    });
+    cc.loader.loadJson(res.laboratoryJson, function(err, data){
+        gv.json.laboratory = data;
+    });
+    cc.loader.loadJson(res.resourceJson, function(err, data){
+        gv.json.resource = data;
+    });
+    cc.loader.loadJson(res.storageJson, function(err, data){
+        gv.json.storage = data;
+    });
+    cc.loader.loadJson(res.townHallJson, function(err, data){
+        gv.json.townHall = data;
+    });
+    cc.loader.loadJson(res.troopJson, function(err, data){
+        gv.json.troop = data;
+    });
+    cc.loader.loadJson(res.troopBaseJson, function(err, data){
+        gv.json.troopBase = data;
+    });
+    cc.loader.loadJson(res.shopItemList, function(error, data){
+        gv.json.shopItemList = data;
+    });
 
+    cc.loader.loadJson(res.defenceJson, function(err, data) {
+        gv.json.defence = data;
+    });
+
+    //cc.loader.loadJson("res/ConfigJson/ShopList.json", function(error, data){
+    //    cf.ShopItemList = data;
+    //});
+    cc.loader.loadJson(res.obstacleJson, function(error, data){
+        gv.json.obstacle = data;
+    });
+}
+
+
+
+/* Map */
+fn.getRowColFromPos = function(pos) // Lấy ra Tọa độ dòng, cột của building từ pos
+{
+    var loc = cc.p(0, 0);
     var xx = pos.x - cf.tileLocation[40][40].x/2;
     var yy = pos.y - cf.tileLocation[40][40].y/2 + 0.25* cf.tileSize.height;
     var TILE_HEIGHT = cf.tileSize.height/2;
     var TILE_WIDTH = cf.tileSize.width/2;
     loc.x = parseInt(((yy / (TILE_HEIGHT/2) - xx / (TILE_WIDTH/2))/2).toFixed(0)) + 1;
     loc.y = parseInt(((xx / (TILE_WIDTH/2) + yy / (TILE_HEIGHT/2))/2).toFixed(0)) + 1;
-
     if (!fn.insideMap(loc.x, loc.y))
         return (cc.p(gv.buildingMove.row, gv.buildingMove.col));
     return (cc.p(41 - loc.x, 41 - loc.y));
-    //cc.log(loc.x + " " + loc.y);
     /* Boundary */
     loc.x = (loc.x > 40) ? 40 : loc.x;
     loc.x = (loc.x < 1) ? 1 : loc.x;
     loc.y = (loc.y > 40) ? 40 : loc.y;
     loc.y = (loc.y < 1) ? 1 : loc.y;
-
-    //cc.log(loc.x + " " + loc.y);
     return loc;
-};
+};                              // BuildingNode.js
 
-fn.insideMap = function(row, col)
+fn.pointInsidePolygon = function(point, vs) //Kiểm tra 1 điểm nằm trong đa giác
+{
+    // ray-casting algorithm based on
+    // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+
+    var x = point[0], y = point[1];
+
+    var inside = false;
+    for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+        var xi = vs[i][0], yi = vs[i][1];
+        var xj = vs[j][0], yj = vs[j][1];
+
+        var intersect = ((yi > y) != (yj > y))
+            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+
+    return inside;
+};                              // BuildingNode.js
+
+fn.insideMap = function(row, col)   // Kiểm tra Coor nằm trong giới hạn (1-40/ 1-40)
 {
     return (0<row && row<41 && 0<col && col<41);
 };
 
-fn.getPrice = function(str, level) {
+
+
+/* Get Anmiation from STR*/
+fn.getAnimation = function(str, n)
+{
+    var arr_effect = [];
+    for (var i = 1; i <= n; i++)
+    {
+        var frame = cc.spriteFrameCache.getSpriteFrame(str + "(" + i + ").png");
+        arr_effect.push(frame)
+    };
+    return cc.Animate(new cc.Animation(arr_effect, cf.time_refresh))
+};                              // Barack + ArmyCamp + ..
+
+/* Shop */
+fn.getPrice = function(str, level)
+{
 
     var price = {
         gold: 0,
@@ -114,15 +180,14 @@ fn.getPrice = function(str, level) {
             price.darkElixir = 0;
             price.coin = 0;
             break;
-        case gv.buildingSTR.obstacle:
-            hp = gv.json.obstacle[str][level]["hitpoints"];
-            hpMax = gv.json.obstacle[str][gv.buildingMaxLevel.obstacle]["hitpoints"];
-            time = gv.json.obstacle[str][level]["buildTime"];
-            break;
+        //case gv.buildingSTR.obstacle:
+        //    hp = gv.json.obstacle[str][level]["hitpoints"];
+        //    hpMax = gv.json.obstacle[str][gv.buildingMaxLevel.obstacle]["hitpoints"];
+        //    time = gv.json.obstacle[str][level]["buildTime"];
+        //    break;
         default:
             break;
     }
-
     return price;
+};                              // MainLayer
 
-};

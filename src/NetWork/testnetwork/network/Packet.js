@@ -16,6 +16,8 @@ gv.CMD.SEND_CANCEL = 2210;
 
 gv.CMD.RESET_USER = 2890;
 
+gv.CMD.ERROR = 3000;
+
 testnetwork = testnetwork||{};
 testnetwork.packetMap = {};
 
@@ -231,9 +233,6 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
             gv.time = new Date(this.ServerTimeStamp);
 
             gv.timeOffset = this.ServerTimeStamp - new Date().getTime();
-
-            //cc.log(this.ServerTimeStamp - new Date().getTime());
-
 
             /* Town Hall */
             this.map = new Object();
@@ -596,5 +595,23 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
         }
     }
 );
+
+testnetwork.packetMap[gv.CMD.ERROR] = fr.InPacket.extend({
+    ctor: function()
+    {
+        this._super();
+    },
+    readData: function()
+    {
+        var errorCode = this.getByte();
+        fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode + "\nRestart");
+        try{
+            fr.view(MainLayer);
+        } catch(e)
+        {
+            cc.log(e)
+        }
+    }
+})
 
 

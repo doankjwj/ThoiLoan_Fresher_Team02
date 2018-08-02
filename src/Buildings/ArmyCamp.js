@@ -41,7 +41,7 @@ var ArmyCamp = BuildingNode.extend({
             for (var i = 1; i < 3; i++)
             {
                 cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_armycamp_" + i +".plist", res.folder_effect + "effect_armycamp_" + i +".png");
-                cf.animationArmyCamp[i] = MainLayer.get_animation("effect_armycamp_" + i + " ", 5);
+                cf.animationArmyCamp[i] = fn.getAnimation("effect_armycamp_" + i + " ", 5);
                 cf.animationArmyCamp[i].retain();
             }
         }

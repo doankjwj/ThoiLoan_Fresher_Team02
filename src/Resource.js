@@ -182,5 +182,5 @@ var g_preload= [
     res.bgBotRight,
     res.bgTopLeft,
     res.bgTopRight,
-    res.builderHut
+    res.builderHut,
 ];
