@@ -16,8 +16,7 @@ testnetwork.Connector = cc.Class.extend({
     onReceivedPacket:function(cmd, packet)
     {
         cc.log("onReceivedPacket:", cmd);
-        switch (cmd)
-        {
+        switch (cmd) {
             case gv.CMD.HAND_SHAKE:
                 this.sendLoginRequest();
                 break;
@@ -33,7 +32,18 @@ testnetwork.Connector = cc.Class.extend({
                 cc.log("MOVE:", packet.x, packet.y);
                 fr.getCurrentScreen().updateMove(packet.x, packet.y);
                 break;
-        }
+            case gv.CMD.ERROR:
+                //try
+                //{
+                //    fr.view(MainLayer);
+                //}
+                //catch(e)
+                //{
+                //    cc.log(e);
+                //}
+                //break;
+
+            }
     },
     sendGetUserInfo:function()
     {

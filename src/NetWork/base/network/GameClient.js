@@ -72,6 +72,7 @@ var GameClient = cc.Class.extend(
         {
             cc.log("onDisconnected");
         },
+
         _onReceived:function(cmd, pkg)
         {
             cc.log("_onReceived:", cmd);

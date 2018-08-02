@@ -441,6 +441,7 @@ var MainLayer = cc.Layer.extend({
             if (building._is_active === false) return;
             // if (cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)]._orderInUserBuildingList = gv.orderInUserBuildingList.builderHut)
             //     return;
+
             var townHall = cf.user._buildingList[gv.orderInUserBuildingList.townHall][0];
             var townHallLevel;
             if(townHall._is_active) townHallLevel = townHall._level;
@@ -549,7 +550,7 @@ var MainLayer = cc.Layer.extend({
         }
         if (!this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE))
         {
-            var popUp = PopUPMessage.getOrCreate();
+            var popUp = new PopUPMessage();
             this.addChild(popUp, 1, gv.tag.TAG_POPUP_MESSAGE);
         }
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setPosition(cc.winSize.width/2, cc.winSize.height/2);

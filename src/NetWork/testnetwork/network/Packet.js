@@ -16,7 +16,7 @@ gv.CMD.SEND_CANCEL = 2210;
 
 gv.CMD.RESET_USER = 2890;
 
-gv.CMD.ERROR = 3000;
+gv.CMD.ERROR = 2999;
 
 testnetwork = testnetwork||{};
 testnetwork.packetMap = {};
@@ -603,7 +603,7 @@ testnetwork.packetMap[gv.CMD.ERROR] = fr.InPacket.extend({
     },
     readData: function()
     {
-        var errorCode = this.getByte();
+        var errorCode = this.getShort();
         fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode + "\nRestart");
         try{
             fr.view(MainLayer);
