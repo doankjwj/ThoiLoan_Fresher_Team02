@@ -30,8 +30,14 @@ var PopUPMessage = cc.Node.extend({
         this._btnClose.addClickEventListener(function(){
             self.hide();
         });
+
+        this.addListener();
     },
 
+    addListener: function()
+    {
+
+    },
 
     setMessage: function(msg)
     {
