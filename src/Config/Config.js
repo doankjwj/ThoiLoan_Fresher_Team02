@@ -40,6 +40,7 @@ cf.CODE_BUILDING_INFO = 324324;
 cf.CODE_BUILDING_UPGRADE = 2314234;
 cf.CODE_BUILDING_INSTANT = 131196;
 cf.CODE_BUILDING_CANCEL = 13121997;
+cf.CODE_TRAINING = 27071993;
 
 cf.user = null;
 
@@ -213,6 +214,7 @@ gv.constructType =
 {
     info: 1231,
     upgrade: 3423,
+    training: 1311
 };
 
 /* PopUp GUI Construct*/

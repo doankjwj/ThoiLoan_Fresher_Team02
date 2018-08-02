@@ -6,7 +6,7 @@ var guiFolder = "res/Art/GUIs/";
 var jsonFolder = "res/ConfigJson/";
 var effectFolder = "res/SS/";
 var logInFolder = "res/Art/LoginGui/";
-var folderBuildingActionicon = "res/Art/GUIs/Action_Building_Icon/";
+var folderBuildingActionIcon = "res/Art/GUIs/Action_Building_Icon/";
 var folderUpgradeBuildingGUI = guiFolder + "upgrade_building_gui/";
 var res = {
     image_postfix_1: "idle/image000",
@@ -135,10 +135,12 @@ var mainGUI = {
     trophyBgBar:        guiFolder + "Main_Gui/trophy_bg_bar.png"
 };
 var buildingGUI = {
-    iconInfo : folderBuildingActionicon + "info_icon.png",
-    iconUpgrade: folderBuildingActionicon + "upgrade_icon.png",
+    iconInfo : folderBuildingActionIcon + "info_icon.png",
+    iconUpgrade: folderBuildingActionIcon + "upgrade_icon.png",
     instant: res.folder_gui_action_building + "quick_finish.png",
-    bg: folderBuildingActionicon + "bg_button.png",
+    bg: folderBuildingActionIcon + "bg_button.png",
+
+    trainIcon: folderBuildingActionIcon + "train_icon.png",
 
     buildCommit: res.folder_gui_action_building + "accept.png",
     buildCancel: res.folder_gui_action_building + "cancel.png",

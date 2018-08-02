@@ -8,6 +8,19 @@ var PopUpConstruct = cc.Node.extend({
     _btnClose: null,
     _btnOk: null,
 
+    //Training Barrack
+    _trainingQueueBackground: null,
+    _queueArrow: null,
+    _timeTraining: null,
+    _previousBarrack: null,
+    _nextBarrack: null,
+    _numberOfTroops: null,
+    _textTime: null,
+    _textTimeLabel: null,
+    _textQuickFinish: null,
+    _quickFinishButton: null,
+    _statusText: null,
+
     _swallowTouch: null,
 
     _uprgradeAble: null,
@@ -43,7 +56,7 @@ var PopUpConstruct = cc.Node.extend({
         coin: 0
     },
 
-    _bgScale: 2,
+    _bgScale: 2.5,
     _offSetBar : 50,
     _colorBG: null,
 
@@ -115,8 +128,8 @@ var PopUpConstruct = cc.Node.extend({
         /* Button Ok */
         this._btnOk = ccui.Button(res.popUp.btnOk, res.popUp.btnOk);
         this._btnOk.setAnchorPoint(cc.p(0.5, 0.5));
-        this._btnOk.scale = this._bgScale * 0.75;
-        this._btnOk.setPosition(cc.p(0, -this._bg.height*this._bgScale/2 + this._btnOk.height  *this._btnOk.scale / 2));
+        this._btnOk.scale = 1;
+        this._btnOk.setPosition(cc.p(0, -this._bg.height*this._bgScale/2 + this._btnOk.height *this._btnOk.scale/2 + 50));
         // this._btnOk.setTextureName("Ok");
         this.addChild(this._btnOk, 1);
 
@@ -168,43 +181,6 @@ var PopUpConstruct = cc.Node.extend({
             }
         }, this._btnOk);
 
-        //cc.log("++ Event Button");
-
-        //this._btnOk.addClickEventListener(function(){
-        //    self.setPosition(cc.p(0, - cc.winSize.height));
-        //    if (!gv.upgradeAble)
-        //    {
-        //        self.getParent().popUpMessage("Chưa đủ tài nguyên");
-        //        return;
-        //    };
-        //    if (cf.user._builderFree <= 0)
-        //    {
-        //        self.getParent().popUpMessage("Tất cả thợ đang bận");
-        //        return;
-        //    }
-        //
-        //    cc.log("Upgrade");
-        //    self.onDisappear();
-        //    cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)].onStartBuild(gv.startConstructType.newConstruct);
-        //    /* Request */
-        //    testnetwork.connector.sendUpgradeBuilding(gv.building_selected);
-        //
-        //    /* Update User Infor + Resource Bar */
-        //    cf.user._currentCapacityGold -= self._cost.gold;
-        //    cf.user._currentCapacityElixir -= self._cost.elixir;
-        //    cf.user._currentCapacityDarkElixir -= self._cost.darkElixir;
-        //    cf.user._currentCapacityCoin -= self._cost.coin;
-        //
-        //    cc.log("Update User Info 1");
-        //    self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
-        //    cc.log("Update User Info 2");
-        //    self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
-        //    cc.log("Update User Info 3");
-        //    self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
-        //    cc.log("Update User Info 4");
-        //    self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
-        //    cc.log("Update User Info 5");
-        //});
 
         /* Building Icon */
         this._icon = cc.Sprite(res.tmp_effect);
@@ -236,8 +212,42 @@ var PopUpConstruct = cc.Node.extend({
 
         this.addBars();
 
+        this.initTrainingLayer();
 
         //cc.log("++ HP TXT");
+    },
+
+    initTrainingLayer: function() {
+
+        // _trainingQueueBackground: null,
+        //     _queueArrow: null,
+        //     _timeTraining: null,
+        //     _previousBarrack: null,
+        //     _nextBarrack: null,
+        //     _numberOfTroops: null,
+        //     _textTime: null,
+        //     _textTimeLabel: null,
+        //     _textQuickFinish: null,
+        //     _quickFinishButton: null,
+        //     _statusText: null,
+        //the white one
+        this._trainingQueueBackground = cc.LayerColor(cc.color(255, 255, 255, 255));
+        this.addChild(this._trainingQueueBackground, 1);
+        this._trainingQueueBackground.width = this._bg.width*this._bg.scale*0.9;
+        this._trainingQueueBackground.height = this._bg.height/4*this._bg.scale;
+        this._trainingQueueBackground.x = -this._bg.width/2*this._bg.scale*0.9;
+        this._trainingQueueBackground.y = this._bg.height/12*this._bg.scale;
+        this._trainingQueueBackground.visible = false;
+
+        //the green arrow
+
+        this._queueArrow = cc.Sprite()
+
+
+    },
+
+    showTrainingLayer: function() {
+        this._trainingQueueBackground.visible = true;
     },
 
     addBars: function()
@@ -407,23 +417,19 @@ var PopUpConstruct = cc.Node.extend({
         this._buildingId = id;
         this._constructType = constructType;
         gv.upgradeAble = true;
-        if (constructType == gv.constructType.info)
-        {
-            this._btnOk.visible = false;
-        }
-        else
-        {
-            this._btnOk.visible = true;
-        }
+        this._btnOk.visible = constructType === gv.constructType.upgrade;
+
         var b = cf.user._buildingList[Math.floor(id/100) - 1][Math.floor(id%100)];
         var level = b._level;
 
-
-
-        if (constructType == gv.constructType.upgrade)
+        if (constructType === gv.constructType.upgrade)
             level++;
-        this.updateIcon(b._buildingSTR, level, b._size, b._name, b._is_active, constructType);
-        this.updateBar(b._buildingSTR, level, b._size, b._name, b._is_active, constructType);
+        if(constructType !== gv.constructType.training) {
+            this.updateIcon(b._buildingSTR, level, b._size, b._name, b._is_active, constructType);
+            this.updateBar(b._buildingSTR, level, b._size, b._name, b._is_active, constructType);
+        } else {
+            this.showTraingArmy(b, constructType);
+        }
     },
 
     visibleBar: function(bool1, bool2, bool3)
@@ -490,6 +496,24 @@ var PopUpConstruct = cc.Node.extend({
         }
     },
 
+    showTraingArmy: function(building, constructType) {
+
+        if(constructType !== gv.constructType.training) return;
+
+        this.visibleBar(false, false, false);
+        this._grass.visible = false;
+        this._icon.visible = false;
+        this._timeRequireTXT.visible = false;
+        if(this.getChildByTag(this._TAG_EFFECT)) this._effect.visible = false;
+
+        this._txtTitle.setString(building._name + " " + (building._id%100 + 1));
+        if(this.getChildByTag(this._TAG_CONTENT_REQUIRE)) {
+            this.getChildByTag(this._TAG_CONTENT_REQUIRE).visible = false;
+        }
+
+        this.showTrainingLayer();
+    },
+
     updateBar: function(str, level, size, name, status, constructType)
     {
         var bar1Length = 1;
@@ -505,8 +529,7 @@ var PopUpConstruct = cc.Node.extend({
 
         if (!status) level--;
 
-        switch (str)
-        {
+        switch (str) {
             case gv.buildingSTR.townHall:
                 this.visibleBar(true, true, true);
                 bar1Length = gv.json.townHall[str][level]["hitpoints"];
@@ -614,7 +637,6 @@ var PopUpConstruct = cc.Node.extend({
                 break;
         }
 
-
         /* Nếu xem info thì bar1MaxLength = Hp */
         if (constructType == gv.constructType.info)
         {
@@ -669,8 +691,7 @@ var PopUpConstruct = cc.Node.extend({
         var bar3MaxLength = null;
 
 
-        switch(str)
-        {
+        switch(str) {
             case gv.buildingSTR.townHall:
                 time = gv.json.townHall[str][level]["buildTime"];
                 gold = gv.json.townHall[str][level]["gold"];
@@ -740,18 +761,13 @@ var PopUpConstruct = cc.Node.extend({
             default:
                 break;
         };
-        // cc.log(bar1Length + " " + bar1MaxLength + " " + time);
-        // cc.log(gold + " " + elixir + " " + darkElixir + " " + coin);
         this._cost.gold = gold;
         this._cost.elixir = elixir;
         this._cost.darkElixir = darkElixir;
         this._cost.coin = coin;
 
-
-
         /* Time Require */
-        if (this._constructType == gv.constructType.upgrade)
-        {
+        if (this._constructType == gv.constructType.upgrade) {
             this._timeRequireTXT.setString(cf.secondsToLongTime(time));
             this._timeRequireTXT.visible = true;
         }
@@ -761,21 +777,19 @@ var PopUpConstruct = cc.Node.extend({
         /* Resource Require */
         if (this.getChildByTag(this._TAG_CONTENT_REQUIRE))
             this.removeChildByTag(this._TAG_CONTENT_REQUIRE);
-        if (this._constructType == gv.constructType.upgrade)
-        {
+        if (this._constructType = gv.constructType.upgrade) {
             var tmp = new PopUpConstruct.getNodeResourceRequire(gold, elixir, darkElixir, coin);
             tmp.attr({
                 anchorX: 0.5,
                 anchorY: 0.5,
                 x: this._btnOk.x,
                 y: this._btnOk.y
-            })
+            });
             this.addChild(tmp, 5, this._TAG_CONTENT_REQUIRE);
         }
 
         /* Center Icon */
-        switch(str)
-        {
+        switch(str) {
             case gv.buildingSTR.townHall:
                 this._icon = cc.Sprite(res.folder_town_hall + str + "_" + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
