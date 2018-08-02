@@ -245,6 +245,8 @@ var BuildingNode = cc.Node.extend({
                     gv.buildingMove.currentCol = loc.y;
                     self._row = loc.x - self._size + 1;
                     self._col = loc.y - self._size +1;
+                    if (self._row < 1) self._row = 1;
+                    if (self._col < 1) self._col = 1;
                     self.unlocate_map_array(cf.current_r, cf.current_c, size);
                     return true;
                 }
@@ -282,52 +284,33 @@ var BuildingNode = cc.Node.extend({
             onTouchMoved: function(touch, event)
             {
                 if (self._id !== gv.building_selected) return;
-                //if (b.id != gv.building_selected) return;
                 var location_touch = touch.getLocation();
                 var tile_location = null;
-
-                //cc.log(location_touch.x + " touch " + location_touch.y);
-                //cc.log(self.getParent().x + " parent " + self.getParent().y)
                 var loc = fn.getRowColFromPos(cc.p(location_touch.x - self.getParent().x, location_touch.y - self.getParent().y));
-                //cc.log(loc.x + " " + loc.y)
-                //cc.log(loc.x + " " + loc.y);
-                //for (var r = 1; r < 41; r++)
-                //    for (var c = 1; c < 41; c++)
-                //    {
-
-                        //tile_location = cf.tileLocation[r][c];
-                        //var x = tile_location.x * cf.BIG_MAP_SCALE;
-                        //var y = tile_location.y * cf.BIG_MAP_SCALE;
-                        //var polygon = [[x - cf.tileSize.width/2 * cf.BIG_MAP_SCALE, y], [x, y + cf.tileSize.height/2 * cf.BIG_MAP_SCALE], [x + cf.tileSize.width/2 * cf.BIG_MAP_SCALE, y], [x , y - cf.tileSize.height/2 * cf.BIG_MAP_SCALE]];
-                        //if (fn.pointInsidePolygon([location_touch.x - self.getParent().x, location_touch.y - self.getParent().y], polygon)) {
-
                 var r = loc.x;
                 var c = loc.y;
-                var row = r - Math.floor(size / 2);
-                            var col = c - Math.floor(size / 2);
-                            if (row == cf.r_old && col == cf.c_old) return;
-                            if (!self.check_out_of_map(row, col, size)) return;
-                            cf.r_old = row;
-                            cf.c_old = col;
-                            self._row = row;
-                            self._col = col;
-                            self.setLocalZOrder(200);
-                            self.updateLocaltionByCoor(size);
+                var row = r - size + 1;
+                var col = c - size + 1;
+                if (row == cf.r_old && col == cf.c_old) return;
+                if (!self.check_out_of_map(row, col, size)) return;
+                cf.r_old = row;
+                cf.c_old = col;
+                self._row = row;
+                self._col = col;
+                self.setLocalZOrder(200);
+                self.updateLocaltionByCoor(size);
 
-                            if (!self.none_space(self._row, self._col, size, self._id))
-                            {
-                                self._red.visible = true;
-                                self._green.visible = false;
-                                self.getParent().logMapArray();
-                            }
-                            else
-                            {
-                                self._red.visible = false;
-                                self._green.visible = true;
-                            }
-                            return true
-                        //}
-
+                if (!self.none_space(self._row, self._col, size, self._id))
+                {
+                    self._red.visible = true;
+                    self._green.visible = false;
+                    self.getParent().logMapArray();
+                }
+                else
+                {
+                    self._red.visible = false;
+                    self._green.visible = true;
+                }
 
                 return true;
             },

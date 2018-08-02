@@ -26,8 +26,8 @@ cf.isDeciding = false;
 gv.building_selected = null;
 cf.move_able = false;
 cf.moved = false;
-cf.r_old = null;
-        cf.c_old = null;
+//cf.r_old = null;
+//        cf.c_old = null;
 cf.current_r = null;
 cf.current_c = null;
 
