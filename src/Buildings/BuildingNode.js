@@ -304,7 +304,6 @@ var BuildingNode = cc.Node.extend({
                 {
                     self._red.visible = true;
                     self._green.visible = false;
-                    self.getParent().logMapArray();
                 }
                 else
                 {
@@ -694,7 +693,6 @@ var BuildingNode = cc.Node.extend({
                 cf.isDeciding = false;
                 this.updateResource();
                 testnetwork.connector.sendBuild(self._id, self._row, self._col);
-                cc.log(self._row + " " + self._col);
             }
         }.bind(this));
     },

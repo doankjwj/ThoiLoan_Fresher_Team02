@@ -669,7 +669,7 @@ var MainLayer = cc.Layer.extend({
 
     distance: function(p, q, x) {
         if(!x) x = 0;
-        cc.log("DEBUG " + x);
+        if (x !== 0) cc.log("DEBUG " + x);
         return Math.sqrt((p.x - q.x)*(p.x - q.x) + (p.y - q.y)*(p.y - q.y));
     },
 
