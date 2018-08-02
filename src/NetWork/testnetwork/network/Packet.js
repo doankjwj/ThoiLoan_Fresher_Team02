@@ -604,6 +604,7 @@ testnetwork.packetMap[gv.CMD.ERROR] = fr.InPacket.extend({
     readData: function()
     {
         var errorCode = this.getShort();
+        cc.log("Dữ liệu không hợp lệ, mã lỗi: " + errorCode + "\nRestart");
         fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode + "\nRestart");
         try{
             fr.view(MainLayer);

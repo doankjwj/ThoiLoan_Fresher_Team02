@@ -309,7 +309,7 @@ var MainLayer = cc.Layer.extend({
         this._map.setPosition(centering);
         this.addChild(this._map, 0, gv.tag.TAG_MAP);
         this.moveMap();
-
+        this.zoomMap();
     },
 
     initRetainBuilding: function()
@@ -628,7 +628,7 @@ var MainLayer = cc.Layer.extend({
         var dis = 0;
         cc.eventManager.addListener({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
-            swallowTouches: true,
+            //swallowTouches: true,
             onTouchBegan: function(touch, event) {
                 dis = cc.p(0,0);
                 var target = event.getCurrentTarget();
@@ -667,7 +667,9 @@ var MainLayer = cc.Layer.extend({
         }, this)
     },
 
-    distance: function(p, q) {
+    distance: function(p, q, x) {
+        if(!x) x = 0;
+        cc.log("DEBUG " + x);
         return Math.sqrt((p.x - q.x)*(p.x - q.x) + (p.y - q.y)*(p.y - q.y));
     },
 
@@ -679,22 +681,23 @@ var MainLayer = cc.Layer.extend({
         var newMidPoint;
         var newMapPos;
         if(self === null) return;
+        cc.log("ZOOM MAP");
         cc.eventManager.addListener({
             event: cc.EventListener.TOUCH_ALL_AT_ONCE,
+            swallowTouches: true,
             onTouchesBegan: function(touches, event) {
                 return true;
             },
             onTouchesMoved: function(touches, event) {
                 if(touches.length < 2) return;
-                touchLocation_0 = touches[0].getLocation();
-                touchLocation_1 = touches[1].getLocation();
-                curMidPoint = cc.p(touchLocation_0.x/2 + touchLocation_1.x/2 - self._map.x, touchLocation_0.y/2 + touchLocation_1.y/2 - self._map.y);
-                var dis0 = self.distance(touchLocation_0, touchLocation_1);
+                cc.log(touches.length);
 
+                curMidPoint = cc.p(touchLocation_0.x/2 + touchLocation_1.x/2 - self._map.x, touchLocation_0.y/2 + touchLocation_1.y/2 - self._map.y);
+                var dis0 = self.distance(touchLocation_0, touchLocation_1, 1);
                 var delta0 = touches[0].getDelta();
                 var delta1 = touches[1].getDelta();
 
-                var dis1 = self.distance(cc.pAddIn(touchLocation_0, delta0), cc.pAddIn(touchLocation_1, delta1));
+                var dis1 = self.distance(cc.pAddIn(touchLocation_0, delta0), cc.pAddIn(touchLocation_1, delta1), 2);
 
                 var scale = dis1/dis0;
                 self._map.scale *= scale;

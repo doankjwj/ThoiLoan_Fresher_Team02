@@ -32,6 +32,7 @@ var PopUPMessage = cc.Node.extend({
         });
     },
 
+
     setMessage: function(msg)
     {
         this._txtMessage.setString(msg);
