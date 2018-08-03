@@ -55,32 +55,62 @@ fn.getTroopSprite = function(id) {
 
     switch(id) {
         case 1:
-            return troopStr.ARM_1;
+            return troopIcon.ARM_1;
         case 2:
-            return troopStr.ARM_2;
+            return troopIcon.ARM_2;
         case 3:
-            return troopStr.ARM_3;
+            return troopIcon.ARM_3;
         case 4:
-            return troopStr.ARM_4;
+            return troopIcon.ARM_4;
         case 5:
-            return troopStr.ARM_5;
+            return troopIcon.ARM_5;
         case 6:
-            return troopStr.ARM_6;
+            return troopIcon.ARM_6;
         case 7:
-            return troopStr.ARM_7;
+            return troopIcon.ARM_7;
         case 8:
-            return troopStr.ARM_8;
+            return troopIcon.ARM_8;
         case 9:
-            return troopStr.ARM_9;
+            return troopIcon.ARM_9;
         case 10:
-            return troopStr.ARM_10;
+            return troopIcon.ARM_10;
         case 16:
-            return troopStr.ARM_16;
+            return troopIcon.ARM_16;
         case 17:
-            return troopStr.ARM_17;
+            return troopIcon.ARM_17;
         default: break;
     }
+};
 
+fn.getTroopSmallSprite = function(id) {
+
+    switch(id) {
+        case 1:
+            return trainingQueueGUI.ARM_1;
+        case 2:
+            return trainingQueueGUI.ARM_2;
+        case 3:
+            return trainingQueueGUI.ARM_3;
+        case 4:
+            return trainingQueueGUI.ARM_4;
+        case 5:
+            return trainingQueueGUI.ARM_5;
+        case 6:
+            return trainingQueueGUI.ARM_6;
+        case 7:
+            return trainingQueueGUI.ARM_7;
+        case 8:
+            return trainingQueueGUI.ARM_8;
+        case 9:
+            return trainingQueueGUI.ARM_9;
+        case 10:
+            return trainingQueueGUI.ARM_10;
+        case 16:
+            return trainingQueueGUI.ARM_16;
+        case 17:
+            return trainingQueueGUI.ARM_17;
+        default: break;
+    }
 };
 
 fn.getTroopString = function(id) {

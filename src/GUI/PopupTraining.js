@@ -22,6 +22,7 @@ var PopupTraining = cc.Layer.extend({
     _troopListButton: null,
 
     _queueTraining: null,
+    _queueTrainingButtonList: null,
 
     _bgScale: 2.5,
 
@@ -34,10 +35,12 @@ var PopupTraining = cc.Layer.extend({
         this._troopListButton = [];
 
         this._queueTraining = {};
+        this._queueTrainingButtonList = [];
         //delete afer then
 
         this.initContent();
         this.initTroopListButton();
+        this.init();
         this.onAppear();
     },
 
@@ -114,12 +117,52 @@ var PopupTraining = cc.Layer.extend({
 
     },
 
+    getCurrentQueueLength: function(){
+        var count = 0;
+        for(var prop in this._queueTraining) {
+            if(!this._queueTraining[prop]) continue;
+            count += 1;
+        }
+        return count;
+    },
+
+    getPositionOfTroopTypeInQueue: function(id) {
+        var i = 0;
+        for(var prop in this._queueTraining) {
+            if(!this._queueTraining[prop]) continue;
+            if(prop.toString() === fn.getTroopString(id)) return i;
+            i = i+1;
+        }
+        return -1;
+    },
+
+    updateQueue: function() {
+
+        var queueLength = this.getCurrentQueueLength();
+
+        for(var prop in this._queueTraining) {
+            if(!this._queueTraining[prop]) continue;
+            if(queueLength === 1) {
+
+            }
+        }
+
+    },
+
     addTroopToQueue: function(id){
 
         var key = fn.getTroopString(id);
 
-        if(!this._queueTraining[key]) this._queueTraining[key] = 1;
-        else this._queueTraining[key] += 1;
+        if(!this._queueTraining[key]) {
+            this._queueTraining[key] = 1;
+            var button = new queueTroopButton(id);
+            this._queueTrainingButtonList.push(button);
+            this.updateQueue();
+        }
+        else {
+            this._queueTraining[key] += 1;
+            this._queueTrainingButtonList[this.getPositionOfTroopTypeInQueue(id)-1].updateButton();
+        }
 
     },
 
@@ -135,8 +178,17 @@ var PopupTraining = cc.Layer.extend({
     deleteTroopFromQueue: function(id){
         var key = fn.getTroopString(id);
         if(!this._queueTraining[key]) return;
-        if(this._queueTraining[key] > 0) this._queueTraining[key] -= 1;
-        else if(this._queueTraining[key] === 0) delete this._queueTraining[key];
+        var button = this._queueTrainingButtonList[this.getPositionOfTroopTypeInQueue(id)-1]
+        if(this._queueTraining[key] > 0) {
+            this._queueTraining[key] -= 1;
+            button.updateButton();
+        }
+        else if(this._queueTraining[key] === 0) {
+            delete this._queueTraining[key];
+
+            this._queueTrainingButtonList.splice(this.getPositionOfTroopTypeInQueue(id)-1, 1);
+            this.updateQueue();
+        }
     },
 
     addTouchListener: function () {

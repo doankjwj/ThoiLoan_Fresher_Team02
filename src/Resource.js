@@ -182,7 +182,7 @@ var trainingQueueGUI = {
     slot: guiFolder + "train_troop_gui/small_icon/slot.png",
 };
 
-var troopStr = {
+var troopIcon = {
     ARM_1: troopIconFolder + "ARM_1.png",
     ARM_2: troopIconFolder + "ARM_2.png",
     ARM_3: troopIconFolder + "ARM_3.png",

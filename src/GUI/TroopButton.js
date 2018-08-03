@@ -93,4 +93,52 @@ var TroopButton = ccui.Button.extend({
 
 });
 
-var queueTroopButton 
+var queueTroopButton = ccui.Button.extend({
+    _id: null,
+    _troopIcon: null,
+    _cancelButton: null,
+    _quantity: null,
+    _quantityText: null,
+
+    ctor: function(id) {
+        this._super(trainingQueueGUI.slot);
+        this._troopIcon = cc.Sprite(fn.getTroopSmallSprite(id));
+        this._id = id;
+        this.addChild(this._troopIcon, 3);
+        this._troopIcon.setPosition(cc.p(this.width/2, this.height/2));
+        this._cancelButton = cc.Sprite(trainingGUI.cancelIcon);
+        this.addChild(this._cancelButton, 0);
+        this._cancelButton.setPosition(this.width, this.height);
+        this._quantity = 1;
+        this._quantityText = cc.LabelBMFont("x1", font.soji20);
+        this._quantityText.scale = 0.7;
+        this.init();
+    },
+
+    init: function() {
+        this.addTouchEventListener(this.onTouch, this);
+    },
+
+    onTouch: function(sender, type){
+        switch (type){
+            case ccui.Widget.TOUCH_BEGAN:
+                sender.scale *= 1.05;
+                break;
+            case ccui.Widget.TOUCH_MOVED:
+                break;
+            case ccui.Widget.TOUCH_ENDED:
+                sender.getParent().deleteTroopFromQueue(sender._id);
+                sender.scale /= 1.05;
+                break;
+            case ccui.Widget.TOUCH_CANCELED:
+                sender.scale /= 1.05;
+                break;
+        }
+    },
+
+    updateButton: function() {
+        this._quantity = this.getParent()._queueTraining[fn.getTroopString(this._id)];
+        this._quantityText.setString("x" + this._quantity);
+    }
+
+});
