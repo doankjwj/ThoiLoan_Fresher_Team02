@@ -17,6 +17,7 @@ var BuildingNode = cc.Node.extend({
     _jsonConfig: null,
 
     _center_building: null,
+    _effectAnim: null,
     _grass: null,
     _grassShadow: null,
     _arrow: null,
@@ -229,6 +230,10 @@ var BuildingNode = cc.Node.extend({
         var popIn = cc.ScaleTo(0.1, 1.1);
         var popOut = cc.ScaleTo(0.1, 1);
         this._center_building.runAction(cc.Sequence.create(popIn, popOut));
+
+        /*Ngoại trừ army Camp*/
+        if (this._effectAnim && this._buildingSTR != gv.buildingSTR.armyCamp_1)
+            this._effectAnim.runAction(cc.Sequence.create(popIn.clone(), popOut.clone()));
     },
 
     get_event_listener: function(b) {

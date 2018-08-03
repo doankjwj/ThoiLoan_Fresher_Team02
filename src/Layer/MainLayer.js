@@ -138,8 +138,8 @@ var MainLayer = cc.Layer.extend({
 
     initMainGUI: function() {
         this.addShopButton();
-        //this.addSettingButton();
-        //this.addInventoryButton();
+        this.addSettingButton();
+        this.addInventoryButton();
         this.addBuildingButtons();
         this.addResourceBar();
         this.addUserBar();
@@ -167,10 +167,11 @@ var MainLayer = cc.Layer.extend({
         this._resetUserButton.addClickEventListener(function()
         {
             testnetwork.connector.sendResetUser();
-
-            try{
+            try
+            {
                 fr.view(MainLayer);
-            } catch(e)
+            }
+            catch(e)
             {
                 cc.log(e)
             };
@@ -438,9 +439,8 @@ var MainLayer = cc.Layer.extend({
             var orderBuilderHut = (gv.orderInUserBuildingList.builderHut);
             if (order === orderBuilderHut) return;
             if (building._is_active === false) return;
-            // if (cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)]._orderInUserBuildingList = gv.orderInUserBuildingList.builderHut)
-            //     return;
 
+            /* Kiểm tra điều kiện nhà chính */
             var townHall = cf.user._buildingList[gv.orderInUserBuildingList.townHall][0];
             var townHallLevel;
             if(townHall._is_active) townHallLevel = townHall._level;
