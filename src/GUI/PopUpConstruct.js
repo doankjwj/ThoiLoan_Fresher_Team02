@@ -8,19 +8,6 @@ var PopUpConstruct = cc.Node.extend({
     _btnClose: null,
     _btnOk: null,
 
-    //Training Barrack
-    _trainingQueueBackground: null,
-    _queueArrow: null,
-    _timeTraining: null,
-    _previousBarrack: null,
-    _nextBarrack: null,
-    _numberOfTroops: null,
-    _textTime: null,
-    _textTimeLabel: null,
-    _textQuickFinish: null,
-    _quickFinishButton: null,
-    _statusText: null,
-
     _swallowTouch: null,
 
     _uprgradeAble: null,
@@ -212,42 +199,7 @@ var PopUpConstruct = cc.Node.extend({
 
         this.addBars();
 
-        this.initTrainingLayer();
-
         //cc.log("++ HP TXT");
-    },
-
-    initTrainingLayer: function() {
-
-        // _trainingQueueBackground: null,
-        //     _queueArrow: null,
-        //     _timeTraining: null,
-        //     _previousBarrack: null,
-        //     _nextBarrack: null,
-        //     _numberOfTroops: null,
-        //     _textTime: null,
-        //     _textTimeLabel: null,
-        //     _textQuickFinish: null,
-        //     _quickFinishButton: null,
-        //     _statusText: null,
-        //the white one
-        this._trainingQueueBackground = cc.LayerColor(cc.color(255, 255, 255, 255));
-        this.addChild(this._trainingQueueBackground, 1);
-        this._trainingQueueBackground.width = this._bg.width*this._bg.scale*0.9;
-        this._trainingQueueBackground.height = this._bg.height/4*this._bg.scale;
-        this._trainingQueueBackground.x = -this._bg.width/2*this._bg.scale*0.9;
-        this._trainingQueueBackground.y = this._bg.height/12*this._bg.scale;
-        this._trainingQueueBackground.visible = false;
-
-        //the green arrow
-
-        this._queueArrow = cc.Sprite()
-
-
-    },
-
-    showTrainingLayer: function() {
-        this._trainingQueueBackground.visible = true;
     },
 
     addBars: function()
@@ -424,12 +376,8 @@ var PopUpConstruct = cc.Node.extend({
 
         if (constructType === gv.constructType.upgrade)
             level++;
-        if(constructType !== gv.constructType.training) {
-            this.updateIcon(b._buildingSTR, level, b._size, b._name, b._is_active, constructType);
-            this.updateBar(b._buildingSTR, level, b._size, b._name, b._is_active, constructType);
-        } else {
-            this.showTraingArmy(b, constructType);
-        }
+        this.updateIcon(b._buildingSTR, level, b._size, b._name, b._is_active, constructType);
+        this.updateBar(b._buildingSTR, level, b._size, b._name, b._is_active, constructType);
     },
 
     visibleBar: function(bool1, bool2, bool3)
@@ -494,24 +442,6 @@ var PopUpConstruct = cc.Node.extend({
             default:
                 break;
         }
-    },
-
-    showTraingArmy: function(building, constructType) {
-
-        if(constructType !== gv.constructType.training) return;
-
-        this.visibleBar(false, false, false);
-        this._grass.visible = false;
-        this._icon.visible = false;
-        this._timeRequireTXT.visible = false;
-        if(this.getChildByTag(this._TAG_EFFECT)) this._effect.visible = false;
-
-        this._txtTitle.setString(building._name + " " + (building._id%100 + 1));
-        if(this.getChildByTag(this._TAG_CONTENT_REQUIRE)) {
-            this.getChildByTag(this._TAG_CONTENT_REQUIRE).visible = false;
-        }
-
-        this.showTrainingLayer();
     },
 
     updateBar: function(str, level, size, name, status, constructType)

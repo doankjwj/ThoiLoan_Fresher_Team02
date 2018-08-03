@@ -145,11 +145,13 @@ var MainLayer = cc.Layer.extend({
         this.addResourceBar();
         this.addUserBar();
         this.addBuilderBar();
-        {
-            this._popUp = new PopUpConstruct;
-            this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
-            this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
-        };
+
+        var trainingLayer = new PopupTraining(1);
+        this.addChild(trainingLayer, 20);
+
+        this._popUp = new PopUpConstruct;
+        this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
+        this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
         this.addCheatButton();
     },
 
@@ -562,10 +564,7 @@ var MainLayer = cc.Layer.extend({
             if (order === orderBuilderHut) return;
             if (building._is_active === false) return;
 
-            self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
-            self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
-            self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.training);
-            self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
+
 
         }.bind(this));
 

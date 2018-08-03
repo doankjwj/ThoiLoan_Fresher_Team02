@@ -51,7 +51,69 @@ fn.loadJson = function () {
     });
 }
 
+fn.getTroopSprite = function(id) {
 
+    switch(id) {
+        case 1:
+            return troopStr.ARM_1;
+        case 2:
+            return troopStr.ARM_2;
+        case 3:
+            return troopStr.ARM_3;
+        case 4:
+            return troopStr.ARM_4;
+        case 5:
+            return troopStr.ARM_5;
+        case 6:
+            return troopStr.ARM_6;
+        case 7:
+            return troopStr.ARM_7;
+        case 8:
+            return troopStr.ARM_8;
+        case 9:
+            return troopStr.ARM_9;
+        case 10:
+            return troopStr.ARM_10;
+        case 16:
+            return troopStr.ARM_16;
+        case 17:
+            return troopStr.ARM_17;
+        default: break;
+    }
+
+};
+
+fn.getTroopString = function(id) {
+
+    switch(id) {
+        case 1:
+            return gv.troopStr.ARM_1;
+        case 2:
+            return gv.troopStr.ARM_2;
+        case 3:
+            return gv.troopStr.ARM_3;
+        case 4:
+            return gv.troopStr.ARM_4;
+        case 5:
+            return gv.troopStr.ARM_5;
+        case 6:
+            return gv.troopStr.ARM_6;
+        case 7:
+            return gv.troopStr.ARM_7;
+        case 8:
+            return gv.troopStr.ARM_8;
+        case 9:
+            return gv.troopStr.ARM_9;
+        case 10:
+            return gv.troopStr.ARM_10;
+        case 16:
+            return gv.troopStr.ARM_16;
+        case 17:
+            return gv.troopStr.ARM_17;
+        default: break;
+    }
+
+};
 
 /* Map */
 fn.getRowColFromPos = function(pos) // Lấy ra Tọa độ dòng, cột của building từ pos
