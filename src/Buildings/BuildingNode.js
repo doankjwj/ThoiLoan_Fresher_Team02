@@ -181,6 +181,7 @@ var BuildingNode = cc.Node.extend({
                 if (fn.pointInsidePolygon([x, y], polygon) && (gv.building_selected !== self._id))
                 {
                     self._txtName.visible = true;
+                    self.popBuildingScale();
                     self.setLocalZOrder(200);
                     return true;
                 }
@@ -220,6 +221,14 @@ var BuildingNode = cc.Node.extend({
             cf.current_r = self._row;
             this.showBuildingButton();
         }
+    },
+
+    /* Nâng và hạ công trình khi Click */
+    popBuildingScale: function()
+    {
+        var popIn = cc.ScaleTo(0.1, 1.1);
+        var popOut = cc.ScaleTo(0.1, 1);
+        this._center_building.runAction(cc.Sequence.create(popIn, popOut));
     },
 
     get_event_listener: function(b) {
