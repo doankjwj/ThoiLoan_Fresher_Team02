@@ -556,6 +556,7 @@ var MainLayer = cc.Layer.extend({
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).visible = true;
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setMessage(msg);
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).show();
+        this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).onAppear();
     },
 
     hideListBotButton: function()
