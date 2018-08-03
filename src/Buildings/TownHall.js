@@ -20,11 +20,11 @@ var TownHall = BuildingNode.extend({
         this.initAnimation();
 
         /* Effect */
-        var effect = cc.Sprite(res.tmp_effect);
-        effect.anchorX = 0.5;
-        effect.anchorY = 0.5;
-        this.addChild(effect, this._center_building.getLocalZOrder() + 1);
-        effect.runAction(cf.animationTownHall.clone().repeatForever());
+        this._effectAnim = cc.Sprite(res.tmp_effect);
+        this._effectAnim.anchorX = 0.5;
+        this._effectAnim.anchorY = 0.5;
+        this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
+        this._effectAnim.runAction(cf.animationTownHall.clone().repeatForever());
 
         if (!this._is_active)
         {

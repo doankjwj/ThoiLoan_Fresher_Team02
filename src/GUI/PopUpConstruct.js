@@ -8,6 +8,10 @@ var PopUpConstruct = cc.Node.extend({
     _btnClose: null,
     _btnOk: null,
 
+    /* Text Description */
+    _bgTxtDescription: null,
+    _txtDescreption: null,
+
     _swallowTouch: null,
 
     _uprgradeAble: null,
@@ -43,7 +47,7 @@ var PopUpConstruct = cc.Node.extend({
         coin: 0
     },
 
-    _bgScale: 2,
+    _bgScale: 1,
     _offSetBar : 50,
     _colorBG: null,
 
@@ -64,6 +68,7 @@ var PopUpConstruct = cc.Node.extend({
     _TAG_BAR3: 8975,
     _TAG_BAR3_TXT: 6432,
     _TAG_BAR3_BG: 3453,
+    _TAG_TXT_DESCRIPTION: 2340,
 
     _orderBar: {
         bar1: 0,
@@ -81,31 +86,33 @@ var PopUpConstruct = cc.Node.extend({
 
         //cc.log("++Pop Up Construct init");
         /* Background */
-        this._bg = cc.Sprite(res.popUp.bg);
+        this._bg = cc.Scale9Sprite(res.popUp.bg);
         this._bg.setAnchorPoint(cc.p(0.5, 0.5));
         this._bg.setPosition(cc.p(0, 0));
-        this._bg.scale = this._bgScale;
+        this._bg.setCapInsets(cc.rect(this._bg.width/12, this._bg.height/10 , this._bg.width/12*10, this._bg.height/10*8));
+        this._bg.width = cc.winSize.width / 5 * 4;
+        this._bg.height = cc.winSize.height /5 * 4;
         this.addChild(this._bg, 0);
 
         this._colorBG = cc.LayerColor(cc.color(127.5,127.5,127.5,0));
         this._colorBG.width = cc.winSize.width;
         this._colorBG.height = cc.winSize.height;
-        this._colorBG.setAnchorPoint(cc.p(0.5, 0.5));
+        //this._colorBG.setAnchorPoint(cc.p(0.5, 0.5));
         this.addChild(this._colorBG, -1);
         this.addTouchListener();
 
         //cc.log("++Color Bg");
         /* Text Title */
         this._txtTitle = cc.LabelBMFont("Building Title", font.soji20);
-        this._txtTitle.setAnchorPoint(cc.p(0.5, 0.5));
-        this._txtTitle.setPosition(cc.p(0, this._bg.height / 2 * this._bgScale - this._txtTitle.height));
+        this._txtTitle.setAnchorPoint(cc.p(0.5, 1));
+        this._txtTitle.setPosition(cc.p(0, this._bg.height / 2 - this._txtTitle.height/2));
         this.addChild(this._txtTitle, 1, this._TAG_TITLE);
 
         /* Button Close */
         this._btnClose = ccui.Button(res.popUp.btnClose, res.popUp.btnClose);
         this._btnClose.setAnchorPoint(cc.p(0.5, 0.5));
-        this._btnClose.scale = this._bgScale * 0.75;
-        this._btnClose.setPosition(cc.p(this._bg.width*this._bgScale/2 - this._btnClose.width*this._btnClose.scale/1.5, this._bg.height*this._bgScale/2 - this._btnClose.height  *this._btnClose.scale/1.5));
+        this._btnClose.scale = 1.2;
+        this._btnClose.setPosition(cc.p(this._bg.width/2 - this._btnClose.width, this._bg.height/2 - this._btnClose.height / 1.5));
         this.addChild(this._btnClose, 1);
         this._btnClose.addClickEventListener(function(){
             self.setPosition(cc.p(0, - cc.winSize.height));
@@ -115,12 +122,10 @@ var PopUpConstruct = cc.Node.extend({
         /* Button Ok */
         this._btnOk = ccui.Button(res.popUp.btnOk, res.popUp.btnOk);
         this._btnOk.setAnchorPoint(cc.p(0.5, 0.5));
-        this._btnOk.scale = this._bgScale * 0.75;
-        this._btnOk.setPosition(cc.p(0, -this._bg.height*this._bgScale/2 + this._btnOk.height  *this._btnOk.scale / 2));
+        this._btnOk.scale =  1.4;
+        this._btnOk.setPosition(cc.p(0, -this._bg.height/2 + this._btnOk.height  *this._btnOk.scale / 2));
         // this._btnOk.setTextureName("Ok");
         this.addChild(this._btnOk, 1);
-
-        //cc.log("++ Button close Added");
         this._btnOk.addTouchEventListener(function(sender, type) {
             var cheatNumber = 5000;
             switch (type){
@@ -171,29 +176,43 @@ var PopUpConstruct = cc.Node.extend({
         /* Building Icon */
         this._icon = cc.Sprite(res.tmp_effect);
         this._icon.setAnchorPoint(cc.p(0.5, 0.5));
-        this._icon.setPosition(- this._bg.width * this._bgScale / 4, this._bg.height * this._bgScale / 8);
+        this._icon.scale = 1.3
+        this._icon.setPosition(- this._bg.width / 4, this._bg.height / 8);
         this.addChild(this._icon, 2, this._TAG_ICON);
 
         //cc.log("++ Building Icon");
         /* Time Require */
-        this._timeRequireTXT = cc.LabelBMFont("10d23h", font.soji20);
+        this._timeRequireTXT = cc.LabelBMFont("", font.soji20);
         this._timeRequireTXT.setAnchorPoint(cc.p(0.5, 1));
-        this._timeRequireTXT.setPosition(cc.p(this._icon.x, this._icon.y - this._timeRequireTXT.height * 3));
+        this._timeRequireTXT.setPosition(cc.p(this._icon.x, this._icon.y - this._icon.height * 2));
         this._timeRequireTXT.visible = false;
-        this.addChild(this._timeRequireTXT, 2, this._TAG_TXT_TIME_REQUIRE);
+        this.addChild(this._timeRequireTXT, 4, this._TAG_TXT_TIME_REQUIRE);
 
         //cc.log("++ TXT time require");
         /* Building Grass */
         this._grass = cc.Sprite(res.tmp_effect);
         this._grass.setAnchorPoint(cc.p(0.5, 0.5));
-        this._grass.setPosition(- this._bg.width * this._bgScale / 4, this._bg.height * this._bgScale / 8);
+        this._grass.setPosition(- this._bg.width  / 4, this._bg.height  / 8);
         this.addChild(this._grass, 1, this._TAG_GRASS);
+
+        /* TextField White */
+        this._bgTxtDescription = cc.LayerColor(cc.color(255, 255, 255, 255));
+        this._bgTxtDescription.width = this._bg.width*0.9;
+        this._bgTxtDescription.height = this._bg.height*0.3;
+        this._bgTxtDescription.setPosition(cc.p(-this._bgTxtDescription.width/2, -this._bg.height/3));
+        this.addChild(this._bgTxtDescription, 2);
+        /* TXT Description */
+        this._txtDescreption = cc.LabelBMFont("Building Description", font.soji20);
+        this._txtDescreption.setAnchorPoint(0.5, 1);
+        this._txtDescreption.setPosition(0, this._bgTxtDescription.height + this._bgTxtDescription.y);
+        this._txtDescreption.setColor(cc.color(240, 200, 0, 255));
+        this.addChild(this._txtDescreption, this._bgTxtDescription.getLocalZOrder() + 1, this._TAG_TXT_DESCRIPTION);
 
         //cc.log("++ Grass");
         /* Builing Effect */
         this._effect = cc.Sprite(res.tmp_effect);
         this._effect.setAnchorPoint(cc.p(0.5, 0.5));
-        this._effect.setPosition(- this._bg.width * this._bgScale / 4, this._bg.height * this._bgScale / 8);
+        this._effect.setPosition(- this._bg.width / 4, this._bg.height / 8);
         this.addChild(this._effect, 3, this._TAG_EFFECT);
 
         this.addBars();
@@ -211,8 +230,8 @@ var PopUpConstruct = cc.Node.extend({
         this._bar1BG.attr({
             anchorX: 0,
             anchorY: 0.5,
-            x: 0.5 * this._bg.height * this._bgScale / 10,
-            y: 0.5 * this._bg.height * this._bgScale / 2
+            x: 0.5 * this._bg.height / 10,
+            y: 0.5 * this._bg.height / 2
         });
         this.addChild(this._bar1BG, 2, this._TAG_BAR1_BG);
 
@@ -222,8 +241,8 @@ var PopUpConstruct = cc.Node.extend({
         this._bar1.attr({
             anchorX: 0,
             anchorY: 0.5,
-            x: 0.5 * this._bg.height * this._bgScale / 10,
-            y: 0.5 * this._bg.height * this._bgScale / 2
+            x: 0.5 * this._bg.height / 10,
+            y: 0.5 * this._bg.height / 2
         });
         this.addChild(this._bar1, 2, this._TAG_BAR1);
 
@@ -233,8 +252,8 @@ var PopUpConstruct = cc.Node.extend({
         this._bar1Icon.attr({
             anchorX: 1,
             anchorY: 0.5,
-            x: 0.5 * this._bg.height * this._bgScale / 10,
-            y: 0.5 * this._bg.height * this._bgScale / 2
+            x: 0.5 * this._bg.height / 10,
+            y: 0.5 * this._bg.height  / 2
         });
         this.addChild(this._bar1Icon, 2);
 
@@ -256,7 +275,7 @@ var PopUpConstruct = cc.Node.extend({
         this._bar2BG.attr({
             anchorX: 0,
             anchorY: 0.5,
-            x: 0.5 * this._bg.height * this._bgScale / 10,
+            x: 0.5 * this._bg.height / 10,
             y: this._bar1BG.y - this._offSetBar,
         });
         this.addChild(this._bar2BG, 2, this._TAG_BAR2_BG);
@@ -268,7 +287,7 @@ var PopUpConstruct = cc.Node.extend({
         this._bar2.attr({
             anchorX: 0,
             anchorY: 0.5,
-            x: 0.5 * this._bg.height * this._bgScale / 10,
+            x: 0.5 * this._bg.height / 10,
             y: this._bar1BG.y - this._offSetBar,
         });
         this.addChild(this._bar2, 2, this._TAG_BAR2);
@@ -279,7 +298,7 @@ var PopUpConstruct = cc.Node.extend({
         this._bar2Icon.attr({
             anchorX: 1,
             anchorY: 0.5,
-            x: 0.5 * this._bg.height * this._bgScale / 10,
+            x: 0.5 * this._bg.height  / 10,
             y: this._bar1BG.y - this._offSetBar,
         });
         this.addChild(this._bar2Icon, 2);
@@ -302,7 +321,7 @@ var PopUpConstruct = cc.Node.extend({
         this._bar3BG.attr({
             anchorX: 0,
             anchorY: 0.5,
-            x: 0.5 * this._bg.height * this._bgScale / 10,
+            x: 0.5 * this._bg.height / 10,
             y: this._bar1BG.y - this._offSetBar * 2,
         });
         this.addChild(this._bar3BG, 2, this._TAG_BAR3_BG);
@@ -314,7 +333,7 @@ var PopUpConstruct = cc.Node.extend({
         this._bar3.attr({
             anchorX: 0,
             anchorY: 0.5,
-            x: 0.5 * this._bg.height * this._bgScale / 10,
+            x: 0.5 * this._bg.height  / 10,
             y: this._bar1BG.y - this._offSetBar * 2,
         });
         this.addChild(this._bar3, 2, this._TAG_BAR3);
@@ -325,7 +344,7 @@ var PopUpConstruct = cc.Node.extend({
         this._bar3Icon.attr({
             anchorX: 1,
             anchorY: 0.5,
-            x: 0.5 * this._bg.height * this._bgScale / 10,
+            x: 0.5 * this._bg.height / 10,
             y: this._bar1BG.y - this._offSetBar * 2,
         });
         this.addChild(this._bar3Icon, 2);
@@ -379,13 +398,11 @@ var PopUpConstruct = cc.Node.extend({
         }
         var b = cf.user._buildingList[Math.floor(id/100) - 1][Math.floor(id%100)];
         var level = b._level;
-
-
-
         if (constructType == gv.constructType.upgrade)
             level++;
         this.updateIcon(b._buildingSTR, level, b._size, b._name, b._is_active, constructType);
         this.updateBar(b._buildingSTR, level, b._size, b._name, b._is_active, constructType);
+        this.updateDescription((b._description));
     },
 
     visibleBar: function(bool1, bool2, bool3)
@@ -417,8 +434,8 @@ var PopUpConstruct = cc.Node.extend({
                 this._bar1Icon.attr({
                     anchorX: 1,
                     anchorY: 0.5,
-                    x: 0.5 * this._bg.height * this._bgScale / 10,
-                    y: 0.5 * this._bg.height * this._bgScale / 2,
+                    x: 0.5 * this._bg.height  / 10,
+                    y: 0.5 * this._bg.height  / 2,
                     visible :true,
                 });
                 this.addChild(this._bar1Icon, 2, this._TAG_BAR1_ICON);
@@ -429,7 +446,7 @@ var PopUpConstruct = cc.Node.extend({
                 this._bar2Icon.attr({
                     anchorX: 1,
                     anchorY: 0.5,
-                    x: 0.5 * this._bg.height * this._bgScale / 10,
+                    x: 0.5 * this._bg.height  / 10,
                     y: this._bar1BG.y - this._offSetBar,
                     visible: true,
                 });
@@ -441,7 +458,7 @@ var PopUpConstruct = cc.Node.extend({
                 this._bar3Icon.attr({
                     anchorX: 1,
                     anchorY: 0.5,
-                    x: 0.5 * this._bg.height * this._bgScale / 10,
+                    x: 0.5 * this._bg.height / 10,
                     y: this._bar1BG.y - this._offSetBar * 2,
                     visible: true,
                 });
@@ -714,7 +731,7 @@ var PopUpConstruct = cc.Node.extend({
         /* Time Require */
         if (this._constructType == gv.constructType.upgrade)
         {
-            this._timeRequireTXT.setString(cf.secondsToLongTime(time));
+            this._timeRequireTXT.setString("Thời gian nâng cấp\n" + cf.secondsToLongTime(time));
             this._timeRequireTXT.visible = true;
         }
         else
@@ -806,6 +823,11 @@ var PopUpConstruct = cc.Node.extend({
         });
         this._effect.setPosition(- this._bg.width * this._bgScale / 4, this._bg.height * this._bgScale / 8);
         this.addChild(this._effect, 2, this._TAG_EFFECT);
+    },
+    updateDescription: function(description)
+    {
+        this._txtDescreption.visible = true;
+        this._txtDescreption.setString(description)
     }
 })
 
@@ -843,7 +865,7 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             this.txtGold.setColor(cc.color(255, 255, 255, 255));
             this.txtGold.setAnchorPoint(1, 0.5);
             this.txtGold.setPosition(cc.p(0, sum / 2 * this.txtGold.height));
-            if (gold > cf.user._currentCapacityGold)
+            if (gold >= cf.user._currentCapacityGold)
             {
                 this.txtGold.setColor(cc.color(255, 0, 0, 255));
                 gv.upgradeAble = false;
@@ -861,7 +883,7 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             this.txtElixir.setColor(cc.color(255, 255, 255, 255));
             this.txtElixir.setAnchorPoint(1, 0.5);
             this.txtElixir.setPosition(cc.p(0, (sum-1) / 2 * this.txtElixir.height));
-            if (elixir > cf.user._currentCapacityElixir)
+            if (elixir >= cf.user._currentCapacityElixir)
             {
                 this.txtElixir.setColor(cc.color(255, 0, 0, 255));
                 gv.upgradeAble = false;
@@ -879,7 +901,7 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             this.txtDarkElixir.setColor(cc.color(255, 255, 255, 255));
             this.txtDarkElixir.setAnchorPoint(1, 0.5);
             this.txtDarkElixir.setPosition(cc.p(0, -(sum-1) / 2 * this.txtDarkElixir.height));
-            if (darkElixir > cf.user._currentCapacityDarkElixir)
+            if (darkElixir >= cf.user._currentCapacityDarkElixir)
             {
                 this.txtDarkElixir.setColor(cc.color(255, 0, 0, 255));
                 gv.upgradeAble = false;
@@ -897,7 +919,7 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             this.txtCoin.setColor(cc.color(255, 255, 255, 255));
             this.txtCoin.setAnchorPoint(1, 0.5);
             this.txtCoin.setPosition(cc.p(0, -sum / 2 * this.txtCoin.height));
-            if (coin > cf.user._currentCapacityCoin)
+            if (coin >= cf.user._currentCapacityCoin)
             {
                 this.txtCoin.setColor(cc.color(255, 0, 0, 255));
                 gv.upgradeAble = false;
