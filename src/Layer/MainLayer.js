@@ -138,8 +138,8 @@ var MainLayer = cc.Layer.extend({
 
     initMainGUI: function() {
         this.addShopButton();
-        this.addSettingButton();
-        this.addInventoryButton();
+        //this.addSettingButton();
+        //this.addInventoryButton();
         this.addBuildingButtons();
         this.addResourceBar();
         this.addUserBar();
