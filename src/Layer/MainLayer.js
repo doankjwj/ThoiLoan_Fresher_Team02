@@ -167,11 +167,10 @@ var MainLayer = cc.Layer.extend({
         this._resetUserButton.addClickEventListener(function()
         {
             testnetwork.connector.sendResetUser();
-            try
-            {
+
+            try{
                 fr.view(MainLayer);
-            }
-            catch(e)
+            } catch(e)
             {
                 cc.log(e)
             };

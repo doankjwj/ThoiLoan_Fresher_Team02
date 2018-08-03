@@ -11,6 +11,7 @@ var Defence = BuildingNode.extend({
         this._maxLevel = gv.buildingMaxLevel.defence_1;
         this._orderInUserBuildingList = (buildingSTR == gv.buildingSTR.defence_1) ? gv.orderInUserBuildingList.defence_1 : gv.orderInUserBuildingList.defence_1;
         this._name = (buildingSTR == gv.buildingSTR.defence_1) ? gv.buildingName.defence_1 : gv.buildingName.defence_1;
+        this._description = (buildingSTR == gv.buildingSTR.defence_1) ? gv.buildingDescription.defence_1 : gv.buildingDescription.defence_1;
 
         this._super(id, level, row, col, existed);
 

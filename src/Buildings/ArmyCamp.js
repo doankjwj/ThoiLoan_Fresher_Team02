@@ -10,7 +10,7 @@ var ArmyCamp = BuildingNode.extend({
         this._maxLevel = gv.buildingMaxLevel.armyCamp_1;
         this._orderInUserBuildingList = gv.orderInUserBuildingList.armyCamp_1;
         this._name = gv.buildingName.armyCamp_1;
-
+        this._description = gv.buildingDescription.armyCamp_1;
         this._super(id, level, row, col, existed);
 
         /* Init Animation If Not Exist*/

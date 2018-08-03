@@ -8,6 +8,7 @@ var Barrack = BuildingNode.extend({
         this._maxLevel = gv.buildingMaxLevel.barrack_1;
         this._orderInUserBuildingList = gv.orderInUserBuildingList.barrack_1;
         this._name = gv.buildingName.barrack_1;
+        this._description = gv.buildingDescription.barrack_1;
 
         this._super(id, level, row, col, existed);
 

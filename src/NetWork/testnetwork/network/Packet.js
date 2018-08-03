@@ -605,13 +605,20 @@ testnetwork.packetMap[gv.CMD.ERROR] = fr.InPacket.extend({
     {
         var errorCode = this.getShort();
         cc.log("Dữ liệu không hợp lệ, mã lỗi: " + errorCode + "\nRestart");
-        fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode + "\nRestart");
-        try{
+
+        fr.getCurrentScreen().runAction(cc.Sequence.create(
+        cc.CallFunc(function() {
+                fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode + "\nRestart");
+        }),
+        cc.DelayTime(2),
+        cc.CallFunc(function(){try{
             fr.view(MainLayer);
         } catch(e)
         {
             cc.log(e)
-        }
+        }})
+         ));
+
     }
 })
 

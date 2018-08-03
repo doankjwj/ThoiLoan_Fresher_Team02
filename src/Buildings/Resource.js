@@ -14,6 +14,8 @@ var Resource = BuildingNode.extend({
         this._orderInUserBuildingList = (buildingSTR == gv.buildingSTR.resource_1) ? gv.orderInUserBuildingList.resource_1 : gv.orderInUserBuildingList.resource_2;
         this._name = (buildingSTR == gv.buildingSTR.resource_1) ? gv.buildingName.resource_1 : gv.buildingName.resource_2;
         this._jsonConfig = gv.json.resource;
+        this._description = (buildingSTR == gv.buildingSTR.resource_1) ? gv.buildingDescription.resource_1 : gv.buildingDescription.resource_1;
+
         this._super(id, level, row, col, existed);
 
 

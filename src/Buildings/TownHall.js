@@ -7,6 +7,8 @@ var TownHall = BuildingNode.extend({
         this._orderInUserBuildingList = gv.orderInUserBuildingList.townHall;
         this._name = gv.buildingName.townHall;
         this._maxLevel = gv.buildingMaxLevel.townHall;
+        this._description = gv.buildingDescription.townHall_1;
+
         this._super(id, level, row, col, existed);
 
 

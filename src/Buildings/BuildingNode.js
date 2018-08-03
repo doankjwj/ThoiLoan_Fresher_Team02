@@ -9,6 +9,7 @@ var BuildingNode = cc.Node.extend({
     _is_active: true,
     _finishing_time: null,
     _name: null,
+    _description: null,
     _constructAble: true,
 
     _maxLevel: null,
