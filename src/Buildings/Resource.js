@@ -152,7 +152,7 @@ var Resource = BuildingNode.extend({
 
         if (this._currentCapacity/this._maxCapacity >= this._percentPopupHarvest)
         {
-            cc.log(this._id + " ++ Current capacity: " + Math.ceil(this._currentCapacity) + " / Sức chứa tối đa: " + this._maxCapacity );
+            // cc.log(this._id + " ++ Current capacity: " + Math.ceil(this._currentCapacity) + " / Sức chứa tối đa: " + this._maxCapacity );
             this.updateButtonHarvestBG();
             if (!this._btnHarvest.visible)
                 this.onPopUpHarvestButton();
@@ -160,7 +160,7 @@ var Resource = BuildingNode.extend({
     },
     updateButtonHarvestBG: function()
     {
-        if (this._capacityIsFulled == (this._currentCapacity == this._maxCapacity)) return;
+        if (this._capacityIsFulled === (this._currentCapacity === this._maxCapacity)) return;
         if (this._btnHarvestBG)
             this.removeChildByTag(this._TAG_BUTTON_HARVEST_BG);
         if (!this._capacityIsFulled)

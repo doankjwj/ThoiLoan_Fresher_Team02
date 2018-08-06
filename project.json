@@ -42,6 +42,8 @@
         "src/Buildings/Storage.js",
         "src/Buildings/Defence.js",
         "src/Buildings/Obstacle.js",
+        "src/Buildings/Canon.js",
+
 
         "src/GUI/ResourceBar.js",
         "src/GUI/IconActionBuilding.js",

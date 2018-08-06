@@ -13,7 +13,6 @@ gv.CMD.UPGRADE_BUILDING = 2110;
 gv.CMD.CHEAT = 2880;
 gv.CMD.SEND_INSTANT = 2150;
 gv.CMD.SEND_CANCEL = 2210;
-gv.CMD.SEND_HARVEST = 2410;
 
 gv.CMD.RESET_USER = 2890;
 
@@ -176,23 +175,6 @@ CmdSendUpgradeBuilding = fr.OutPacket.extend(
     }
 );
 
-CmdSendHarvest = fr.OutPacket.extend(
-    {
-        ctor:function()
-        {
-            this._super();
-            this.initData(100);
-            this.setCmdId(gv.CMD.SEND_HARVEST);
-        },
-        pack:function(id){
-            this.packHeader();
-            this.putByte(Math.floor(id / 100)-1);
-            this.putByte(id % 100);
-            this.updateSize();
-        }
-    }
-);
-
 
 CmdSendResetUser = fr.OutPacket.extend(
     {
@@ -251,8 +233,6 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
             gv.time = new Date(this.ServerTimeStamp);
 
             gv.timeOffset = this.ServerTimeStamp - new Date().getTime();
-            //
-            //gv.timeOffset = 0;
 
             /* Town Hall */
             this.map = new Object();
@@ -609,8 +589,6 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
             this.player.name = this.getString();
 
             this.player.exp = this.getInt();
-            this.player.vipPoint = this.getInt();
-
             this.player.coin = this.getInt();
             this.player.gold = this.getInt();
             this.player.elixir = this.getInt();
@@ -638,16 +616,13 @@ testnetwork.packetMap[gv.CMD.ERROR] = fr.InPacket.extend({
     readData: function()
     {
         var errorCode = this.getShort();
-        cc.log(errorCode);
         fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode + "\nRestart");
         try{
             fr.view(MainLayer);
         } catch(e)
         {
             cc.log(e)
-        }})
-         ));
-
+        }
     }
 })
 
