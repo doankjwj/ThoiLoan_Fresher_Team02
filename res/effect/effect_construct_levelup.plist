@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>frames</key>
+        <dict>
+            <key>effect_construct_levelup (1).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,286},{54,36}}</string>
+                <key>offset</key>
+                <string>{2,-35}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{50,92},{54,36}}</string>
+                <key>sourceSize</key>
+                <string>{150,150}</string>
+            </dict>
+            <key>effect_construct_levelup (2).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{130,212},{72,90}}</string>
+                <key>offset</key>
+                <string>{0,-13}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{39,43},{72,90}}</string>
+                <key>sourceSize</key>
+                <string>{150,150}</string>
+            </dict>
+            <key>effect_construct_levelup (3).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{136,138},{72,116}}</string>
+                <key>offset</key>
+                <string>{1,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{40,17},{72,116}}</string>
+                <key>sourceSize</key>
+                <string>{150,150}</string>
+            </dict>
+            <key>effect_construct_levelup (4).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,208},{76,126}}</string>
+                <key>offset</key>
+                <string>{-1,4}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{36,8},{76,126}}</string>
+                <key>sourceSize</key>
+                <string>{150,150}</string>
+            </dict>
+            <key>effect_construct_levelup (5).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{140,2},{100,134}}</string>
+                <key>offset</key>
+                <string>{0,1}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{25,7},{100,134}}</string>
+                <key>sourceSize</key>
+                <string>{150,150}</string>
+            </dict>
+            <key>effect_construct_levelup (6).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,2},{106,136}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{22,7},{106,136}}</string>
+                <key>sourceSize</key>
+                <string>{150,150}</string>
+            </dict>
+            <key>effect_construct_levelup (7).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,110},{96,132}}</string>
+                <key>offset</key>
+                <string>{0,1}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{27,8},{96,132}}</string>
+                <key>sourceSize</key>
+                <string>{150,150}</string>
+            </dict>
+        </dict>
+        <key>metadata</key>
+        <dict>
+            <key>format</key>
+            <integer>2</integer>
+            <key>realTextureFileName</key>
+            <string>effect_construct_levelup.png</string>
+            <key>size</key>
+            <string>{256,512}</string>
+            <key>smartupdate</key>
+            <string>$TexturePacker:SmartUpdate:6469aaf619ada60fa0f0ba7004b7e4c5:1/1$</string>
+            <key>textureFileName</key>
+            <string>effect_construct_levelup.png</string>
+        </dict>
+    </dict>
+</plist>
