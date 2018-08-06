@@ -4,7 +4,6 @@ var building = cc.Sprite.extend({
         this._super(src);
         this.anchorX = 0.5;
         this.anchorY = 0.5;
-	//commend
     }
 })
 
