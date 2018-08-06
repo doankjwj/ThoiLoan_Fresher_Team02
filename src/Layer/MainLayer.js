@@ -17,6 +17,7 @@ var MainLayer = cc.Layer.extend({
     _guiCancelBuildButton: null,
     _guiTraningArmyButton: null,
     _popUp: null,
+    _popUpTraining: null,
 
     _resetUserButton: null,
 
@@ -146,10 +147,10 @@ var MainLayer = cc.Layer.extend({
         this.addUserBar();
         this.addBuilderBar();
 
-        var trainingLayer = new PopupTraining(1);
-        this.addChild(trainingLayer, 20);
+        this._popUpTraining = new PopupTraining();
+        this.addChild(this._popUpTraining, 1, gv.tag.TAG_POPUP_TRAINING);
 
-        this._popUp = new PopUpConstruct;
+        this._popUp = new PopUpConstruct();
         this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
         this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
         this.addCheatButton();
@@ -564,7 +565,7 @@ var MainLayer = cc.Layer.extend({
             if (order === orderBuilderHut) return;
             if (building._is_active === false) return;
 
-
+            self.getChildByTag(gv.tag.TAG_POPUP_TRAINING).onAppear();
 
         }.bind(this));
 

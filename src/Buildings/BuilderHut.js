@@ -7,6 +7,7 @@ var BuilderHut = BuildingNode.extend({
         this._maxLevel = 1;
         this._orderInUserBuildingList = gv.orderInUserBuildingList.builderHut;
         this._name =gv.buildingName.builderHut;
+        this._description = gv.buildingDescription.builderHut;
 
         this._super(id, order, row, col, existed);
         /* Add Center Building */
@@ -14,5 +15,10 @@ var BuilderHut = BuildingNode.extend({
 
         //if (!this._is_active)
         //    this.onStartBuild(gv.startConstructType.loadConstruct);
-    }
+    },
+
+    updateAnim: function()
+    {
+
+    },
 })

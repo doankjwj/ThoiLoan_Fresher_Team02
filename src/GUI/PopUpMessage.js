@@ -3,6 +3,8 @@ var PopUPMessage = cc.Node.extend({
     _txtMessage: null,
     _bg: null,
 
+    _swallowTouch: null,
+
     ctor: function()
     {
         this._super();
@@ -14,6 +16,23 @@ var PopUPMessage = cc.Node.extend({
         this._bg.setPosition(cc.p(0, 0));
         this.addChild(this._bg, 0);
 
+        /* Nền sau */
+        this._colorBG = cc.LayerColor(cc.color(127.5,127.5,127.5,0));
+        this._colorBG.width = cc.winSize.width;
+        this._colorBG.height = cc.winSize.height;
+        //this._colorBG.setAnchorPoint(cc.p(0.5, 0.5));
+        this.addChild(this._colorBG, -1);
+        var self = this;
+        this._swallowTouch = cc.EventListener.create({
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            swallowTouches: true,
+            onTouchBegan: function(touch, event){
+                return true;
+            }
+        });
+        this._swallowTouch.setEnabled(false);
+        cc.eventManager.addListener(this._swallowTouch, this._colorBG);
+
         /* Message */
         this._txtMessage = cc.LabelBMFont("Message", font.soji20);
         this._txtMessage.setAnchorPoint(cc.p(0.5, 0.5));
@@ -24,19 +43,22 @@ var PopUPMessage = cc.Node.extend({
         this._btnClose = ccui.Button(res.popUp.btnClose, res.popUp.btnClose);
         this._btnClose.setAnchorPoint(cc.p(0.5, 0.5));
         // this._btnClose.scale =  0.75;
-        this._btnClose.setPosition(cc.p(this._bg.width/2 - this._btnClose.width*this._btnClose.scale/1.5, this._bg.height/2 - this._btnClose.height  *this._btnClose.scale/1.5));
+        this._btnClose.setPosition(cc.p(this._bg.width/2 - this._btnClose.width*this._btnClose.scale/1.5, this._bg.height/2 - this._btnClose.height  *this._btnClose.scale/2));
         this.addChild(this._btnClose, 1);
 
         this._btnClose.addClickEventListener(function(){
             self.hide();
+            self.onDisappear();
         });
 
-        this.addListener();
     },
 
-    addListener: function()
-    {
+    onAppear: function() {
+        this._swallowTouch.setEnabled(true);
+    },
 
+    onDisappear: function() {
+        this._swallowTouch.setEnabled(false);
     },
 
     setMessage: function(msg)

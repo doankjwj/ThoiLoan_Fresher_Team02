@@ -72,6 +72,7 @@ var TroopButton = ccui.Button.extend({
                 break;
             case ccui.Widget.TOUCH_ENDED:
                 sender.getParent().addTroopToQueue(sender._id);
+                // sender.getParent().logQueue();
                 sender.scale /= 1.05;
                 break;
             case ccui.Widget.TOUCH_CANCELED:
@@ -104,14 +105,15 @@ var queueTroopButton = ccui.Button.extend({
         this._super(trainingQueueGUI.slot);
         this._troopIcon = cc.Sprite(fn.getTroopSmallSprite(id));
         this._id = id;
-        this.addChild(this._troopIcon, 3);
+        this.addChild(this._troopIcon, 2);
         this._troopIcon.setPosition(cc.p(this.width/2, this.height/2));
         this._cancelButton = cc.Sprite(trainingGUI.cancelIcon);
-        this.addChild(this._cancelButton, 0);
+        this.addChild(this._cancelButton, 3);
         this._cancelButton.setPosition(this.width, this.height);
         this._quantity = 1;
         this._quantityText = cc.LabelBMFont("x1", font.soji20);
         this._quantityText.scale = 0.7;
+        this.addChild(this._quantityText, 3);
         this.init();
     },
 
@@ -127,7 +129,7 @@ var queueTroopButton = ccui.Button.extend({
             case ccui.Widget.TOUCH_MOVED:
                 break;
             case ccui.Widget.TOUCH_ENDED:
-                sender.getParent().deleteTroopFromQueue(sender._id);
+                sender.getParent().getParent().deleteTroopFromQueue(sender._id);
                 sender.scale /= 1.05;
                 break;
             case ccui.Widget.TOUCH_CANCELED:
@@ -137,8 +139,43 @@ var queueTroopButton = ccui.Button.extend({
     },
 
     updateButton: function() {
-        this._quantity = this.getParent()._queueTraining[fn.getTroopString(this._id)];
+        this._quantity = this.getParent().getParent()._queueTraining[fn.getTroopString(this._id)];
         this._quantityText.setString("x" + this._quantity);
+    },
+
+    setButtonPosition: function(posInQueue){
+        var pos = posInQueue;
+        this.y = this.getParent().height/2;
+        var offset = this.width + 20;
+        switch(pos) {
+            case 1:
+                this.visible = true;
+                this.x = this.getParent().width*5/7;
+                break;
+            case 2:
+                this.visible = true;
+                this.x = this.getParent().width*4/7;
+                break;
+            case 3:
+                this.visible = true;
+                this.x = this.getParent().width*4/7 - offset;
+                break;
+            case 4:
+                this.visible = true;
+                this.x = this.getParent().width*4/7 - offset*2;
+                break;
+            case 5:
+                this.visible = true;
+                this.x = this.getParent().width*4/7 - offset*3;
+                break;
+            case 6:
+                this.visible = true;
+                this.x = this.getParent().width*4/7 - offset*4;
+                break;
+            default:
+                this.visible = false;
+                break;
+        }
     }
 
 });

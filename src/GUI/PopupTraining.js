@@ -26,8 +26,8 @@ var PopupTraining = cc.Layer.extend({
 
     _bgScale: 2.5,
 
-    ctor: function(id){
-        this._barrackID = id;
+    ctor: function(){
+        this._barrackID = 0;
         this._super();
         this.x = cc.winSize.width/2;
         this.y = cc.winSize.height/2;
@@ -41,8 +41,13 @@ var PopupTraining = cc.Layer.extend({
         this.initContent();
         this.initTroopListButton();
         this.init();
-        this.onAppear();
+        this.onDisappear();
     },
+
+    updateContent: function() {
+        this._txtTitle.setString("Nhà lính số " + (this._barrackID%100 + 1));
+    },
+
 
     initContent: function() {
 
@@ -75,7 +80,7 @@ var PopupTraining = cc.Layer.extend({
         this._trainingQueueBackground.addChild(this._queueArrow, 2);
         // this._queueArrow.visible = false;
 
-        this._txtTitle = cc.LabelBMFont("Nhà lính số " + this._barrackID, font.soji20);
+        this._txtTitle = cc.LabelBMFont("Nhà lính số " + this._barrackID%100, font.soji20);
         this._txtTitle.setAnchorPoint(cc.p(0.5, 0.5));
         this._txtTitle.setPosition(cc.p(0, this._bg.height / 2 * this._bgScale - this._txtTitle.height));
         this.addChild(this._txtTitle, 1);
@@ -86,6 +91,25 @@ var PopupTraining = cc.Layer.extend({
         this._btnClose.scale = this._bgScale * 0.75;
         this._btnClose.setPosition(cc.p(this._bg.width*this._bgScale/2 - this._btnClose.width*this._btnClose.scale/1.5, this._bg.height*this._bgScale/2 - this._btnClose.height  *this._btnClose.scale/1.5));
         this.addChild(this._btnClose, 1);
+
+        this._btnClose.addTouchEventListener(function(sender, type) {
+
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    sender.setScale(sender.scale*1.1);
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    sender.setScale(sender.scale/1.1);
+                    this.onDisappear();
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    sender.setScale(sender.scale/1.1);
+                    break;
+            }
+
+        }, this);
 
     },
 
@@ -117,16 +141,7 @@ var PopupTraining = cc.Layer.extend({
 
     },
 
-    getCurrentQueueLength: function(){
-        var count = 0;
-        for(var prop in this._queueTraining) {
-            if(!this._queueTraining[prop]) continue;
-            count += 1;
-        }
-        return count;
-    },
-
-    getPositionOfTroopTypeInQueue: function(id) {
+    getPosInQueue: function(id) {
         var i = 0;
         for(var prop in this._queueTraining) {
             if(!this._queueTraining[prop]) continue;
@@ -136,17 +151,11 @@ var PopupTraining = cc.Layer.extend({
         return -1;
     },
 
-    updateQueue: function() {
+    updateQueueButton: function() {
+        for(var j=0; j<this._queueTrainingButtonList.length; j++) {
 
-        var queueLength = this.getCurrentQueueLength();
-
-        for(var prop in this._queueTraining) {
-            if(!this._queueTraining[prop]) continue;
-            if(queueLength === 1) {
-
-            }
+            this._queueTrainingButtonList[j].setButtonPosition(j+1);
         }
-
     },
 
     addTroopToQueue: function(id){
@@ -156,38 +165,50 @@ var PopupTraining = cc.Layer.extend({
         if(!this._queueTraining[key]) {
             this._queueTraining[key] = 1;
             var button = new queueTroopButton(id);
+            button.setTag(id);
+            this._trainingQueueBackground.addChild(button, 2);
             this._queueTrainingButtonList.push(button);
-            this.updateQueue();
+            this.updateQueueButton();
         }
         else {
             this._queueTraining[key] += 1;
-            this._queueTrainingButtonList[this.getPositionOfTroopTypeInQueue(id)-1].updateButton();
+            this._queueTrainingButtonList[this.getPosInQueue(id)].updateButton();
         }
-
     },
 
-    // logQueue: function() {
-    //     var str = "";
-    //
-    //     for(var i in this._queueTraining) {
-    //         str += (i + ":" +this._queueTraining[i] + " ");
-    //     }
-    //     cc.log(str)
-    // },
+    logQueue: function() {
+        var str = "";
+
+        for(var i in this._queueTraining) {
+            str += (i + ":" +this._queueTraining[i] + " ");
+        }
+        cc.log(str);
+    },
+
+    removeAtIndex: function(id){
+
+        for(var j = 0; j<this._queueTrainingButtonList.length; j++){
+            if(j < id) continue;
+            else {
+                this._queueTrainingButtonList[j] = this._queueTrainingButtonList[j+1];
+            }
+        }
+
+        this._queueTrainingButtonList.splice(this._queueTrainingButtonList.length-1, 1);
+
+    },
 
     deleteTroopFromQueue: function(id){
         var key = fn.getTroopString(id);
         if(!this._queueTraining[key]) return;
-        var button = this._queueTrainingButtonList[this.getPositionOfTroopTypeInQueue(id)-1]
-        if(this._queueTraining[key] > 0) {
+        if(this._queueTraining[key] > 1) {
             this._queueTraining[key] -= 1;
-            button.updateButton();
-        }
-        else if(this._queueTraining[key] === 0) {
+            this._queueTrainingButtonList[this.getPosInQueue(id)].updateButton();
+        } else {
+            this.removeAtIndex(this.getPosInQueue(id));
+            this._trainingQueueBackground.removeChildByTag(id, false);
             delete this._queueTraining[key];
-
-            this._queueTrainingButtonList.splice(this.getPositionOfTroopTypeInQueue(id)-1, 1);
-            this.updateQueue();
+            this.updateQueueButton();
         }
     },
 
@@ -205,11 +226,14 @@ var PopupTraining = cc.Layer.extend({
     },
 
     onAppear: function() {
+        this.visible = true;
+        this.updateContent();
         this._swallowTouch.setEnabled(true);
     },
 
     onDisappear: function() {
         this._swallowTouch.setEnabled(false);
+        this.visible = false
     },
 
 

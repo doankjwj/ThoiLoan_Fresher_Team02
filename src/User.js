@@ -1,6 +1,3 @@
-/**
- * Created by CPU02326_Local on 7/23/2018.
- */
 var User = cc.Class.extend({
     _id: null,
     _name: "User Name",

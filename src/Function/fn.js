@@ -194,16 +194,16 @@ fn.insideMap = function(row, col)   // Kiểm tra Coor nằm trong giới hạn 
 
 
 /* Get Anmiation from STR*/
-fn.getAnimation = function(str, n)
+fn.getAnimation = function(str, n1, n2)
 {
     var arr_effect = [];
-    for (var i = 1; i <= n; i++)
+    for (var i = n1; i <= n2; i++)
     {
         var frame = cc.spriteFrameCache.getSpriteFrame(str + "(" + i + ").png");
         arr_effect.push(frame)
     };
     return cc.Animate(new cc.Animation(arr_effect, cf.time_refresh))
-};                              // Barack + ArmyCamp + ..
+};                               // Barack + ArmyCamp + ..
 
 /* Shop */
 fn.getPrice = function(str, level)
@@ -283,3 +283,7 @@ fn.getPrice = function(str, level)
     return price;
 };                              // MainLayer
 
+fn.convertSecondToHour = function(sec)
+{
+    return sec / 60 / 60;
+};
