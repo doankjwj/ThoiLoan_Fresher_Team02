@@ -15,7 +15,9 @@ var MainLayer = cc.Layer.extend({
     _guiButtonBuildingUpgrade: null,
     _guiInstantlyDone: null,
     _guiCancelBuildButton: null,
+    _guiTraningArmyButton: null,
     _popUp: null,
+    _popUpTraining: null,
 
     _resetUserButton: null,
 
@@ -144,11 +146,13 @@ var MainLayer = cc.Layer.extend({
         this.addResourceBar();
         this.addUserBar();
         this.addBuilderBar();
-        {
-            this._popUp = new PopUpConstruct;
-            this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
-            this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
-        };
+
+        this._popUpTraining = new PopupTraining();
+        this.addChild(this._popUpTraining, 1, gv.tag.TAG_POPUP_TRAINING);
+
+        this._popUp = new PopUpConstruct();
+        this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
+        this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
         this.addCheatButton();
     },
 
@@ -540,6 +544,30 @@ var MainLayer = cc.Layer.extend({
             }
         }.bind(this));
 
+        this._guiTraningArmyButton = new IconActionBuilding(cf.CODE_TRAINING);
+
+        this._guiTraningArmyButton.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: this._guiButtonBuildingUpgrade.x + this._guiTraningArmyButton.width/2*this._guiTraningArmyButton.scale + 20,
+            y: this._guiButtonBuildingUpgrade.y
+        });
+
+        this.addChild(this._guiTraningArmyButton, 2);
+
+        this._guiTraningArmyButton.addClickEventListener(function(){
+            self.hideListBotButton();
+            if (gv.building_selected === undefined) return;
+            var building = cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)];
+            var order = (building._orderInUserBuildingList);
+            var orderBuilderHut = (gv.orderInUserBuildingList.builderHut);
+            if (order === orderBuilderHut) return;
+            if (building._is_active === false) return;
+
+            self.getChildByTag(gv.tag.TAG_POPUP_TRAINING).onAppear();
+
+        }.bind(this));
+
     },
 
     popUpMessage: function(msg)
@@ -565,6 +593,7 @@ var MainLayer = cc.Layer.extend({
         this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2 + this._guiButtonBuildingUpgrade.width/2 + 2 * cf.offSetGuiResourceBar, -200));
         this._guiInstantlyDone.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
         this._guiCancelBuildButton.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
+        this._guiTraningArmyButton.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
     },
 
     showListBotButton: function() {
@@ -572,18 +601,18 @@ var MainLayer = cc.Layer.extend({
         this._guiButtonBuildingInfo.runAction(moveToPos1);
         var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
         var moveToPos2 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + cf.offSetGuiResourceBar - 25, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
-
         if (building._buildingSTR !== gv.buildingSTR.builderHut)
         {
             if (building._is_active) {
-                this._guiButtonBuildingUpgrade.runAction(moveToPos2);
-            }
-            else {
-                this._guiCancelBuildButton.runAction(moveToPos2);
                 var moveToPos3 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + 2 * cf.offSetGuiResourceBar + this._guiInstantlyDone.width/2*this._guiInstantlyDone.scale + 20, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
-                this._guiInstantlyDone.runAction(moveToPos3);
-                this._guiInstantlyDone.updateContent();
+                this._guiButtonBuildingUpgrade.runAction(moveToPos2);
+                if(building._buildingSTR === gv.buildingSTR.barrack_1)this._guiTraningArmyButton.runAction(moveToPos3);
             }
+        else {
+            this._guiCancelBuildButton.runAction(moveToPos2);
+            var moveToPos3 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + 2 * cf.offSetGuiResourceBar + this._guiInstantlyDone.width/2*this._guiInstantlyDone.scale + 20, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
+            this._guiInstantlyDone.runAction(moveToPos3);
+            this._guiInstantlyDone.updateContent();}
         }
     },
 

@@ -609,6 +609,8 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
             this.player.name = this.getString();
 
             this.player.exp = this.getInt();
+            this.player.vipPoint = this.getInt();
+
             this.player.coin = this.getInt();
             this.player.gold = this.getInt();
             this.player.elixir = this.getInt();
@@ -643,7 +645,9 @@ testnetwork.packetMap[gv.CMD.ERROR] = fr.InPacket.extend({
         } catch(e)
         {
             cc.log(e)
-        }
+        }})
+         ));
+
     }
 })
 
