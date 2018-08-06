@@ -6,9 +6,8 @@ var guiFolder = "res/Art/GUIs/";
 var jsonFolder = "res/ConfigJson/";
 var effectFolder = "res/SS/";
 var logInFolder = "res/Art/LoginGui/";
-var folderBuildingActionIcon = "res/Art/GUIs/Action_Building_Icon/";
+var folderBuildingActionicon = "res/Art/GUIs/Action_Building_Icon/";
 var folderUpgradeBuildingGUI = guiFolder + "upgrade_building_gui/";
-var troopIconFolder = guiFolder + "/train_troop_gui/icon/";
 var res = {
     image_postfix_1: "idle/image000",
     image_postfix_2: ".png",
@@ -136,65 +135,15 @@ var mainGUI = {
     trophyBgBar:        guiFolder + "Main_Gui/trophy_bg_bar.png"
 };
 var buildingGUI = {
-    iconInfo : folderBuildingActionIcon + "info_icon.png",
-    iconUpgrade: folderBuildingActionIcon + "upgrade_icon.png",
+    iconInfo : folderBuildingActionicon + "info_icon.png",
+    iconUpgrade: folderBuildingActionicon + "upgrade_icon.png",
     instant: res.folder_gui_action_building + "quick_finish.png",
-    bg: folderBuildingActionIcon + "bg_button.png",
-
-    trainIcon: folderBuildingActionIcon + "train_icon.png",
+    bg: folderBuildingActionicon + "bg_button.png",
 
     buildCommit: res.folder_gui_action_building + "accept.png",
     buildCancel: res.folder_gui_action_building + "cancel.png",
     buildCancelIcon: res.folder_gui_action_building + "cancel_icon.png",
     defence: res.map_obj + "upgrading.png"
-};
-
-var trainingGUI = {
-    previousIcon: guiFolder + "train_troop_gui/previous.png",
-    forwardIcon: guiFolder + "train_troop_gui/forward.png",
-    trainBar: guiFolder + "train_troop_gui/train_bar.png",
-    elixirIcon: guiFolder + "train_troop_gui/icon_elixir.png",
-    gIcon: guiFolder + "train_troop_gui/g_icon.png",
-    cancelIcon: guiFolder + "train_troop_gui/cancel.png",
-    buttonIcon: guiFolder + "train_troop_gui/button.png",
-    bgCost: guiFolder + "train_troop_gui/bg_cost.png",
-    bgRequired: guiFolder + "train_troop_gui/bg_cost_3.png",
-    infoIcon: guiFolder + "train_troop_gui/info.png",
-    slotIcon :guiFolder + "train_troop_gui/slot.png",
-    queueArrow: guiFolder + "train_troop_gui/queue.png",
-    bgTrainBar: guiFolder + "train_troop_gui/bg_train_bar.png",
-    bg: guiFolder + "train_troop_gui/background.png"
-};
-
-var trainingQueueGUI = {
-    ARM_1: guiFolder + "train_troop_gui/small_icon/ARM_1.png",
-    ARM_2: guiFolder + "train_troop_gui/small_icon/ARM_2.png",
-    ARM_3: guiFolder + "train_troop_gui/small_icon/ARM_3.png",
-    ARM_4: guiFolder + "train_troop_gui/small_icon/ARM_4.png",
-    ARM_5: guiFolder + "train_troop_gui/small_icon/ARM_5.png",
-    ARM_6: guiFolder + "train_troop_gui/small_icon/ARM_6.png",
-    ARM_7: guiFolder + "train_troop_gui/small_icon/ARM_7.png",
-    ARM_8: guiFolder + "train_troop_gui/small_icon/ARM_8.png",
-    ARM_9: guiFolder + "train_troop_gui/small_icon/ARM_9.png",
-    ARM_10: guiFolder + "train_troop_gui/small_icon/ARM_10.png",
-    ARM_16: guiFolder + "train_troop_gui/small_icon/ARM_16.png",
-    ARM_17: guiFolder + "train_troop_gui/small_icon/ARM_17.png",
-    slot: guiFolder + "train_troop_gui/small_icon/slot.png",
-};
-
-var troopIcon = {
-    ARM_1: troopIconFolder + "ARM_1.png",
-    ARM_2: troopIconFolder + "ARM_2.png",
-    ARM_3: troopIconFolder + "ARM_3.png",
-    ARM_4: troopIconFolder + "ARM_4.png",
-    ARM_5: troopIconFolder + "ARM_5.png",
-    ARM_6: troopIconFolder + "ARM_6.png",
-    ARM_7: troopIconFolder + "ARM_7.png",
-    ARM_8: troopIconFolder + "ARM_8.png",
-    ARM_9: troopIconFolder + "ARM_9.png",
-    ARM_10: troopIconFolder + "ARM_10.png",
-    ARM_16: troopIconFolder + "ARM_16.png",
-    ARM_17: troopIconFolder + "ARM_17.png"
 };
 
 var upgradeBuildingGUI_Small = folderUpgradeBuildingGUI + "small/";

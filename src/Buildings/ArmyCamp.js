@@ -23,7 +23,7 @@ var ArmyCamp = BuildingNode.extend({
         this._effectAnim = cc.Sprite(res.tmp_effect);
         this._effectAnim.anchorX = 0.5;
         this._effectAnim.anchorY = 0;
-        this._effectAnim.scale = 2 * cf.SCALE;
+        this._effectAnim.scale = 2;
         this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
         this._effectAnim.runAction(cf.animationArmyCamp[2].clone().repeatForever());
 
@@ -34,11 +34,6 @@ var ArmyCamp = BuildingNode.extend({
         }
     },
 
-    updateAnim: function()
-    {
-        //
-    },
-
     initAnimation: function()
     {
         if (cf.animationArmyCamp.length == 0)
@@ -46,7 +41,7 @@ var ArmyCamp = BuildingNode.extend({
             for (var i = 1; i < 3; i++)
             {
                 cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_armycamp_" + i +".plist", res.folder_effect + "effect_armycamp_" + i +".png");
-                cf.animationArmyCamp[i] = fn.getAnimation("effect_armycamp_" + i + " ", 1, 5);
+                cf.animationArmyCamp[i] = fn.getAnimation("effect_armycamp_" + i + " ", 5);
                 cf.animationArmyCamp[i].retain();
             }
         }

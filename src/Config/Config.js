@@ -40,7 +40,6 @@ cf.CODE_BUILDING_INFO = 324324;
 cf.CODE_BUILDING_UPGRADE = 2314234;
 cf.CODE_BUILDING_INSTANT = 131196;
 cf.CODE_BUILDING_CANCEL = 13121997;
-cf.CODE_TRAINING = 27071993;
 
 cf.user = null;
 
@@ -214,7 +213,6 @@ gv.constructType =
 {
     info: 1231,
     upgrade: 3423,
-    training: 1311
 };
 
 /* PopUp GUI Construct*/
@@ -258,7 +256,6 @@ gv.tag =
         TAG_RESOURCE_BAR_COIN: 1904,
         TAG_POPUP: 2000,
         TAG_POPUP_MESSAGE: 2001,
-        TAG_POPUP_TRAINING: 1890
     };
 /* Pop Up */
 gv.popUpConstruct = null;
@@ -353,6 +350,7 @@ cf.tagToItem = function(tag, lvl, posX, posY, existed){
             return new Defence(27, lvl, posX, posY, existed, gv.buildingSTR.defence_1);
     }
 };
+
 cf.stringToItemInit = function(str, index) {
     var building = null;
     var currentTime = new Date().getTime();

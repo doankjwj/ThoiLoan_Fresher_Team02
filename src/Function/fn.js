@@ -51,99 +51,7 @@ fn.loadJson = function () {
     });
 }
 
-fn.getTroopSprite = function(id) {
 
-    switch(id) {
-        case 1:
-            return troopIcon.ARM_1;
-        case 2:
-            return troopIcon.ARM_2;
-        case 3:
-            return troopIcon.ARM_3;
-        case 4:
-            return troopIcon.ARM_4;
-        case 5:
-            return troopIcon.ARM_5;
-        case 6:
-            return troopIcon.ARM_6;
-        case 7:
-            return troopIcon.ARM_7;
-        case 8:
-            return troopIcon.ARM_8;
-        case 9:
-            return troopIcon.ARM_9;
-        case 10:
-            return troopIcon.ARM_10;
-        case 16:
-            return troopIcon.ARM_16;
-        case 17:
-            return troopIcon.ARM_17;
-        default: break;
-    }
-};
-
-fn.getTroopSmallSprite = function(id) {
-
-    switch(id) {
-        case 1:
-            return trainingQueueGUI.ARM_1;
-        case 2:
-            return trainingQueueGUI.ARM_2;
-        case 3:
-            return trainingQueueGUI.ARM_3;
-        case 4:
-            return trainingQueueGUI.ARM_4;
-        case 5:
-            return trainingQueueGUI.ARM_5;
-        case 6:
-            return trainingQueueGUI.ARM_6;
-        case 7:
-            return trainingQueueGUI.ARM_7;
-        case 8:
-            return trainingQueueGUI.ARM_8;
-        case 9:
-            return trainingQueueGUI.ARM_9;
-        case 10:
-            return trainingQueueGUI.ARM_10;
-        case 16:
-            return trainingQueueGUI.ARM_16;
-        case 17:
-            return trainingQueueGUI.ARM_17;
-        default: break;
-    }
-};
-
-fn.getTroopString = function(id) {
-
-    switch(id) {
-        case 1:
-            return gv.troopStr.ARM_1;
-        case 2:
-            return gv.troopStr.ARM_2;
-        case 3:
-            return gv.troopStr.ARM_3;
-        case 4:
-            return gv.troopStr.ARM_4;
-        case 5:
-            return gv.troopStr.ARM_5;
-        case 6:
-            return gv.troopStr.ARM_6;
-        case 7:
-            return gv.troopStr.ARM_7;
-        case 8:
-            return gv.troopStr.ARM_8;
-        case 9:
-            return gv.troopStr.ARM_9;
-        case 10:
-            return gv.troopStr.ARM_10;
-        case 16:
-            return gv.troopStr.ARM_16;
-        case 17:
-            return gv.troopStr.ARM_17;
-        default: break;
-    }
-
-};
 
 /* Map */
 fn.getRowColFromPos = function(pos) // Lấy ra Tọa độ dòng, cột của building từ pos
@@ -194,16 +102,16 @@ fn.insideMap = function(row, col)   // Kiểm tra Coor nằm trong giới hạn 
 
 
 /* Get Anmiation from STR*/
-fn.getAnimation = function(str, n1, n2)
+fn.getAnimation = function(str, n)
 {
     var arr_effect = [];
-    for (var i = n1; i <= n2; i++)
+    for (var i = 1; i <= n; i++)
     {
         var frame = cc.spriteFrameCache.getSpriteFrame(str + "(" + i + ").png");
         arr_effect.push(frame)
     };
     return cc.Animate(new cc.Animation(arr_effect, cf.time_refresh))
-};                               // Barack + ArmyCamp + ..
+};                              // Barack + ArmyCamp + ..
 
 /* Shop */
 fn.getPrice = function(str, level)
@@ -283,7 +191,3 @@ fn.getPrice = function(str, level)
     return price;
 };                              // MainLayer
 
-fn.convertSecondToHour = function(sec)
-{
-    return sec / 60 / 60;
-};

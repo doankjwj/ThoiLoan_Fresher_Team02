@@ -21,7 +21,6 @@
         "src/Function/fn.js",
         "src/GlobalVar/gv.js",
 
-
         "src/Layer/MainLayer.js",
         "src/Layer/Map.js",
         "src/Layer/Shop/Shop.js",
@@ -30,9 +29,6 @@
         "src/Layer/Shop/ShopItemList.js",
         "src/Layer/Shop/ResourceItem.js",
         "src/Resource.js",
-
-        "src/GUI/TroopButton.js",
-        "src/GUI/PopupTraining.js",
 
         "src/Buildings/Building.js",
         "src/Buildings/BuildingNode.js",

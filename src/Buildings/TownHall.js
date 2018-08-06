@@ -33,17 +33,12 @@ var TownHall = BuildingNode.extend({
         }
     },
 
-    updateAnim: function()
-    {
-        //
-    },
-
     initAnimation: function()
     {
         if (cf.animationTownHall == null)
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_townhall_flame.plist", res.folder_effect + "effect_townhall_flame.png");
-            cf.animationTownHall = fn.getAnimation("effect_townhall_flame ", 1, 12);
+            cf.animationTownHall = fn.getAnimation("effect_townhall_flame ", 12);
             cf.animationTownHall.retain();
         }
     }

@@ -178,10 +178,9 @@ var BuildingNode = cc.Node.extend({
                 var y = locationNote.y;
                 var polygon = [ [ -w, 0 ], [ 0, h ], [ w, 0 ], [ 0, -h ] ];
 
-                cc.log(self._id);
+
                 if (fn.pointInsidePolygon([x, y], polygon) && (gv.building_selected !== self._id))
                 {
-                    self._txtName.setString(self._name + " level " + ((self._is_active) ? self._level : Math.max(self._level - 1, 1)));
                     self._txtName.visible = true;
                     self.popBuildingScale();
                     self.setLocalZOrder(200);
@@ -230,7 +229,7 @@ var BuildingNode = cc.Node.extend({
     {
         var popIn = cc.ScaleTo(0.1, 1.1);
         var popOut = cc.ScaleTo(0.1, 1);
-        this._center_building.runAction(cc.Sequence.create(popIn.clone(), popOut.clone()));
+        this._center_building.runAction(cc.Sequence.create(popIn, popOut));
 
         /*Ngoại trừ army Camp*/
         if (this._effectAnim && this._buildingSTR != gv.buildingSTR.armyCamp_1)
@@ -371,6 +370,7 @@ var BuildingNode = cc.Node.extend({
         this._is_active = false;
         if (startConstructType == gv.startConstructType.newConstruct) {
             this._time_remaining = this.getTimeRequire();
+            //cc.log(this._name);
         }
         else
 
@@ -483,14 +483,14 @@ var BuildingNode = cc.Node.extend({
         this._effect_level_up.visible = true;
         if (cf.animationConstructLevelUp == null)
         {
-            cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_levelup.plist", res.folder_effect + "effect_levelup.png");
+            cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_construct_levelup.plist", res.folder_effect + "effect_construct_levelup.png");
         }
         this._txt_time_remaining.visible = false;
         this._info_bar.visible = false;
         this._info_bar_bg.visible = false;
         this._defence.visible = false;
         this._effect_level_up.runAction(cc.Sequence.create(cc.CallFunc(function(){this._effect_level_up.visible = true}, this),
-            fn.getAnimation("effect_levelup ", 1, 12).clone(),
+            fn.getAnimation("effect_construct_levelup ", 6).clone(),
             cc.CallFunc(function(){this._effect_level_up.visible = false}, this)));
 
         /* Update Max capacity if Building is Storage or Town Hall */
@@ -510,7 +510,6 @@ var BuildingNode = cc.Node.extend({
 
     onUpdateSpriteFrame: function()
     {
-        this.updateAnim();
         this.removeChildByTag(gv.tag.TAG_CENTER_BUILDING)
         var str = this._buildingSTR;
         switch(str)
@@ -539,11 +538,11 @@ var BuildingNode = cc.Node.extend({
             case gv.buildingSTR.storage_2:
                 this._center_building = cc.Sprite(res.folder_elixir_storage + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
+            case gv.buildingSTR.canon:
+                this._center_building = cc.Sprite(res.folder_canon + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
             case gv.buildingSTR.obstacle:
                 this._center_building = cc.Sprite(res.folder_obs + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
-                break;
-            case gv.buildingSTR.defence_1:
-                this._center_building = cc.Sprite(res.folder_defense_base + "DEF_1_" + this._level + "_Shadow.png");
                 break;
             default:
                 break;
@@ -627,11 +626,14 @@ var BuildingNode = cc.Node.extend({
             case gv.buildingSTR.storage_2:
                 this._center_building = cc.Sprite(res.folder_elixir_storage + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
+            case gv.buildingSTR.canon:
+                this._center_building = cc.Sprite(res.folder_canon + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
             case gv.buildingSTR.obstacle:
                 this._center_building = cc.Sprite(res.folder_obs + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case gv.buildingSTR.defence_1:
-                this._center_building = cc.Sprite(res.folder_defense_base + "DEF_1_" + this._level + "_Shadow.png");
+                this._center_building = cc.Sprite(res.folder_canon + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             default:
                 break;
