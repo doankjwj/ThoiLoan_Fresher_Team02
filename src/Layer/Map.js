@@ -47,13 +47,13 @@ var Map = cc.Node.extend({
         }
 
 
-         //for (var i = 0; i < Object.keys(gv.json.initGame["obs"]).length; i++)
-         //       {
-         //           var obs = gv.json.initGame["obs"][i+1];
-         //           var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"], true);
-         //           var tag = i*500;
-         //           this.addChild(obstacle, 2, tag);
-         //       }
+        for (var i = 0; i < Object.keys(gv.jsonInfo["map"]["OBS"]).length; i++)
+        {
+            var obs = gv.jsonInfo["map"]["OBS"][i];
+            var obstacle = new Obstacle((gv.orderInUserBuildingList.obstacle * 100 + 1 + i), obs["type"], obs["X"], obs["Y"], true);
+            var tag = i*500;
+            this.addChild(obstacle, 2, tag);
+        }
     },
 
     //add_building: function()

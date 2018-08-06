@@ -23,3 +23,18 @@ gv.buildingDescription =
     storage_1: "Kho vàng là nơi cất trữ toàn bộ vàng của vương quốc, hãy cất giữ nơi này nghiêm ngặt\n nếu không muốn trắng tay sau 1 đêm thức dậy",
     storage_2: "Cùng với kho vàng, kho dầu là nơi lưu trữ tài nguyên quan trọng của vương quốc, \nhãy nâng cấp kho dầu liên tục đẻ lưu trữ nhiều hơn những dòng dầu óng ánh"
 };
+
+gv.troopStr = {
+    ARM_1: "ARM_1",
+    ARM_2: "ARM_2",
+    ARM_3: "ARM_3",
+    ARM_4: "ARM_4",
+    ARM_5: "ARM_5",
+    ARM_6: "ARM_6",
+    ARM_7: "ARM_7",
+    ARM_8: "ARM_8",
+    ARM_9: "ARM_9",
+    ARM_10: "ARM_10",
+    ARM_16: "ARM_16",
+    ARM_17: "ARM_17"
+};

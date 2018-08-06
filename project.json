@@ -46,6 +46,8 @@
         "src/GUI/ResourceBar.js",
         "src/GUI/IconActionBuilding.js",
         "src/GUI/BuilderBar.js",
+        "src/GUI/PopupTraining.js",
+        "src/GUI/TroopButton.js",
 
         "src/GUI/PopUpConstruct.js",
         "src/GUI/PopUpMessage.js",
