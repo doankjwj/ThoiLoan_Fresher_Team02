@@ -10,6 +10,7 @@ var Obstacle = BuildingNode.extend({
         this._name = gv.buildingName.obstacle;
 
         this._super(id, type, row, col, existed);
+        this._level = type;
         this._grassShadow.visible = false;
         this._txtName.visible = false;
         this.addCenterBuilding();

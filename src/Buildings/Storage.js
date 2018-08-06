@@ -17,6 +17,7 @@ var Storage = BuildingNode.extend({
         }
         this._orderInUserBuildingList = (buildingSTR === gv.buildingSTR.storage_1) ? gv.orderInUserBuildingList.storage_1 : gv.orderInUserBuildingList.storage_2;
         this._name = (buildingSTR === gv.buildingSTR.storage_1) ? gv.buildingName.storage_1 : gv.buildingName.storage_2;
+        this._description = (buildingSTR === gv.buildingSTR.storage_1) ? gv.buildingDescription.storage_1 : gv.buildingDescription.storage_2;
 
         this._super(id, level, row, col, existed);
 
@@ -29,6 +30,11 @@ var Storage = BuildingNode.extend({
 
     },
 
+    updateAnim: function()
+    {
+
+    },
+
     /* when building is still build */
 
     initAnimation: function()
@@ -36,13 +42,13 @@ var Storage = BuildingNode.extend({
         if (this._buildingSTR === gv.buildingSTR.storage_1 && cf.animationRes1[this._level] === null)
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_res_1_" + this._level + ".plist", res.folder_effect + "effect_res_1_" + this._level + ".png");
-            cf.animationRes1[this._level] = fn.getAnimation("effect_res_1_" + this._level + " ", 10);
+            cf.animationRes1[this._level] = fn.getAnimation("effect_res_1_" + this._level + " ", 1, 10);
         }
 
         if (this._buildingSTR === gv.buildingSTR.storage_2 && cf.animationRes2[this._level] === null)
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_res_2_" + this._level + ".plist", res.folder_effect + "effect_res_2_" + this._level + ".png");
-            cf.animationRes2[this._level] = fn.getAnimation("effect_res_2_" + this._level + " ", 10);
+            cf.animationRes2[this._level] = fn.getAnimation("effect_res_2_" + this._level + " ", 1, 10);
         }
     }
 })

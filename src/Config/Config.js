@@ -118,6 +118,7 @@ cf.animationRes1 = [];
 cf.animationRes2 = [];
 cf.animationTownHall = null;
 cf.animationConstructLevelUp = null;
+cf.animationDefence_1 = [];
 
 
 cf.MAX_BUILDING_TYPE = 20;
@@ -208,7 +209,7 @@ gv.buildingMaxLevel = {
     builderHut: 5,
     obstacle: 27,
     defence_1: 17
-}
+};
 gv.constructType =
 {
     info: 1231,

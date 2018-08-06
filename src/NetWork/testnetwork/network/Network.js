@@ -104,6 +104,13 @@ testnetwork.Connector = cc.Class.extend({
         var pk = this.gameClient.getOutPacket(CmdSendCancel);
         pk.pack(id, pos);
         this.gameClient.sendPacket(pk);
+    },
+    sendHarvest: function(id)
+    {
+        cc.log("SEND HARVEST ID: " + id);
+        var pk = this.gameClient.getOutPacket(CmdSendHarvest);
+        pk.pack(id);
+        this.gameClient.sendPacket(pk);
     }
 
 });

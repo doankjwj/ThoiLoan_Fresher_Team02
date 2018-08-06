@@ -7,6 +7,8 @@ var TownHall = BuildingNode.extend({
         this._orderInUserBuildingList = gv.orderInUserBuildingList.townHall;
         this._name = gv.buildingName.townHall;
         this._maxLevel = gv.buildingMaxLevel.townHall;
+        this._description = gv.buildingDescription.townHall_1;
+
         this._super(id, level, row, col, existed);
 
 
@@ -18,11 +20,11 @@ var TownHall = BuildingNode.extend({
         this.initAnimation();
 
         /* Effect */
-        var effect = cc.Sprite(res.tmp_effect);
-        effect.anchorX = 0.5;
-        effect.anchorY = 0.5;
-        this.addChild(effect, this._center_building.getLocalZOrder() + 1);
-        effect.runAction(cf.animationTownHall.clone().repeatForever());
+        this._effectAnim = cc.Sprite(res.tmp_effect);
+        this._effectAnim.anchorX = 0.5;
+        this._effectAnim.anchorY = 0.5;
+        this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
+        this._effectAnim.runAction(cf.animationTownHall.clone().repeatForever());
 
         if (!this._is_active)
         {
@@ -31,12 +33,17 @@ var TownHall = BuildingNode.extend({
         }
     },
 
+    updateAnim: function()
+    {
+        //
+    },
+
     initAnimation: function()
     {
         if (cf.animationTownHall == null)
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_townhall_flame.plist", res.folder_effect + "effect_townhall_flame.png");
-            cf.animationTownHall = fn.getAnimation("effect_townhall_flame ", 12);
+            cf.animationTownHall = fn.getAnimation("effect_townhall_flame ", 1, 12);
             cf.animationTownHall.retain();
         }
     }
