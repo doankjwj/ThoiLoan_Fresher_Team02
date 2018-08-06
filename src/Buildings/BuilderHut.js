@@ -15,5 +15,10 @@ var BuilderHut = BuildingNode.extend({
 
         //if (!this._is_active)
         //    this.onStartBuild(gv.startConstructType.loadConstruct);
-    }
+    },
+
+    updateAnim: function()
+    {
+
+    },
 })

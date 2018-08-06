@@ -158,15 +158,10 @@ var PopUpConstruct = cc.Node.extend({
                     cf.user._currentCapacityDarkElixir -= self._cost.darkElixir;
                     cf.user._currentCapacityCoin -= self._cost.coin;
 
-                    //cc.log("Update User Info 1");
                     self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
-                    //cc.log("Update User Info 2");
                     self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
-                    //cc.log("Update User Info 3");
                     self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
-                    //cc.log("Update User Info 4");
                     self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
-                    //cc.log("Update User Info 5");
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;

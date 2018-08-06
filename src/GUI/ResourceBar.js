@@ -123,6 +123,8 @@ var GUI_ResourceBar = cc.Node.extend({
             this._bar.setTextureRect(cc.rect(0, 0, this._bar.width * this._currentCapacity / this._maxCapacity, this._bar.height));
             this._txtMax.setString("Max: " + this._maxCapacity);
         }
+        else
+            this._txtMax.setString("");
         this._txtCurrent.setString(this._currentCapacity + "");
     }
 })

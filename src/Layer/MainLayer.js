@@ -230,7 +230,7 @@ var MainLayer = cc.Layer.extend({
                     break;
                 case ccui.Widget.TOUCH_ENDED:
                     cf.user._currentCapacityCoin += cheatNumber;
-                    cf.user._maxCapacityGold = cf.user._maxCapacityGold + cheatNumber*2;
+                    //cf.user._maxCapacityCoin = cf.user._maxCapacityCoin + cheatNumber*2;
                     testnetwork.connector.sendCheat(3, cheatNumber);
                     self.updateResourceBar();
                     break;
@@ -572,14 +572,18 @@ var MainLayer = cc.Layer.extend({
         this._guiButtonBuildingInfo.runAction(moveToPos1);
         var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
         var moveToPos2 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + cf.offSetGuiResourceBar - 25, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
-        if (building._is_active) {
-            this._guiButtonBuildingUpgrade.runAction(moveToPos2);
-        }
-        else {
-            this._guiCancelBuildButton.runAction(moveToPos2);
-            var moveToPos3 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + 2 * cf.offSetGuiResourceBar + this._guiInstantlyDone.width/2*this._guiInstantlyDone.scale + 20, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
-            this._guiInstantlyDone.runAction(moveToPos3);
-            this._guiInstantlyDone.updateContent();
+
+        if (building._buildingSTR !== gv.buildingSTR.builderHut)
+        {
+            if (building._is_active) {
+                this._guiButtonBuildingUpgrade.runAction(moveToPos2);
+            }
+            else {
+                this._guiCancelBuildButton.runAction(moveToPos2);
+                var moveToPos3 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + 2 * cf.offSetGuiResourceBar + this._guiInstantlyDone.width/2*this._guiInstantlyDone.scale + 20, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
+                this._guiInstantlyDone.runAction(moveToPos3);
+                this._guiInstantlyDone.updateContent();
+            }
         }
     },
 

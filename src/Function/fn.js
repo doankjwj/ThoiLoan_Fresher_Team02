@@ -102,10 +102,10 @@ fn.insideMap = function(row, col)   // Kiểm tra Coor nằm trong giới hạn 
 
 
 /* Get Anmiation from STR*/
-fn.getAnimation = function(str, n)
+fn.getAnimation = function(str, n1, n2)
 {
     var arr_effect = [];
-    for (var i = 1; i <= n; i++)
+    for (var i = n1; i <= n2; i++)
     {
         var frame = cc.spriteFrameCache.getSpriteFrame(str + "(" + i + ").png");
         arr_effect.push(frame)
@@ -175,7 +175,7 @@ fn.getPrice = function(str, level)
             price.coin = 0;
             break;
         case gv.buildingSTR.defence_1:
-            price.gold = gv.json.storage[str][level]["gold"];
+            price.gold = gv.json.defence[str][level]["gold"];
             price.elixir = 0;
             price.darkElixir = 0;
             price.coin = 0;
@@ -190,4 +190,10 @@ fn.getPrice = function(str, level)
     }
     return price;
 };                              // MainLayer
+
+
+fn.convertSecondToHour = function(sec)
+{
+    return sec / 60 / 60;
+};
 

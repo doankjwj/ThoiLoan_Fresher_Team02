@@ -19,13 +19,16 @@ var Barrack = BuildingNode.extend({
         /* Init Animation If Not Exist*/
         this.initAnimation();
 
+
         /* Add Effect */
+        this._effectAnim = cc.Sprite(res.tmp_effect);
+        this._effectAnim.anchorX = 0.5;
+        this._effectAnim.anchorY = 0.5;
+        this._effectAnim.scale = cf.SCALE;
+        this._effectAnim.visible = false;
+        this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
         if (this._level >= 4) {
-            this._effectAnim = cc.Sprite(res.tmp_effect);
-            this._effectAnim.anchorX = 0.5;
-            this._effectAnim.anchorY = 0.5;
-            this._effectAnim.scale = cf.SCALE;
-            this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
+            this._effectAnim.stopAllActions();
             this._effectAnim.runAction(cf.animationBarrack[this._level].clone().repeatForever());
         };
 
@@ -34,6 +37,18 @@ var Barrack = BuildingNode.extend({
             this.onStartBuild(gv.startConstructType.loadConstruct);
             cc.log(this._name + " Build This");
         }
+
+
+    },
+
+    updateAnim: function()
+    {
+        this.initAnimation();
+
+        if (this._level >= 4) {
+            this._effectAnim.stopAllActions();
+            this._effectAnim.runAction(cf.animationBarrack[this._level].clone().repeatForever());
+        };
     },
 
     initAnimation: function()
@@ -42,7 +57,7 @@ var Barrack = BuildingNode.extend({
         if (cf.animationBarrack[this._level] == null)
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_barrack_1_" + this._level +".plist", res.folder_effect + "effect_barrack_1_" + this._level +".png");
-            cf.animationBarrack[this._level] = fn.getAnimation("effect_barrack_1_" + this._level + " ", 6);
+            cf.animationBarrack[this._level] = fn.getAnimation("effect_barrack_1_" + this._level + " ", 1, 6);
             cf.animationBarrack[this._level].retain();
         }
     }
