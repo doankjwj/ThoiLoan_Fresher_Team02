@@ -114,6 +114,13 @@ var queueTroopButton = ccui.Button.extend({
         this._quantityText = cc.LabelBMFont("x1", font.soji20);
         this._quantityText.scale = 0.7;
         this.addChild(this._quantityText, 3);
+
+        this._quantityText.setAnchorPoint(cc.p(0.5, 0.5));
+        this._quantityText.x = this._quantityText.width/2;
+        this._quantityText.y = this.height - this._quantityText.height/2;
+
+        this.scale = 1.5;
+
         this.init();
     },
 
@@ -146,11 +153,11 @@ var queueTroopButton = ccui.Button.extend({
     setButtonPosition: function(posInQueue){
         var pos = posInQueue;
         this.y = this.getParent().height/2;
-        var offset = this.width + 20;
+        var offset = this.width*this.scale + 25;
         switch(pos) {
             case 1:
                 this.visible = true;
-                this.x = this.getParent().width*5/7;
+                this.x = this.getParent().width*5/7 + 40;
                 break;
             case 2:
                 this.visible = true;

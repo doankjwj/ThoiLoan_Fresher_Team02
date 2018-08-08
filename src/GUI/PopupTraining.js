@@ -5,7 +5,8 @@ var PopupTraining = cc.Layer.extend({
     _colorBG: null,
     _txtTitle: null,
     _btnClose: null,
-
+    _trainBar: null,
+    _bgTrainBar: null,
     _swallowTouch: null,
 
     _trainingQueueBackground: null,
@@ -18,11 +19,17 @@ var PopupTraining = cc.Layer.extend({
     _textTimeLabel: null,
     _textQuickFinish: null,
     _quickFinishButton: null,
-    _statusText: null,
+
     _troopListButton: null,
+
+    _currentTrainingTime: null,
+    _currentTrainingTimeRequired: null,
 
     _queueTraining: null,
     _queueTrainingButtonList: null,
+
+    jsonTroopBase: null,
+    jsonTroop:  null,
 
     _bgScale: 2.5,
 
@@ -34,9 +41,15 @@ var PopupTraining = cc.Layer.extend({
 
         this._troopListButton = [];
 
+        this._timeTraining = 0;
+        this._currentTrainingTime = 0;
+        this._currentTrainingTimeRequired = 0;
+
         this._queueTraining = {};
         this._queueTrainingButtonList = [];
-        //delete afer then
+
+        this.jsonTroopBase = gv.json.troopBase;
+        this.jsonTroop = gv.json.troop;
 
         this.initContent();
         this.initTroopListButton();
@@ -45,9 +58,39 @@ var PopupTraining = cc.Layer.extend({
     },
 
     updateContent: function() {
-        this._txtTitle.setString("Nhà lính số " + (this._barrackID%100 + 1));
+        this._txtTitle.setString("Nhà lính số " + (this._barrackID % 100 + 1));
+        if(this._queueTrainingButtonList.length !== 0){
+            this._queueArrow.visible = true;
+            this._textTime.visible = true;
+            this._quickFinishButton.visible = true;
+            this._textTimeLabel.visible = true;
+            this._bgTrainBar.visible = true;
+            this._trainBar.visible = true;
+            this._textTimeLabel.setString(cf.secondsToLongTime(this._timeTraining));
+            this._currentTrainingTimeRequired = this.jsonTroopBase[fn.getTroopString(this._queueTrainingButtonList[0]._id)]["trainingTime"];
+        }
+        else {
+            this._queueArrow.visible = false;
+            this._textTime.visible = false;
+            this._textTimeLabel.visible = false;
+            this._quickFinishButton.visible = false;
+            this._bgTrainBar.visible = false;
+            this._trainBar.visible = false;
+            this._currentTrainingTime = 0;
+            this._currentTrainingTimeRequired = 0;
+            this._timeTraining = 0;
+        }
+
     },
 
+    updateStatus: function(){
+
+        if(this._timeTraining > 0) this._timeTraining -= 1;
+        if(this._currentTrainingTime > 0 ) this._currentTrainingTime -= 1;
+        this._textTimeLabel.setString(cf.secondsToLongTime(this._timeTraining));
+        cc.log("CURRENT " + this._currentTrainingTime);
+
+    },
 
     initContent: function() {
 
@@ -91,7 +134,6 @@ var PopupTraining = cc.Layer.extend({
         this._btnClose.scale = this._bgScale * 0.75;
         this._btnClose.setPosition(cc.p(this._bg.width*this._bgScale/2 - this._btnClose.width*this._btnClose.scale/1.5, this._bg.height*this._bgScale/2 - this._btnClose.height  *this._btnClose.scale/1.5));
         this.addChild(this._btnClose, 1);
-
         this._btnClose.addTouchEventListener(function(sender, type) {
 
             switch (type){
@@ -111,6 +153,43 @@ var PopupTraining = cc.Layer.extend({
 
         }, this);
 
+        this._quickFinishButton = ccui.Button(trainingGUI.buttonIcon);
+        this._quickFinishButton.setAnchorPoint(cc.p(0.5, 0.5));
+        this._quickFinishButton.x = this._trainingQueueBackground.width - this._quickFinishButton.width/2 - 20;
+        this._quickFinishButton.y = this._quickFinishButton.height/2;
+        this._trainingQueueBackground.addChild(this._quickFinishButton, 4);
+        var text = cc.LabelBMFont("Hoàn thành ngay:",font.soji20);
+        text.setAnchorPoint(cc.p(0.5, 0.5));
+        text.scale = 0.7;
+        // text.setColor(cc.color(165,42,42, 255));
+        text.setPosition(cc.p(this._quickFinishButton.width/2, this._quickFinishButton.height + 5 + text.height/2*text.scale));
+        this._quickFinishButton.addChild(text, 1);
+
+        this._textTime = cc.LabelBMFont("Tổng thời gian", font.soji20);
+        this._textTime.scale = 0.7;
+        this._textTime.x = this._quickFinishButton.x;
+        this._textTime.y = this._trainingQueueBackground.height - this._textTime.height/2;
+        this._trainingQueueBackground.addChild(this._textTime, 4);
+
+
+        this._textTimeLabel = cc.LabelBMFont("1", font.soji20);
+        this._textTimeLabel.scale = 1;
+        this._textTimeLabel.x = this._textTime.x;
+        this._textTimeLabel.y = this._textTime.y - this._textTimeLabel.height*this._textTimeLabel.scale - 10;
+        this._trainingQueueBackground.addChild(this._textTimeLabel, 4);
+
+        this._trainBar = cc.Sprite(trainingGUI.trainBar);
+        this._bgTrainBar = cc.Sprite(trainingGUI.bgTrainBar);
+
+        this._trainBar.setAnchorPoint(cc.p(0.5, 0.5));
+        this._bgTrainBar.setAnchorPoint(cc.p(0.5, 0.5));
+
+        this._trainBar.x = this._trainingQueueBackground.width*5/7 + 40;
+        this._trainBar.y = this._quickFinishButton.y;
+        this._trainingQueueBackground.addChild(this._trainBar, 4);
+        this._bgTrainBar.x = this._trainBar.x;
+        this._bgTrainBar.y = this._trainBar.y;
+        this._trainingQueueBackground.addChild(this._bgTrainBar, 3);
     },
 
     initTroopListButton: function() {
@@ -138,7 +217,16 @@ var PopupTraining = cc.Layer.extend({
     },
 
     init: function() {
+        this.schedule(this.updateStatus, 1);
+    },
 
+    getQueueSize: function(){
+        var i = 0;
+        for(var prop in this._queueTraining) {
+            if(!this._queueTraining[prop]) continue;
+            i = i+1;
+        }
+        return i;
     },
 
     getPosInQueue: function(id) {
@@ -152,6 +240,7 @@ var PopupTraining = cc.Layer.extend({
     },
 
     updateQueueButton: function() {
+        this.updateContent();
         for(var j=0; j<this._queueTrainingButtonList.length; j++) {
 
             this._queueTrainingButtonList[j].setButtonPosition(j+1);
@@ -163,17 +252,23 @@ var PopupTraining = cc.Layer.extend({
         var key = fn.getTroopString(id);
 
         if(!this._queueTraining[key]) {
+            var size = this.getQueueSize();
             this._queueTraining[key] = 1;
             var button = new queueTroopButton(id);
             button.setTag(id);
             this._trainingQueueBackground.addChild(button, 2);
             this._queueTrainingButtonList.push(button);
             this.updateQueueButton();
+            if (size === 0) this._currentTrainingTime = this._currentTrainingTimeRequired;
         }
+
         else {
             this._queueTraining[key] += 1;
             this._queueTrainingButtonList[this.getPosInQueue(id)].updateButton();
         }
+
+        this._timeTraining += this.jsonTroopBase[fn.getTroopString(id)]["trainingTime"];
+        this.updateContent();
     },
 
     logQueue: function() {
@@ -205,11 +300,15 @@ var PopupTraining = cc.Layer.extend({
             this._queueTraining[key] -= 1;
             this._queueTrainingButtonList[this.getPosInQueue(id)].updateButton();
         } else {
-            this.removeAtIndex(this.getPosInQueue(id));
+            var pos = this.getPosInQueue(id);
+            this.removeAtIndex(pos);
             this._trainingQueueBackground.removeChildByTag(id, false);
             delete this._queueTraining[key];
             this.updateQueueButton();
+            if(pos === 0) this._currentTrainingTime = this._currentTrainingTimeRequired;
         }
+        this._timeTraining -= this.jsonTroopBase[fn.getTroopString(id)]["trainingTime"];
+        this.updateContent();
     },
 
     addTouchListener: function () {
