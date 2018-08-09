@@ -158,7 +158,7 @@ var queueTroopButton = ccui.Button.extend({
             case 1:
                 this.visible = true;
                 this.x = this.getParent().width*5/7 + 40;
-                break;
+                break;4
             case 2:
                 this.visible = true;
                 this.x = this.getParent().width*4/7;

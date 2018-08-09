@@ -23,6 +23,7 @@ var PopupTraining = cc.Layer.extend({
     _troopListButton: null,
 
     _currentTrainingTime: null,
+    _currentTrainingTimeText: null,
     _currentTrainingTimeRequired: null,
 
     _queueTraining: null,
@@ -33,8 +34,8 @@ var PopupTraining = cc.Layer.extend({
 
     _bgScale: 2.5,
 
-    ctor: function(){
-        this._barrackID = 0;
+    ctor: function(barID){
+        this._barrackID = barID;
         this._super();
         this.x = cc.winSize.width/2;
         this.y = cc.winSize.height/2;
@@ -66,7 +67,9 @@ var PopupTraining = cc.Layer.extend({
             this._textTimeLabel.visible = true;
             this._bgTrainBar.visible = true;
             this._trainBar.visible = true;
+            this._currentTrainingTimeText.visible = true;
             this._textTimeLabel.setString(cf.secondsToLongTime(this._timeTraining));
+            this._currentTrainingTimeText.setString(cf.secondsToLongTime(this._currentTrainingTime));
             this._currentTrainingTimeRequired = this.jsonTroopBase[fn.getTroopString(this._queueTrainingButtonList[0]._id)]["trainingTime"];
         }
         else {
@@ -76,6 +79,7 @@ var PopupTraining = cc.Layer.extend({
             this._quickFinishButton.visible = false;
             this._bgTrainBar.visible = false;
             this._trainBar.visible = false;
+            this._currentTrainingTimeText.visible = false;
             this._currentTrainingTime = 0;
             this._currentTrainingTimeRequired = 0;
             this._timeTraining = 0;
@@ -86,10 +90,39 @@ var PopupTraining = cc.Layer.extend({
     updateStatus: function(){
 
         if(this._timeTraining > 0) this._timeTraining -= 1;
-        if(this._currentTrainingTime > 0 ) this._currentTrainingTime -= 1;
-        this._textTimeLabel.setString(cf.secondsToLongTime(this._timeTraining));
-        cc.log("CURRENT " + this._currentTrainingTime);
+        if(this._currentTrainingTime > 0 ) {
+            this._currentTrainingTime -= 1;
+            this._trainBar.setScaleX((this._currentTrainingTimeRequired-this._currentTrainingTime)/this._currentTrainingTimeRequired);
+            if (this._currentTrainingTime === 0 && this._queueTrainingButtonList.length !== 0) {
+                this.finishingTroop(this._queueTrainingButtonList[0]._id);
+                this._trainBar.setScaleX(0);
+            }
+        }
 
+        this._textTimeLabel.setString(cf.secondsToLongTime(this._timeTraining));
+        this._currentTrainingTimeText.setString(cf.secondsToLongTime(this._currentTrainingTime));
+        if(this._currentTrainingTime !== 0) cc.log("CURRENT " + this._currentTrainingTime);
+
+    },
+
+    finishingTroop: function(id) {
+
+        var key = fn.getTroopString(id);
+        if(!this._queueTraining[key]) return;
+        cc.log("FINISH TROOP " + key);
+        if(this._queueTraining[key] > 1) {
+            this._queueTraining[key] -= 1;
+            this._queueTrainingButtonList[this.getPosInQueue(id)].updateButton();
+            this._currentTrainingTime = this._currentTrainingTimeRequired;
+        } else {
+            var pos = this.getPosInQueue(id);
+            this.removeAtIndex(pos);
+            this._trainingQueueBackground.removeChildByTag(id, false);
+            delete this._queueTraining[key];
+            this.updateQueueButton();
+            this._currentTrainingTime = this._currentTrainingTimeRequired;
+        }
+        this.updateContent();
     },
 
     initContent: function() {
@@ -184,12 +217,23 @@ var PopupTraining = cc.Layer.extend({
         this._trainBar.setAnchorPoint(cc.p(0.5, 0.5));
         this._bgTrainBar.setAnchorPoint(cc.p(0.5, 0.5));
 
-        this._trainBar.x = this._trainingQueueBackground.width*5/7 + 40;
-        this._trainBar.y = this._quickFinishButton.y;
-        this._trainingQueueBackground.addChild(this._trainBar, 4);
-        this._bgTrainBar.x = this._trainBar.x;
-        this._bgTrainBar.y = this._trainBar.y;
+        this._bgTrainBar.x = this._trainingQueueBackground.width*5/7 + 40;
+        this._bgTrainBar.y = this._quickFinishButton.y;
         this._trainingQueueBackground.addChild(this._bgTrainBar, 3);
+
+        this._trainBar.x = this._bgTrainBar.x - this._trainBar.width/2 + 2.5;
+        this._trainBar.y = this._bgTrainBar.y;
+        this._trainBar.setScaleX(0);
+        this._trainBar.setAnchorPoint(cc.p(0, 0.5));
+        this._trainingQueueBackground.addChild(this._trainBar, 4);
+
+        this._currentTrainingTimeText = cc.LabelBMFont("", font.soji20);
+        this._currentTrainingTimeText.setAnchorPoint(cc.p(0.5, 0.5));
+        this._currentTrainingTimeText.scale = 0.5;
+        this._currentTrainingTimeText.setPosition(cc.p(this._bgTrainBar.x, this._bgTrainBar.y - this._bgTrainBar.height/2));
+        this._trainingQueueBackground.addChild(this._currentTrainingTimeText, 5);
+
+
     },
 
     initTroopListButton: function() {
@@ -255,6 +299,7 @@ var PopupTraining = cc.Layer.extend({
             var size = this.getQueueSize();
             this._queueTraining[key] = 1;
             var button = new queueTroopButton(id);
+            button.scale = 1.5;
             button.setTag(id);
             this._trainingQueueBackground.addChild(button, 2);
             this._queueTrainingButtonList.push(button);
@@ -299,15 +344,19 @@ var PopupTraining = cc.Layer.extend({
         if(this._queueTraining[key] > 1) {
             this._queueTraining[key] -= 1;
             this._queueTrainingButtonList[this.getPosInQueue(id)].updateButton();
+            this._timeTraining -= this.jsonTroopBase[fn.getTroopString(id)]["trainingTime"];
         } else {
             var pos = this.getPosInQueue(id);
             this.removeAtIndex(pos);
             this._trainingQueueBackground.removeChildByTag(id, false);
             delete this._queueTraining[key];
             this.updateQueueButton();
-            if(pos === 0) this._currentTrainingTime = this._currentTrainingTimeRequired;
+            this._trainBar.setScaleX(0);
+            if(pos === 0) {
+                this._timeTraining -= this._currentTrainingTime;
+                this._currentTrainingTime = this._currentTrainingTimeRequired;
+            }
         }
-        this._timeTraining -= this.jsonTroopBase[fn.getTroopString(id)]["trainingTime"];
         this.updateContent();
     },
 

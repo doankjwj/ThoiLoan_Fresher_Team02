@@ -17,7 +17,6 @@ var MainLayer = cc.Layer.extend({
     _guiCancelBuildButton: null,
     _guiTraningArmyButton: null,
     _popUp: null,
-    _popUpTraining: null,
 
     _resetUserButton: null,
 
@@ -147,9 +146,6 @@ var MainLayer = cc.Layer.extend({
         this.addUserBar();
         this.addBuilderBar();
 
-        this._popUpTraining = new PopupTraining();
-        this.addChild(this._popUpTraining, 1, gv.tag.TAG_POPUP_TRAINING);
-
         this._popUp = new PopUpConstruct();
         this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
         this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
@@ -180,39 +176,39 @@ var MainLayer = cc.Layer.extend({
             };
         }.bind(this));
 
+
         this.addChild(this._resetUserButton, 1);
 
         this._addGoldButton = gv.commonButton(80, 64, 70, cc.winSize.height-200, "+5kGd");
         this._subGoldButton = gv.commonButton(80, 64, 70, this._addGoldButton.y - 70, "-5kGd");
 
         this._addGoldButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            gv.type = 0;
+            gv.cheatNumber = gv.cheatNumber > 0 ? gv.cheatNumber : -gv.cheatNumber;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
+                    self.schedule(self.cheatFunc, 0.05);
                     break;
                 case ccui.Widget.TOUCH_MOVED:
                     break;
                 case ccui.Widget.TOUCH_ENDED:
-                    cf.user._currentCapacityGold += cheatNumber;
-                    cf.user._maxCapacityGold = cf.user._maxCapacityGold + cheatNumber*2;
-                    self.updateResourceBar();
-                    testnetwork.connector.sendCheat(0, cheatNumber);
+                    self.unschedule(self.cheatFunc);
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;
             }
         }, this._addGoldButton);
         this._subGoldButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            gv.type = 0;
+            gv.cheatNumber = gv.cheatNumber > 0 ? -gv.cheatNumber : gv.cheatNumber;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
+                    self.schedule(self.cheatFunc, 0.05);
                     break;
                 case ccui.Widget.TOUCH_MOVED:
                     break;
                 case ccui.Widget.TOUCH_ENDED:
-                    cf.user._currentCapacityGold -= cheatNumber;
-                    testnetwork.connector.sendCheat(0, -cheatNumber);
-                    self.updateResourceBar();
+                    self.unschedule(self.cheatFunc);
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;
@@ -226,33 +222,32 @@ var MainLayer = cc.Layer.extend({
         this._subCoinButton = gv.commonButton(80, 64, 70, this._addCoinButton.y - 70, "-5kG");
 
         this._addCoinButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            gv.type = 3;
+            gv.cheatNumber = gv.cheatNumber > 0 ? gv.cheatNumber : -gv.cheatNumber;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
+                    self.schedule(self.cheatFunc, 0.05);
                     break;
                 case ccui.Widget.TOUCH_MOVED:
                     break;
                 case ccui.Widget.TOUCH_ENDED:
-                    cf.user._currentCapacityCoin += cheatNumber;
-                    //cf.user._maxCapacityCoin = cf.user._maxCapacityCoin + cheatNumber*2;
-                    testnetwork.connector.sendCheat(3, cheatNumber);
-                    self.updateResourceBar();
+                    self.unschedule(self.cheatFunc);
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;
             }
         }, this._addCoinButton);
         this._subCoinButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            gv.type = 3;
+            gv.cheatNumber = gv.cheatNumber > 0 ? -gv.cheatNumber : gv.cheatNumber;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
+                    self.schedule(self.cheatFunc, 0.05);
                     break;
                 case ccui.Widget.TOUCH_MOVED:
                     break;
                 case ccui.Widget.TOUCH_ENDED:
-                    cf.user._currentCapacityCoin -= cheatNumber;
-                    testnetwork.connector.sendCheat(3, -cheatNumber);
-                    self.updateResourceBar();
+                    self.unschedule(self.cheatFunc);
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;
@@ -266,33 +261,32 @@ var MainLayer = cc.Layer.extend({
         this._subElixirButton = gv.commonButton(80, 64, 70, this._addElixirButton.y - 70, "-5kE");
 
         this._addElixirButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            gv.type = 1;
+            gv.cheatNumber = gv.cheatNumber > 0 ? gv.cheatNumber : -gv.cheatNumber;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
+                    self.schedule(self.cheatFunc, 0.05);
                     break;
                 case ccui.Widget.TOUCH_MOVED:
                     break;
                 case ccui.Widget.TOUCH_ENDED:
-                    cf.user._currentCapacityElixir += cheatNumber;
-                    cf.user._maxCapacityElixir = cf.user._maxCapacityElixir + cheatNumber*2;
-                    testnetwork.connector.sendCheat(1, cheatNumber);
-                    self.updateResourceBar();
+                    self.unschedule(self.cheatFunc);
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;
             }
         }, this._addElixirButton);
         this._subElixirButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            gv.type = 1;
+            gv.cheatNumber = gv.cheatNumber > 0 ? -gv.cheatNumber : gv.cheatNumber;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
+                    self.schedule(self.cheatFunc, 0.05);
                     break;
                 case ccui.Widget.TOUCH_MOVED:
                     break;
                 case ccui.Widget.TOUCH_ENDED:
-                    cf.user._currentCapacityElixir -= cheatNumber;
-                    testnetwork.connector.sendCheat(1, -cheatNumber);
-                    self.updateResourceBar();
+                    self.unschedule(self.cheatFunc);
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;
@@ -301,6 +295,39 @@ var MainLayer = cc.Layer.extend({
 
         this.addChild(this._addElixirButton, 1);
         this.addChild(this._subElixirButton, 1);
+    },
+
+    cheatFunc: function(){
+        var type = gv.type;
+        var num = gv.cheatNumber;
+        switch(type){
+
+            case 0:
+                cf.user._currentCapacityGold += num;
+                if(num>0) {
+                    cf.user._maxCapacityGold = cf.user._maxCapacityGold + num * 2;
+                }
+                this.updateResourceBar();
+                testnetwork.connector.sendCheat(0, num);
+                break;
+            case 1:
+                cf.user._currentCapacityElixir += num;
+                if(num>0){
+                    cf.user._maxCapacityElixir = cf.user._maxCapacityElixir + num*2;
+                }
+                this.updateResourceBar();
+                testnetwork.connector.sendCheat(1, num);
+                break;
+            case 2:
+                break;
+            case 3:
+                cf.user._currentCapacityCoin += num;
+                testnetwork.connector.sendCheat(3, num);
+                this.updateResourceBar();
+                break;
+            default: break;
+        }
+
     },
 
     initMap: function()
@@ -564,7 +591,16 @@ var MainLayer = cc.Layer.extend({
             if (order === orderBuilderHut) return;
             if (building._is_active === false) return;
 
-            self.getChildByTag(gv.tag.TAG_POPUP_TRAINING).onAppear();
+            if(this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING) === null) {
+
+                var popupTraining = new PopupTraining(gv.building_selected);
+                this.addChild(popupTraining, 1, gv.tag.TAG_POPUP_TRAINING*(gv.building_selected%100));
+                popupTraining.onAppear();
+            }
+            else {
+                var popup = this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING);
+                popup.onAppear();
+            }
 
         }.bind(this));
 

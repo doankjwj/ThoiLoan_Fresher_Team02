@@ -7,7 +7,10 @@ gv.buildingMove =
 {
     currentRow : null,
     currentCol : null,
-}
+};
+
+gv.cheatNumber = 5000;
+gv.type = null;
 
 gv.reloaded = false;
 
