@@ -1,5 +1,5 @@
 var PopupTraining = cc.Layer.extend({
-
+    _barrack: null,
     _barrackID: null,
     _bg: null,
     _colorBG: null,
@@ -22,9 +22,15 @@ var PopupTraining = cc.Layer.extend({
 
     _troopListButton: null,
 
+
+
     _currentTrainingTime: null,
     _currentTrainingTimeText: null,
     _currentTrainingTimeRequired: null,
+
+    _queueLengthMax: null,
+    _currentQueueLength: null,
+    _queueLengthText: null,
 
     _queueTraining: null,
     _queueTrainingButtonList: null,
@@ -36,6 +42,7 @@ var PopupTraining = cc.Layer.extend({
 
     ctor: function(barID){
         this._barrackID = barID;
+        this._barrack = cf.user._buildingList[Math.floor(barID/100)-1][gv.building_selected % 100];
         this._super();
         this.x = cc.winSize.width/2;
         this.y = cc.winSize.height/2;
@@ -48,6 +55,8 @@ var PopupTraining = cc.Layer.extend({
 
         this._queueTraining = {};
         this._queueTrainingButtonList = [];
+        this._currentQueueLength = 0;
+        this._queueLengthMax = gv.json.barrack[gv.buildingSTR.barrack_1][this._barrack._level]["queueLength"];
 
         this.jsonTroopBase = gv.json.troopBase;
         this.jsonTroop = gv.json.troop;
@@ -60,6 +69,33 @@ var PopupTraining = cc.Layer.extend({
 
     updateContent: function() {
         this._txtTitle.setString("Nhà lính số " + (this._barrackID % 100 + 1));
+        this._queueLengthMax = gv.json.barrack[gv.buildingSTR.barrack_1][this._barrack._level]["queueLength"];
+        this._queueLengthText.setString("("+this._currentQueueLength+"/"+this._queueLengthMax+")");
+        for(var i=1; i<=17; i++) {
+            if( i > 10 && i<16) continue;
+            var button = this.getChildByTag(gv.tag.TAG_BUTTON_TROOP*i);
+            if(button._barrackLevelReq > this._barrack._level || this._currentQueueLength + button._space > this._queueLengthMax) {
+                button.setTouchEnabled(false);
+                button.setEnabled(false);
+                button.setBright(false);
+                var act = cc.tintTo(0, 127.5, 127.5, 127.5 );
+                act.retain();
+                button._troopIcon.runAction(act.clone());
+            } else {
+                button.setTouchEnabled(true);
+                button.setEnabled(true);
+                button.setBright(true);
+                var act = cc.tintTo(0, 255, 255, 255);
+                act.retain();
+                button._troopIcon.runAction(act.clone());
+                if(button._cost > cf.user._currentCapacityElixir) {
+                    button._costText.setColor(cc.color.RED);
+                }
+                else button._costText.setColor(cc.color.WHITE);
+            }
+
+        }
+
         if(this._queueTrainingButtonList.length !== 0){
             this._queueArrow.visible = true;
             this._textTime.visible = true;
@@ -88,7 +124,7 @@ var PopupTraining = cc.Layer.extend({
     },
 
     updateStatus: function(){
-
+        if(!this._barrack._is_active) return;
         if(this._timeTraining > 0) this._timeTraining -= 1;
         if(this._currentTrainingTime > 0 ) {
             this._currentTrainingTime -= 1;
@@ -101,7 +137,7 @@ var PopupTraining = cc.Layer.extend({
 
         this._textTimeLabel.setString(cf.secondsToLongTime(this._timeTraining));
         this._currentTrainingTimeText.setString(cf.secondsToLongTime(this._currentTrainingTime));
-        if(this._currentTrainingTime !== 0) cc.log("CURRENT " + this._currentTrainingTime);
+        // if(this._currentTrainingTime !== 0) cc.log("CURRENT " + this._currentTrainingTime);
 
     },
 
@@ -122,6 +158,7 @@ var PopupTraining = cc.Layer.extend({
             this.updateQueueButton();
             this._currentTrainingTime = this._currentTrainingTimeRequired;
         }
+        this._currentQueueLength -= this.jsonTroopBase[key]["housingSpace"];
         this.updateContent();
     },
 
@@ -160,6 +197,11 @@ var PopupTraining = cc.Layer.extend({
         this._txtTitle.setAnchorPoint(cc.p(0.5, 0.5));
         this._txtTitle.setPosition(cc.p(0, this._bg.height / 2 * this._bgScale - this._txtTitle.height));
         this.addChild(this._txtTitle, 1);
+
+        this._queueLengthText = cc.LabelBMFont("", font.soji20);
+        this._queueLengthText.setAnchorPoint(cc.p(0.5, 0.5));
+        this._queueLengthText.setPosition(this._txtTitle.x, this._txtTitle.y - this._txtTitle.height);
+        this.addChild(this._queueLengthText, 1);
 
         /* Button Close */
         this._btnClose = ccui.Button(res.popUp.btnClose, res.popUp.btnClose);
@@ -233,6 +275,63 @@ var PopupTraining = cc.Layer.extend({
         this._currentTrainingTimeText.setPosition(cc.p(this._bgTrainBar.x, this._bgTrainBar.y - this._bgTrainBar.height/2));
         this._trainingQueueBackground.addChild(this._currentTrainingTimeText, 5);
 
+        this._previousBarrack = ccui.Button(trainingGUI.previousIcon);
+        this._previousBarrack.setAnchorPoint(cc.p(0.5, 0.5));
+        this._previousBarrack.setPosition(cc.p(this._bg.x - this._bg.width*this._bg.scale/2 - 20, this._bg.y));
+        this.addChild(this._previousBarrack, 1);
+
+        this._previousBarrack.addTouchEventListener(function(sender, type) {
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    var barrackListSize = cf.user._buildingListCount[this._barrack._orderInUserBuildingList];
+                    var previousBarrackID = (this._barrackID % 100 - 1);
+                    while(previousBarrackID < 0) previousBarrackID += barrackListSize;
+                    previousBarrackID =  previousBarrackID % barrackListSize;
+                    var previousBarrackFullID = this._barrackID - this._barrackID%100 + previousBarrackID;
+                    var previousBarrack = cf.user._buildingList[Math.floor(previousBarrackFullID/ 100) - 1][previousBarrackFullID % 100];
+
+                    while(!previousBarrack._is_active){
+                        previousBarrackID -= 1;
+                        previousBarrackFullID = this._barrackID - this._barrackID%100 + previousBarrackID;
+                        previousBarrack = cf.user._buildingList[Math.floor(previousBarrackFullID/ 100) - 1][previousBarrackFullID % 100];
+                    }
+
+                    this.getParent().getChildByTag(previousBarrackID * gv.tag.TAG_POPUP_TRAINING).onAppear();
+                    this.onDisappear();
+
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+        }, this);
+
+        this._nextBarrack = ccui.Button(trainingGUI.forwardIcon);
+        this._nextBarrack.setAnchorPoint(cc.p(0.5, 0.5));
+        this._nextBarrack.setPosition(cc.p(this._bg.x + this._bg.width*this._bg.scale/2 + 20, this._bg.y));
+        this.addChild(this._nextBarrack, 1);
+
+        this._nextBarrack.addTouchEventListener(function(sender, type) {
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    var barrackListSize = cf.user._buildingListCount[this._barrack._orderInUserBuildingList];
+                    var previousBarrackID = (this._barrackID % 100  + 1);
+                    while(previousBarrackID < 0) previousBarrackID += barrackListSize;
+                    previousBarrackID %= barrackListSize;
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+        }, this);
+
+
 
     },
 
@@ -240,10 +339,9 @@ var PopupTraining = cc.Layer.extend({
 
         for(var i=1; i<=17; i++) {
             if( i > 10 && i<16) continue;
-
             var button = new TroopButton(i);
             button.scale = 1.2;
-            this.addChild(button, 2);
+            this.addChild(button, 2, gv.tag.TAG_BUTTON_TROOP*i);
             if (i <= 6 ) {
                 button.x = -this._bg.width * this._bgScale / 2 + i * button.width * button.scale + 5;
                 button.y = this._trainingQueueBackground.y - button.height * button.scale / 2 - 20;
@@ -256,7 +354,16 @@ var PopupTraining = cc.Layer.extend({
                 button.x = -this._bg.width*this._bgScale/2 + j*button.width*button.scale + 5;
                 button.y = this._trainingQueueBackground.y - button.height * button.scale / 2 - 20 - button.height * button.scale;
             }
+            if(button._barrackLevelReq > this._barrack._level) {
 
+                button.setTouchEnabled(false);
+                button.setEnabled(false);
+                button.setBright(false);
+                var act = cc.tintTo(0, 127.5, 127.5, 127.5 );
+                act.retain();
+                button._troopIcon.runAction(act.clone());
+
+            }
         }
     },
 
@@ -311,7 +418,7 @@ var PopupTraining = cc.Layer.extend({
             this._queueTraining[key] += 1;
             this._queueTrainingButtonList[this.getPosInQueue(id)].updateButton();
         }
-
+        this._currentQueueLength += this.jsonTroopBase[key]["housingSpace"];
         this._timeTraining += this.jsonTroopBase[fn.getTroopString(id)]["trainingTime"];
         this.updateContent();
     },
@@ -357,6 +464,7 @@ var PopupTraining = cc.Layer.extend({
                 this._currentTrainingTime = this._currentTrainingTimeRequired;
             }
         }
+        this._currentQueueLength -= this.jsonTroopBase[key]["housingSpace"];
         this.updateContent();
     },
 

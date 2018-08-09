@@ -258,7 +258,8 @@ gv.tag =
         TAG_RESOURCE_BAR_COIN: 1904,
         TAG_POPUP: 2000,
         TAG_POPUP_MESSAGE: 2001,
-        TAG_POPUP_TRAINING: 1890
+        TAG_POPUP_TRAINING: 1890,
+        TAG_BUTTON_TROOP: 1905
     };
 /* Pop Up */
 gv.popUpConstruct = null;

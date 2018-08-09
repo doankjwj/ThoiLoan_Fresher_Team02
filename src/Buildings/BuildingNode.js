@@ -365,11 +365,10 @@ var BuildingNode = cc.Node.extend({
     },
 
     onStartBuild: function(startConstructType) {
-        if (this._existed)
-            this._level ++;
+        if (this._existed && this._is_active) this._level ++;
         this._existed = true;
         this._is_active = false;
-        if (startConstructType == gv.startConstructType.newConstruct) {
+        if (startConstructType === gv.startConstructType.newConstruct) {
             this._time_remaining = this.getTimeRequire();
         }
         else
@@ -495,7 +494,7 @@ var BuildingNode = cc.Node.extend({
 
         /* Update Max capacity if Building is Storage or Town Hall */
         var order = this._orderInUserBuildingList;
-        if (order == gv.orderInUserBuildingList.townHall || order == gv.orderInUserBuildingList.storage_1 || order == gv.orderInUserBuildingList.storage_2 || order == gv.orderInUserBuildingList.storage_3)
+        if (order === gv.orderInUserBuildingList.townHall || order === gv.orderInUserBuildingList.storage_1 || order === gv.orderInUserBuildingList.storage_2 || order === gv.orderInUserBuildingList.storage_3)
             cf.user.updateMaxStorageSingle(this._id);
         /* Update user infor && GUI */
         cf.user._builderFree ++;
@@ -506,6 +505,12 @@ var BuildingNode = cc.Node.extend({
         {
             this.onUpdateSpriteFrame();
         }
+
+        if(this._buildingSTR === gv.buildingSTR.barrack_1) {
+            var popup = new PopupTraining(this._id);
+            this.getParent().getParent().addChild(popup, 1, gv.tag.TAG_POPUP_TRAINING*(this._id%100));
+        }
+
     },
 
     onUpdateSpriteFrame: function()

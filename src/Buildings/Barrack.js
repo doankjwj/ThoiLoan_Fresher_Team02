@@ -1,4 +1,6 @@
 var Barrack = BuildingNode.extend({
+
+
     ctor: function(id, level, row, col, existed)
     {
         this._buildingSTR = gv.buildingSTR.barrack_1;
@@ -9,6 +11,7 @@ var Barrack = BuildingNode.extend({
         this._orderInUserBuildingList = gv.orderInUserBuildingList.barrack_1;
         this._name = gv.buildingName.barrack_1;
         this._description = gv.buildingDescription.barrack_1;
+
 
         this._super(id, level, row, col, existed);
 
