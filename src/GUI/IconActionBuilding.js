@@ -25,6 +25,23 @@ var IconActionBuilding = ccui.Button.extend({
             case cf.CODE_TRAINING:
                 this._super(buildingGUI.trainIcon);
                 this._txt = cc.LabelBMFont("HUẤN LUYỆN", font.soji20);
+                break;
+            case cf.CODE_BUILDING_HARVEST_1:
+                this._super(buildingGUI.iconHarvest_1);
+                this._txt = cc.LabelBMFont("THU HOẠCH", font.soji20);
+                break;
+            case cf.CODE_BUILDING_HARVEST_2:
+                this._super(buildingGUI.iconHarvest_2);
+                this._txt = cc.LabelBMFont("THU HOẠCH", font.soji20);
+                break;
+            case cf.CODE_BUILDING_HARVEST_3:
+                this._super(buildingGUI.iconHarvest_3);
+                this._txt = cc.LabelBMFont("THU HOẠCH", font.soji20);
+                break;
+            case cf.CODE_BUILDING_RESEARCH:
+                this._super(buildingGUI.iconResearch);
+                this._txt = cc.LabelBMFont("NGHIÊN CỨU", font.soji20);
+                break;
             default:
                 break;
         }
@@ -53,8 +70,6 @@ var IconActionBuilding = ccui.Button.extend({
             y: this._txt.height/2*this._txt.scale + 5
         });
         this.addChild(this._txt,1);
-
-        this.addTouchEventListener(this.updateBuilding, this);
 
     },
 

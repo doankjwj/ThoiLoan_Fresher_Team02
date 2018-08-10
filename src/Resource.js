@@ -5,6 +5,9 @@ var fontFolder = "res/Art/Fonts/";
 var guiFolder = "res/Art/GUIs/";
 var jsonFolder = "res/ConfigJson/";
 var effectFolder = "res/SS/";
+var researchTroopFolder = "res/Art/GUIs/research_troop/";
+var researchTroopFolderTroopIcon = "res/Art/GUIs/upgrade_troop/icon/";
+var researchTroopFolderTroopIconSmall = "res/Art/GUIs/upgrade_troop/small_icon/";
 var logInFolder = "res/Art/LoginGui/";
 var folderBuildingActionicon = "res/Art/GUIs/Action_Building_Icon/";
 var folderUpgradeBuildingGUI = guiFolder + "upgrade_building_gui/";
@@ -45,6 +48,7 @@ var res = {
     folder_canon: buildingsFolder + "cannon/canon_",
     folder_defense_base: buildingsFolder + "defense_base/",
     folder_obs: buildingsFolder + "obstacle/",
+    folder_laboratory: buildingsFolder + "labratory/",
 
     folder_gui_action_building: guiFolder + "Action_Building_Icon/",
     folder_gui_build: guiFolder + "/upgrade_building_gui/",
@@ -75,6 +79,22 @@ res.buildingOnMoveGUI = function(type, size)
 {
     return res.map_BG + type + "_" + (size ) + ".png"
 }
+
+res.researchTroopGUI =
+{
+    button: researchTroopFolder + "button.png",
+    iconResource_2: researchTroopFolder + "dau tim.png",
+    iconResource_3: researchTroopFolder + "dau den.png",
+    spanWhite: researchTroopFolder + "mieng trang.png",
+    arrowGreen: researchTroopFolder + "mui ten.png",
+    bg: researchTroopFolder + "nen 1.png",
+    bgSmall: researchTroopFolder + "nen nho.png",
+    bgStar: researchTroopFolder + "nen sao.png",
+    bgTransparent: researchTroopFolder + "nen trong.png",
+    slost: researchTroopFolder + "slost.png",
+    grass: researchTroopFolderTroopIcon + "troop_bg.png",
+    iconCoin: guiFolder + "pop_up/G.png",
+};
 
 var shopGUI = {
     back:               guiFolder + "shop_gui/back.png",
@@ -139,7 +159,11 @@ var mainGUI = {
 var buildingGUI = {
     iconInfo : folderBuildingActionicon + "info_icon.png",
     iconUpgrade: folderBuildingActionicon + "upgrade_icon.png",
+    iconHarvest_1: folderBuildingActionicon + "harvest_gold.png",
+    iconHarvest_2: folderBuildingActionicon + "harvest_elixir.png",
+    iconHarvest_3: folderBuildingActionicon + "harvest_dark_elixir.png",
     instant: res.folder_gui_action_building + "quick_finish.png",
+    iconResearch: res.folder_gui_action_building + "research_icon.png",
     bg: folderBuildingActionicon + "bg_button.png",
 
     trainIcon: folderBuildingActionicon + "train_icon.png",

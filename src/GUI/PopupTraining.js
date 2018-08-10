@@ -88,7 +88,6 @@ var PopupTraining = cc.Layer.extend({
         if(this._timeTraining > 0) this._timeTraining -= 1;
         if(this._currentTrainingTime > 0 ) this._currentTrainingTime -= 1;
         this._textTimeLabel.setString(cf.secondsToLongTime(this._timeTraining));
-        cc.log("CURRENT " + this._currentTrainingTime);
 
     },
 

@@ -13,7 +13,7 @@ gv.CMD.UPGRADE_BUILDING = 2110;
 gv.CMD.CHEAT = 2880;
 gv.CMD.SEND_INSTANT = 2150;
 gv.CMD.SEND_CANCEL = 2210;
-
+gv.CMD.SEND_RESEARCH = 2510;
 gv.CMD.RESET_USER = 2890;
 
 gv.CMD.ERROR = 2999;
@@ -101,6 +101,19 @@ CmdSendInstant = fr.OutPacket.extend({
         this.packHeader();
         this.putByte(id);
         this.putByte(pos);
+        this.updateSize();
+    }
+});
+
+CmdSendResearch = fr.OutPacket.extend({
+    ctor: function() {
+        this._super();
+        this.initData(100);
+        this.setCmdId(gv.CMD.SEND_RESEARCH);
+    },
+    pack:function(troopType){
+        this.packHeader();
+        this.putByte(troopType);
         this.updateSize();
     }
 });
@@ -331,8 +344,8 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
             if (Amount > 0)
             {
                 this.map.LAB_1.push(new Object());
-                this.map.LAB_1[0].row = this.getByte() ;
-                this.map.LAB_1[0].col = this.getByte() ;
+                this.map.LAB_1[0].X = this.getByte() ;
+                this.map.LAB_1[0].Y = this.getByte() ;
                 this.map.LAB_1[0].level = this.getByte();
                 this.map.LAB_1[0].finishBuildOrUpgradeTime = this.getLong();
                 if(this.map.LAB_1[0].finishBuildOrUpgradeTime == 0)

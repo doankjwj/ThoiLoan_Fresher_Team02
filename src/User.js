@@ -18,23 +18,25 @@ var User = cc.Class.extend({
     _buildingList: [],
     _buildingListCount: [],
 
+    _listTroopLevel: [],
+
     _builderTotal: null,
     _builderFree: null,
 
     /*
-    0: TownHall
-    1: Gold Storage
-    2: Elixir Storage
-    3: Dark Elixir Storage
-    4: Gold Resource
-    5: Elixir Resource
-    6: Dark Elixir Resource
-    7: Laboratory
-    8: Army Camp
-    9: Barrack 1
-    10: Barrack 2
-    11: Builder Hut
-    12: Obstacle
+     0: TownHall
+     1: Gold Storage
+     2: Elixir Storage
+     3: Dark Elixir Storage
+     4: Gold Resource
+     5: Elixir Resource
+     6: Dark Elixir Resource
+     7: Laboratory
+     8: Army Camp
+     9: Barrack 1
+     10: Barrack 2
+     11: Builder Hut
+     12: Obstacle
      */
 
     ctor: function(id, name)
@@ -50,6 +52,7 @@ var User = cc.Class.extend({
         this._currentCapacityDarkElixir = gv.jsonInfo["player"]["darkElixir"];
         this._currentCapacityCoin = (gv.jsonInfo["player"]["coin"] === null) ? 0 : gv.jsonInfo["player"]["coin"];
         this.initBuildingList();
+        this.initTroopLevelList();
     },
 
     initBuildingList: function()
@@ -62,6 +65,13 @@ var User = cc.Class.extend({
         }
     },
 
+    initTroopLevelList: function()
+    {
+        for (var i = 0; i < gv.jsonInfo["player"]["troopLevel"].length; i++)
+        {
+            this._listTroopLevel[i] = gv.jsonInfo["player"]["troopLevel"][i];
+        }
+    },
     /* Update Storage Capacity from User Buildings (Town Hall + Storage) */
     updateMaxStorage: function()
     {
@@ -186,6 +196,11 @@ var User = cc.Class.extend({
             this.distributeResourceType(gv.buildingSTR.resource_2);
         if (resType_3)
             this.distributeResourceType(gv.buildingSTR.resource_3);
+
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
     },
     distributeResourceType: function(resType)
     {
@@ -237,18 +252,22 @@ var User = cc.Class.extend({
     /*getAvaiable Capacity*/
     getAvaiableCapacity: function(resSTR)
     {
+        cc.log(resSTR);
         switch(resSTR) {
             case gv.buildingSTR.resource_1:
+                cc.log("gold");
                 return (this._maxCapacityGold - this._currentCapacityGold);
                 break;
             case gv.buildingSTR.resource_2:
+                cc.log("elixir");
                 return (this._maxCapacityElixir - this._currentCapacityElixir);
                 break;
             case gv.buildingSTR.resource_3:
+                cc.log("dark elixir");
                 return (this._maxCapacityDarkElixir - this._currentCapacityDarkElixir);
                 break;
             default:
-                return 0;
+                break;
         }
     },
 

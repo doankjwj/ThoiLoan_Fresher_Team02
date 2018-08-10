@@ -111,6 +111,13 @@ testnetwork.Connector = cc.Class.extend({
         var pk = this.gameClient.getOutPacket(CmdSendHarvest);
         pk.pack(id);
         this.gameClient.sendPacket(pk);
+    },
+    sendResearch: function(troopType)
+    {
+        cc.log("SEND RESEARCH ID: " + troopType);
+        var pk = this.gameClient.getOutPacket(CmdSendResearch);
+        pk.pack(troopType);
+        this.gameClient.sendPacket(pk);
     }
 
 });

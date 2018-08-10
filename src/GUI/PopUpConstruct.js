@@ -584,6 +584,17 @@ var PopUpConstruct = cc.Node.extend({
                 preText1 = "Máu: ";
                 preText2 = "Sát thương: ";
                 break;
+            case gv.buildingSTR.lab:
+                this.visibleBar(true, false, false);
+                bar1Length = gv.json.laboratory[str][level]["hitpoints"];
+                bar1MaxLength = gv.json.laboratory[str][gv.buildingMaxLevel.lab]["hitpoints"];
+                // bar2Length = gv.json.laboratory[str][level]["damagePerShot"];
+                // bar2MaxLength = gv.json.laboratory[str][gv.buildingMaxLevel.storage_2]["damagePerShot"];
+                this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
+                // this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconDameDef);
+                preText1 = "Máu: ";
+                // preText2 = "Sát thương: ";
+                break;
             default:
                 break;
         }
@@ -711,6 +722,13 @@ var PopUpConstruct = cc.Node.extend({
             case gv.buildingSTR.obstacle:
                 time = gv.json.obstacle[str][level]["buildTime"];
                 break;
+            case gv.buildingSTR.lab:
+                time = gv.json.laboratory[str][level]["buildTime"];
+                gold = 0;
+                elixir = gv.json.laboratory[str][level]["elixir"];
+                darkElixir = gv.json.laboratory[str][level]["darkElixir"];
+                coin = 0;
+                break;
             default:
                 break;
         };
@@ -780,6 +798,9 @@ var PopUpConstruct = cc.Node.extend({
             case gv.buildingSTR.obstacle:
                 this._icon = cc.Sprite(res.folder_obs + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
+            case gv.buildingSTR.lab:
+                this._icon = cc.Sprite(res.folder_laboratory + str + "_" + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
             default:
                 break;
         }
@@ -804,7 +825,7 @@ var PopUpConstruct = cc.Node.extend({
         /* Effect */
         //if ((str == gv.buildingSTR.barrack_1 && level <4) || str == gv.buildingSTR.builderHut || str == gv.buildingSTR.storage_1 || str == gv.buildingSTR.storage_2) return;
         var arrNoEffect = [gv.buildingSTR.builderHut, gv.buildingSTR.storage_1, gv.buildingSTR.storage_2, gv.buildingSTR.storage_3, gv.buildingSTR.defence_1];
-        if ((str == gv.buildingSTR.barrack_1 && level <4) || arrNoEffect.indexOf(str) >= 0) return;
+        if ((str == gv.buildingSTR.barrack_1 && level <4) || arrNoEffect.indexOf(str) >= 0 || (str == gv.buildingSTR.lab && level <2)) return;
         if (str != gv.buildingSTR.armyCamp_1 && str != gv.buildingSTR.townHall)
             this._effect = cc.Sprite("res/Art/Effects/" + str + "_" + level + "_effect/00.png");
         if (str == gv.buildingSTR.armyCamp_1)
@@ -821,6 +842,7 @@ var PopUpConstruct = cc.Node.extend({
     },
     updateDescription: function(description)
     {
+        cc.log(description);
         this._txtDescreption.visible = true;
         this._txtDescreption.setString(description)
     }

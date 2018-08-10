@@ -545,6 +545,9 @@ var BuildingNode = cc.Node.extend({
             case gv.buildingSTR.defence_1:
                 this._center_building = cc.Sprite(res.folder_defense_base + "DEF_1_" + this._level + "_Shadow.png");
                 break;
+            case gv.buildingSTR.lab:
+                this._center_building = cc.Sprite(res.folder_laboratory + "LAB_1_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
             default:
                 break;
         }
@@ -587,6 +590,9 @@ var BuildingNode = cc.Node.extend({
                 break;
             case gv.buildingSTR.builderHut:
                 return 0;
+            case gv.buildingSTR.lab:
+                json = gv.json.laboratory;
+                break;
             default:
                 break;
         }
@@ -632,6 +638,9 @@ var BuildingNode = cc.Node.extend({
                 break;
             case gv.buildingSTR.defence_1:
                 this._center_building = cc.Sprite(res.folder_defense_base + "DEF_1_" + this._level + "_Shadow.png");
+                break;
+            case gv.buildingSTR.lab:
+                this._center_building = cc.Sprite(res.folder_laboratory + "LAB_1_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             default:
                 break;

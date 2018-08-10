@@ -16,7 +16,10 @@ var MainLayer = cc.Layer.extend({
     _guiInstantlyDone: null,
     _guiCancelBuildButton: null,
     _guiTraningArmyButton: null,
+    _guiButtonHarvest: null,
+    _guiButtonResearch: null,
     _popUp: null,
+    _popUpResearchTroop: null,
     _popUpTraining: null,
 
     _resetUserButton: null,
@@ -40,6 +43,8 @@ var MainLayer = cc.Layer.extend({
     _TAG_USERNAME_FIELD: 30000,
     _TAG_PASSWORD_FIELD: 30001,
     _TAG_LOGIN_BUTTON  : 30002,
+    _TAG_BUTTON_HARVEST: 63721,
+    _TAG_BUTTON_RESEARCH: 34231,
 
 
     ctor:function () {
@@ -182,11 +187,11 @@ var MainLayer = cc.Layer.extend({
 
         this.addChild(this._resetUserButton, 1);
 
-        this._addGoldButton = gv.commonButton(80, 64, 70, cc.winSize.height-200, "+5kGd");
-        this._subGoldButton = gv.commonButton(80, 64, 70, this._addGoldButton.y - 70, "-5kGd");
+        this._addGoldButton = gv.commonButton(80, 64, 70, cc.winSize.height-200, "+Gold");
+        this._subGoldButton = gv.commonButton(80, 64, 70, this._addGoldButton.y - 70, "-Gold");
 
         this._addGoldButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            var cheatNumber = 100000;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
@@ -203,7 +208,7 @@ var MainLayer = cc.Layer.extend({
             }
         }, this._addGoldButton);
         this._subGoldButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            var cheatNumber = 100000;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
@@ -222,11 +227,11 @@ var MainLayer = cc.Layer.extend({
         this.addChild(this._addGoldButton, 1);
         this.addChild(this._subGoldButton, 1);
 
-        this._addCoinButton = gv.commonButton(80, 64, 70, this._subGoldButton.y - 70, "+5kG");
-        this._subCoinButton = gv.commonButton(80, 64, 70, this._addCoinButton.y - 70, "-5kG");
+        this._addCoinButton = gv.commonButton(80, 64, 70, this._subGoldButton.y - 70, "+Coin");
+        this._subCoinButton = gv.commonButton(80, 64, 70, this._addCoinButton.y - 70, "-Coin");
 
         this._addCoinButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            var cheatNumber = 100000;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
@@ -243,7 +248,7 @@ var MainLayer = cc.Layer.extend({
             }
         }, this._addCoinButton);
         this._subCoinButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            var cheatNumber = 100000;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
@@ -262,11 +267,11 @@ var MainLayer = cc.Layer.extend({
         this.addChild(this._addCoinButton, 1);
         this.addChild(this._subCoinButton, 1);
 
-        this._addElixirButton = gv.commonButton(80, 64, 70, this._subCoinButton.y - 70, "+5kE");
-        this._subElixirButton = gv.commonButton(80, 64, 70, this._addElixirButton.y - 70, "-5kE");
+        this._addElixirButton = gv.commonButton(80, 64, 70, this._subCoinButton.y - 70, "+Elix");
+        this._subElixirButton = gv.commonButton(80, 64, 70, this._addElixirButton.y - 70, "-Elix");
 
         this._addElixirButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            var cheatNumber = 100000;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
@@ -283,7 +288,7 @@ var MainLayer = cc.Layer.extend({
             }
         }, this._addElixirButton);
         this._subElixirButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            var cheatNumber = 100000;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
@@ -433,6 +438,28 @@ var MainLayer = cc.Layer.extend({
         });
         this.addChild(this._guiButtonBuildingUpgrade, 2);
 
+        /* Button Harvest */
+        this._guiButtonHarvest = new IconActionBuilding(cf.CODE_BUILDING_HARVEST_1);
+        this._guiButtonHarvest.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: cc.winSize.width/2,
+            y: -cc.winSize.height/2
+        });
+        this.addChild(this._guiButtonHarvest, 2, this._TAG_BUTTON_HARVEST);
+
+        /*Button Research */
+        this._guiButtonResearch = new IconActionBuilding(cf.CODE_BUILDING_RESEARCH);
+        this._guiButtonResearch.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: cc.winSize.width/2,
+            y: -cc.winSize.height/2
+        });
+        this.addChild(this._guiButtonResearch, 2, this._TAG_BUTTON_RESEARCH);
+
+
+
         this._guiButtonBuildingUpgrade.addClickEventListener(function()
         {
             self.hideListBotButton();
@@ -479,6 +506,8 @@ var MainLayer = cc.Layer.extend({
             y: this._guiButtonBuildingUpgrade.y
         });
 
+
+
         this.addChild(this._guiCancelBuildButton, 2);
 
         this._guiCancelBuildButton.addClickEventListener(function(){
@@ -510,6 +539,8 @@ var MainLayer = cc.Layer.extend({
 
         }.bind(this));
 
+
+
         this._guiInstantlyDone = new IconActionBuilding(cf.CODE_BUILDING_INSTANT);
         this._guiInstantlyDone.attr({
             anchorX: 0.5,
@@ -519,6 +550,7 @@ var MainLayer = cc.Layer.extend({
         });
 
         this.addChild(this._guiInstantlyDone, 2);
+
 
         this._guiInstantlyDone.addClickEventListener(function () {
 
@@ -546,6 +578,7 @@ var MainLayer = cc.Layer.extend({
 
         this._guiTraningArmyButton = new IconActionBuilding(cf.CODE_TRAINING);
 
+
         this._guiTraningArmyButton.attr({
             anchorX: 0.5,
             anchorY: 0.5,
@@ -568,6 +601,30 @@ var MainLayer = cc.Layer.extend({
 
         }.bind(this));
 
+
+    },
+
+    onPopUpResearchTroop: function()
+    {
+        this.removeChild(this._popUpResearchTroop);
+        var researching = cf.user._buildingList[gv.orderInUserBuildingList.lab][0]._researching;
+        var troopOrder = cf.user._buildingList[gv.orderInUserBuildingList.lab][0]._currentTroop;
+        cc.log(researching + " ++++ " + troopOrder);
+        this._popUpResearchTroop = new PopUpResearchTroop(researching, troopOrder);
+        this._popUpResearchTroop.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
+        this.addChild(this._popUpResearchTroop, 1, gv.tag.TAG_POPUP_RESEARCH_TROOP);
+        this._popUpResearchTroop.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
+        this._popUpResearchTroop.onAppear();
+    },
+    onPopUpTroopInfo: function(troopOrder)
+    {
+        cc.log(troopOrder);
+        if (this._popUpTroopInfo)
+            this.removeChild(this._popUpTroopInfo);
+        this._popUpTroopInfo = new PopUpTroopInfo(troopOrder);
+        this._popUpTroopInfo.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
+        this.addChild(this._popUpTroopInfo, 5);
+        this._popUpTroopInfo.onAppear();
     },
 
     popUpMessage: function(msg)
@@ -578,7 +635,7 @@ var MainLayer = cc.Layer.extend({
         if (!this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE))
         {
             var popUp = new PopUPMessage();
-            this.addChild(popUp, 1, gv.tag.TAG_POPUP_MESSAGE);
+            this.addChild(popUp, 10, gv.tag.TAG_POPUP_MESSAGE);
         }
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setPosition(cc.winSize.width/2, cc.winSize.height/2);
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).visible = true;
@@ -594,6 +651,8 @@ var MainLayer = cc.Layer.extend({
         this._guiInstantlyDone.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
         this._guiCancelBuildButton.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
         this._guiTraningArmyButton.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
+        if (this._guiButtonHarvest != undefined) this._guiButtonHarvest.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
+        if (this._guiButtonResearch != undefined) this._guiButtonResearch.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
     },
 
     showListBotButton: function() {
@@ -614,6 +673,60 @@ var MainLayer = cc.Layer.extend({
             this._guiInstantlyDone.runAction(moveToPos3);
             this._guiInstantlyDone.updateContent();}
         }
+
+        /* Thêm nút thu hoạch */
+        if (building._is_active)
+        {
+            if (building._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && building._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
+            {
+                this.popUpButtonHarvest(building);
+            };
+            if (building._orderInUserBuildingList == gv.orderInUserBuildingList.lab)
+                this.popUpButtonResearch();
+        }
+    },
+
+    popUpButtonHarvest: function(building)
+    {
+        var orderResource = building._orderInUserBuildingList;
+        if (this._guiButtonHarvest)
+            this.removeChildByTag(this._TAG_BUTTON_HARVEST);
+        switch(orderResource)
+        {
+            case gv.orderInUserBuildingList.resource_1:
+                this._guiButtonHarvest = new IconActionBuilding(cf.CODE_BUILDING_HARVEST_1);
+                break;
+            case gv.orderInUserBuildingList.resource_2:
+                this._guiButtonHarvest = new IconActionBuilding(cf.CODE_BUILDING_HARVEST_2);
+                break;
+            case gv.orderInUserBuildingList.resource_3:
+                this._guiButtonHarvest = new IconActionBuilding(cf.CODE_BUILDING_HARVEST_3);
+                break;
+        };
+        this._guiButtonHarvest.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: cc.winSize.width/2,
+            y: -cc.winSize.height/2
+        });
+        // this._guiButtonHarvest.visible = true;
+        this.addChild(this._guiButtonHarvest, 2, this._TAG_BUTTON_HARVEST);
+        var actMoveUp = cc.MoveTo(0.1, cc.p(cc.winSize.width/2 + this._guiButtonHarvest.width + 4 * cf.offSetGuiResourceBar, this._guiButtonBuildingInfo.height/2*this.scale + cf.offSetGuiResourceBar));
+        this._guiButtonHarvest.runAction(actMoveUp);
+        this._guiButtonHarvest.addClickEventListener(function(){
+            building.onHarvert();
+        }.bind(this));
+    },
+    /* Pop Up Button Research */
+    popUpButtonResearch: function()
+    {
+        var self = this;
+        var actMoveUp = cc.MoveTo(0.1, cc.p(cc.winSize.width/2 + this._guiButtonResearch.width + 4 * cf.offSetGuiResourceBar, this._guiButtonBuildingInfo.height/2*this.scale + cf.offSetGuiResourceBar));
+        this._guiButtonResearch.runAction(actMoveUp);
+        this._guiButtonResearch.addClickEventListener(function(){
+            self.onPopUpResearchTroop();
+            self.hideListBotButton();
+        }.bind(this));
     },
 
     //Exp, Trophy, Username, UserInfo

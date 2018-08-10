@@ -37,10 +37,13 @@ var Map = cc.Node.extend({
                     if (building != null)
                     {
                         self.addChild(building);
-                        self.addBuildingToUserBuildingList(building);
-                        if(building._existed) building.locate_map_array(building);
 
-                        //building.locate_map_array(building._row, building._col, building._size);
+                        cf.user._buildingList[building._orderInUserBuildingList][cf.user._buildingListCount[building._orderInUserBuildingList]] = (building);
+                        cf.user._buildingListCount[building._orderInUserBuildingList] ++;
+                        cc.log(cf.user._buildingListCount[building._orderInUserBuildingList]);
+                        //cf.user._buildingList.retain();
+                        //cf.user._buildingListCount.retain();
+                        if(building._existed) building.locate_map_array(building);
                     }
                 }
             }

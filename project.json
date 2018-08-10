@@ -43,6 +43,7 @@
         "src/Buildings/Defence.js",
         "src/Buildings/Obstacle.js",
         "src/Buildings/Canon.js",
+        "src/Buildings/Laboratory.js",
 
 
         "src/GUI/ResourceBar.js",
@@ -53,6 +54,9 @@
 
         "src/GUI/PopUpConstruct.js",
         "src/GUI/PopUpMessage.js",
+        "src/GUI/PopUpResearchTroop.js",
+        "src/GUI/ItemResearchTroop.js",
+        "src/GUI/PopUpTroopInfo.js",
 
         "src/NetWork/framework/Utility/ClientConfig.js",
         "src/NetWork/framework/Utility/Localization.js",
