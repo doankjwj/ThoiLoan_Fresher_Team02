@@ -14,6 +14,7 @@ gv.CMD.CHEAT = 2880;
 gv.CMD.SEND_INSTANT = 2150;
 gv.CMD.SEND_CANCEL = 2210;
 gv.CMD.SEND_RESEARCH = 2510;
+gv.CMD.SEND_RESEARCH_FINISH_IMMIDIATELY = 2550;
 gv.CMD.RESET_USER = 2890;
 
 gv.CMD.ERROR = 2999;
@@ -114,6 +115,18 @@ CmdSendResearch = fr.OutPacket.extend({
     pack:function(troopType){
         this.packHeader();
         this.putByte(troopType);
+        this.updateSize();
+    }
+});
+
+CmdSendResearchFinishImmidiately = fr.OutPacket.extend({
+    ctor: function() {
+        this._super();
+        this.initData(100);
+        this.setCmdId(gv.CMD.SEND_RESEARCH_FINISH_IMMIDIATELY);
+    },
+    pack:function(){
+        this.packHeader();
         this.updateSize();
     }
 });

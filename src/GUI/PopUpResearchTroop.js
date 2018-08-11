@@ -37,6 +37,7 @@ var PopUpResearchTroop = cc.Node.extend({
     _finishingTime: null,
     _currentTroop: null,
     _coinRequire: null,
+    _currentTroopLevel: null,
 
     ctor: function(researching, troopOrder)
     {
@@ -44,6 +45,7 @@ var PopUpResearchTroop = cc.Node.extend({
         this.init();
         this._isResearching = researching;
         this._currentTroop = troopOrder;
+        this._currentTroopLevel = cf.user._listTroopLevel[this._currentTroop - 1];
         this.initContent();
         if (researching)
         {
@@ -138,6 +140,9 @@ var PopUpResearchTroop = cc.Node.extend({
                 fr.getCurrentScreen().popUpMessage("Còn thiếu " + (coinExpect) +" Coin");
                 return;
             }
+            cf.user._currentCapacityCoin -= this._coinRequire;
+            cf.user.distributeResource(false, false, false);
+            testnetwork.connector.sendResearchFinishImmidiately(this._currentTroop);
             this.onCompleteResearch();
         }.bind(this));
 
@@ -247,7 +252,7 @@ var PopUpResearchTroop = cc.Node.extend({
         this._txtTimeRemaining.visible = boo;
         this._iconCoin.visible = boo;
 
-        if (boo) this._txtTitle.setString("Đang nâng cấp");
+        if (boo) this._txtTitle.setString("Đang nâng cấp lên Level " + (this._currentTroopLevel+1));
             else this._txtTitle.setString("Nhà nâng cấp lính")
         this._txtTimeRemaining.setString(cf.secondsToLongTime(Math.floor(this._timeRemaining/1000)));
         this._coinRequire = Math.floor(this._timeRemaining/60000);

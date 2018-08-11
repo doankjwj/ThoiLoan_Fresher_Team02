@@ -628,7 +628,6 @@ var MainLayer = cc.Layer.extend({
         this.removeChild(this._popUpResearchTroop);
         var researching = cf.user._buildingList[gv.orderInUserBuildingList.lab][0]._researching;
         var troopOrder = cf.user._buildingList[gv.orderInUserBuildingList.lab][0]._currentTroop;
-        cc.log(researching + " ++++ " + troopOrder);
         this._popUpResearchTroop = new PopUpResearchTroop(researching, troopOrder);
         this._popUpResearchTroop.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
         this.addChild(this._popUpResearchTroop, 1, gv.tag.TAG_POPUP_RESEARCH_TROOP);

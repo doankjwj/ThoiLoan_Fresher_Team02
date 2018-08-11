@@ -245,7 +245,6 @@ var User = cc.Class.extend({
                     building._currentCapacity = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacity"]);
                     resCapacity -= building._jsonConfig[building._buildingSTR][building._level]["capacity"];
                 }
-
         }
     },
 

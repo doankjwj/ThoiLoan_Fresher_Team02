@@ -33,16 +33,16 @@ testnetwork.Connector = cc.Class.extend({
                 fr.getCurrentScreen().updateMove(packet.x, packet.y);
                 break;
             case gv.CMD.ERROR:
-                //try
-                //{
-                //    fr.view(MainLayer);
-                //}
-                //catch(e)
-                //{
-                //}
-                //break;
+            //try
+            //{
+            //    fr.view(MainLayer);
+            //}
+            //catch(e)
+            //{
+            //}
+            //break;
 
-            }
+        }
     },
     sendGetUserInfo:function()
     {
@@ -116,6 +116,13 @@ testnetwork.Connector = cc.Class.extend({
         cc.log("SEND RESEARCH ID: " + troopType);
         var pk = this.gameClient.getOutPacket(CmdSendResearch);
         pk.pack(troopType);
+        this.gameClient.sendPacket(pk);
+    },
+    sendResearchFinishImmidiately: function(troopType)
+    {
+        cc.log("SEND RESEARCH IMMIDIATELY: " + troopType);
+        var pk = this.gameClient.getOutPacket(CmdSendResearchFinishImmidiately);
+        pk.pack();
         this.gameClient.sendPacket(pk);
     }
 
