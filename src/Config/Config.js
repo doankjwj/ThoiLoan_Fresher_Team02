@@ -340,7 +340,6 @@ cf.getJsonConfigFile = function (str) {
 };
 
 cf.tagToItem = function(tag, lvl, posX, posY, existed){
-    //cc.log(tag);
     switch(tag){
         case 900:
             return new Barrack(20, lvl, posX, posY, existed);
@@ -425,8 +424,6 @@ cf.stringToItemInit = function(str, index) {
             building._is_active = (finishTime <= currentTime);
             break;
         case "LAB_1":
-            cc.log("In Switch Case");
-            cc.log(str + " " + index);
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
             building =  new Laboratory(cf.user._buildingListCount[gv.orderInUserBuildingList.lab], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
             building._finishing_time = finishTime;

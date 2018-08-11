@@ -39,7 +39,6 @@ testnetwork.Connector = cc.Class.extend({
                 //}
                 //catch(e)
                 //{
-                //    cc.log(e);
                 //}
                 //break;
 

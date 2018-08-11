@@ -50,9 +50,8 @@ var PopUpTroopInfo = cc.Node.extend({
     ctor: function(troopOrder)
     {
         this._super();
-        this._troopOrder = troopOrder + 1;
-        this._level = cf.user._listTroopLevel[troopOrder];
-        cc.log("Troop Level: " + this._level + " " + this._troopOrder);
+        this._troopOrder = troopOrder;
+        this._level = cf.user._listTroopLevel[troopOrder-1];
         this.init();
         this.loadBar();
         this.loadResourceRequire();
@@ -77,7 +76,7 @@ var PopUpTroopInfo = cc.Node.extend({
 
 
         /* Text Title */
-        this._txtTitle = cc.LabelBMFont("Nâng cấp lên " + (cf.user._listTroopLevel[this._troopOrder] + 1), font.soji20);
+        this._txtTitle = cc.LabelBMFont("Nâng cấp lên " + (cf.user._listTroopLevel[this._troopOrder-1] + 1), font.soji20);
         this._txtTitle.setAnchorPoint(cc.p(0.5, 1));
         this._txtTitle.setPosition(cc.p(0, this._bg.height / 2 - this._txtTitle.height/2));
         this.addChild(this._txtTitle, 1);
@@ -110,7 +109,6 @@ var PopUpTroopInfo = cc.Node.extend({
         this._icon.setPosition(cc.p(this._grass.x, this._grass.y));
         this.addChild(this._icon, 3);
 
-        //cc.log(this)
         this._labelTime = cc.LabelBMFont("Thời gian nâng cấp: \n" + cf.secondsToLongTime(gv.json.troop["ARM_" + this._troopOrder][this._level + 1]["researchTime"]), font.soji20);
         this._labelTime.setPosition(this._grass.x, this._grass.y - 20);
         this._labelTime.setAnchorPoint(0.5, 0.5);
@@ -188,7 +186,6 @@ var PopUpTroopInfo = cc.Node.extend({
         this._bar1BG2.runAction(cc.tintTo(0, 204, 204, 0));
         this.addChild(this._bar1BG2, 2);
 
-        //cc.log("++ HP Bar BG");
         /* Hp Bar */
         this._bar1 = cc.Sprite(res.upgradeBuildingGUI.infoBar);
         this._bar1.attr({
@@ -199,7 +196,6 @@ var PopUpTroopInfo = cc.Node.extend({
         });
         this.addChild(this._bar1, 2);
 
-        //cc.log("++ HP Bar BG");
         /* Hp Icon */
         this._bar1Icon = cc.Sprite(res.upgradeBuildingGUI.hpIcon);
         this._bar1Icon.attr({
@@ -212,7 +208,6 @@ var PopUpTroopInfo = cc.Node.extend({
         this.addChild(this._bar1Icon, 2);
 
 
-        //cc.log("++ HP Icon");
         /* Hp TXT */
         this._bar1TXT = cc.LabelBMFont("Máu", font.soji20);
         this._bar1TXT.attr({
@@ -233,7 +228,6 @@ var PopUpTroopInfo = cc.Node.extend({
             scale: 0.75,
         });
         this.addChild(this._bar1TXT2, 2);
-        //cc.log("++ HP TXT");
 
 
 
@@ -260,7 +254,6 @@ var PopUpTroopInfo = cc.Node.extend({
         this.addChild(this._bar2BG2, 2);
 
 
-        //cc.log("++ HP Bar BG");
         /* Hp Bar */
         this._bar2 = cc.Sprite(res.upgradeBuildingGUI.infoBar);
         this._bar2.attr({
@@ -272,7 +265,6 @@ var PopUpTroopInfo = cc.Node.extend({
         this.addChild(this._bar2, 2);
 
 
-        //cc.log("++ HP Bar BG");
         /* Hp Icon */
         this._bar2Icon = cc.Sprite(res.upgradeBuildingGUI.hpIcon);
         this._bar2Icon.attr({
@@ -284,7 +276,6 @@ var PopUpTroopInfo = cc.Node.extend({
         });
         this.addChild(this._bar2Icon, 2);
 
-        //cc.log("++ HP Icon");
         /* Hp TXT */
         this._bar2TXT = cc.LabelBMFont("Sát thương", font.soji20);
         this._bar2TXT.attr({
@@ -305,8 +296,6 @@ var PopUpTroopInfo = cc.Node.extend({
             scale: 0.75,
         });
         this.addChild(this._bar2TXT2, 2);
-        //cc.log("++ HP TXT");
-
 
         // +++++ Bar 3 ==============================================
         /* HP Bar BG */
@@ -330,7 +319,6 @@ var PopUpTroopInfo = cc.Node.extend({
         this.addChild(this._bar3BG2, 2);
 
 
-        //cc.log("++ HP Bar BG");
         /* Hp Bar */
         this._bar3 = cc.Sprite(res.upgradeBuildingGUI.infoBar);
         this._bar3.attr({
@@ -341,7 +329,6 @@ var PopUpTroopInfo = cc.Node.extend({
         });
         this.addChild(this._bar3, 2);
 
-        //cc.log("++ HP Bar BG");
         /* Hp Icon */
         this._bar3Icon = cc.Sprite(res.upgradeBuildingGUI.hpIcon);
         this._bar3Icon.attr({
@@ -353,7 +340,6 @@ var PopUpTroopInfo = cc.Node.extend({
         });
         this.addChild(this._bar3Icon, 2);
 
-        //cc.log("++ HP Icon");
         /* Hp TXT */
         this._bar3TXT = cc.LabelBMFont("Giá", font.soji20);
         this._bar3TXT.attr({

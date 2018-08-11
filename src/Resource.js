@@ -11,7 +11,7 @@ var researchTroopFolderTroopIconSmall = "res/Art/GUIs/upgrade_troop/small_icon/"
 var logInFolder = "res/Art/LoginGui/";
 var folderBuildingActionicon = "res/Art/GUIs/Action_Building_Icon/";
 var folderUpgradeBuildingGUI = guiFolder + "upgrade_building_gui/";
-var troopIconFolder = guiFolder + "/train_troop_gui/icon/";
+var troopIconFolder = guiFolder + "train_troop_gui/icon/";
 var res = {
     image_postfix_1: "idle/image000",
     image_postfix_2: ".png",

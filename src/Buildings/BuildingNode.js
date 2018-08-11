@@ -178,7 +178,6 @@ var BuildingNode = cc.Node.extend({
                 var y = locationNote.y;
                 var polygon = [ [ -w, 0 ], [ 0, h ], [ w, 0 ], [ 0, -h ] ];
 
-                cc.log(self._id);
                 if (fn.pointInsidePolygon([x, y], polygon) && (gv.building_selected !== self._id))
                 {
                     self._txtName.setString(self._name + " level " + ((self._is_active) ? self._level : Math.max(self._level - 1, 1)));

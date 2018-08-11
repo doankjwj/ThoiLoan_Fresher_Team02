@@ -57,7 +57,6 @@ var Resource = BuildingNode.extend({
         if (!this._is_active)
         {
             this.onStartBuild(gv.startConstructType.loadConstruct);
-            cc.log(this._name + " Build This");
         }
         else
             this.initCapacity();

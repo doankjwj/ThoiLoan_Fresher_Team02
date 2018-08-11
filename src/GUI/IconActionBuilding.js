@@ -87,18 +87,14 @@ var IconActionBuilding = ccui.Button.extend({
         switch (type){
             case ccui.Widget.TOUCH_BEGAN:
                 sender.setScale(sender.scale*1.02);
-                cc.log("Upgrade this building : " + cf.building_selected);
                 break;
             case ccui.Widget.TOUCH_MOVED:
-                cc.log("moved");
                 break;
             case ccui.Widget.TOUCH_ENDED:
                 sender.setScale(sender.scale/1.02);
-                cc.log("ended");
                 break;
             case ccui.Widget.TOUCH_CANCELED:
                 sender.setScale(sender.scale/1.02);
-                cc.log("canceled");
                 break;
         }
     }

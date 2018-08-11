@@ -31,11 +31,11 @@ var ItemResearchTroop = ccui.Button.extend({
         this.setCascadeColorEnabled(true);
         this.init();
         this.addClickEventListener(function(){
-            self.onClick();
+            self.onPopUpInfo();
         }.bind(self));
 
         if (researching)
-            this.onDisabled(false, "Nhà đang\nnâng cấp")
+            this.onDisabled(false, "Nhà đang\nnghiên cứu")
     },
 
     init: function()
@@ -142,14 +142,9 @@ var ItemResearchTroop = ccui.Button.extend({
 
     },
 
-    onClick: function()
-    {
-        this.onPopUpInfo();
-    },
-
     onPopUpInfo: function()
     {
-        fr.getCurrentScreen().onPopUpTroopInfo(this._troopOrder - 1);
+        fr.getCurrentScreen().onPopUpTroopInfo(this._troopOrder);
     }
 
 });

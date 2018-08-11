@@ -75,7 +75,6 @@ var PopUpResearchTroop = cc.Node.extend({
         this._bgWhite.scale = 1.3;
         this.addChild(this._bgWhite, 0);
 
-        //cc.log("++Color Bg");
         /* Text Title */
         this._txtTitle = cc.LabelBMFont("Nhà Nâng Cấp Lính", font.soji20);
         this._txtTitle.setAnchorPoint(cc.p(0.5, 1));
@@ -260,7 +259,6 @@ var PopUpResearchTroop = cc.Node.extend({
     {
         if (!this._isResearching) return;
         this._timeRemaining = this._finishingTime - new Date().getTime();
-        cc.log(this._timeRemaining +" +++++");
         if (this._timeRemaining <= 0)
         {
             this.onCompleteResearch();

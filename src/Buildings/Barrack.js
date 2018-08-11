@@ -35,7 +35,6 @@ var Barrack = BuildingNode.extend({
         if (!this._is_active)
         {
             this.onStartBuild(gv.startConstructType.loadConstruct);
-            cc.log(this._name + " Build This");
         }
 
 

@@ -40,9 +40,6 @@ var Map = cc.Node.extend({
 
                         cf.user._buildingList[building._orderInUserBuildingList][cf.user._buildingListCount[building._orderInUserBuildingList]] = (building);
                         cf.user._buildingListCount[building._orderInUserBuildingList] ++;
-                        cc.log(cf.user._buildingListCount[building._orderInUserBuildingList]);
-                        //cf.user._buildingList.retain();
-                        //cf.user._buildingListCount.retain();
                         if(building._existed) building.locate_map_array(building);
                     }
                 }

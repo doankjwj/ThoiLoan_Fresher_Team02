@@ -79,76 +79,69 @@ var PopUpConstruct = cc.Node.extend({
     _TAG_TXT_TIME_REQUIRE: 9966,
     _TAG_CONTENT_REQUIRE: 8766,
 
-    ctor: function()
-    {
+    ctor: function() {
         this._super();
         var self = this;
 
-        //cc.log("++Pop Up Construct init");
         /* Background */
         this._bg = cc.Scale9Sprite(res.popUp.bg);
         this._bg.setAnchorPoint(cc.p(0.5, 0.5));
         this._bg.setPosition(cc.p(0, 0));
-        this._bg.setCapInsets(cc.rect(this._bg.width/12, this._bg.height/10 , this._bg.width/12*10, this._bg.height/10*8));
+        this._bg.setCapInsets(cc.rect(this._bg.width / 12, this._bg.height / 10, this._bg.width / 12 * 10, this._bg.height / 10 * 8));
         this._bg.width = cc.winSize.width / 5 * 4;
-        this._bg.height = cc.winSize.height /5 * 4;
+        this._bg.height = cc.winSize.height / 5 * 4;
         this.addChild(this._bg, 0);
 
-        this._colorBG = cc.LayerColor(cc.color(127.5,127.5,127.5,0));
+        this._colorBG = cc.LayerColor(cc.color(127.5, 127.5, 127.5, 0));
         this._colorBG.width = cc.winSize.width;
         this._colorBG.height = cc.winSize.height;
-        //this._colorBG.setAnchorPoint(cc.p(0.5, 0.5));
         this.addChild(this._colorBG, -1);
         this.addTouchListener();
 
-        //cc.log("++Color Bg");
         /* Text Title */
         this._txtTitle = cc.LabelBMFont("Building Title", font.soji20);
         this._txtTitle.setAnchorPoint(cc.p(0.5, 1));
-        this._txtTitle.setPosition(cc.p(0, this._bg.height / 2 - this._txtTitle.height/2));
+        this._txtTitle.setPosition(cc.p(0, this._bg.height / 2 - this._txtTitle.height / 2));
         this.addChild(this._txtTitle, 1, this._TAG_TITLE);
 
         /* Button Close */
         this._btnClose = ccui.Button(res.popUp.btnClose, res.popUp.btnClose);
         this._btnClose.setAnchorPoint(cc.p(0.5, 0.5));
         this._btnClose.scale = 1.2;
-        this._btnClose.setPosition(cc.p(this._bg.width/2 - this._btnClose.width, this._bg.height/2 - this._btnClose.height / 1.5));
+        this._btnClose.setPosition(cc.p(this._bg.width / 2 - this._btnClose.width, this._bg.height / 2 - this._btnClose.height / 1.5));
         this.addChild(this._btnClose, 1);
-        this._btnClose.addClickEventListener(function(){
-            self.setPosition(cc.p(0, - cc.winSize.height));
+        this._btnClose.addClickEventListener(function () {
+            self.setPosition(cc.p(0, -cc.winSize.height));
             self.onDisappear();
         });
 
         /* Button Ok */
         this._btnOk = ccui.Button(res.popUp.btnOk, res.popUp.btnOk);
         this._btnOk.setAnchorPoint(cc.p(0.5, 0.5));
-        this._btnOk.scale =  1.4;
-        this._btnOk.setPosition(cc.p(0, -this._bg.height/2 + this._btnOk.height  *this._btnOk.scale / 2));
-        // this._btnOk.setTextureName("Ok");
+        this._btnOk.scale = 1.4;
+        this._btnOk.setPosition(cc.p(0, -this._bg.height / 2 + this._btnOk.height * this._btnOk.scale / 2));
         this.addChild(this._btnOk, 1);
-        this._btnOk.addTouchEventListener(function(sender, type) {
+        this._btnOk.addTouchEventListener(function (sender, type) {
             var cheatNumber = 5000;
-            switch (type){
+            switch (type) {
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
                 case ccui.Widget.TOUCH_MOVED:
                     break;
                 case ccui.Widget.TOUCH_ENDED:
-                    self.setPosition(cc.p(0, - cc.winSize.height));
-                    if (!gv.upgradeAble)
-                    {
+                    self.setPosition(cc.p(0, -cc.winSize.height));
+                    if (!gv.upgradeAble) {
                         self.getParent().popUpMessage("Chưa đủ tài nguyên");
                         return;
-                    };
-                    if (cf.user._builderFree <= 0)
-                    {
+                    }
+                    ;
+                    if (cf.user._builderFree <= 0) {
                         self.getParent().popUpMessage("Tất cả thợ đang bận");
                         return;
                     }
 
-                    //cc.log("Upgrade");
                     self.onDisappear();
-                    cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)].onStartBuild(gv.startConstructType.newConstruct);
+                    cf.user._buildingList[Math.floor(gv.building_selected / 100) - 1][Math.floor(gv.building_selected % 100)].onStartBuild(gv.startConstructType.newConstruct);
                     /* Request */
                     testnetwork.connector.sendUpgradeBuilding(gv.building_selected);
 
@@ -172,10 +165,9 @@ var PopUpConstruct = cc.Node.extend({
         this._icon = cc.Sprite(res.tmp_effect);
         this._icon.setAnchorPoint(cc.p(0.5, 0.5));
         this._icon.scale = 1.3
-        this._icon.setPosition(- this._bg.width / 4, this._bg.height / 8);
+        this._icon.setPosition(-this._bg.width / 4, this._bg.height / 8);
         this.addChild(this._icon, 2, this._TAG_ICON);
 
-        //cc.log("++ Building Icon");
         /* Time Require */
         this._timeRequireTXT = cc.LabelBMFont("", font.soji20);
         this._timeRequireTXT.setAnchorPoint(cc.p(0.5, 1));
@@ -183,18 +175,17 @@ var PopUpConstruct = cc.Node.extend({
         this._timeRequireTXT.visible = false;
         this.addChild(this._timeRequireTXT, 4, this._TAG_TXT_TIME_REQUIRE);
 
-        //cc.log("++ TXT time require");
         /* Building Grass */
         this._grass = cc.Sprite(res.tmp_effect);
         this._grass.setAnchorPoint(cc.p(0.5, 0.5));
-        this._grass.setPosition(- this._bg.width  / 4, this._bg.height  / 8);
+        this._grass.setPosition(-this._bg.width / 4, this._bg.height / 8);
         this.addChild(this._grass, 1, this._TAG_GRASS);
 
         /* TextField White */
         this._bgTxtDescription = cc.LayerColor(cc.color(255, 255, 255, 255));
-        this._bgTxtDescription.width = this._bg.width*0.9;
-        this._bgTxtDescription.height = this._bg.height*0.3;
-        this._bgTxtDescription.setPosition(cc.p(-this._bgTxtDescription.width/2, -this._bg.height/3));
+        this._bgTxtDescription.width = this._bg.width * 0.9;
+        this._bgTxtDescription.height = this._bg.height * 0.3;
+        this._bgTxtDescription.setPosition(cc.p(-this._bgTxtDescription.width / 2, -this._bg.height / 3));
         this.addChild(this._bgTxtDescription, 2);
         /* TXT Description */
         this._txtDescreption = cc.LabelBMFont("Building Description", font.soji20);
@@ -203,17 +194,13 @@ var PopUpConstruct = cc.Node.extend({
         this._txtDescreption.setColor(cc.color(240, 200, 0, 255));
         this.addChild(this._txtDescreption, this._bgTxtDescription.getLocalZOrder() + 1, this._TAG_TXT_DESCRIPTION);
 
-        //cc.log("++ Grass");
         /* Builing Effect */
         this._effect = cc.Sprite(res.tmp_effect);
         this._effect.setAnchorPoint(cc.p(0.5, 0.5));
-        this._effect.setPosition(- this._bg.width / 4, this._bg.height / 8);
+        this._effect.setPosition(-this._bg.width / 4, this._bg.height / 8);
         this.addChild(this._effect, 3, this._TAG_EFFECT);
 
         this.addBars();
-
-
-        //cc.log("++ HP TXT");
     },
 
     addBars: function()
@@ -230,7 +217,6 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._bar1BG, 2, this._TAG_BAR1_BG);
 
-        //cc.log("++ HP Bar BG");
         /* Hp Bar */
         this._bar1 = cc.Sprite(res.upgradeBuildingGUI.infoBar);
         this._bar1.attr({
@@ -241,7 +227,6 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._bar1, 2, this._TAG_BAR1);
 
-        //cc.log("++ HP Bar BG");
         /* Hp Icon */
         this._bar1Icon = cc.Sprite(res.upgradeBuildingGUI.hpIcon);
         this._bar1Icon.attr({
@@ -252,7 +237,6 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._bar1Icon, 2);
 
-        //cc.log("++ HP Icon");
         /* Hp TXT */
         this._bar1TXT = cc.LabelBMFont("Bar 1 Info", font.soji20);
         this._bar1TXT.attr({
@@ -262,7 +246,6 @@ var PopUpConstruct = cc.Node.extend({
             y: this._bar1BG.y
         });
         this.addChild(this._bar1TXT, 2, this._TAG_BAR1_TXT);
-        //cc.log("++ HP TXT");
 
         // +++++ BAR 2 =============================================
         /* HP Bar BG */
@@ -276,7 +259,6 @@ var PopUpConstruct = cc.Node.extend({
         this.addChild(this._bar2BG, 2, this._TAG_BAR2_BG);
 
 
-        //cc.log("++ HP Bar BG");
         /* Hp Bar */
         this._bar2 = cc.Sprite(res.upgradeBuildingGUI.infoBar);
         this._bar2.attr({
@@ -287,7 +269,6 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._bar2, 2, this._TAG_BAR2);
 
-        //cc.log("++ HP Bar BG");
         /* Hp Icon */
         this._bar2Icon = cc.Sprite(res.upgradeBuildingGUI.hpIcon);
         this._bar2Icon.attr({
@@ -298,7 +279,6 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._bar2Icon, 2);
 
-        //cc.log("++ HP Icon");
         /* Hp TXT */
         this._bar2TXT = cc.LabelBMFont("Bar 2 Info", font.soji20);
         this._bar2TXT.attr({
@@ -308,7 +288,6 @@ var PopUpConstruct = cc.Node.extend({
             y: this._bar2BG.y
         });
         this.addChild(this._bar2TXT, 2, this._TAG_BAR2_TXT);
-        //cc.log("++ HP TXT");
 
         // +++++ Bar 3 ==============================================
         /* HP Bar BG */
@@ -322,7 +301,6 @@ var PopUpConstruct = cc.Node.extend({
         this.addChild(this._bar3BG, 2, this._TAG_BAR3_BG);
 
 
-        //cc.log("++ HP Bar BG");
         /* Hp Bar */
         this._bar3 = cc.Sprite(res.upgradeBuildingGUI.infoBar);
         this._bar3.attr({
@@ -333,7 +311,6 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._bar3, 2, this._TAG_BAR3);
 
-        //cc.log("++ HP Bar BG");
         /* Hp Icon */
         this._bar3Icon = cc.Sprite(res.upgradeBuildingGUI.hpIcon);
         this._bar3Icon.attr({
@@ -344,7 +321,6 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._bar3Icon, 2);
 
-        //cc.log("++ HP Icon");
         /* Hp TXT */
         this._bar3TXT = cc.LabelBMFont("Bar 3 Info", font.soji20);
         this._bar3TXT.attr({
@@ -732,8 +708,6 @@ var PopUpConstruct = cc.Node.extend({
             default:
                 break;
         };
-        // cc.log(bar1Length + " " + bar1MaxLength + " " + time);
-        // cc.log(gold + " " + elixir + " " + darkElixir + " " + coin);
         this._cost.gold = gold;
         this._cost.elixir = elixir;
         this._cost.darkElixir = darkElixir;
@@ -842,7 +816,6 @@ var PopUpConstruct = cc.Node.extend({
     },
     updateDescription: function(description)
     {
-        cc.log(description);
         this._txtDescreption.visible = true;
         this._txtDescreption.setString(description)
     }

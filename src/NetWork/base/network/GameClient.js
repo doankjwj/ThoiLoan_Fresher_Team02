@@ -57,7 +57,6 @@ var GameClient = cc.Class.extend(
             cc.log("onFinishConnect:" + isSuccess);
             if(isSuccess)
             {
-                // cc.log(fr.getCurrentScreen())
                 fr.getCurrentScreen().onConnectSuccess();
 
                 var pk = gv.gameClient.getOutPacket(CmdSendHandshake);

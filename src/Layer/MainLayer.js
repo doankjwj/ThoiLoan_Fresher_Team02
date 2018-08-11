@@ -618,7 +618,6 @@ var MainLayer = cc.Layer.extend({
     },
     onPopUpTroopInfo: function(troopOrder)
     {
-        cc.log(troopOrder);
         if (this._popUpTroopInfo)
             this.removeChild(this._popUpTroopInfo);
         this._popUpTroopInfo = new PopUpTroopInfo(troopOrder);
@@ -815,7 +814,6 @@ var MainLayer = cc.Layer.extend({
 
     distance: function(p, q, x) {
         if(!x) x = 0;
-        if (x !== 0) cc.log("DEBUG " + x);
         return Math.sqrt((p.x - q.x)*(p.x - q.x) + (p.y - q.y)*(p.y - q.y));
     },
 
