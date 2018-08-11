@@ -153,13 +153,31 @@ var Laboratory = BuildingNode.extend({
     },
     onFinishResearch: function()
     {
-        this._researching = false;
-        this._iconTroopResearch.visible = false;
-        this._labelTimeResearchRemaining.visible = false;
-        this._barResearch.visible = false;
-        this._barResearchBG.visible = false;
+        cf.user._listTroopLevel[this._currentTroop-1] ++;
+        this.visibleContent(false);
+        this.runEffectCompleteResearch();
+    },
+    visibleContent: function(vis)
+    {
+        this._researching = vis;
+        this._iconTroopResearch.visible = vis;
+        this._labelTimeResearchRemaining.visible = vis;
+        this._barResearch.visible = vis;
+        this._barResearchBG.visible = vis;
+    },
+
+    runEffectCompleteResearch: function()
+    {
         this._effectResearching.stopAllActions();
-        this._effectResearching.visible = false;
+        if (cf.animationConstructLevelUp == null)
+        {
+            cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_levelup.plist", res.folder_effect + "effect_levelup.png");
+        }
+        this._effectResearching.runAction(cc.Sequence.create(cc.CallFunc(function(){
+                this._effectResearching.visible = true}, this),
+            fn.getAnimation("effect_levelup ", 1, 12).clone(),
+            cc.CallFunc(function(){this._effectResearching.visible = false}, this)
+        ));
     },
     updateAnim: function()
     {

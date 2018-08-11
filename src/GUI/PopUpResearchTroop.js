@@ -274,8 +274,9 @@ var PopUpResearchTroop = cc.Node.extend({
     {
         this._isResearching = false;
         this.onVisibleContent(false);
-        cf.user._listTroopLevel[this._currentTroop-1] ++;
         this.initContent();
         cf.user._buildingList[gv.orderInUserBuildingList.lab][0].onFinishResearch();
+        this.setPosition(cc.p(0, - cc.winSize.height));
+        this.onDisappear();
     }
 })

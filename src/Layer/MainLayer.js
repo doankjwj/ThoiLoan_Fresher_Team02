@@ -172,7 +172,7 @@ var MainLayer = cc.Layer.extend({
 
         var self = this;
 
-        this._resetUserButton = gv.commonButton(80, 64, 70, cc.winSize.height-100, "+Reset");
+        this._resetUserButton = gv.commonButton(80, 64, 70, cc.winSize.height-100, "Reset");
         this._resetUserButton.addClickEventListener(function()
         {
             testnetwork.connector.sendResetUser();
