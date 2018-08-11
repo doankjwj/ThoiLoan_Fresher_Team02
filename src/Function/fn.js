@@ -94,6 +94,13 @@ fn.pointInsidePolygon = function(point, vs) //Kiểm tra 1 điểm nằm trong �
     return inside;
 };                              // BuildingNode.js
 
+fn.getItemOccurenceInArray = function(arr, item)
+{
+    var res = 0;
+    for (var i = 0; i < arr.length; i++)
+        if (arr[i] === item) res ++;
+    return res;
+}
 fn.insideMap = function(row, col)   // Kiểm tra Coor nằm trong giới hạn (1-40/ 1-40)
 {
     return (0<row && row<41 && 0<col && col<41);

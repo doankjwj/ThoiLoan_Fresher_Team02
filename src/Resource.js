@@ -250,6 +250,7 @@ var logInGUI =
 {
     bg:  logInFolder + "loading.jpg",
     btnOk: logInFolder + "okbutton.png",
+    logo: logInFolder + "logo.png",
 }
 
 var g_preload= [

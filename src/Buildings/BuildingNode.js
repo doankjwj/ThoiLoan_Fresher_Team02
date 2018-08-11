@@ -203,7 +203,7 @@ var BuildingNode = cc.Node.extend({
                 if(!cf.isMapMoving) {
                     self.onClick();
                     gv.building_selected = self._id;
-                    self.getParent().getParent().showListBotButton();
+                    self.getParent().getParent().showListBotButton(self._id);
                     cf.current_r = self._row;
                     cf.current_c = self._col;
                     self._listenerMove.setEnabled(true);
