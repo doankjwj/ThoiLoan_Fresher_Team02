@@ -505,6 +505,7 @@ var BuildingNode = cc.Node.extend({
         {
             this.onUpdateSpriteFrame();
         }
+        this.updateLabelName();
     },
 
     onUpdateSpriteFrame: function()
@@ -556,7 +557,10 @@ var BuildingNode = cc.Node.extend({
         });
         this.addChild(this._center_building, this._defence.getLocalZOrder() - 1, gv.tag.TAG_CENTER_BUILDING);
     },
-
+    updateLabelName: function()
+    {
+        this._txtName.setString(this._name + " level " + ((this._is_active) ? this._level : Math.max(this._level - 1, 1)));
+    },
     getTimeRequire: function() {
 
 
