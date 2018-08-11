@@ -27,9 +27,10 @@ var Barrack = BuildingNode.extend({
         this._effectAnim.scale = cf.SCALE;
         this._effectAnim.visible = false;
         this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
-        if (this._level >= 4) {
+        if (this._level >= 1) {
             this._effectAnim.stopAllActions();
-            this._effectAnim.runAction(cf.animationBarrack[this._level].clone().repeatForever());
+            this._effectAnim.visible = true;
+            this._effectAnim.runAction(cf.animationBarrack[Math.max(this._level, 4)].clone().repeatForever());
         };
 
         if (!this._is_active)

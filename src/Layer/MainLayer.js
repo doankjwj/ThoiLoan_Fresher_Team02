@@ -23,6 +23,7 @@ var MainLayer = cc.Layer.extend({
     _popUpTraining: null,
 
     _resetUserButton: null,
+    _restartGameButton: null,
 
     _addGoldButton: null,
     _subGoldButton: null,
@@ -172,6 +173,7 @@ var MainLayer = cc.Layer.extend({
 
         var self = this;
 
+        /* Button Restart & Reset */
         this._resetUserButton = gv.commonButton(80, 64, 70, cc.winSize.height-100, "Reset");
         this._resetUserButton.addClickEventListener(function()
         {
@@ -187,6 +189,20 @@ var MainLayer = cc.Layer.extend({
 
         this.addChild(this._resetUserButton, 1);
 
+        this._restartGameButton = gv.commonButton(80, 64, 70, 90, "Re-\nstart");
+        this._restartGameButton.addClickEventListener(function()
+        {
+            try{
+                fr.view(MainLayer);
+            } catch(e)
+            {
+                cc.log(e)
+            };
+        }.bind(this));
+
+        this.addChild(this._restartGameButton, 1);
+
+        /* Button Gold */
         this._addGoldButton = gv.commonButton(80, 64, 70, cc.winSize.height-200, "+Gold");
         this._subGoldButton = gv.commonButton(80, 64, 70, this._addGoldButton.y - 70, "-Gold");
 
@@ -227,6 +243,7 @@ var MainLayer = cc.Layer.extend({
         this.addChild(this._addGoldButton, 1);
         this.addChild(this._subGoldButton, 1);
 
+        /* Button coin */
         this._addCoinButton = gv.commonButton(80, 64, 70, this._subGoldButton.y - 70, "+Coin");
         this._subCoinButton = gv.commonButton(80, 64, 70, this._addCoinButton.y - 70, "-Coin");
 
@@ -267,6 +284,7 @@ var MainLayer = cc.Layer.extend({
         this.addChild(this._addCoinButton, 1);
         this.addChild(this._subCoinButton, 1);
 
+        /* Button elixir */
         this._addElixirButton = gv.commonButton(80, 64, 70, this._subCoinButton.y - 70, "+Elix");
         this._subElixirButton = gv.commonButton(80, 64, 70, this._addElixirButton.y - 70, "-Elix");
 
@@ -306,6 +324,7 @@ var MainLayer = cc.Layer.extend({
 
         this.addChild(this._addElixirButton, 1);
         this.addChild(this._subElixirButton, 1);
+
     },
 
     initMap: function()
