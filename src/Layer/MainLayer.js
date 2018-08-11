@@ -107,6 +107,8 @@ var MainLayer = cc.Layer.extend({
 
         gv.usernameSendToServer = this._usernameField.string;
         if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
+        gv.passwordSendToServer = this._passwordField.string;
+
         gv.gameClient.connect();
     },
 

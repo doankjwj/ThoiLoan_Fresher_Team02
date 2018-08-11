@@ -13,7 +13,8 @@ gv.CMD.UPGRADE_BUILDING = 2110;
 gv.CMD.CHEAT = 2880;
 gv.CMD.SEND_INSTANT = 2150;
 gv.CMD.SEND_CANCEL = 2210;
-gv.CMD.SEND_RESEARCH = 2510;
+gv.CMD.SEND_HARVEST = 2410
+gv.CMD.SEND_RESEARCH = 2510;;
 gv.CMD.SEND_RESEARCH_FINISH_IMMIDIATELY = 2550;
 gv.CMD.RESET_USER = 2890;
 
@@ -65,9 +66,10 @@ CmdSendLogin = fr.OutPacket.extend(
             this.initData(100);
             this.setCmdId(gv.CMD.USER_LOGIN);
         },
-        pack:function(username){
+        pack:function(username, password){
             this.packHeader();
             this.putString(username);
+            this.putString(password);
             this.updateSize();
         }
     }
@@ -105,6 +107,20 @@ CmdSendInstant = fr.OutPacket.extend({
         this.updateSize();
     }
 });
+
+CmdSendHarvest = fr.OutPacket.extend({
+    ctor: function(){
+        this._super();
+        this.initData(100);
+        this.setCmdId(gv.CMD.SEND_HARVEST);
+    },
+    pack: function(resourceOrder, resourceSlot){
+        this.packHeader();
+        this.putByte(resourceOrder);
+        this.putByte(resourceSlot);
+        this.updateSize();
+    }
+})
 
 CmdSendResearch = fr.OutPacket.extend({
     ctor: function() {

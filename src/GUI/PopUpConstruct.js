@@ -621,13 +621,13 @@ var PopUpConstruct = cc.Node.extend({
         var coin = null;
         var time = null;
 
-        /* Hp Bar */
-        var bar1Length = null;
-        var bar1MaxLength = null;
-        var bar2Length = null;
-        var bar2MaxLength = null;
-        var bar3Length = null;
-        var bar3MaxLength = null;
+        ///* Hp Bar */
+        //var bar1Length = null;
+        //var bar1MaxLength = null;
+        //var bar2Length = null;
+        //var bar2MaxLength = null;
+        //var bar3Length = null;
+        //var bar3MaxLength = null;
 
 
         switch(str)

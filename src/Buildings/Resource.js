@@ -199,6 +199,8 @@ var Resource = BuildingNode.extend({
         if (this._currentCapacity <= 0)
             this.onPopDownHarvestButton();
         this.onUpdateLastHarvestTime();
+
+        testnetwork.connector.sendHarvest(this._id);
     },
     updateToUserCapacity: function(quantity)
     {

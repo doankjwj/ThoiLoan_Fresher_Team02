@@ -54,7 +54,7 @@ testnetwork.Connector = cc.Class.extend({
     sendLoginRequest: function () {
         cc.log("sendLoginRequest");
         var pk = this.gameClient.getOutPacket(CmdSendLogin);
-        pk.pack(gv.usernameSendToServer);
+        pk.pack(gv.usernameSendToServer, gv.passwordSendToServer);
         this.gameClient.sendPacket(pk);
     },
     sendBuild: function(id, row, col)
@@ -108,7 +108,9 @@ testnetwork.Connector = cc.Class.extend({
     {
         cc.log("SEND HARVEST ID: " + id);
         var pk = this.gameClient.getOutPacket(CmdSendHarvest);
-        pk.pack(id);
+        var resourceOrder = Math.floor(id/100) - 1;
+        var resourceSlot = id % 100;
+        pk.pack(resourceOrder, resourceSlot);
         this.gameClient.sendPacket(pk);
     },
     sendResearch: function(troopType)

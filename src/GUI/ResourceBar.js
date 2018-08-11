@@ -119,7 +119,6 @@ var GUI_ResourceBar = cc.Node.extend({
         this._currentCapacity = (this._type == 1) ? cf.user._currentCapacityGold : (this._type == 2)? cf.user._currentCapacityElixir : (this._type == 3) ? cf.user._currentCapacityDarkElixir : cf.user._currentCapacityCoin;
         this._maxCapacity = (this._type == 1) ? cf.user._maxCapacityGold : (this._type == 2) ? cf.user._maxCapacityElixir : (this._type == 3) ? cf.user._maxCapacityDarkElixir : 0;
 
-
         if(this._type != 4)
         {
             if (this.getChildByTag(this._TAG_BAR))

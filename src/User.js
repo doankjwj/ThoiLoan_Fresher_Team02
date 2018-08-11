@@ -111,7 +111,6 @@ var User = cc.Class.extend({
         this._maxCapacityElixir = Math.max(this._maxCapacityElixir, this._currentCapacityElixir);
         this._maxCapacityDarkElixir = Math.max(this._maxCapacityDarkElixir, this._currentCapacityDarkElixir);
 
-
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
