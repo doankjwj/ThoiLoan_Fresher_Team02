@@ -23,9 +23,9 @@ var ArmyCamp = BuildingNode.extend({
         this._effectAnim = cc.Sprite(res.tmp_effect);
         this._effectAnim.anchorX = 0.5;
         this._effectAnim.anchorY = 0;
-        this._effectAnim.scale = 2 * cf.SCALE;
+        this._effectAnim.scale = cf.SCALE;
         this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
-        this._effectAnim.runAction(cf.animationArmyCamp[2].clone().repeatForever());
+        this._effectAnim.runAction(cf.animationArmyCamp[1].clone().repeatForever());
 
         if (!this._is_active)
         {

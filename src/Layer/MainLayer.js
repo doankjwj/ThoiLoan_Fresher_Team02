@@ -67,7 +67,7 @@ var MainLayer = cc.Layer.extend({
         this.addChild(bg, 0, this._TAG_BG);
 
         var logo = cc.Sprite(logInGUI.logo);
-        logo.setPosition(100, cc.winSize.height - 100);
+        logo.setPosition(cc.winSize.width - 100, cc.winSize.height - 100);
         logo.scale = 2;
         this.addChild(logo, 0, this._TAG_LOGO);
 
@@ -97,7 +97,8 @@ var MainLayer = cc.Layer.extend({
             anchorX: 0.5,
             anchorY: 0.5,
             x: cc.winSize.width/2,
-            y: cc.winSize.height/2 - 2 * login.height
+            y: cc.winSize.height/2 - 2 * login.height,
+            scale: 1.5
         });
         login.setTitleText("Log In");
         login.setTitleFontSize(24);
