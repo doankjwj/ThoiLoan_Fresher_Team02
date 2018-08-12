@@ -1,0 +1,344 @@
+var Troop = cc.Class.extend
+(
+    {
+        ctor: function (troopType, realMap, startRow, startColumn, armyCampId)
+        {
+            this.position = new LogicPoint(startRow, startColumn);
+            this.targetLogicPointStep = this.position;
+            this.facingDirection = new LogicDirection(0);
+            this.realMap = realMap;
+            this.logicMap = cf.map_array;
+            this.type = troopType;
+            this.visualization = new cc.Node();
+            this.armyCampId = armyCampId;
+            this.freeMoveMode = true;
+            this.init();
+        },
+        init: function ()
+        {
+            this.setLogicPosition(this.position);
+            if (this.type == 3)
+                this.visualization.shadow = new cc.Sprite("res/Art/Map/map_obj_bg/big_shadow_troop.png");
+            else
+                this.visualization.shadow = new cc.Sprite("res/Art/Map/map_obj_bg/small_shadow_troop.png");
+            this.visualization.shadow.setScale(1.5);
+            this.visualization.unit = new cc.Sprite();
+            this.visualization.addChild(this.visualization.shadow, 1);
+            this.visualization.addChild(this.visualization.unit, 2);
+            this.realMap.addChild(this.visualization, this.position.logicRow + this.position.logicColumn);
+            this.visualization.isMoving = false;
+            this.randomMoveArmyCamp();
+        },
+        getArmyCampPosition: function ()
+        {
+            for (var row = 1; row <= 40; row += 1)
+                for (var column = 1; column <= 40; column += 1)
+                    if (this.logicMap[row][column] == this.armyCampId)
+                        return new LogicPoint(row, column);
+        },
+        setLogicPosition: function (logicPosition)
+        {
+            this.position = logicPosition;
+            this.targetLogicPointStep = this.position.movedByDirection(this.facingDirection);
+            var truePosition = this.position.toTruePoint();
+            this.visualization.x = truePosition.x;
+            this.visualization.y = truePosition.y;
+        },
+        randomMoveArmyCamp: function ()
+        {
+            this.visualization.stopAllActions();
+            this.isMoving = false;
+            var armyCampLogicPosition = this.getArmyCampPosition();
+            do
+            {
+                var offsetRow = Math.floor(Math.random() * 4) + 1;
+                var offsetColumn = Math.floor(Math.random() * 4) + 1;
+            }
+            while ((offsetRow == offsetColumn && [2, 3].indexOf(offsetRow) >= 0) ||
+                   (Math.abs(offsetRow - offsetColumn) == 1 && offsetRow + offsetColumn == 5))
+            this.targetLogicPoint = new LogicPoint(armyCampLogicPosition.logicRow + offsetRow, armyCampLogicPosition.logicColumn + offsetColumn);
+            this.facingDirection = this.position.getDirectionTo(this.targetLogicPoint);
+            this.move();
+        },
+        move: function ()
+        {
+            if (this.position.isEqualTo(this.targetLogicPoint))
+            {
+                this.visualization.isMoving = false;
+                this.setLogicPosition(this.targetLogicPoint);
+                this.visualizeOnIdle();
+                this.delayRandomMove();
+                return;
+            }
+            if (this.freeMoveMode)
+                this.tryFreeMove();
+            else
+                this.tryBlockMove();
+        },
+        delayRandomMove: function ()
+        {
+            var self = this;
+            var actionWait = cc.delayTime(5);
+            var actionEnd = cc.callFunc(function ()
+                                        {
+                                            self.onEndWaiting()
+                                        });
+            this.visualization.runAction(cc.sequence(actionWait, actionEnd));
+        },
+        onEndWaiting: function ()
+        {
+            this.randomMoveArmyCamp();
+        },
+        tryFreeMove: function ()
+        {
+            this.bestDirection = this.position.getDirectionTo(this.targetLogicPoint);
+            if (this.canMove(this.bestDirection))
+            {
+                this.step(this.bestDirection);
+                return;
+            }
+            if (this.canMove(this.facingDirection) && this.facingDirection.differenceFrom(this.bestDirection) == 1)
+            {
+                this.step(this.facingDirection);
+                return;
+            }
+            if ((this.canMove(this.bestDirection.turnedClockwise(1)) && this.canMove(this.bestDirection.turnedClockwise(-1))))
+            {
+                var randomResult = Math.random() * 2;
+                if (randomResult < 2)
+                {
+                    this.step(this.bestDirection.turnedClockwise(1));
+                }
+                else
+                {
+                    this.step(this.bestDirection.turnedClockwise(-1));
+                }
+                return;
+            }
+            if (this.canMove(this.bestDirection.turnedClockwise(1)))
+            {
+                this.step(this.bestDirection.turnedClockwise(1));
+                return;
+            }
+            if (this.canMove(this.bestDirection.turnedClockwise(-1)))
+            {
+                this.step(this.bestDirection.turnedClockwise(-1));
+                return;
+            }
+            this.freeMoveMode = false;
+            this.tryBlockMove();
+        },
+        tryBlockMove: function ()
+        {
+            if (this.canMove(this.bestDirection))
+            {
+                this.freeMoveMode = true;
+                this.step(this.bestDirection);
+                return;
+            }
+            if (this.facingDirection.differenceFrom(this.bestDirection) == 2)
+            {
+                this.step(this.facingDirection);
+                return;
+            }
+            if (this.facingDirection.differenceFrom(this.bestDirection) == 0)
+            {
+                if (Math.random() * 2 < 1)
+                    this.step(this.facingDirection.turnedClockwise(2));
+                else
+                    this.step(this.facingDirection.turnedClockwise(-2));
+                return;
+            }
+            if (this.canMove(this.facingDirection.turnedClockwise(1)))
+            {
+                this.step(this.facingDirection.turnedClockwise(1));
+                return;
+            }
+            else
+                this.step(this.facingDirection.turnedClockwise(-1));
+        },
+        step: function (direction)
+        {
+            this.targetLogicPointStep =
+                new LogicPoint(this.position.logicRow + direction.logicDown, this.position.logicColumn + direction.logicRight);
+            this.stepToLogicPointStep();
+        },
+        stepToLogicPointStep: function ()
+        {
+            this.visualization.setLocalZOrder(this.position.logicRow + this.position.logicColumn);
+            var moveDirection = this.position.getDirectionTo(this.targetLogicPointStep);
+            if (this.facingDirection.differenceFrom(moveDirection) != 0 || !this.visualization.isMoving)
+            {
+                this.facingDirection = moveDirection;
+                this.visualization.isMoving = true;
+                this.visualizeOnMove();
+            }
+            this.visualizeMoveAction();
+        },
+        visualizeMoveAction: function ()
+        {
+            var targetTruePointStep = this.targetLogicPointStep.toTruePoint();
+            var actionMove = cc.MoveTo(this.facingDirection.getVectorLength() / 2, targetTruePointStep);
+            var self = this;
+            var actionEnd = cc.callFunc(function ()
+                                        {
+                                            self.onEndStep()
+                                        });
+            this.visualization.runAction(cc.sequence(actionMove, actionEnd));
+        },
+        onEndStep: function ()
+        {
+            this.position = this.targetLogicPointStep;
+            this.move();
+        },
+        getNumberAt: function (target)
+        {
+            return this.getNumber(target.logicRow, target.logicColumn);
+        },
+        getNumberLeft: function (target)
+        {
+            return this.getNumber(target.logicRow, target.logicColumn - 1);
+        },
+        getNumberUp: function (target)
+        {
+            return this.getNumber(target.logicRow - 1, target.logicColumn);
+        },
+        getNumberLeftUp: function (target)
+        {
+            return this.getNumber(target.logicRow - 1, target.logicColumn - 1);
+        },
+        getNumber: function (row, column)
+        {
+            if (row > 40 || column > 40)
+                return 0;
+            return this.logicMap[row][column];
+        },
+        canMove: function (direction)
+        {
+            switch (direction.getDirectionType())
+            {
+                case 7:
+                    if (this.getNumberAt(this.position) != this.getNumberUp(this.position))
+                        return true;
+                    return [0, this.armyCampId].indexOf(this.getNumberAt(this.position)) >= 0;
+                case 3:
+                    if (this.getNumberLeft(this.position) != this.getNumberLeftUp(this.position))
+                        return true;
+                    return [0, this.armyCampId].indexOf(this.getNumberLeft(this.position)) >= 0;
+                case 1:
+                    if (this.getNumberAt(this.position) != this.getNumberLeft(this.position))
+                        return true;
+                    return [0, this.armyCampId].indexOf(this.getNumberAt(this.position)) >= 0;
+                case 5:
+                    if (this.getNumberUp(this.position) != this.getNumberLeftUp(this.position))
+                        return true;
+                    return [0, this.armyCampId].indexOf(this.getNumberUp(this.position)) >= 0;
+                case 0:
+                    return [0, this.armyCampId].indexOf(this.getNumberAt(this.position)) >= 0;
+                case 2:
+                    return [0, this.armyCampId].indexOf(this.getNumberLeft(this.position)) >= 0;
+                case 6:
+                    return [0, this.armyCampId].indexOf(this.getNumberUp(this.position)) >= 0;
+            }
+            return [0, this.armyCampId].indexOf(this.getNumberLeftUp(this.position)) >= 0;
+        },
+        getTroopName: function ()
+        {
+            if (this.type >= 12)
+                return "DAR_" + (this.type - 12 + 1);
+            else
+                return "ARM_" + (this.type + 1);
+        },
+        getTroopNameWithLevel: function ()
+        {
+            return this.getTroopName() + "_" + cf.user._listTroopLevel[this.type];
+        },
+        visualizeOnIdle: function ()
+        {
+            this.visualization.setLocalZOrder(this.position.logicRow + this.position.logicColumn)
+            this.visualization.unit.stopAllActions();
+            var directionType = this.facingDirection.getDirectionType();
+            var framesCount = gv.json.troopAnimation[this.getTroopNameWithLevel()]["frCounts"][0];
+            switch (directionType)
+            {
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                    this.visualization.setScaleX(-1);
+                    break;
+                default:
+                    this.visualization.setScaleX(1);
+            }
+            var animationFrames = [];
+            if (this.visualization.getScaleX() == -1)
+            {
+                for (var i = 0; i < framesCount; i += 1)
+                {
+                    var number = directionType * framesCount + i;
+                    if (number < 10)
+                        var digits = "000" + number;
+                    else
+                        var digits = "00" + number;
+                    var frame = cc.spriteFrameCache.getSpriteFrame(this.getTroopNameWithLevel() + "/idle/image" + digits + ".png");
+                    animationFrames.push(frame);
+                }
+            }
+            else
+            {
+                for (var i = 0; i < framesCount; i += 1)
+                {
+                    var number = (8 - directionType) * framesCount + i;
+                    if (number < 10)
+                        var digits = "000" + number;
+                    else
+                        var digits = "00" + number;
+                    var frame = cc.spriteFrameCache.getSpriteFrame(this.getTroopNameWithLevel() + "/idle/image" + digits + ".png");
+                    animationFrames.push(frame);
+                }
+            }
+            var animation = new cc.Animation(animationFrames, 0.2);
+            this.visualization.unit.runAction(cc.animate(animation).repeatForever());
+        },
+        visualizeOnMove: function ()
+        {
+            var framesCount = gv.json.troopAnimation[this.getTroopNameWithLevel()]["frCounts"][1];
+            this.visualization.unit.stopAllActions();
+            var directionType = this.facingDirection.getDirectionType();
+            var animationFrames = [];
+            switch (directionType)
+            {
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                    this.visualization.setScaleX(-1);
+                    for (var i = 0; i < framesCount; i += 1)
+                    {
+                        var number = directionType * framesCount + i;
+                        if (number < 10)
+                            var digits = "000" + number;
+                        else
+                            var digits = "00" + number;
+                        var frame = cc.spriteFrameCache.getSpriteFrame(this.getTroopNameWithLevel() + "/run/image" + digits + ".png");
+                        animationFrames.push(frame);
+                    }
+                    break;
+                default:
+                    this.visualization.setScaleX(1);
+                    for (var i = 0; i < framesCount; i += 1)
+                    {
+                        var number = (8 - directionType) * framesCount + i;
+                        if (number < 10)
+                            var digits = "000" + number;
+                        else
+                            var digits = "00" + number;
+                        var frame = cc.spriteFrameCache.getSpriteFrame(this.getTroopNameWithLevel() + "/run/image" + digits + ".png");
+                        animationFrames.push(frame);
+                    }
+            }
+            var animation = new cc.Animation(animationFrames, 0.1);
+            this.visualization.unit.runAction(cc.animate(animation).repeatForever());
+        },
+    }
+)
