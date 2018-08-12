@@ -1,4 +1,7 @@
 var TownHall = BuildingNode.extend({
+    _currentCapacityGold: 0,
+    _currentCapacityElixir: 0,
+
     ctor: function(id, level, row, col, existed)
     {
         this._buildingSTR = gv.buildingSTR.townHall;

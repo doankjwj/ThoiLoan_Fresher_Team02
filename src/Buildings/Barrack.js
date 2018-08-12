@@ -17,7 +17,7 @@ var Barrack = BuildingNode.extend({
         this.addCenterBuilding();
 
         /* Init Animation If Not Exist*/
-        this.initAnimation();
+        // this.initAnimation();
 
 
         /* Add Effect */
@@ -29,6 +29,7 @@ var Barrack = BuildingNode.extend({
         this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
         if (this._level >= 4 && this._level <=8) {
             this._effectAnim.stopAllActions();
+            this.initAnimation();
             this._effectAnim.visible = true;
             this._effectAnim.runAction(cf.animationBarrack[this._level].clone().repeatForever());
         };

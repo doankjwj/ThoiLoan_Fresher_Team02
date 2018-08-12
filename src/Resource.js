@@ -4,7 +4,6 @@ var folder_effect = "res/effect/";
 var fontFolder = "res/Art/Fonts/";
 var guiFolder = "res/Art/GUIs/";
 var jsonFolder = "res/ConfigJson/";
-var effectFolder = "res/SS/";
 var researchTroopFolder = "res/Art/GUIs/research_troop/";
 var researchTroopFolderTroopIcon = "res/Art/GUIs/upgrade_troop/icon/";
 var researchTroopFolderTroopIconSmall = "res/Art/GUIs/upgrade_troop/small_icon/";
@@ -12,6 +11,8 @@ var logInFolder = "res/Art/LoginGui/";
 var folderBuildingActionicon = "res/Art/GUIs/Action_Building_Icon/";
 var folderUpgradeBuildingGUI = guiFolder + "upgrade_building_gui/";
 var troopIconFolder = guiFolder + "train_troop_gui/icon/";
+var soundFolder = "res/Sounds/";
+
 var res = {
     image_postfix_1: "idle/image000",
     image_postfix_2: ".png",
@@ -61,6 +62,7 @@ var res = {
     map_BG: mapFolder + "map_obj_bg/BG/",
     map_obj: mapFolder + "map_obj_bg/",
 
+    folder_troop_animation: "res/Art/Troops/",
 
     popUp : {
         bg: guiFolder + "upgrade_building_gui/BG.png",
@@ -252,7 +254,11 @@ var logInGUI =
     btnOk: logInFolder + "okbutton.png",
     logo: logInFolder + "logo.png",
 }
-
+res.sound = {
+    soundBackgound : soundFolder + "theme.mp3",
+    collectGold: soundFolder + "sfx/collect_gold.mp3",
+    collectElixir: soundFolder + "sfx/collect_elixir.mp3",
+}
 var g_preload= [
     res.tilemap_tmx,
     res.bgBotLeft,

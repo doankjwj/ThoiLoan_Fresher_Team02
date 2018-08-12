@@ -112,7 +112,7 @@ var PopUpResearchTroop = cc.Node.extend({
 
         this._labelTime = cc.LabelBMFont("Thời gian nghiên cứu", font.soji20);
         this._labelTime.setPosition(this._greenArrow.x, this._greenArrow.y + 25);
-        this._labelTime.setColor(cc.color(153, 51, 0, 255));
+        this._labelTime.setColor(cc.color(200, 51, 50, 255));
         this._labelTime.scale = 0.8;
         this._labelTime.visible = false;
         this.addChild(this._labelTime, this._bgWhite.getLocalZOrder() + 1);
@@ -124,7 +124,7 @@ var PopUpResearchTroop = cc.Node.extend({
 
         this._labelOnComplete = cc.LabelBMFont("Hoàn thành ngay", font.soji20);
         this._labelOnComplete.setPosition(340, 160);
-        this._labelOnComplete.setColor(cc.color(153, 51, 0, 255));
+        this._labelOnComplete.setColor(cc.color(200, 51, 50, 255));
         this._labelOnComplete.scale = 0.8;
         this._labelOnComplete.visible = false;
         this.addChild(this._labelOnComplete, this._bgWhite.getLocalZOrder() + 1);

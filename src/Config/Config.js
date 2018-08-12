@@ -99,7 +99,8 @@ gv.json =
     troop: null,
     troopBase: null,
     itemList: null,
-    defence: null
+    defence: null,
+    troopAnimation: null
 };
 
 cf.ShopItemList = null;

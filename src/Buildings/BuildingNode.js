@@ -289,6 +289,12 @@ var BuildingNode = cc.Node.extend({
                         self.unlocate_map_array(cf.current_r, cf.current_c, size);
                         self.locate_map_array(self);
                         testnetwork.connector.sendMove(self._id, self._row, self._col);
+                        if (Math.floor( self._id/100) == 9)
+                        {
+                            for(var i = 0; i < cf.user._listTroop.length;i+=1)
+                                if (cf.user._listTroop[i].armyCampId == self._id)
+                                    cf.user._listTroop[i].randomMoveArmyCamp();
+                        }
                     }
                     return false;
                 }
@@ -370,9 +376,11 @@ var BuildingNode = cc.Node.extend({
         this._is_active = false;
         if (startConstructType == gv.startConstructType.newConstruct) {
             this._time_remaining = this.getTimeRequire();
+            // Thu hoạch nếu nhà là nhà tài nguyên
+            if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3 && this._level > 1)
+                this.onHarvest();
         }
         else
-
         {
             this._time_remaining = Math.floor((this._finishing_time - new Date().getTime()) / 1000);
         }
@@ -506,6 +514,8 @@ var BuildingNode = cc.Node.extend({
             this.onUpdateSpriteFrame();
         }
         this.updateLabelName();
+        // if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
+        //     this._lastHarvestTime = new Date().getTime();
     },
 
     onUpdateSpriteFrame: function()

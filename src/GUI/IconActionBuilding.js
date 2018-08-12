@@ -12,7 +12,7 @@ var IconActionBuilding = ccui.Button.extend({
                 this._txt = cc.LabelBMFont("THÔNG TIN", font.soji20);
                 break;
             case cf.CODE_BUILDING_UPGRADE: this._super(buildingGUI.iconUpgrade);
-                this._txt = cc.LabelBMFont("Upgrade", font.soji20);
+                this._txt = cc.LabelBMFont("Nâng Cấp", font.soji20);
                 break;
             case cf.CODE_BUILDING_INSTANT:
                 this._super(buildingGUI.instant);

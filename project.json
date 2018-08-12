@@ -16,7 +16,11 @@
     ],
     "jsList": [
         "src/User.js",
+        "src/AudioPlayer/AudioPlayer.js",
 
+        "src/TroopInfo/LogicDirection.js",
+        "src/TroopInfo/LogicPoint.js",
+        "src/TroopInfo/Troop.js",
         "src/Config/Config.js",
         "src/Function/fn.js",
         "src/GlobalVar/gv.js",

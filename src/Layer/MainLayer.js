@@ -139,14 +139,26 @@ var MainLayer = cc.Layer.extend({
 
     onReceiveUserInfo: function()
     {
+        this.initGameSound();
         this.initUser();
         this.initMainGUI();
         this.initMap();
         this.initRetainBuilding();
         this.updateGUIandUserInfo();
-
+        cf.user.distributeResource(true, true, true);
+        this.troopExample();
     },
 
+    initGameSound: function()
+    {
+        audioPlayer.play(res.sound.soundBackgound, true);
+    },
+
+    troopExample:function()
+    {
+        var testTroop = new Troop(3, this._map, 13,9, 900);
+        cf.user._listTroop.push(testTroop);
+    },
     initUser: function()
     {
         cf.user = new User();
@@ -186,7 +198,7 @@ var MainLayer = cc.Layer.extend({
         this._resetUserButton.addClickEventListener(function()
         {
             testnetwork.connector.sendResetUser();
-
+            audioPlayer.stopAll();
             try{
                 fr.view(MainLayer);
             } catch(e)
@@ -200,6 +212,7 @@ var MainLayer = cc.Layer.extend({
         this._restartGameButton = gv.commonButton(80, 64, 70, 90, "Re-\nstart");
         this._restartGameButton.addClickEventListener(function()
         {
+            audioPlayer.stopAll();
             try{
                 fr.view(MainLayer);
             } catch(e)
@@ -788,6 +801,7 @@ var MainLayer = cc.Layer.extend({
         if (bool_3)
         {
             var act = cc.MoveTo(0.1, cc.p(x, y));
+            this._guiInstantlyDone.updateContent();
             this._guiInstantlyDone.runAction(act);
             x += offSet;
         }if (bool_4)
@@ -835,7 +849,7 @@ var MainLayer = cc.Layer.extend({
         var actMoveUp = cc.MoveTo(0.1, cc.p(x, y));
         this._guiButtonHarvest.runAction(actMoveUp);
         this._guiButtonHarvest.addClickEventListener(function(){
-            building.onHarvert();
+        building.onHarvest();
         }.bind(this));
     },
 

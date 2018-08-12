@@ -1,6 +1,7 @@
 var PopUpConstruct = cc.Node.extend({
     _constructType: null,
     _buildingId: null,
+    _building: null,
 
     _bg: null,
     _titleBar: null,
@@ -22,19 +23,22 @@ var PopUpConstruct = cc.Node.extend({
     _timeRequireTXT: null,
 
     /* Hp bar */
-    _bar1: null,
-    _bar1BG: null,
+    _bar1: null,    // thanh màu xanh hiện tại
+    _bar1BG: null,  // thanh đậm max
+    _bar1BG2: null, // thanh level tiếp theo
     _bar1TXT: null,
     _bar1Icon: null,
 
     /* Orther bar -Option */
     _bar2: null,
     _bar2BG: null,
+    _bar2BG2: null,
     _bar2TXT: null,
     _bar2Icon: null,
 
     _bar3: null,
     _bar3BG: null,
+    _bar3BG2: null,
     _bar3TXT: null,
     _bar3Icon: null,
 
@@ -207,7 +211,6 @@ var PopUpConstruct = cc.Node.extend({
     {
 
         // +++++ BAR 1 ===============================================
-        /* HP Bar BG */
         this._bar1BG = cc.Sprite(res.upgradeBuildingGUI.infoBarBG);
         this._bar1BG.attr({
             anchorX: 0,
@@ -217,7 +220,17 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._bar1BG, 2, this._TAG_BAR1_BG);
 
-        /* Hp Bar */
+        this._bar1BG2 = cc.Sprite(res.upgradeBuildingGUI.infoBar);
+        this._bar1BG2.attr({
+            anchorX: 0,
+            anchorY: 0.5,
+            x: 0.5 * this._bg.height / 10,
+            y: 0.5 * this._bg.height / 2,
+            visible: false,
+        });
+        this.addChild(this._bar1BG2, 2);
+        this._bar1BG2.runAction(cc.TintTo(0, 204, 204, 0));
+
         this._bar1 = cc.Sprite(res.upgradeBuildingGUI.infoBar);
         this._bar1.attr({
             anchorX: 0,
@@ -227,7 +240,6 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._bar1, 2, this._TAG_BAR1);
 
-        /* Hp Icon */
         this._bar1Icon = cc.Sprite(res.upgradeBuildingGUI.hpIcon);
         this._bar1Icon.attr({
             anchorX: 1,
@@ -237,18 +249,16 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._bar1Icon, 2);
 
-        /* Hp TXT */
         this._bar1TXT = cc.LabelBMFont("Bar 1 Info", font.soji20);
         this._bar1TXT.attr({
-            anchorX:0.5,
+            anchorX: 0,
             anchorY: 0,
-            x: this._bar1BG.x + this._bar1.width/2,
+            x: 0.5 * this._bg.height  / 10 + 5,
             y: this._bar1BG.y
         });
         this.addChild(this._bar1TXT, 2, this._TAG_BAR1_TXT);
 
         // +++++ BAR 2 =============================================
-        /* HP Bar BG */
         this._bar2BG = cc.Sprite(res.upgradeBuildingGUI.infoBarBG);
         this._bar2BG.attr({
             anchorX: 0,
@@ -258,8 +268,17 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._bar2BG, 2, this._TAG_BAR2_BG);
 
+        this._bar2BG2 = cc.Sprite(res.upgradeBuildingGUI.infoBar);
+        this._bar2BG2.attr({
+            anchorX: 0,
+            anchorY: 0.5,
+            x: 0.5 * this._bg.height / 10,
+            y: this._bar1BG.y - this._offSetBar,
+            visible: false,
+        });
+        this.addChild(this._bar2BG2, 2);
+        this._bar2BG2.runAction(cc.TintTo(0, 204, 204, 0));
 
-        /* Hp Bar */
         this._bar2 = cc.Sprite(res.upgradeBuildingGUI.infoBar);
         this._bar2.attr({
             anchorX: 0,
@@ -269,7 +288,6 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._bar2, 2, this._TAG_BAR2);
 
-        /* Hp Icon */
         this._bar2Icon = cc.Sprite(res.upgradeBuildingGUI.hpIcon);
         this._bar2Icon.attr({
             anchorX: 1,
@@ -279,18 +297,16 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._bar2Icon, 2);
 
-        /* Hp TXT */
         this._bar2TXT = cc.LabelBMFont("Bar 2 Info", font.soji20);
         this._bar2TXT.attr({
-            anchorX:0.5,
+            anchorX: 0,
             anchorY: 0,
-            x: this._bar2BG.x + this._bar2.width/2,
+            x: 0.5 * this._bg.height  / 10 + 5,
             y: this._bar2BG.y
         });
         this.addChild(this._bar2TXT, 2, this._TAG_BAR2_TXT);
 
         // +++++ Bar 3 ==============================================
-        /* HP Bar BG */
         this._bar3BG = cc.Sprite(res.upgradeBuildingGUI.infoBarBG);
         this._bar3BG.attr({
             anchorX: 0,
@@ -300,8 +316,17 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._bar3BG, 2, this._TAG_BAR3_BG);
 
+        this._bar3BG2 = cc.Sprite(res.upgradeBuildingGUI.infoBar);
+        this._bar3BG2.attr({
+            anchorX: 0,
+            anchorY: 0.5,
+            x: 0.5 * this._bg.height / 10,
+            y: this._bar1BG.y - this._offSetBar * 2,
+            visible: false,
+        });
+        this.addChild(this._bar3BG2, 2);
+        this._bar3BG2.runAction(cc.TintTo(0, 204, 204, 0));
 
-        /* Hp Bar */
         this._bar3 = cc.Sprite(res.upgradeBuildingGUI.infoBar);
         this._bar3.attr({
             anchorX: 0,
@@ -311,7 +336,6 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._bar3, 2, this._TAG_BAR3);
 
-        /* Hp Icon */
         this._bar3Icon = cc.Sprite(res.upgradeBuildingGUI.hpIcon);
         this._bar3Icon.attr({
             anchorX: 1,
@@ -321,12 +345,11 @@ var PopUpConstruct = cc.Node.extend({
         });
         this.addChild(this._bar3Icon, 2);
 
-        /* Hp TXT */
         this._bar3TXT = cc.LabelBMFont("Bar 3 Info", font.soji20);
         this._bar3TXT.attr({
-            anchorX:0.5,
+            anchorX: 0,
             anchorY: 0,
-            x: this._bar3BG.x + this._bar3.width/2,
+            x: 0.5 * this._bg.height  / 10 + 5,
             y: this._bar3BG.y
         });
         this.addChild(this._bar3TXT, 2, this._TAG_BAR3_TXT);
@@ -378,18 +401,22 @@ var PopUpConstruct = cc.Node.extend({
 
     visibleBar: function(bool1, bool2, bool3)
     {
+        cc.log(bool1 + " " + bool2 + " " + bool3);
         this._bar1.visible = bool1;
         this._bar1BG.visible = bool1;
+        this._bar1BG2.visible = bool1;
         this._bar1Icon.visible = bool1;
         this._bar1TXT.visible = bool1;
 
         this._bar2.visible = bool2;
         this._bar2BG.visible = bool2;
+        this._bar2BG2.visible = bool2;
         this._bar2Icon.visible = bool2;
         this._bar2TXT.visible = bool2;
 
         this._bar3.visible = bool3;
         this._bar3BG.visible = bool3;
+        this._bar3BG2.visible = bool3;
         this._bar3Icon.visible = bool3;
         this._bar3TXT.visible = bool3;
     },
@@ -442,32 +469,50 @@ var PopUpConstruct = cc.Node.extend({
 
     updateBar: function(str, level, size, name, status, constructType)
     {
+        var buildingId = gv.building_selected;
+        var b = cf.user._buildingList[Math.floor(buildingId/100) - 1][Math.floor(buildingId%100)];
+        if (constructType == gv.constructType.upgrade)
+            level --;
         var bar1Length = 1;
+        var bar1Length2 = 1;
         var bar1MaxLength = 1;
         var bar2Length = 1;
+        var bar2Length2 = 2;
         var bar2MaxLength = 1;
         var bar3Length = 1;
+        var bar3Length2 = 2;
         var bar3MaxLength = 1;
 
         var preText1 = "";
         var preText2 = "";
         var preText3 = "";
 
-        if (!status) level--;
+        if (!status) level = Math.max(1, level - 1);
 
         switch (str)
         {
             case gv.buildingSTR.townHall:
                 this.visibleBar(true, true, true);
                 bar1Length = gv.json.townHall[str][level]["hitpoints"];
+                bar1Length2 = gv.json.townHall[str][Math.min(level+1, gv.buildingMaxLevel.townHall)]["hitpoints"];
                 bar1MaxLength = gv.json.townHall[str][gv.buildingMaxLevel.townHall]["hitpoints"];
-                bar2Length = gv.json.townHall[str][level]["capacityGold"];
-                bar2MaxLength = gv.json.townHall[str][gv.buildingMaxLevel.townHall]["capacityGold"];
-                bar3Length = gv.json.townHall[str][level]["capacityElixir"];
-                bar3MaxLength = gv.json.townHall[str][gv.buildingMaxLevel.townHall]["capacityElixir"];
+                if (constructType == gv.constructType.info){
+                    bar2Length = b._currentCapacityGold;
+                    bar2MaxLength = gv.json.townHall[str][level]["capacityGold"];
+                    bar3Length = b._currentCapacityElixir;
+                    bar3MaxLength = gv.json.townHall[str][level]["capacityElixir"];
+                }
+                else {
+                    bar2Length = gv.json.townHall[str][level]["capacityGold"];
+                    bar2Length2 = gv.json.townHall[str][Math.min(level+1, gv.buildingMaxLevel.townHall)]["capacityGold"];
+                    bar2MaxLength = gv.json.townHall[str][gv.buildingMaxLevel.townHall]["capacityGold"];
+                    bar3Length = gv.json.townHall[str][level]["capacityElixir"];
+                    bar3Length2 = gv.json.townHall[str][Math.min(level+1, gv.buildingMaxLevel.townHall)]["capacityElixir"];
+                    bar3MaxLength = gv.json.townHall[str][gv.buildingMaxLevel.townHall]["capacityElixir"];
+                }
                 this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
                 this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconCapacityGold);
-                this.replaceIconBar(this._orderBar.bar3, res.upgradeBuildingGUI.iconCapacityDarkElixir);
+                this.replaceIconBar(this._orderBar.bar3, res.upgradeBuildingGUI.iconCapacityElixir);
                 preText1 = "Máu: ";
                 preText2 = "Sức chứa: ";
                 preText3 = "Sức chứa: ";
@@ -482,9 +527,17 @@ var PopUpConstruct = cc.Node.extend({
             case gv.buildingSTR.armyCamp_1:
                 this.visibleBar(true, true, false);
                 bar1Length = gv.json.armyCamp[str][level]["hitpoints"];
+                bar1Length2 = gv.json.armyCamp[str][Math.min(level+1, gv.buildingMaxLevel.armyCamp_1)]["hitpoints"];
                 bar1MaxLength = gv.json.armyCamp[str][gv.buildingMaxLevel.armyCamp_1]["hitpoints"];
-                bar2Length = gv.json.armyCamp[str][level]["capacity"];
-                bar2MaxLength = gv.json.armyCamp[str][gv.buildingMaxLevel.armyCamp_1]["capacity"];
+                if (constructType == gv.constructType.info){
+                    bar2Length = b._troopQuantity;
+                    bar2MaxLength = gv.json.armyCamp[str][level]["capacity"];
+                }
+                else {
+                    bar2Length = gv.json.armyCamp[str][level]["capacity"];
+                    bar2Length2 = gv.json.armyCamp[str][Math.min(level + 1, gv.buildingMaxLevel.armyCamp_1)]["capacity"];
+                    bar2MaxLength = gv.json.armyCamp[str][gv.buildingMaxLevel.armyCamp_1]["capacity"];
+                }
                 this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
                 this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconTroopCapacity);
                 preText1 = "Máu: ";
@@ -493,6 +546,7 @@ var PopUpConstruct = cc.Node.extend({
             case gv.buildingSTR.barrack_1:
                 this.visibleBar(true, false, false);
                 bar1Length = gv.json.barrack[str][level]["hitpoints"];
+                bar1Length2 = gv.json.barrack[str][Math.min(level + 1, gv.buildingMaxLevel.barrack_1)]["hitpoints"];
                 bar1MaxLength = gv.json.barrack[str][gv.buildingMaxLevel.barrack_1]["hitpoints"];
                 this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
                 preText1 = "Máu: ";
@@ -500,11 +554,23 @@ var PopUpConstruct = cc.Node.extend({
             case gv.buildingSTR.resource_1:
                 this.visibleBar(true, true, true);
                 bar1Length = gv.json.resource[str][level]["hitpoints"];
+                bar1Length2 = gv.json.resource[str][Math.min(level + 1, gv.buildingMaxLevel.resource_1)]["hitpoints"];
                 bar1MaxLength = gv.json.resource[str][gv.buildingMaxLevel.resource_1]["hitpoints"];
-                bar2Length = gv.json.resource[str][level]["capacity"];
-                bar2MaxLength = gv.json.resource[str][gv.buildingMaxLevel.resource_1]["capacity"];
-                bar3Length = gv.json.resource[str][level]["productivity"];
-                bar3MaxLength = gv.json.resource[str][gv.buildingMaxLevel.resource_1]["productivity"];
+                if (constructType == gv.constructType.info){
+                    bar2Length = b._currentCapacity;
+                    bar2MaxLength = gv.json.resource[str][level]["capacity"];
+                    bar3Length = gv.json.resource[str][level]["productivity"];
+                    bar3MaxLength = bar3Length;
+                }
+                else
+                {
+                    bar2Length = gv.json.resource[str][level]["capacity"];
+                    bar2Length2 = gv.json.resource[str][Math.min(level + 1, gv.buildingMaxLevel.resource_1)]["capacity"];
+                    bar2MaxLength = gv.json.resource[str][gv.buildingMaxLevel.resource_1]["capacity"];
+                    bar3Length = gv.json.resource[str][level]["productivity"];
+                    bar3Length2 = gv.json.resource[str][Math.min(level + 1, gv.buildingMaxLevel.resource_1)]["productivity"];
+                    bar3MaxLength = gv.json.resource[str][gv.buildingMaxLevel.resource_1]["productivity"];
+                }
                 this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
                 this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconCapacityGold);
                 this.replaceIconBar(this._orderBar.bar3, res.upgradeBuildingGUI.iconProductionRateGold);
@@ -515,11 +581,23 @@ var PopUpConstruct = cc.Node.extend({
             case gv.buildingSTR.resource_2:
                 this.visibleBar(true, true, true);
                 bar1Length = gv.json.resource[str][level]["hitpoints"];
+                bar1Length2 = gv.json.resource[str][Math.min(level + 1, gv.buildingMaxLevel.resource_2)]["hitpoints"];
                 bar1MaxLength = gv.json.resource[str][gv.buildingMaxLevel.resource_2]["hitpoints"];
-                bar2Length = gv.json.resource[str][level]["capacity"];
-                bar2MaxLength = gv.json.resource[str][gv.buildingMaxLevel.resource_2]["capacity"];
-                bar3Length = gv.json.resource[str][level]["productivity"];
-                bar3MaxLength = gv.json.resource[str][gv.buildingMaxLevel.resource_2]["productivity"];
+                if (constructType == gv.constructType.info){
+                    bar2Length = b._currentCapacity;
+                    bar2MaxLength = gv.json.resource[str][level]["capacity"];
+                    bar3Length = gv.json.resource[str][level]["productivity"];
+                    bar3MaxLength = bar3Length;
+                }
+                else
+                {
+                    bar2Length = gv.json.resource[str][level]["capacity"];
+                    bar2Length2 = gv.json.resource[str][Math.min(level + 1, gv.buildingMaxLevel.resource_2)]["capacity"];
+                    bar2MaxLength = gv.json.resource[str][gv.buildingMaxLevel.resource_2]["capacity"];
+                    bar3Length = gv.json.resource[str][level]["productivity"];
+                    bar3Length2 = gv.json.resource[str][Math.min(level + 1, gv.buildingMaxLevel.resource_2)]["productivity"];
+                    bar3MaxLength = gv.json.resource[str][gv.buildingMaxLevel.resource_2]["productivity"];
+                }
                 this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
                 this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconCapacityElixir);
                 this.replaceIconBar(this._orderBar.bar3, res.upgradeBuildingGUI.iconProductionRateElixir);
@@ -530,9 +608,17 @@ var PopUpConstruct = cc.Node.extend({
             case gv.buildingSTR.storage_1:
                 this.visibleBar(true, true, false);
                 bar1Length = gv.json.storage[str][level]["hitpoints"];
+                bar1Length2 = gv.json.storage[str][Math.min(level + 1, gv.buildingMaxLevel.storage_1)]["hitpoints"];
                 bar1MaxLength = gv.json.storage[str][gv.buildingMaxLevel.storage_1]["hitpoints"];
-                bar2Length = gv.json.storage[str][level]["capacity"];
-                bar2MaxLength = gv.json.storage[str][gv.buildingMaxLevel.storage_1]["capacity"];
+                if (constructType == gv.constructType.info){
+                    bar2Length = b._currentCapacity;
+                    bar2MaxLength = gv.json.storage[str][level]["capacity"];
+                }
+                else{
+                    bar2Length = gv.json.storage[str][level]["capacity"];
+                    bar2Length2 = gv.json.storage[str][Math.min(level + 1, gv.buildingMaxLevel.storage_1)]["capacity"];
+                    bar2MaxLength = gv.json.storage[str][gv.buildingMaxLevel.storage_1]["capacity"];
+                }
                 this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
                 this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconCapacityGold);
                 preText1 = "Máu: ";
@@ -541,9 +627,17 @@ var PopUpConstruct = cc.Node.extend({
             case gv.buildingSTR.storage_2:
                 this.visibleBar(true, true, false);
                 bar1Length = gv.json.storage[str][level]["hitpoints"];
+                bar1Length2 = gv.json.storage[str][Math.min(level + 1, gv.buildingMaxLevel.storage_2)]["hitpoints"];
                 bar1MaxLength = gv.json.storage[str][gv.buildingMaxLevel.storage_2]["hitpoints"];
-                bar2Length = gv.json.storage[str][level]["capacity"];
-                bar2MaxLength = gv.json.storage[str][gv.buildingMaxLevel.storage_2]["capacity"];
+                if (constructType == gv.constructType.info){
+                    bar2Length = b._currentCapacity;
+                    bar2MaxLength = gv.json.storage[str][level]["capacity"];
+                }
+                else{
+                    bar2Length = gv.json.storage[str][level]["capacity"];
+                    bar2Length2 = gv.json.storage[str][Math.min(level + 1, gv.buildingMaxLevel.storage_2)]["capacity"];
+                    bar2MaxLength = gv.json.storage[str][gv.buildingMaxLevel.storage_2]["capacity"];
+                }
                 this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
                 this.replaceIconBar(this._orderBar.bar3, res.upgradeBuildingGUI.iconCapacityElixir);
                 preText1 = "Máu: ";
@@ -552,8 +646,10 @@ var PopUpConstruct = cc.Node.extend({
             case gv.buildingSTR.defence_1:
                 this.visibleBar(true, true, false);
                 bar1Length = gv.json.defence[str][level]["hitpoints"];
+                bar1Length2 = gv.json.defence[str][Math.min(level + 1, gv.buildingMaxLevel.defence_1)]["hitpoints"];
                 bar1MaxLength = gv.json.defence[str][gv.buildingMaxLevel.defence_1]["hitpoints"];
                 bar2Length = gv.json.defence[str][level]["damagePerShot"];
+                bar2Length2 = gv.json.defence[str][Math.min(level + 1, gv.buildingMaxLevel.storage_2)]["damagePerShot"];
                 bar2MaxLength = gv.json.defence[str][gv.buildingMaxLevel.storage_2]["damagePerShot"];
                 this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
                 this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconDameDef);
@@ -563,6 +659,7 @@ var PopUpConstruct = cc.Node.extend({
             case gv.buildingSTR.lab:
                 this.visibleBar(true, false, false);
                 bar1Length = gv.json.laboratory[str][level]["hitpoints"];
+                bar1Length2 = gv.json.laboratory[str][Math.min(level + 1, gv.buildingMaxLevel.lab)]["hitpoints"];
                 bar1MaxLength = gv.json.laboratory[str][gv.buildingMaxLevel.lab]["hitpoints"];
                 // bar2Length = gv.json.laboratory[str][level]["damagePerShot"];
                 // bar2MaxLength = gv.json.laboratory[str][gv.buildingMaxLevel.storage_2]["damagePerShot"];
@@ -575,22 +672,30 @@ var PopUpConstruct = cc.Node.extend({
                 break;
         }
 
-
         /* Nếu xem info thì bar1MaxLength = Hp */
         if (constructType == gv.constructType.info)
         {
             bar1MaxLength = bar1Length;
-            bar2MaxLength = bar2Length;
-            bar3MaxLength = bar3Length;
+            this._bar1BG2.visible = false;
+            this._bar2BG2.visible = false;
+            this._bar3BG2.visible = false;
+            this._bar1TXT.setString(preText1 + (bar1Length + "/" + bar1MaxLength));
+            this._bar2TXT.setString(preText2 + (bar2Length + "/" + bar2MaxLength));
+            this._bar3TXT.setString(preText3 + (bar3Length + "/" + bar3MaxLength));
+        }
+        else
+        {
+            this._bar1BG2.setTextureRect(cc.rect(0, 0, bar1Length2/bar1MaxLength * cf.popUpGUI_Construct.barWidth, cf.popUpGUI_Construct.barHeight));
+            this._bar2BG2.setTextureRect(cc.rect(0, 0, bar2Length2/bar2MaxLength * cf.popUpGUI_Construct.barWidth, cf.popUpGUI_Construct.barHeight));
+            this._bar3BG2.setTextureRect(cc.rect(0, 0, bar3Length2/bar3MaxLength * cf.popUpGUI_Construct.barWidth, cf.popUpGUI_Construct.barHeight));
+            this._bar1TXT.setString(preText1 + bar1Length + " (+" + (bar1Length2 - bar1Length) + ")");
+            this._bar2TXT.setString(preText2 + bar2Length + " (+" + (bar2Length2 - bar2Length) + ")");
+            this._bar3TXT.setString(preText3 + bar3Length + " (+" + (bar3Length2 - bar3Length) + ")");
         }
 
-        this._bar1TXT.setString(preText1 + (bar1Length + "/" + bar1MaxLength));
+
         this._bar1.setTextureRect(cc.rect(0, 0, bar1Length/bar1MaxLength * cf.popUpGUI_Construct.barWidth, cf.popUpGUI_Construct.barHeight));
-
-        this._bar2TXT.setString(preText2 + (bar2Length + "/" + bar2MaxLength));
         this._bar2.setTextureRect(cc.rect(0, 0, bar2Length/bar2MaxLength * cf.popUpGUI_Construct.barWidth, cf.popUpGUI_Construct.barHeight));
-
-        this._bar3TXT.setString(preText3 + (bar3Length + "/" + bar3MaxLength));
         this._bar3.setTextureRect(cc.rect(0, 0, bar3Length/bar3MaxLength * cf.popUpGUI_Construct.barWidth, cf.popUpGUI_Construct.barHeight));
 
     },
@@ -598,7 +703,7 @@ var PopUpConstruct = cc.Node.extend({
     updateIcon: function(str, level, size, name, status, constructType)
     {
         /* invisible All Bar */
-        this.visibleBar(false, false, false);
+        //this.visibleBar(false, false, false);
 
         if(this.getChildByTag(this._TAG_ICON))
             this.removeChildByTag(this._TAG_ICON);

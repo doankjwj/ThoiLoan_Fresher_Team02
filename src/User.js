@@ -18,6 +18,7 @@ var User = cc.Class.extend({
     _buildingList: [],
     _buildingListCount: [],
 
+    _listTroop: [],
     _listTroopLevel: [],
 
     _builderTotal: null,

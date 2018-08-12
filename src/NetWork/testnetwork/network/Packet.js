@@ -706,6 +706,7 @@ testnetwork.packetMap[gv.CMD.ERROR] = fr.InPacket.extend({
     {
         var errorCode = this.getShort();
         fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode + "\nRestart");
+        audioPlayer.stopAll();
         try{
             fr.view(MainLayer);
         } catch(e)

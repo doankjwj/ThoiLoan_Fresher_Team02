@@ -111,7 +111,7 @@ var ItemResearchTroop = ccui.Button.extend({
         this.setEnabled(false);
         this._labelRrequire.setColor(cc.color(255, 0, 0, 255));
         this._icon.runAction(act.clone());
-        this._labelLevel.runAction(act.clone());
+        // this._labelLevel.runAction(act.clone());
         this._labelRrequire.visible = true;
         this._resIcon.visible = false;
         this._avaiable = false;
