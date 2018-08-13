@@ -16,6 +16,8 @@ var Troop = cc.Class.extend
         },
         init: function ()
         {
+            if (gv.plist[this.getTroopName()] !== true)
+                fn.loadPlist(this.getTroopName());
             this.setLogicPosition(this.position);
             if (this.type === 3)
                 this.visualization.shadow = new cc.Sprite("res/Art/Map/map_obj_bg/big_shadow_troop.png");

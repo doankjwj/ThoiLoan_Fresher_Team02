@@ -61,22 +61,26 @@ fn.loadJson = function ()
         gv.json.obstacle = data;
     });
     gv.json.troopAnimation = {};
+
     for (var i = 1; i < 5; i += 1)
-        for (var j = 1; j < 5; j += 1)
-            if (i != 3 && j != 4)
+        for (var j = 1; j < 4; j += 1)
+            try
+            {
                 cc.loader.loadJson(res.folder_troop_animation + "ARM_" + i + "_" + j + "/ARM_" + i + "_" + j + "/ARM_" + i + "_" + j + "_info.json",
                                    function (error, data)
                                    {
                                        gv.json.troopAnimation["ARM_" + i + "_" + j] = data;
                                    });
-}
-
-fn.loadPlist = function()
+            }
+            catch(e)
+            {
+                cc.log(e);
+            }
+};
+fn.loadPlist = function (troopName)
 {
-    cc.spriteFrameCache.addSpriteFrames("res/Art/Troops/ARM_1_Animation.plist");
-    cc.spriteFrameCache.addSpriteFrames("res/Art/Troops/ARM_2_Animation.plist");
-    cc.spriteFrameCache.addSpriteFrames("res/Art/Troops/ARM_3_Animation.plist");
-    cc.spriteFrameCache.addSpriteFrames("res/Art/Troops/ARM_4_Animation.plist");
+    cc.spriteFrameCache.addSpriteFrames("res/Art/Troops/" + troopName + "_Animation.plist");
+    gv.plist[troopName] = true;
 };
 /* Map */
 fn.getRowColFromPos = function (pos) // Lấy ra Tọa độ dòng, cột của building từ pos
@@ -92,11 +96,11 @@ fn.getRowColFromPos = function (pos) // Lấy ra Tọa độ dòng, cột của 
         return (cc.p(gv.buildingMove.row, gv.buildingMove.col));
     return (cc.p(41 - loc.x, 41 - loc.y));
     /* Boundary */
-    loc.x = (loc.x > 40) ? 40 : loc.x;
-    loc.x = (loc.x < 1) ? 1 : loc.x;
-    loc.y = (loc.y > 40) ? 40 : loc.y;
-    loc.y = (loc.y < 1) ? 1 : loc.y;
-    return loc;
+    // loc.x = (loc.x > 40) ? 40 : loc.x;
+    // loc.x = (loc.x < 1) ? 1 : loc.x;
+    // loc.y = (loc.y > 40) ? 40 : loc.y;
+    // loc.y = (loc.y < 1) ? 1 : loc.y;
+    // return loc;
 };                              // BuildingNode.js
 fn.pointInsidePolygon = function (point, vs) //Kiểm tra 1 điểm nằm trong đa giác
 {
@@ -120,7 +124,7 @@ fn.getItemOccurenceInArray = function (arr, item)
     for (var i = 0; i < arr.length; i++)
         if (arr[i] === item) res++;
     return res;
-}
+};
 fn.insideMap = function (row, col)   // Kiểm tra Coor nằm trong giới hạn (1-40/ 1-40)
 {
     return (0 < row && row < 41 && 0 < col && col < 41);
@@ -134,7 +138,7 @@ fn.getAnimation = function (str, n1, n2)
         var frame = cc.spriteFrameCache.getSpriteFrame(str + "(" + i + ").png");
         arr_effect.push(frame)
     }
-    ;
+
     return cc.Animate(new cc.Animation(arr_effect, cf.time_refresh))
 };                              // Barack + ArmyCamp + ..
 /* Shop */

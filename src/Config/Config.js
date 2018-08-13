@@ -102,6 +102,10 @@ gv.json =
     defence: null,
     troopAnimation: null
 };
+gv.plist =
+    {
+
+    };
 
 cf.ShopItemList = null;
 cf.defaultLevel = 1;
@@ -219,21 +223,21 @@ gv.buildingMaxLevel = {
 gv.constructType =
 {
     info: 1231,
-    upgrade: 3423,
+    upgrade: 3423
 };
 
 /* PopUp GUI Construct*/
 cf.popUpGUI_Construct =
 {
     barWidth: 311,
-    barHeight : 36,
-}
+    barHeight : 36
+};
 
 /* Build Status */
 gv.startConstructType =
 {
     newConstruct: 3123,
-    loadConstruct: 5421,
+    loadConstruct: 5421
 };
 
 /* Offset with Server Position */
@@ -249,7 +253,7 @@ gv.capacity =
     elixir: "capacityElixir",
     darkElixir: "capacityDarkElixir",
     capacity: "capacity"
-}
+};
 
 /* Main Tag */
 gv.tag =
@@ -264,7 +268,7 @@ gv.tag =
         TAG_POPUP: 2000,
         TAG_POPUP_MESSAGE: 2001,
         TAG_POPUP_TRAINING: 1890,
-        TAG_POPUP_RESEARCH_TROOP: 3421,
+        TAG_POPUP_RESEARCH_TROOP: 3421
     };
 /* Pop Up */
 gv.popUpConstruct = null;
@@ -377,7 +381,7 @@ cf.stringToItemInit = function(str, index) {
             building._is_active = (finishTime <= currentTime);
             break;
         case "BDH_1":
-            finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"]
+            finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
             building = new BuilderHut(cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut], cf.defaultLevel, gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
             building._finishing_time = finishTime;
             building._is_active = true;
@@ -401,7 +405,7 @@ cf.stringToItemInit = function(str, index) {
             building._is_active = (finishTime <= currentTime);
             break;
         case "RES_2":
-            finishTime = gv.jsonInfo["map"][str][index]["lastHarvestTime"]
+            finishTime = gv.jsonInfo["map"][str][index]["lastHarvestTime"];
             building = new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_2], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, gv.buildingSTR.resource_2);
             building._finishing_time = finishTime;
             building._is_active = (finishTime <= currentTime);
@@ -443,4 +447,4 @@ cf.secondsToLongTime = function(seconds)
     var mnts = Math.floor(seconds/ 60);
     seconds  -= mnts*60;
     return (days != 0 ? (days.toString() + "d") : "" ) + (hrs != 0 ? (hrs.toString() + "h") : "") + (mnts != 0 ? (mnts.toString() + "m") : "") + ((seconds!=0) ? (seconds.toString() + "s") : "" );
-}
+};
