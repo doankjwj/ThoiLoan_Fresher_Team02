@@ -18,6 +18,14 @@
 		"iconPath": "res/Art/GUIs/icons/shop_gui/icon/AMC_1.png",
 		"priceCurrency" : "elixir",
 		"tag": 800
+	  },
+	  {
+		"key": "LAB_1",
+		"name": "Nhà Nghiên Cứu",
+		"jsonConfigFile": "Laboratory.json",
+		"iconPath": "res/Art/GUIs/icons/shop_gui/icon/LAB_1.png",
+		"priceCurrency" : "elixir",
+		"tag": 700
 	  }
 	],
 	"RES"		:

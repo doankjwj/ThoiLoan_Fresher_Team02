@@ -24,6 +24,7 @@ cc.game.onStart = function(){
         gv.poolObjects  = new PoolObject();
         testnetwork.connector = new testnetwork.Connector(gv.gameClient);
         fn.loadJson();
+        fn.loadPlist();
         fr.view(MainLayer);
     }, this);
 

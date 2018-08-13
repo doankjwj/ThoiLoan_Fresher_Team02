@@ -3,10 +3,10 @@
  */
 var GUI_ResourceBar = cc.Node.extend({
     /*
-        1: Gold
-        2: Elixir
-        3: Dark Elixir
-        4: G
+     1: Gold
+     2: Elixir
+     3: Dark Elixir
+     4: G
      */
     _type: null,
     _maxCapacity: null,
@@ -18,6 +18,8 @@ var GUI_ResourceBar = cc.Node.extend({
     _txtCurrent: null,
     _txtMax: null,
     _lobbyAdd: null,
+
+    _TAG_BAR: 4386,
 
     ctor: function(type)
     {
@@ -83,7 +85,7 @@ var GUI_ResourceBar = cc.Node.extend({
             x: this.width - this._icon.width - 9,
             y: 3
         });
-        this.addChild(this._bar, 0);
+        this.addChild(this._bar, 0, this._TAG_BAR);
 
         this._txtCurrent.attr({
             anchorX: 1,
@@ -117,10 +119,32 @@ var GUI_ResourceBar = cc.Node.extend({
         this._currentCapacity = (this._type == 1) ? cf.user._currentCapacityGold : (this._type == 2)? cf.user._currentCapacityElixir : (this._type == 3) ? cf.user._currentCapacityDarkElixir : cf.user._currentCapacityCoin;
         this._maxCapacity = (this._type == 1) ? cf.user._maxCapacityGold : (this._type == 2) ? cf.user._maxCapacityElixir : (this._type == 3) ? cf.user._maxCapacityDarkElixir : 0;
 
-
         if(this._type != 4)
         {
+            if (this.getChildByTag(this._TAG_BAR))
+                this.removeChildByTag(this._TAG_BAR);
+            switch (this._type)
+            {
+                case 1:
+                    this._bar = cc.Sprite(mainGUI.goldBar);
+                    break;
+                case 2:
+                    this._bar = cc.Sprite(mainGUI.elixirBar);
+                    break;
+                case 3:
+                    this._bar = cc.Sprite(mainGUI.darkElixirBar);
+                    break;
+            }
+            this.addChild(this._bar, 0, this._TAG_BAR);
+            this._bar.attr({
+                anchorX: 1,
+                anchorY: 0.5,
+                x: this.width - this._icon.width - 9,
+                y: 3
+            });
             this._bar.setTextureRect(cc.rect(0, 0, this._bar.width * this._currentCapacity / this._maxCapacity, this._bar.height));
+            var disX = this._bar.width * (this._maxCapacity - this._currentCapacity)/ this._maxCapacity;
+            // this._bar.setPosition(-disX * 5 + 0, 3);
             this._txtMax.setString("Max: " + this._maxCapacity);
         }
         else

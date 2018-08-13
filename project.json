@@ -16,7 +16,11 @@
     ],
     "jsList": [
         "src/User.js",
+        "src/AudioPlayer/AudioPlayer.js",
 
+        "src/TroopInfo/LogicDirection.js",
+        "src/TroopInfo/LogicPoint.js",
+        "src/TroopInfo/Troop.js",
         "src/Config/Config.js",
         "src/Function/fn.js",
         "src/GlobalVar/gv.js",
@@ -42,13 +46,21 @@
         "src/Buildings/Storage.js",
         "src/Buildings/Defence.js",
         "src/Buildings/Obstacle.js",
+        "src/Buildings/Canon.js",
+        "src/Buildings/Laboratory.js",
+
 
         "src/GUI/ResourceBar.js",
         "src/GUI/IconActionBuilding.js",
         "src/GUI/BuilderBar.js",
+        "src/GUI/PopupTraining.js",
+        "src/GUI/TroopButton.js",
 
         "src/GUI/PopUpConstruct.js",
         "src/GUI/PopUpMessage.js",
+        "src/GUI/PopUpResearchTroop.js",
+        "src/GUI/ItemResearchTroop.js",
+        "src/GUI/PopUpTroopInfo.js",
 
         "src/NetWork/framework/Utility/ClientConfig.js",
         "src/NetWork/framework/Utility/Localization.js",

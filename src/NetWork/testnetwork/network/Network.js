@@ -33,17 +33,16 @@ testnetwork.Connector = cc.Class.extend({
                 fr.getCurrentScreen().updateMove(packet.x, packet.y);
                 break;
             case gv.CMD.ERROR:
-                //try
-                //{
-                //    fr.view(MainLayer);
-                //}
-                //catch(e)
-                //{
-                //    cc.log(e);
-                //}
-                //break;
+            //try
+            //{
+            //    fr.view(MainLayer);
+            //}
+            //catch(e)
+            //{
+            //}
+            //break;
 
-            }
+        }
     },
     sendGetUserInfo:function()
     {
@@ -55,7 +54,7 @@ testnetwork.Connector = cc.Class.extend({
     sendLoginRequest: function () {
         cc.log("sendLoginRequest");
         var pk = this.gameClient.getOutPacket(CmdSendLogin);
-        pk.pack(gv.usernameSendToServer);
+        pk.pack(gv.usernameSendToServer, gv.passwordSendToServer);
         this.gameClient.sendPacket(pk);
     },
     sendBuild: function(id, row, col)
@@ -109,7 +108,23 @@ testnetwork.Connector = cc.Class.extend({
     {
         cc.log("SEND HARVEST ID: " + id);
         var pk = this.gameClient.getOutPacket(CmdSendHarvest);
-        pk.pack(id);
+        var resourceOrder = Math.floor(id/100) - 1;
+        var resourceSlot = id % 100;
+        pk.pack(resourceOrder, resourceSlot);
+        this.gameClient.sendPacket(pk);
+    },
+    sendResearch: function(troopType)
+    {
+        cc.log("SEND RESEARCH ID: " + troopType);
+        var pk = this.gameClient.getOutPacket(CmdSendResearch);
+        pk.pack(troopType);
+        this.gameClient.sendPacket(pk);
+    },
+    sendResearchFinishImmidiately: function(troopType)
+    {
+        cc.log("SEND RESEARCH IMMIDIATELY: " + troopType);
+        var pk = this.gameClient.getOutPacket(CmdSendResearchFinishImmidiately);
+        pk.pack();
         this.gameClient.sendPacket(pk);
     }
 

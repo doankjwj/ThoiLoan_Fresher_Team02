@@ -2,6 +2,8 @@
  * Created by CPU02326_Local on 7/20/2018.
  */
 var Storage = BuildingNode.extend({
+    _currentCapacity: 0,
+
     ctor: function(id, level, row, col, existed, buildingSTR)
     {
         this._buildingSTR = buildingSTR;

@@ -40,6 +40,11 @@ cf.CODE_BUILDING_INFO = 324324;
 cf.CODE_BUILDING_UPGRADE = 2314234;
 cf.CODE_BUILDING_INSTANT = 131196;
 cf.CODE_BUILDING_CANCEL = 13121997;
+cf.CODE_BUILDING_HARVEST_1 = 346286485;
+cf.CODE_BUILDING_HARVEST_2 = 346286421;
+cf.CODE_BUILDING_HARVEST_3 = 346286431;
+cf.CODE_BUILDING_RESEARCH = 23423324;
+cf.CODE_TRAINING = 27071993;
 
 cf.user = null;
 
@@ -94,7 +99,8 @@ gv.json =
     troop: null,
     troopBase: null,
     itemList: null,
-    defence: null
+    defence: null,
+    troopAnimation: null
 };
 
 cf.ShopItemList = null;
@@ -144,7 +150,7 @@ gv.buildingSTR = {
     resource_1: "RES_1",
     resource_2: "RES_2",
     resource_3: "RES_3",
-    lap: "LAB_1",
+    lab: "LAB_1",
     armyCamp_1: "AMC_1",
     barrack_1: "BAR_1",
     barrack_2: "BAR_2",
@@ -167,7 +173,7 @@ gv.buildingName =
     resource_1: "Mỏ vàng",
     resource_2: "Mỏ dầu",
     resource_3: "Mỏ dầu đen",
-    lap: "Nhà nâng cấp lính",
+    lab: "Nhà nâng cấp lính",
     armyCamp_1: "Trại lính",
     barrack_1: "Nhà Lính",
     barrack_2: "Nhà lính đen",
@@ -185,7 +191,7 @@ gv.orderInUserBuildingList =
     resource_1: 4,
     resource_2: 5,
     resource_3: 6,
-    lap: 7,
+    lab: 7,
     armyCamp_1: 8,
     barrack_1: 9,
     barrack_2: 10,
@@ -202,7 +208,7 @@ gv.buildingMaxLevel = {
     resource_1: 11,
     resource_2: 11,
     resource_3: 6,
-    lap: 9,
+    lab: 9,
     armyCamp_1: 8,
     barrack_1: 12,
     barrack_2: 6,
@@ -257,6 +263,8 @@ gv.tag =
         TAG_RESOURCE_BAR_COIN: 1904,
         TAG_POPUP: 2000,
         TAG_POPUP_MESSAGE: 2001,
+        TAG_POPUP_TRAINING: 1890,
+        TAG_POPUP_RESEARCH_TROOP: 3421,
     };
 /* Pop Up */
 gv.popUpConstruct = null;
@@ -312,8 +320,10 @@ cf.getJsonConfigFile = function (str) {
     var substr = str.substring(0, 3);
     switch(substr)
     {
-        case "TOW": return gv.json.townHall;
-        case "LAB": return gv.json.laboratory;
+        case "TOW":
+            return gv.json.townHall;
+        case "LAB":
+            return gv.json.laboratory;
         case "BDH":
             return gv.json.builderHut;
         case "RES":
@@ -331,7 +341,6 @@ cf.getJsonConfigFile = function (str) {
 };
 
 cf.tagToItem = function(tag, lvl, posX, posY, existed){
-    //cc.log(tag);
     switch(tag){
         case 900:
             return new Barrack(20, lvl, posX, posY, existed);
@@ -349,6 +358,8 @@ cf.tagToItem = function(tag, lvl, posX, posY, existed){
             return new BuilderHut(26, lvl, posX, posY, existed);
         case 1200:
             return new Defence(27, lvl, posX, posY, existed, gv.buildingSTR.defence_1);
+        case 700:
+            return new Laboratory(28, lvl, posX, posY, existed);
     }
 };
 
@@ -410,6 +421,12 @@ cf.stringToItemInit = function(str, index) {
         case "BAR_1":
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
             building =  new Barrack(cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
+            building._finishing_time = finishTime;
+            building._is_active = (finishTime <= currentTime);
+            break;
+        case "LAB_1":
+            finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
+            building =  new Laboratory(cf.user._buildingListCount[gv.orderInUserBuildingList.lab], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
             building._finishing_time = finishTime;
             building._is_active = (finishTime <= currentTime);
             break;

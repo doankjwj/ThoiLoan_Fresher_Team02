@@ -1,6 +1,3 @@
-/**
- * Created by CPU02326_Local on 7/23/2018.
- */
 var IconActionBuilding = ccui.Button.extend({
     _type: null,
     _txt: null,
@@ -15,7 +12,7 @@ var IconActionBuilding = ccui.Button.extend({
                 this._txt = cc.LabelBMFont("THÔNG TIN", font.soji20);
                 break;
             case cf.CODE_BUILDING_UPGRADE: this._super(buildingGUI.iconUpgrade);
-                this._txt = cc.LabelBMFont("Upgrade", font.soji20);
+                this._txt = cc.LabelBMFont("Nâng Cấp", font.soji20);
                 break;
             case cf.CODE_BUILDING_INSTANT:
                 this._super(buildingGUI.instant);
@@ -24,6 +21,26 @@ var IconActionBuilding = ccui.Button.extend({
             case cf.CODE_BUILDING_CANCEL:
                 this._super(buildingGUI.buildCancelIcon);
                 this._txt = cc.LabelBMFont("HỦY BỎ", font.soji20);
+                break;
+            case cf.CODE_TRAINING:
+                this._super(buildingGUI.trainIcon);
+                this._txt = cc.LabelBMFont("HUẤN LUYỆN", font.soji20);
+                break;
+            case cf.CODE_BUILDING_HARVEST_1:
+                this._super(buildingGUI.iconHarvest_1);
+                this._txt = cc.LabelBMFont("THU HOẠCH", font.soji20);
+                break;
+            case cf.CODE_BUILDING_HARVEST_2:
+                this._super(buildingGUI.iconHarvest_2);
+                this._txt = cc.LabelBMFont("THU HOẠCH", font.soji20);
+                break;
+            case cf.CODE_BUILDING_HARVEST_3:
+                this._super(buildingGUI.iconHarvest_3);
+                this._txt = cc.LabelBMFont("THU HOẠCH", font.soji20);
+                break;
+            case cf.CODE_BUILDING_RESEARCH:
+                this._super(buildingGUI.iconResearch);
+                this._txt = cc.LabelBMFont("NGHIÊN CỨU", font.soji20);
                 break;
             default:
                 break;
@@ -45,8 +62,6 @@ var IconActionBuilding = ccui.Button.extend({
             y: this.height - this._priceTxt.height/2
         });
 
-
-
         this._txt.attr({
             anchorX: 0.5,
             anchorY: 0.5,
@@ -55,8 +70,6 @@ var IconActionBuilding = ccui.Button.extend({
             y: this._txt.height/2*this._txt.scale + 5
         });
         this.addChild(this._txt,1);
-
-        this.addTouchEventListener(this.updateBuilding, this);
 
     },
 
@@ -74,18 +87,14 @@ var IconActionBuilding = ccui.Button.extend({
         switch (type){
             case ccui.Widget.TOUCH_BEGAN:
                 sender.setScale(sender.scale*1.02);
-                cc.log("Upgrade this building : " + cf.building_selected);
                 break;
             case ccui.Widget.TOUCH_MOVED:
-                cc.log("moved");
                 break;
             case ccui.Widget.TOUCH_ENDED:
                 sender.setScale(sender.scale/1.02);
-                cc.log("ended");
                 break;
             case ccui.Widget.TOUCH_CANCELED:
                 sender.setScale(sender.scale/1.02);
-                cc.log("canceled");
                 break;
         }
     }

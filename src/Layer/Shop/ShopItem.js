@@ -93,6 +93,9 @@ var ShopItem = ccui.Button.extend({
             case gv.buildingSTR.defence_1:
                 this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.defence_1];
                 break;
+            case gv.buildingSTR.lab:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.lab];
+                break;
             default:
                 break;
         }
@@ -113,7 +116,6 @@ var ShopItem = ccui.Button.extend({
 
         if(this._key !== gv.buildingSTR.builderHut) this._priceText = this._jsonConfig[this._configItem["key"]]["1"][this._configItem["priceCurrency"]];
         else {
-            //cc.log(str);
             this._priceText = this._jsonConfig[this._configItem["key"]][(this._currentQuantity + 1).toString()][this._configItem["priceCurrency"]];
         }
 
@@ -172,6 +174,9 @@ var ShopItem = ccui.Button.extend({
                 break;
             case gv.buildingSTR.defence_1:
                 this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.defence_1];
+                break;
+            case gv.buildingSTR.lab:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.lab];
                 break;
             default:
                 break;

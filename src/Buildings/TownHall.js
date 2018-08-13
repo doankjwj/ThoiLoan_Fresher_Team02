@@ -1,4 +1,7 @@
 var TownHall = BuildingNode.extend({
+    _currentCapacityGold: 0,
+    _currentCapacityElixir: 0,
+
     ctor: function(id, level, row, col, existed)
     {
         this._buildingSTR = gv.buildingSTR.townHall;
@@ -23,13 +26,13 @@ var TownHall = BuildingNode.extend({
         this._effectAnim = cc.Sprite(res.tmp_effect);
         this._effectAnim.anchorX = 0.5;
         this._effectAnim.anchorY = 0.5;
+        this._effectAnim.setPosition(0, 10);
         this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
         this._effectAnim.runAction(cf.animationTownHall.clone().repeatForever());
 
         if (!this._is_active)
         {
             this.onStartBuild(gv.startConstructType.loadConstruct);
-            cc.log(this._name + " Build This");
         }
     },
 

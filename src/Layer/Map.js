@@ -37,10 +37,10 @@ var Map = cc.Node.extend({
                     if (building != null)
                     {
                         self.addChild(building);
-                        self.addBuildingToUserBuildingList(building);
-                        if(building._existed) building.locate_map_array(building);
 
-                        //building.locate_map_array(building._row, building._col, building._size);
+                        cf.user._buildingList[building._orderInUserBuildingList][cf.user._buildingListCount[building._orderInUserBuildingList]] = (building);
+                        cf.user._buildingListCount[building._orderInUserBuildingList] ++;
+                        if(building._existed) building.locate_map_array(building);
                     }
                 }
             }
@@ -51,8 +51,9 @@ var Map = cc.Node.extend({
                 {
                     var obs = gv.jsonInfo["map"]["OBS"][i];
                     var obstacle = new Obstacle((gv.orderInUserBuildingList.obstacle * 100 + 1 + i), obs["type"], obs["X"], obs["Y"], true);
-                    var tag = i*500;
-                    this.addChild(obstacle, 2, tag);
+                    cf.user._buildingList[obstacle._orderInUserBuildingList][cf.user._buildingListCount[obstacle._orderInUserBuildingList]] = (obstacle);
+                    cf.user._buildingListCount[obstacle._orderInUserBuildingList] ++;
+                    this.addChild(obstacle);
                 }
     },
 

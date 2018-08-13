@@ -145,7 +145,6 @@ var ShopItemList = cc.Layer.extend({
             this.shopItem.push(new ShopItem(this._shopName, i));
         }
         for(var j=0 ; j<this.shopItem.length; j++){
-            // cc.log(shopItem[j]._itemName);
             this.shopItem[j].scale = 1.5;
             this._scrollView.addChild(this.shopItem[j]);
             this.shopItem[j].setAnchorPoint(cc.p(0.5, 0.5));

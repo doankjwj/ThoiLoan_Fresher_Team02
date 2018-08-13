@@ -15,9 +15,15 @@ var MainLayer = cc.Layer.extend({
     _guiButtonBuildingUpgrade: null,
     _guiInstantlyDone: null,
     _guiCancelBuildButton: null,
+    _guiTraningArmyButton: null,
+    _guiButtonHarvest: null,
+    _guiButtonResearch: null,
     _popUp: null,
+    _popUpResearchTroop: null,
+    _popUpTraining: null,
 
     _resetUserButton: null,
+    _restartGameButton: null,
 
     _addGoldButton: null,
     _subGoldButton: null,
@@ -35,9 +41,12 @@ var MainLayer = cc.Layer.extend({
     _action2Push: null,
 
     _TAG_BG: 242342,
+    _TAG_LOGO: 738271,
     _TAG_USERNAME_FIELD: 30000,
     _TAG_PASSWORD_FIELD: 30001,
     _TAG_LOGIN_BUTTON  : 30002,
+    _TAG_BUTTON_HARVEST: 63721,
+    _TAG_BUTTON_RESEARCH: 34231,
 
 
     ctor:function () {
@@ -57,8 +66,12 @@ var MainLayer = cc.Layer.extend({
         bg.scale = cc.winSize.width / bg.width;
         this.addChild(bg, 0, this._TAG_BG);
 
-        var size = cc.winSize;
+        var logo = cc.Sprite(logInGUI.logo);
+        logo.setPosition(cc.winSize.width - 100, cc.winSize.height - 100);
+        logo.scale = 2;
+        this.addChild(logo, 0, this._TAG_LOGO);
 
+        var size = cc.winSize;
         this._usernameField = new ccui.TextField();
         this._usernameField .setTouchEnabled(true);
         this._usernameField .fontName = "Arial";
@@ -84,7 +97,8 @@ var MainLayer = cc.Layer.extend({
             anchorX: 0.5,
             anchorY: 0.5,
             x: cc.winSize.width/2,
-            y: cc.winSize.height/2 - 2 * login.height
+            y: cc.winSize.height/2 - 2 * login.height,
+            scale: 1.5
         });
         login.setTitleText("Log In");
         login.setTitleFontSize(24);
@@ -99,6 +113,8 @@ var MainLayer = cc.Layer.extend({
 
         gv.usernameSendToServer = this._usernameField.string;
         if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
+        gv.passwordSendToServer = this._passwordField.string;
+
         gv.gameClient.connect();
     },
 
@@ -109,6 +125,7 @@ var MainLayer = cc.Layer.extend({
         this.getChildByTag(this._TAG_PASSWORD_FIELD).visible = false;
         this.getChildByTag(this._TAG_LOGIN_BUTTON).visible = false;
         this.getChildByTag(this._TAG_BG).visible = false;
+        this.getChildByTag(this._TAG_LOGO).visible = false;
     },
 
     onConnectFail: function()
@@ -123,14 +140,26 @@ var MainLayer = cc.Layer.extend({
 
     onReceiveUserInfo: function()
     {
+        this.initGameSound();
         this.initUser();
         this.initMainGUI();
         this.initMap();
         this.initRetainBuilding();
         this.updateGUIandUserInfo();
-
+        cf.user.distributeResource(true, true, true);
+        this.troopExample();
     },
 
+    initGameSound: function()
+    {
+        audioPlayer.play(res.sound.soundBackgound, true);
+    },
+
+    troopExample:function()
+    {
+        var testTroop = new Troop(3, this._map, 13,9, 900);
+        cf.user._listTroop.push(testTroop);
+    },
     initUser: function()
     {
         cf.user = new User();
@@ -144,11 +173,13 @@ var MainLayer = cc.Layer.extend({
         this.addResourceBar();
         this.addUserBar();
         this.addBuilderBar();
-        {
-            this._popUp = new PopUpConstruct;
-            this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
-            this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
-        };
+
+        this._popUpTraining = new PopupTraining();
+        this.addChild(this._popUpTraining, 1, gv.tag.TAG_POPUP_TRAINING);
+
+        this._popUp = new PopUpConstruct();
+        this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
+        this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
         this.addCheatButton();
     },
 
@@ -163,11 +194,12 @@ var MainLayer = cc.Layer.extend({
 
         var self = this;
 
-        this._resetUserButton = gv.commonButton(80, 64, 70, cc.winSize.height-100, "+Reset");
+        /* Button Restart & Reset */
+        this._resetUserButton = gv.commonButton(80, 64, 70, cc.winSize.height-100, "Reset");
         this._resetUserButton.addClickEventListener(function()
         {
             testnetwork.connector.sendResetUser();
-
+            audioPlayer.stopAll();
             try{
                 fr.view(MainLayer);
             } catch(e)
@@ -178,11 +210,26 @@ var MainLayer = cc.Layer.extend({
 
         this.addChild(this._resetUserButton, 1);
 
-        this._addGoldButton = gv.commonButton(80, 64, 70, cc.winSize.height-200, "+5kGd");
-        this._subGoldButton = gv.commonButton(80, 64, 70, this._addGoldButton.y - 70, "-5kGd");
+        this._restartGameButton = gv.commonButton(80, 64, 70, 90, "Re-\nstart");
+        this._restartGameButton.addClickEventListener(function()
+        {
+            audioPlayer.stopAll();
+            try{
+                fr.view(MainLayer);
+            } catch(e)
+            {
+                cc.log(e)
+            };
+        }.bind(this));
+
+        this.addChild(this._restartGameButton, 1);
+
+        /* Button Gold */
+        this._addGoldButton = gv.commonButton(80, 64, 70, cc.winSize.height-200, "+Gold");
+        this._subGoldButton = gv.commonButton(80, 64, 70, this._addGoldButton.y - 70, "-Gold");
 
         this._addGoldButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            var cheatNumber = 100000;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
@@ -199,7 +246,7 @@ var MainLayer = cc.Layer.extend({
             }
         }, this._addGoldButton);
         this._subGoldButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            var cheatNumber = 100000;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
@@ -218,11 +265,12 @@ var MainLayer = cc.Layer.extend({
         this.addChild(this._addGoldButton, 1);
         this.addChild(this._subGoldButton, 1);
 
-        this._addCoinButton = gv.commonButton(80, 64, 70, this._subGoldButton.y - 70, "+5kG");
-        this._subCoinButton = gv.commonButton(80, 64, 70, this._addCoinButton.y - 70, "-5kG");
+        /* Button coin */
+        this._addCoinButton = gv.commonButton(80, 64, 70, this._subGoldButton.y - 70, "+Coin");
+        this._subCoinButton = gv.commonButton(80, 64, 70, this._addCoinButton.y - 70, "-Coin");
 
         this._addCoinButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            var cheatNumber = 100000;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
@@ -239,7 +287,7 @@ var MainLayer = cc.Layer.extend({
             }
         }, this._addCoinButton);
         this._subCoinButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            var cheatNumber = 100000;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
@@ -258,11 +306,12 @@ var MainLayer = cc.Layer.extend({
         this.addChild(this._addCoinButton, 1);
         this.addChild(this._subCoinButton, 1);
 
-        this._addElixirButton = gv.commonButton(80, 64, 70, this._subCoinButton.y - 70, "+5kE");
-        this._subElixirButton = gv.commonButton(80, 64, 70, this._addElixirButton.y - 70, "-5kE");
+        /* Button elixir */
+        this._addElixirButton = gv.commonButton(80, 64, 70, this._subCoinButton.y - 70, "+Elix");
+        this._subElixirButton = gv.commonButton(80, 64, 70, this._addElixirButton.y - 70, "-Elix");
 
         this._addElixirButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            var cheatNumber = 100000;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
@@ -279,7 +328,7 @@ var MainLayer = cc.Layer.extend({
             }
         }, this._addElixirButton);
         this._subElixirButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000;
+            var cheatNumber = 100000;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
@@ -297,6 +346,7 @@ var MainLayer = cc.Layer.extend({
 
         this.addChild(this._addElixirButton, 1);
         this.addChild(this._subElixirButton, 1);
+
     },
 
     initMap: function()
@@ -429,6 +479,31 @@ var MainLayer = cc.Layer.extend({
         });
         this.addChild(this._guiButtonBuildingUpgrade, 2);
 
+        /* Button Harvest */
+        this._guiButtonHarvest = new IconActionBuilding(cf.CODE_BUILDING_HARVEST_1);
+        this._guiButtonHarvest.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: cc.winSize.width/2,
+            y: -cc.winSize.height/2
+        });
+        this.addChild(this._guiButtonHarvest, 2, this._TAG_BUTTON_HARVEST);
+
+        /*Button Research */
+        this._guiButtonResearch = new IconActionBuilding(cf.CODE_BUILDING_RESEARCH);
+        this._guiButtonResearch.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: cc.winSize.width/2,
+            y: -cc.winSize.height/2
+        });
+        this.addChild(this._guiButtonResearch, 2, this._TAG_BUTTON_RESEARCH);
+        this._guiButtonResearch.addClickEventListener(function(){
+            self.onPopUpResearchTroop();
+            self.hideListBotButton();
+        }.bind(this));
+
+
         this._guiButtonBuildingUpgrade.addClickEventListener(function()
         {
             self.hideListBotButton();
@@ -475,6 +550,8 @@ var MainLayer = cc.Layer.extend({
             y: this._guiButtonBuildingUpgrade.y
         });
 
+
+
         this.addChild(this._guiCancelBuildButton, 2);
 
         this._guiCancelBuildButton.addClickEventListener(function(){
@@ -506,6 +583,8 @@ var MainLayer = cc.Layer.extend({
 
         }.bind(this));
 
+
+
         this._guiInstantlyDone = new IconActionBuilding(cf.CODE_BUILDING_INSTANT);
         this._guiInstantlyDone.attr({
             anchorX: 0.5,
@@ -515,6 +594,7 @@ var MainLayer = cc.Layer.extend({
         });
 
         this.addChild(this._guiInstantlyDone, 2);
+
 
         this._guiInstantlyDone.addClickEventListener(function () {
 
@@ -540,6 +620,53 @@ var MainLayer = cc.Layer.extend({
             }
         }.bind(this));
 
+        this._guiTraningArmyButton = new IconActionBuilding(cf.CODE_TRAINING);
+
+
+        this._guiTraningArmyButton.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: this._guiButtonBuildingUpgrade.x + this._guiTraningArmyButton.width/2*this._guiTraningArmyButton.scale + 20,
+            y: this._guiButtonBuildingUpgrade.y
+        });
+
+        this.addChild(this._guiTraningArmyButton, 2);
+
+        this._guiTraningArmyButton.addClickEventListener(function(){
+            self.hideListBotButton();
+            if (gv.building_selected === undefined) return;
+            var building = cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)];
+            var order = (building._orderInUserBuildingList);
+            var orderBuilderHut = (gv.orderInUserBuildingList.builderHut);
+            if (order === orderBuilderHut) return;
+            if (building._is_active === false) return;
+
+            self.getChildByTag(gv.tag.TAG_POPUP_TRAINING).onAppear();
+
+        }.bind(this));
+
+
+    },
+
+    onPopUpResearchTroop: function()
+    {
+        this.removeChild(this._popUpResearchTroop);
+        var researching = cf.user._buildingList[gv.orderInUserBuildingList.lab][0]._researching;
+        var troopOrder = cf.user._buildingList[gv.orderInUserBuildingList.lab][0]._currentTroop;
+        this._popUpResearchTroop = new PopUpResearchTroop(researching, troopOrder);
+        this._popUpResearchTroop.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
+        this.addChild(this._popUpResearchTroop, 1, gv.tag.TAG_POPUP_RESEARCH_TROOP);
+        this._popUpResearchTroop.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
+        this._popUpResearchTroop.onAppear();
+    },
+    onPopUpTroopInfo: function(troopOrder)
+    {
+        if (this._popUpTroopInfo)
+            this.removeChild(this._popUpTroopInfo);
+        this._popUpTroopInfo = new PopUpTroopInfo(troopOrder);
+        this._popUpTroopInfo.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
+        this.addChild(this._popUpTroopInfo, 5);
+        this._popUpTroopInfo.onAppear();
     },
 
     popUpMessage: function(msg)
@@ -550,7 +677,7 @@ var MainLayer = cc.Layer.extend({
         if (!this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE))
         {
             var popUp = new PopUPMessage();
-            this.addChild(popUp, 1, gv.tag.TAG_POPUP_MESSAGE);
+            this.addChild(popUp, 10, gv.tag.TAG_POPUP_MESSAGE);
         }
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setPosition(cc.winSize.width/2, cc.winSize.height/2);
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).visible = true;
@@ -565,26 +692,166 @@ var MainLayer = cc.Layer.extend({
         this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2 + this._guiButtonBuildingUpgrade.width/2 + 2 * cf.offSetGuiResourceBar, -200));
         this._guiInstantlyDone.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
         this._guiCancelBuildButton.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
+        this._guiTraningArmyButton.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
+        if (this._guiButtonHarvest != undefined) this._guiButtonHarvest.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
+        if (this._guiButtonResearch != undefined) this._guiButtonResearch.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
     },
 
-    showListBotButton: function() {
+    _showListBotButton: function() {
         var moveToPos1 = cc.MoveTo(0.1, cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - 2 * cf.offSetGuiResourceBar, this._guiButtonBuildingInfo.height/2*this.scale + cf.offSetGuiResourceBar));
         this._guiButtonBuildingInfo.runAction(moveToPos1);
         var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
         var moveToPos2 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + cf.offSetGuiResourceBar - 25, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
-
         if (building._buildingSTR !== gv.buildingSTR.builderHut)
         {
             if (building._is_active) {
-                this._guiButtonBuildingUpgrade.runAction(moveToPos2);
-            }
-            else {
-                this._guiCancelBuildButton.runAction(moveToPos2);
                 var moveToPos3 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + 2 * cf.offSetGuiResourceBar + this._guiInstantlyDone.width/2*this._guiInstantlyDone.scale + 20, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
-                this._guiInstantlyDone.runAction(moveToPos3);
-                this._guiInstantlyDone.updateContent();
+                this._guiButtonBuildingUpgrade.runAction(moveToPos2);
+                if(building._buildingSTR === gv.buildingSTR.barrack_1)this._guiTraningArmyButton.runAction(moveToPos3);
             }
+        else {
+            this._guiCancelBuildButton.runAction(moveToPos2);
+            var moveToPos3 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + 2 * cf.offSetGuiResourceBar + this._guiInstantlyDone.width/2*this._guiInstantlyDone.scale + 20, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
+            this._guiInstantlyDone.runAction(moveToPos3);
+            this._guiInstantlyDone.updateContent();}
         }
+
+        /* Thêm nút thu hoạch */
+        if (building._is_active)
+        {
+            if (building._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && building._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
+            {
+                this.popUpButtonHarvest(building);
+            };
+            if (building._orderInUserBuildingList == gv.orderInUserBuildingList.lab)
+                this.popUpButtonResearch();
+        }
+    },
+    showListBotButton: function(buildingID)
+    {
+        /* Infor(0) --- Upgrade(1) --- Cancel(2) --- Instance Finish(3) --- Collect(4) -- Research(5) -- Train(6) */
+        var buildingOrder = Math.floor(buildingID/100) - 1;
+        var buildingNum = buildingID % 100;
+        var building = cf.user._buildingList[buildingOrder][buildingNum];
+
+        var bool_0 = true ; var bool_1 = true ; var bool_2 = true ; var bool_3 = true;
+        var bool_4 = false; var bool_5 = false; var bool_6 = false;
+        if (building._level == building._maxLevel || !building._is_active || buildingOrder == gv.orderInUserBuildingList.builderHut) bool_1 = false;
+        if (building._is_active) bool_2 = false;
+        if (building._is_active) bool_3 = false;
+        switch (buildingOrder)
+        {
+            case gv.orderInUserBuildingList.townHall:
+                break;
+            case gv.orderInUserBuildingList.resource_1:
+                if (building._is_active)
+                    bool_4 = true;
+                break;
+            case gv.orderInUserBuildingList.resource_2:
+                if (building._is_active)
+                    bool_4 = true;
+                break;
+            case gv.orderInUserBuildingList.resource_3:
+                if (building._is_active)
+                    bool_4 = true;
+                break;
+            case gv.orderInUserBuildingList.storage_1:
+                break;
+            case gv.orderInUserBuildingList.storage_2:
+                break;
+            case gv.orderInUserBuildingList.storage_3:
+                break;
+            case gv.orderInUserBuildingList.lab:
+                if (building._is_active) bool_5 = true;
+                break;
+            case gv.orderInUserBuildingList.barrack_1:
+                if (building._is_active) bool_6 = true;
+        }
+
+        this.onPopUpButton(bool_0, bool_1, bool_2, bool_3, bool_4, bool_5, bool_6);
+    },
+
+    onPopUpButton: function(bool_0, bool_1, bool_2, bool_3, bool_4, bool_5, bool_6)
+    {
+        /* Infor --- Upgrade --- Cancel --- Instance Finish --- Collect -- Research -- Train */
+        var popUpButtonCount = fn.getItemOccurenceInArray([bool_0, bool_1, bool_2, bool_3, bool_4, bool_5, bool_6], true);
+        cc.log(popUpButtonCount);
+        var y = this._guiButtonBuildingInfo.height;
+        // var x = cc.winSize.width * 1/3;
+        var x = cc.winSize.width/2 - popUpButtonCount/2 * this._guiButtonBuildingInfo.width;
+        var offSet = this._guiButtonBuildingInfo.width * 2 - 40;
+        if (bool_0)
+        {
+            var act = cc.MoveTo(0.1, cc.p(x, y));
+            this._guiButtonBuildingInfo.runAction(act);
+            x += offSet;
+        };
+        if (bool_1)
+        {
+            var act = cc.MoveTo(0.1, cc.p(x, y));
+            this._guiButtonBuildingUpgrade.runAction(act);
+            x += offSet;
+        };
+        if (bool_2)
+        {
+            var act = cc.MoveTo(0.1, cc.p(x, y));
+            this._guiCancelBuildButton.runAction(act);
+            x += offSet;
+        }
+
+        if (bool_3)
+        {
+            var act = cc.MoveTo(0.1, cc.p(x, y));
+            this._guiInstantlyDone.updateContent();
+            this._guiInstantlyDone.runAction(act);
+            x += offSet;
+        }if (bool_4)
+        {
+            this.popUpButtonHarvest(x, y);
+            x += offSet;
+        }
+        if (bool_5)
+        {
+            var act = cc.MoveTo(0.1, cc.p(x, y));
+            this._guiButtonResearch.runAction(act);
+            x += offSet;
+        }if (bool_6)
+    {
+        var act = cc.MoveTo(0.1, cc.p(x, y));
+        this._guiTraningArmyButton.runAction(act);
+        x += offSet;
+    }
+    },
+    popUpButtonHarvest: function(x, y)
+    {
+        var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
+        var orderResource = building._orderInUserBuildingList;
+        if (this._guiButtonHarvest)
+            this.removeChildByTag(this._TAG_BUTTON_HARVEST);
+        switch(orderResource)
+        {
+            case gv.orderInUserBuildingList.resource_1:
+                this._guiButtonHarvest = new IconActionBuilding(cf.CODE_BUILDING_HARVEST_1);
+                break;
+            case gv.orderInUserBuildingList.resource_2:
+                this._guiButtonHarvest = new IconActionBuilding(cf.CODE_BUILDING_HARVEST_2);
+                break;
+            case gv.orderInUserBuildingList.resource_3:
+                this._guiButtonHarvest = new IconActionBuilding(cf.CODE_BUILDING_HARVEST_3);
+                break;
+        };
+        this._guiButtonHarvest.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: cc.winSize.width/2,
+            y: -cc.winSize.height/2
+        });
+        this.addChild(this._guiButtonHarvest, 2, this._TAG_BUTTON_HARVEST);
+        var actMoveUp = cc.MoveTo(0.1, cc.p(x, y));
+        this._guiButtonHarvest.runAction(actMoveUp);
+        this._guiButtonHarvest.addClickEventListener(function(){
+        building.onHarvest();
+        }.bind(this));
     },
 
     //Exp, Trophy, Username, UserInfo
@@ -673,8 +940,46 @@ var MainLayer = cc.Layer.extend({
 
     distance: function(p, q, x) {
         if(!x) x = 0;
-        if (x !== 0) cc.log("DEBUG " + x);
         return Math.sqrt((p.x - q.x)*(p.x - q.x) + (p.y - q.y)*(p.y - q.y));
+    },
+
+    _zoomMap: function() {
+        var self = this;
+        var touchLocation_0;
+        var touchLocation_1;
+        var curMidPoint;
+        var newMidPoint;
+        var newMapPos;
+        if(self === null) return;
+        cc.log("ZOOM MAP");
+        cc.eventManager.addListener({
+            event: cc.EventListener.TOUCH_ALL_AT_ONCE,
+            swallowTouches: true,
+            onTouchesBegan: function(touches, event) {
+                return true;
+            },
+            onTouchesMoved: function(touches, event) {
+                if(touches.length < 2) return;
+                cc.log(touches.length);
+
+                curMidPoint = cc.p(touchLocation_0.x/2 + touchLocation_1.x/2 - self._map.x, touchLocation_0.y/2 + touchLocation_1.y/2 - self._map.y);
+                var dis0 = self.distance(touchLocation_0, touchLocation_1, 1);
+                var delta0 = touches[0].getDelta();
+                var delta1 = touches[1].getDelta();
+
+                var dis1 = self.distance(cc.pAddIn(touchLocation_0, delta0), cc.pAddIn(touchLocation_1, delta1), 2);
+
+                var scale = dis1/dis0;
+                self._map.scale *= scale;
+                newMidPoint = cc.p(curMidPoint.x*scale, curMidPoint.y*scale);
+                newMapPos = cc.pSubIn(curMidPoint.x, newMidPoint);
+                self._map.setPosition(newMapPos);
+                self.repositioning();
+            },
+            onTouchesEnded: function(touches, event) {
+            }
+        }, this);
+
     },
 
     zoomMap: function() {

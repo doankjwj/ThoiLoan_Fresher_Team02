@@ -178,7 +178,6 @@ var BuildingNode = cc.Node.extend({
                 var y = locationNote.y;
                 var polygon = [ [ -w, 0 ], [ 0, h ], [ w, 0 ], [ 0, -h ] ];
 
-                cc.log(self._id);
                 if (fn.pointInsidePolygon([x, y], polygon) && (gv.building_selected !== self._id))
                 {
                     self._txtName.setString(self._name + " level " + ((self._is_active) ? self._level : Math.max(self._level - 1, 1)));
@@ -204,7 +203,7 @@ var BuildingNode = cc.Node.extend({
                 if(!cf.isMapMoving) {
                     self.onClick();
                     gv.building_selected = self._id;
-                    self.getParent().getParent().showListBotButton();
+                    self.getParent().getParent().showListBotButton(self._id);
                     cf.current_r = self._row;
                     cf.current_c = self._col;
                     self._listenerMove.setEnabled(true);
@@ -290,6 +289,12 @@ var BuildingNode = cc.Node.extend({
                         self.unlocate_map_array(cf.current_r, cf.current_c, size);
                         self.locate_map_array(self);
                         testnetwork.connector.sendMove(self._id, self._row, self._col);
+                        if (Math.floor( self._id/100) == 9)
+                        {
+                            for(var i = 0; i < cf.user._listTroop.length;i+=1)
+                                if (cf.user._listTroop[i].armyCampId == self._id)
+                                    cf.user._listTroop[i].randomMoveArmyCamp();
+                        }
                     }
                     return false;
                 }
@@ -371,9 +376,11 @@ var BuildingNode = cc.Node.extend({
         this._is_active = false;
         if (startConstructType == gv.startConstructType.newConstruct) {
             this._time_remaining = this.getTimeRequire();
+            // Thu hoạch nếu nhà là nhà tài nguyên
+            if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3 && this._level > 1)
+                this.onHarvest();
         }
         else
-
         {
             this._time_remaining = Math.floor((this._finishing_time - new Date().getTime()) / 1000);
         }
@@ -506,6 +513,9 @@ var BuildingNode = cc.Node.extend({
         {
             this.onUpdateSpriteFrame();
         }
+        this.updateLabelName();
+        // if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
+        //     this._lastHarvestTime = new Date().getTime();
     },
 
     onUpdateSpriteFrame: function()
@@ -545,6 +555,9 @@ var BuildingNode = cc.Node.extend({
             case gv.buildingSTR.defence_1:
                 this._center_building = cc.Sprite(res.folder_defense_base + "DEF_1_" + this._level + "_Shadow.png");
                 break;
+            case gv.buildingSTR.lab:
+                this._center_building = cc.Sprite(res.folder_laboratory + "LAB_1_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
             default:
                 break;
         }
@@ -554,7 +567,10 @@ var BuildingNode = cc.Node.extend({
         });
         this.addChild(this._center_building, this._defence.getLocalZOrder() - 1, gv.tag.TAG_CENTER_BUILDING);
     },
-
+    updateLabelName: function()
+    {
+        this._txtName.setString(this._name + " level " + ((this._is_active) ? this._level : Math.max(this._level - 1, 1)));
+    },
     getTimeRequire: function() {
 
 
@@ -587,6 +603,9 @@ var BuildingNode = cc.Node.extend({
                 break;
             case gv.buildingSTR.builderHut:
                 return 0;
+            case gv.buildingSTR.lab:
+                json = gv.json.laboratory;
+                break;
             default:
                 break;
         }
@@ -632,6 +651,9 @@ var BuildingNode = cc.Node.extend({
                 break;
             case gv.buildingSTR.defence_1:
                 this._center_building = cc.Sprite(res.folder_defense_base + "DEF_1_" + this._level + "_Shadow.png");
+                break;
+            case gv.buildingSTR.lab:
+                this._center_building = cc.Sprite(res.folder_laboratory + "LAB_1_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             default:
                 break;
