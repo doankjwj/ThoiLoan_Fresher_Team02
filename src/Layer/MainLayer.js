@@ -112,7 +112,7 @@ var MainLayer = cc.Layer.extend({
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "quanleanh";
         gv.passwordSendToServer = this._passwordField.string;
 
         gv.gameClient.connect();
@@ -147,7 +147,7 @@ var MainLayer = cc.Layer.extend({
         this.initRetainBuilding();
         this.updateGUIandUserInfo();
         cf.user.distributeResource(true, true, true);
-        this.troopExample();
+        // this.troopExample();
     },
 
     initGameSound: function()
@@ -638,7 +638,6 @@ var MainLayer = cc.Layer.extend({
             if (building._is_active === false) return;
 
             if(this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING) === null) {
-
                 var popupTraining = new PopupTraining(gv.building_selected);
                 this.addChild(popupTraining, 1, gv.tag.TAG_POPUP_TRAINING*(gv.building_selected%100));
                 popupTraining.onAppear();

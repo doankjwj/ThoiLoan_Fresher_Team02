@@ -264,6 +264,7 @@ gv.tag =
         TAG_POPUP: 2000,
         TAG_POPUP_MESSAGE: 2001,
         TAG_POPUP_TRAINING: 1890,
+        TAG_BUTTON_TROOP: 1905,
         TAG_POPUP_RESEARCH_TROOP: 3421,
     };
 /* Pop Up */

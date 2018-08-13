@@ -12,7 +12,6 @@ var Barrack = BuildingNode.extend({
 
         this._super(id, level, row, col, existed);
 
-
         /* Add Center Building */
         this.addCenterBuilding();
 
@@ -39,7 +38,6 @@ var Barrack = BuildingNode.extend({
             this.onStartBuild(gv.startConstructType.loadConstruct);
         }
 
-
     },
 
     updateAnim: function()
@@ -61,5 +59,13 @@ var Barrack = BuildingNode.extend({
             cf.animationBarrack[this._level] = fn.getAnimation("effect_barrack_1_" + this._level + " ", 1, 6);
             cf.animationBarrack[this._level].retain();
         }
+    },
+
+    getTrainingLayer: function(){
+
+        var layer = new PopupTraining(this._id);
+        layer.setTag((this._id%100)*gv.tag.TAG_POPUP_TRAINING);
+        return layer;
+
     }
-})
+});

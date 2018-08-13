@@ -37,9 +37,11 @@ var Map = cc.Node.extend({
                     if (building != null)
                     {
                         self.addChild(building);
-
                         cf.user._buildingList[building._orderInUserBuildingList][cf.user._buildingListCount[building._orderInUserBuildingList]] = (building);
                         cf.user._buildingListCount[building._orderInUserBuildingList] ++;
+                        if(building._buildingSTR === gv.buildingSTR.barrack_1) {
+                            fr.getCurrentScreen().addChild(building.getTrainingLayer(), 1);
+                        }
                         if(building._existed) building.locate_map_array(building);
                     }
                 }
