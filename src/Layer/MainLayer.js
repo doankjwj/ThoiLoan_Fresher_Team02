@@ -174,9 +174,6 @@ var MainLayer = cc.Layer.extend({
         this.addUserBar();
         this.addBuilderBar();
 
-        this._popUpTraining = new PopupTraining();
-        this.addChild(this._popUpTraining, 1, gv.tag.TAG_POPUP_TRAINING);
-
         this._popUp = new PopUpConstruct();
         this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
         this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
@@ -622,7 +619,6 @@ var MainLayer = cc.Layer.extend({
 
         this._guiTraningArmyButton = new IconActionBuilding(cf.CODE_TRAINING);
 
-
         this._guiTraningArmyButton.attr({
             anchorX: 0.5,
             anchorY: 0.5,
@@ -641,7 +637,16 @@ var MainLayer = cc.Layer.extend({
             if (order === orderBuilderHut) return;
             if (building._is_active === false) return;
 
-            self.getChildByTag(gv.tag.TAG_POPUP_TRAINING).onAppear();
+            if(this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING) === null) {
+
+                var popupTraining = new PopupTraining(gv.building_selected);
+                this.addChild(popupTraining, 1, gv.tag.TAG_POPUP_TRAINING*(gv.building_selected%100));
+                popupTraining.onAppear();
+            }
+            else {
+                var popup = this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING);
+                popup.onAppear();
+            }
 
         }.bind(this));
 
