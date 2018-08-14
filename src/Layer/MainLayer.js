@@ -67,7 +67,7 @@ var MainLayer = cc.Layer.extend({
         this.addChild(bg, 0, this._TAG_BG);
 
         var logo = cc.Sprite(logInGUI.logo);
-        logo.setPosition(100, cc.winSize.height - 100);
+        logo.setPosition(cc.winSize.width - 100, cc.winSize.height - 100);
         logo.scale = 2;
         this.addChild(logo, 0, this._TAG_LOGO);
 
@@ -97,7 +97,8 @@ var MainLayer = cc.Layer.extend({
             anchorX: 0.5,
             anchorY: 0.5,
             x: cc.winSize.width/2,
-            y: cc.winSize.height/2 - 2 * login.height
+            y: cc.winSize.height/2 - 2 * login.height,
+            scale: 1.5
         });
         login.setTitleText("Log In");
         login.setTitleFontSize(24);
@@ -111,7 +112,7 @@ var MainLayer = cc.Layer.extend({
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "noz1995test";
         gv.passwordSendToServer = this._passwordField.string;
 
         gv.gameClient.connect();
@@ -139,26 +140,62 @@ var MainLayer = cc.Layer.extend({
 
     onReceiveUserInfo: function()
     {
+        this.initGameSound();
         this.initUser();
         this.initMainGUI();
         this.initMap();
         this.initRetainBuilding();
         this.updateGUIandUserInfo();
+        cf.user.distributeResource(true, true, true);
+
+        this.initTroops();
 
 
-        //Test Troop example, remove later
-        this.troopExample();
+        // cc.log(JSON.stringify(gv.json.troopAnimation));
+        // this.troopExample();
     },
-    troopExample:function()
+    initTroops: function ()
     {
-        var testTroop = new Troop(3, this._map, 13,9, 900);
-        cf.user._listTroop.push(testTroop);
+        var armyCampMostSpacePercent = function ()
+        {
+            var firstArmyCamp = cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][0];
+            var maxSpacePercent = firstArmyCamp.getAvailableSpace() * 100 / firstArmyCamp.getMaxSpace();
+            var output = 0;
+            for (var i = 1; i < cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1]; i += 1)
+            {
+                var thisArmyCamp = cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][i];
+                if (thisArmyCamp.getMaxSpace() > 0)
+                {
+                    var thisArmyCampAvailableSpacePercent = thisArmyCamp.getAvailableSpace() * 100 / thisArmyCamp.getMaxSpace();
+                    if (thisArmyCampAvailableSpacePercent > maxSpacePercent)
+                    {
+                        maxSpacePercent = thisArmyCampAvailableSpacePercent;
+                        output = i;
+                    }
+                    cc.log(thisArmyCampAvailableSpacePercent);
+                }
+            }
+            return cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][output];
+        }
+        for (var i = 0; i < gv.jsonInfo.player.troopAmount.length; i += 1)
+            for (var j = 0; j < gv.jsonInfo.player.troopAmount[i]; j += 1)
+            {
+                var theChosenArmyCamp = armyCampMostSpacePercent();
+                if (theChosenArmyCamp._troopList == null)
+                    theChosenArmyCamp._troopList = new Array();
+                theChosenArmyCamp._troopList.push(new Troop(i, this._map, theChosenArmyCamp._row + 2, theChosenArmyCamp._col + 2, theChosenArmyCamp._id));
+                theChosenArmyCamp._troopQuantity += gv.json.troopBase["ARM_" + (i + 1)]["housingSpace"];
+            }
+    },
+
+    initGameSound: function()
+    {
+        audioPlayer.play(res.sound.soundBackgound, true);
     },
     initUser: function()
     {
         cf.user = new User();
     },
-
     initMainGUI: function() {
         this.addShopButton();
         //this.addSettingButton();
@@ -184,6 +221,12 @@ var MainLayer = cc.Layer.extend({
         this.getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
     },
 
+    releaseTroop: function()
+    {
+        for(var i = 0; i < cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1].length; i++)
+            if (cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][i]._troopList != null)
+                cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][i]._troopList.length = 0;
+    },
     addCheatButton: function() {
 
         var self = this;
@@ -193,7 +236,8 @@ var MainLayer = cc.Layer.extend({
         this._resetUserButton.addClickEventListener(function()
         {
             testnetwork.connector.sendResetUser();
-
+            this.releaseTroop();
+            audioPlayer.stopAll();
             try{
                 fr.view(MainLayer);
             } catch(e)
@@ -201,12 +245,12 @@ var MainLayer = cc.Layer.extend({
                 cc.log(e)
             };
         }.bind(this));
-
         this.addChild(this._resetUserButton, 1);
-
         this._restartGameButton = gv.commonButton(80, 64, 70, 90, "Re-\nstart");
         this._restartGameButton.addClickEventListener(function()
         {
+            this.releaseTroop();
+            audioPlayer.stopAll();
             try{
                 fr.view(MainLayer);
             } catch(e)
@@ -358,14 +402,17 @@ var MainLayer = cc.Layer.extend({
     {
         var building = null;
         for (var i = 0; i <= gv.buildingTypeCount; i++)
-            for (var j = 0; j < cf.user._buildingListCount[i]; j++)
         {
-            building = cf.user._buildingList[i][j];
-            if (!building._is_active)
+            for (var j = 0; j < cf.user._buildingListCount[i]; j++)
             {
-                building.updateConstructType();
+                building = cf.user._buildingList[i][j];
+                if (!building._is_active)
+                {
+                    building.updateConstructType();
+                }
             }
-        };
+            ;
+        }
 
     },
 
@@ -843,7 +890,7 @@ var MainLayer = cc.Layer.extend({
         var actMoveUp = cc.MoveTo(0.1, cc.p(x, y));
         this._guiButtonHarvest.runAction(actMoveUp);
         this._guiButtonHarvest.addClickEventListener(function(){
-            building.onHarvest();
+        building.onHarvest();
         }.bind(this));
     },
 
@@ -934,6 +981,45 @@ var MainLayer = cc.Layer.extend({
     distance: function(p, q, x) {
         if(!x) x = 0;
         return Math.sqrt((p.x - q.x)*(p.x - q.x) + (p.y - q.y)*(p.y - q.y));
+    },
+
+    _zoomMap: function() {
+        var self = this;
+        var touchLocation_0;
+        var touchLocation_1;
+        var curMidPoint;
+        var newMidPoint;
+        var newMapPos;
+        if(self === null) return;
+        cc.log("ZOOM MAP");
+        cc.eventManager.addListener({
+            event: cc.EventListener.TOUCH_ALL_AT_ONCE,
+            swallowTouches: true,
+            onTouchesBegan: function(touches, event) {
+                return true;
+            },
+            onTouchesMoved: function(touches, event) {
+                if(touches.length < 2) return;
+                cc.log(touches.length);
+
+                curMidPoint = cc.p(touchLocation_0.x/2 + touchLocation_1.x/2 - self._map.x, touchLocation_0.y/2 + touchLocation_1.y/2 - self._map.y);
+                var dis0 = self.distance(touchLocation_0, touchLocation_1, 1);
+                var delta0 = touches[0].getDelta();
+                var delta1 = touches[1].getDelta();
+
+                var dis1 = self.distance(cc.pAddIn(touchLocation_0, delta0), cc.pAddIn(touchLocation_1, delta1), 2);
+
+                var scale = dis1/dis0;
+                self._map.scale *= scale;
+                newMidPoint = cc.p(curMidPoint.x*scale, curMidPoint.y*scale);
+                newMapPos = cc.pSubIn(curMidPoint.x, newMidPoint);
+                self._map.setPosition(newMapPos);
+                self.repositioning();
+            },
+            onTouchesEnded: function(touches, event) {
+            }
+        }, this);
+
     },
 
     zoomMap: function() {

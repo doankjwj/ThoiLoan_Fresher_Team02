@@ -1,5 +1,6 @@
 var ArmyCamp = BuildingNode.extend({
-    _troop_quantity: null,
+    _troopQuantity: 0,
+    _troopList: null,
 
     ctor: function(id, level, row, col, existed)
     {
@@ -23,16 +24,25 @@ var ArmyCamp = BuildingNode.extend({
         this._effectAnim = cc.Sprite(res.tmp_effect);
         this._effectAnim.anchorX = 0.5;
         this._effectAnim.anchorY = 0;
-        this._effectAnim.scale = 2 * cf.SCALE;
+        this._effectAnim.scale = cf.SCALE;
         this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
-        this._effectAnim.runAction(cf.animationArmyCamp[2].clone().repeatForever());
+        this._effectAnim.runAction(cf.animationArmyCamp[1].clone().repeatForever());
 
         if (!this._is_active)
         {
             this.onStartBuild(gv.startConstructType.loadConstruct);
         }
     },
-
+    getMaxSpace:function()
+    {
+      if(this._jsonConfig[this._buildingSTR][this._level]["capacity"] != null)
+          return this._jsonConfig[this._buildingSTR][this._level]["capacity"];
+      return 0;
+    },
+    getAvailableSpace:function()
+    {
+      return this.getMaxSpace() - this._troopQuantity;
+    },
     updateAnim: function()
     {
         //
@@ -49,5 +59,12 @@ var ArmyCamp = BuildingNode.extend({
                 cf.animationArmyCamp[i].retain();
             }
         }
+    },
+    locate_map_array: function (b)
+    {
+        this._super(b);
+        if (this._troopList)
+            for(var i = 0; i < this._troopList.length;i+=1)
+                this._troopList[i].randomMoveArmyCamp();
     }
 })

@@ -57,11 +57,14 @@ var Troop = cc.Class.extend
             }
             while ((offsetRow === offsetColumn && [2, 3].indexOf(offsetRow) >= 0) ||
                    (Math.abs(offsetRow - offsetColumn) === 1 && offsetRow + offsetColumn === 5));
-            this.targetLogicPoint = new LogicPoint(armyCampLogicPosition.logicRow + offsetRow, armyCampLogicPosition.logicColumn + offsetColumn);
+            if (armyCampLogicPosition !== undefined)
+                this.savedPosition = armyCampLogicPosition;
+            this.targetLogicPoint = new LogicPoint(this.savedPosition.logicRow + offsetRow, this.savedPosition.logicColumn + offsetColumn);
             this.facingDirection = this.position.getDirectionTo(this.targetLogicPoint);
             try
             {
                 this.visualization.stopAllActions();
+                this.visualization.unit.stopAllActions();
             }
             catch (e)
             {
@@ -74,7 +77,6 @@ var Troop = cc.Class.extend
             if (this.position.isEqualTo(this.targetLogicPoint))
             {
                 this.visualization.isMoving = false;
-                this.setLogicPosition(this.targetLogicPoint);
                 this.visualizeOnIdle();
                 this.delayRandomMove();
                 return;
@@ -181,10 +183,19 @@ var Troop = cc.Class.extend
             }
             this.visualizeMoveAction();
         },
+        isInsideArmyCamp: function ()
+        {
+            return this.getNumberAt(this.position) === this.armyCampId;
+        },
         visualizeMoveAction: function ()
         {
             var targetTruePointStep = this.targetLogicPointStep.toTruePoint();
-            var actionMove = cc.MoveTo(this.facingDirection.getVectorLength() / 2, targetTruePointStep);
+            if (this.isInsideArmyCamp())
+            {
+                targetTruePointStep.x += cf.tileSize.width* (1 - Math.random()*2) / 2;
+                targetTruePointStep.y += cf.tileSize.height* (1 - Math.random()*2) / 2;
+            }
+            var actionMove = cc.MoveTo(cc.pDistance(this.position.toTruePoint(), targetTruePointStep) / 75, targetTruePointStep);
             var self = this;
             var actionEnd = cc.callFunc(function ()
                                         {
@@ -262,6 +273,7 @@ var Troop = cc.Class.extend
         visualizeOnIdle: function ()
         {
             this.visualization.setLocalZOrder(this.position.logicRow + this.position.logicColumn);
+            this.visualization.stopAllActions();
             this.visualization.unit.stopAllActions();
             var directionType = this.facingDirection.getDirectionType();
             var framesCount = gv.json.troopAnimation[this.getTroopNameWithLevel()]["frCounts"][0];
@@ -303,6 +315,7 @@ var Troop = cc.Class.extend
         visualizeOnMove: function ()
         {
             var framesCount = gv.json.troopAnimation[this.getTroopNameWithLevel()]["frCounts"][1];
+            this.visualization.stopAllActions();
             this.visualization.unit.stopAllActions();
             var directionType = this.facingDirection.getDirectionType();
             var animationFrames = [];
