@@ -66,7 +66,7 @@ fn.loadJson = function ()
         for (var j = 1; j < 4; j += 1)
             try
             {
-                cc.loader.loadJson(res.folder_troop_animation + "ARM_" + i + "_" + j + "/ARM_" + i + "_" + j + "/ARM_" + i + "_" + j + "_info.json",
+                cc.loader.loadJson(res.folder_troop_animation + "ARM_" + i + "_" + j + "/ARM_" + i + "_" + j + "_info.json",
                                    function (error, data)
                                    {
                                        gv.json.troopAnimation["ARM_" + i + "_" + j] = data;
@@ -74,13 +74,17 @@ fn.loadJson = function ()
             }
             catch(e)
             {
-                cc.log(e);
+                cc.loader.loadJson(res.folder_troop_animation + "ARM_" + i + "_" + 1 + "/ARM_" + i + "_" + 1 + "_info.json",
+                                   function (error, data)
+                                   {
+                                       gv.json.troopAnimation["ARM_" + i + "_" + j] = data;
+                                   });
             }
 };
-fn.loadPlist = function (troopName)
+fn.loadPlist = function (troopNameWithLevel)
 {
-    cc.spriteFrameCache.addSpriteFrames("res/Art/Troops/" + troopName + "_Animation.plist");
-    gv.plist[troopName] = true;
+    cc.spriteFrameCache.addSpriteFrames("res/Art/Troops/" + troopNameWithLevel + "/" + troopNameWithLevel + ".plist");
+    gv.plist[troopNameWithLevel] = true;
 };
 /* Map */
 fn.getRowColFromPos = function (pos) // Lấy ra Tọa độ dòng, cột của building từ pos
