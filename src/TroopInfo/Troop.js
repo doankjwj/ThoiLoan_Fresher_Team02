@@ -195,7 +195,7 @@ var Troop = cc.Class.extend
                 targetTruePointStep.x += cf.tileSize.width* (1 - Math.random()*2) / 2;
                 targetTruePointStep.y += cf.tileSize.height* (1 - Math.random()*2) / 2;
             }
-            var actionMove = cc.MoveTo(cc.pDistance(this.position.toTruePoint(), targetTruePointStep) / 75, targetTruePointStep);
+            var actionMove = cc.MoveTo(cc.pDistance(this.position.toTruePoint(), targetTruePointStep) / gv.json.troopBase[this.getTroopName()]["moveSpeed"] / 3, targetTruePointStep);
             var self = this;
             var actionEnd = cc.callFunc(function ()
                                         {
