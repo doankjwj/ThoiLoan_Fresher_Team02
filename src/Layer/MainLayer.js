@@ -117,7 +117,7 @@
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
         gv.passwordSendToServer = this._passwordField.string;
 
         gv.gameClient.connect();
@@ -153,6 +153,8 @@
         this.updateGUIandUserInfo();
         cf.user.distributeResource(true, true, true);
         this.initTroops();
+
+        // ======================
     },
     initTroops: function ()
     {

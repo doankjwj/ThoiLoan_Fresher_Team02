@@ -892,17 +892,19 @@ var BuildingNode = cc.Node.extend({
                 break;
         };
 
-        cf.user._currentCapacityGold -= this._resRequire.gold;
-        cf.user._currentCapacityElixir -= this._resRequire.elixir;
-        cf.user._currentCapacityDarkElixir -= this._resRequire.darkElixir;
-        cf.user._currentCapacityCoin -= this._resRequire.coin;
+        //cf.user._currentCapacityGold -= this._resRequire.gold;
+        //cf.user._currentCapacityElixir -= this._resRequire.elixir;
+        //cf.user._currentCapacityDarkElixir -= this._resRequire.darkElixir;
+        //cf.user._currentCapacityCoin -= this._resRequire.coin;
+
+        cf.user.editCurrentResource(-this._resRequire.gold, this._resRequire.elixir, this._resRequire.darkElixir, this._resRequire.coin);
 
         this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
         this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
         this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
         this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
 
-        cf.user.distributeResource(gold > 0, elixir > 0, darkElixir > 0);
+        //cf.user.distributeResource(gold > 0, elixir > 0, darkElixir > 0);
     },
 
     hideBuildingButton: function() {

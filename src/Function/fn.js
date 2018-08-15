@@ -97,7 +97,7 @@ fn.getRowColFromPos = function (pos) // Lấy ra Tọa độ dòng, cột của 
     loc.x = parseInt(((yy / (TILE_HEIGHT / 2) - xx / (TILE_WIDTH / 2)) / 2).toFixed(0)) + 1;
     loc.y = parseInt(((xx / (TILE_WIDTH / 2) + yy / (TILE_HEIGHT / 2)) / 2).toFixed(0)) + 1;
     if (!fn.insideMap(loc.x, loc.y))
-        return (cc.p(gv.buildingMove.row, gv.buildingMove.col));
+        return (cc.p(gv.buildingMove.currentRow, gv.buildingMove.currentCol));
     return (cc.p(41 - loc.x, 41 - loc.y));
     /* Boundary */
     loc.x = (loc.x > 40) ? 40 : loc.x;
