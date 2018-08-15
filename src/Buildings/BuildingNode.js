@@ -6,7 +6,7 @@ var BuildingNode = cc.Node.extend({
     _size: null,
     _existed: null,
     _type: null,
-    _is_active: true,
+    _isActive: true,
     _finishing_time: null,
     _name: null,
     _description: null,
@@ -48,14 +48,23 @@ var BuildingNode = cc.Node.extend({
     _listener: null,
     _listenerMove: null,
 
-    ctor: function(id, level, row, col, existed) {
+    /* Resource Require */
+    _resRequire: {
+        gold: null,
+        elixir: null,
+        darkElixir: null,
+        coin: null,
+    },
+
+    ctor: function(id, level, row, col, existed, isActive) {
         this._super();
         this.scale = cf.SCALE;
         this._existed = existed;
         this._id = id;
         this._row = row;
         this._col = col;
-        this._level = (level > 0) ? level : 1;
+        this._level = level;
+        this._isActive = isActive
 
         this._txtName = cc.LabelBMFont(this._name, font.soji20);
         this._txtName.setColor(cc.color(189,183,107, 255));
@@ -180,7 +189,7 @@ var BuildingNode = cc.Node.extend({
 
                 if (fn.pointInsidePolygon([x, y], polygon) && (gv.building_selected !== self._id))
                 {
-                    self._txtName.setString(self._name + " level " + ((self._is_active) ? self._level : Math.max(self._level - 1, 1)));
+                    self._txtName.setString(self._name + " level " + self.getTempLevel());
                     self._txtName.visible = true;
                     self.popBuildingScale();
                     self.setLocalZOrder(200);
@@ -223,7 +232,15 @@ var BuildingNode = cc.Node.extend({
             this.showBuildingButton();
         }
     },
-
+    getTempLevel: function() //Level hiện tại hoặc 1 nếu là đang nâng cấp
+    {
+        if (this._isActive) return this._level;
+        return (this._level == 0) ? 1 : this._level;
+    },
+    getNextLevel: function() //Level tiếp theo
+    {
+        return Math.min(this._level + 1, this._maxLevel);
+    },
     /* Nâng và hạ công trình khi Click */
     popBuildingScale: function()
     {
@@ -289,12 +306,6 @@ var BuildingNode = cc.Node.extend({
                         self.unlocate_map_array(cf.current_r, cf.current_c, size);
                         self.locate_map_array(self);
                         testnetwork.connector.sendMove(self._id, self._row, self._col);
-                        if (Math.floor( self._id/100) == 9)
-                        {
-                            for(var i = 0; i < cf.user._listTroop.length;i+=1)
-                                if (cf.user._listTroop[i].armyCampId == self._id)
-                                    cf.user._listTroop[i].randomMoveArmyCamp();
-                        }
                     }
                     return false;
                 }
@@ -361,31 +372,28 @@ var BuildingNode = cc.Node.extend({
         this.addChild(this._effect_level_up, this._defence.getLocalZOrder() + 1);
     },
 
-    updateConstructType: function()
-    {
-        if (!this._is_active)
-        {
-            this.onStartBuild(gv.startConstructType.loadConstruct);
-        }
-    },
-
     onStartBuild: function(startConstructType) {
-        if (this._existed)
-            this._level ++;
+        //if (this._existed)
+        //    this._level ++;
         this._existed = true;
-        this._is_active = false;
-        if (startConstructType == gv.startConstructType.newConstruct) {
+        this._isActive = false;
+        if (startConstructType == gv.startConstructType.newConstruct) { // click xây mới/ nâng cấp mới
             this._time_remaining = this.getTimeRequire();
+            this._time_total = this._time_remaining;
             // Thu hoạch nếu nhà là nhà tài nguyên
-            if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3 && this._level > 1)
+            if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3 && this._level > 0)
+            {
                 this.onHarvest();
+                this._currentCapacity = 0;
+            }
+            this.onEndClick();
+            this.hideBuildingButton();
         }
-        else
+        else    // đang nâng cấp dở từ server
         {
             this._time_remaining = Math.floor((this._finishing_time - new Date().getTime()) / 1000);
+            this._time_total = this.getTimeRequire();
         }
-
-        this._time_total = this._time_remaining;
 
         /* Time Bar */
         this._info_bar = cc.Sprite(res.upgradeBuildingGUI.infoBar, cc.rect(0,0, this._BAR_WIDTH, this._BAR_HEIGHT));
@@ -422,7 +430,7 @@ var BuildingNode = cc.Node.extend({
             anchorX: 0.5,
             anchorY: 0,
             x: 0,
-            y: cf.tileSize.height * cf.SCALE * 2
+            y: cf.tileSize.height * cf.SCALE * 2,
         });
         this.addChild(this._txt_time_remaining, this._defence.getLocalZOrder() + 1);
 
@@ -431,17 +439,17 @@ var BuildingNode = cc.Node.extend({
         /* Update Builder */
         cf.user._builderFree --;
         cf.user.updateSingleBuilder();
-        this.onEndClick();
+
         this._txtName.visible = false;
-        this.hideBuildingButton();
+
     },
 
     onUpdateBuildStatus: function() {
-        if (this._is_active)
+        if (this._isActive)
         {
             return;
         }
-        if (this._time_remaining <= 0 && !this._is_active)
+        if (this._time_remaining <= 0 && !this._isActive)
         {
             this.onCompleteBuild();
             return;
@@ -462,7 +470,7 @@ var BuildingNode = cc.Node.extend({
     },
 
     onCancelBuild: function() {
-        this._is_active = true;
+        this._isActive = true;
 
         this._txt_time_remaining.visible = false;
         this._info_bar.visible = false;
@@ -474,10 +482,10 @@ var BuildingNode = cc.Node.extend({
         cf.user.updateBuilder();
 
 
-        /* Update sprite */
-        if (this._level > 1) {
-            this._level -= 1;
-        } else {
+        if (this._level > 0) {
+            this._isActive = true;
+        } else
+        {
             cf.user._buildingList[this._orderInUserBuildingList].splice(this._id%100, 1);
             cf.user._buildingListCount[this._orderInUserBuildingList] -= 1;
             this.unlocate_map_array(this._row, this._col, this._size);
@@ -486,18 +494,18 @@ var BuildingNode = cc.Node.extend({
     },
 
     onCompleteBuild: function() {
-        this._is_active = true;
-        this._effect_level_up.visible = true;
+        this._isActive = true;
+        this._level ++;
         if (cf.animationConstructLevelUp == null)
         {
-            cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_levelup.plist", res.folder_effect + "effect_levelup.png");
+            cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_construct_levelup.plist", res.folder_effect + "effect_construct_levelup.png");
         }
         this._txt_time_remaining.visible = false;
         this._info_bar.visible = false;
         this._info_bar_bg.visible = false;
         this._defence.visible = false;
         this._effect_level_up.runAction(cc.Sequence.create(cc.CallFunc(function(){this._effect_level_up.visible = true}, this),
-            fn.getAnimation("effect_levelup ", 1, 12).clone(),
+            fn.getAnimation("effect_construct_levelup ", 1, 7),
             cc.CallFunc(function(){this._effect_level_up.visible = false}, this)));
 
         /* Update Max capacity if Building is Storage or Town Hall */
@@ -514,8 +522,8 @@ var BuildingNode = cc.Node.extend({
             this.onUpdateSpriteFrame();
         }
         this.updateLabelName();
-        // if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
-        //     this._lastHarvestTime = new Date().getTime();
+        if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
+            this._finishing_time = new Date().getTime();
     },
 
     onUpdateSpriteFrame: function()
@@ -569,7 +577,7 @@ var BuildingNode = cc.Node.extend({
     },
     updateLabelName: function()
     {
-        this._txtName.setString(this._name + " level " + ((this._is_active) ? this._level : Math.max(this._level - 1, 1)));
+        this._txtName.setString(this._name + " level " + this.getTempLevel());
     },
     getTimeRequire: function() {
 
@@ -609,9 +617,7 @@ var BuildingNode = cc.Node.extend({
             default:
                 break;
         }
-
-        return (json[this._buildingSTR][this._level]["buildTime"]);
-
+        return (json[this._buildingSTR][this.getNextLevel()]["buildTime"]);
     },
 
     addCenterBuilding: function() {
@@ -623,37 +629,37 @@ var BuildingNode = cc.Node.extend({
         switch(str)
         {
             case gv.buildingSTR.townHall:
-                this._center_building = cc.Sprite(res.folder_town_hall + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_town_hall + str + "_" + this.getTempLevel() + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case gv.buildingSTR.builderHut:
                 this._center_building = cc.Sprite(res.folder_builder_hut + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case gv.buildingSTR.armyCamp_1:
-                this._center_building = cc.Sprite(res.folder_army_camp + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);;
+                this._center_building = cc.Sprite(res.folder_army_camp + str + "_" + this.getTempLevel() + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);;
                 break;
             case gv.buildingSTR.barrack_1:
-                this._center_building = cc.Sprite(res.folder_barrack + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_barrack + str + "_" + this.getTempLevel() + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case gv.buildingSTR.resource_1:
-                this._center_building = cc.Sprite(res.folder_gold_mine + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_gold_mine + str + "_" + this.getTempLevel() + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case gv.buildingSTR.resource_2:
-                this._center_building = cc.Sprite(res.folder_elixir_collector + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_elixir_collector + str + "_" + this.getTempLevel() + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case gv.buildingSTR.storage_1:
-                this._center_building = cc.Sprite(res.folder_gold_storage + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_gold_storage + str + "_" + this.getTempLevel() + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case gv.buildingSTR.storage_2:
-                this._center_building = cc.Sprite(res.folder_elixir_storage + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_elixir_storage + str + "_" + this.getTempLevel() + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case gv.buildingSTR.obstacle:
-                this._center_building = cc.Sprite(res.folder_obs + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_obs + this.getTempLevel() + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case gv.buildingSTR.defence_1:
-                this._center_building = cc.Sprite(res.folder_defense_base + "DEF_1_" + this._level + "_Shadow.png");
+                this._center_building = cc.Sprite(res.folder_defense_base + "DEF_1_" + this.getTempLevel() + "_Shadow.png");
                 break;
             case gv.buildingSTR.lab:
-                this._center_building = cc.Sprite(res.folder_laboratory + "LAB_1_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_laboratory + "LAB_1_" + this.getTempLevel() + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             default:
                 break;
@@ -709,7 +715,7 @@ var BuildingNode = cc.Node.extend({
             if(!self._red.visible) {
                 self.onEndClick();
                 self.hideBuildingButton();
-                this.checkResource();
+                self.checkResource();
                 if (!this._constructAble)
                 {
                     self.getParent().getParent().popUpMessage("Chưa đủ tài nguyên");
@@ -736,7 +742,7 @@ var BuildingNode = cc.Node.extend({
     {
         this._constructAble = true;
         var str = this._buildingSTR;
-        var level = this._level;
+        var nextLevel = this.getNextLevel();
         var gold = 0;
         var elixir = 0;
         var darkElixir = 0;
@@ -745,9 +751,9 @@ var BuildingNode = cc.Node.extend({
         switch(str)
         {
             case gv.buildingSTR.townHall:
-                gold = gv.json.townHall[str][level]["gold"];
+                gold = gv.json.townHall[str][nextLevel]["gold"];
                 elixir = 0;
-                darkElixir = 0;
+                darkElixir = gv.json.townHall[str][nextLevel]["darkElixir"];
                 coin = 0;
                 break;
             case gv.buildingSTR.builderHut:
@@ -758,44 +764,44 @@ var BuildingNode = cc.Node.extend({
                 break;
             case gv.buildingSTR.armyCamp_1:
                 gold = 0;
-                elixir = gv.json.armyCamp[str][level]["elixir"];
-                darkElixir = gv.json.armyCamp[str][level]["darkElixir"];
+                elixir = gv.json.armyCamp[str][nextLevel]["elixir"];
+                darkElixir = gv.json.armyCamp[str][nextLevel]["darkElixir"];
                 coin = 0;
                 break;
             case gv.buildingSTR.barrack_1:
                 gold = 0;
-                elixir = gv.json.barrack[str][level]["elixir"];
-                darkElixir = gv.json.barrack[str][level]["darkElixir"];
+                elixir = gv.json.barrack[str][nextLevel]["elixir"];
+                darkElixir = gv.json.barrack[str][nextLevel]["darkElixir"];
                 coin = 0;
                 break;
             case gv.buildingSTR.resource_1:
-                gold = gv.json.resource[str][level]["gold"];
-                elixir = gv.json.resource[str][level]["elixir"];
-                darkElixir = gv.json.resource[str][level]["darkElixir"];
+                gold = gv.json.resource[str][nextLevel]["gold"];
+                elixir = gv.json.resource[str][nextLevel]["elixir"];
+                darkElixir = gv.json.resource[str][nextLevel]["darkElixir"];
                 coin = 0;
                 break;
             case gv.buildingSTR.resource_2:
-                gold = gv.json.resource[str][level]["gold"];
-                elixir = gv.json.resource[str][level]["elixir"];
-                darkElixir = gv.json.resource[str][level]["darkElixir"];
+                gold = gv.json.resource[str][nextLevel]["gold"];
+                elixir = gv.json.resource[str][nextLevel]["elixir"];
+                darkElixir = gv.json.resource[str][nextLevel]["darkElixir"];
                 coin = 0;
                 break;
             case gv.buildingSTR.storage_1:
-                gold = gv.json.storage[str][level]["gold"];
-                elixir = gv.json.storage[str][level]["elixir"];
-                darkElixir = gv.json.storage[str][level]["darkElixir"];
+                gold = gv.json.storage[str][nextLevel]["gold"];
+                elixir = gv.json.storage[str][nextLevel]["elixir"];
+                darkElixir = gv.json.storage[str][nextLevel]["darkElixir"];
                 coin = 0;
                 break;
             case gv.buildingSTR.storage_2:
-                gold = gv.json.storage[str][level]["gold"];
-                elixir = gv.json.storage[str][level]["elixir"];
-                darkElixir = gv.json.storage[str][level]["darkElixir"];
+                gold = gv.json.storage[str][nextLevel]["gold"];
+                elixir = gv.json.storage[str][nextLevel]["elixir"];
+                darkElixir = gv.json.storage[str][nextLevel]["darkElixir"];
                 coin = 0;
                 break;
             case gv.buildingSTR.defence_1:
-                gold = gv.json.defence[str][level]["gold"];
+                gold = gv.json.defence[str][nextLevel]["gold"];
                 elixir = 0;
-                darkElixir = gv.json.defence[str][level]["darkElixir"];
+                darkElixir = gv.json.defence[str][nextLevel]["darkElixir"];
                 coin = 0;
                 break;
             case gv.buildingSTR.obstacle:
@@ -803,6 +809,10 @@ var BuildingNode = cc.Node.extend({
             default:
                 break;
         };
+        this._resRequire.gold = gold;
+        this._resRequire.elixir = elixir;
+        this._resRequire.darkElixir = darkElixir;
+        this._resRequire.coin = coin;
 
         if(cf.user._currentCapacityGold < gold) this._constructAble = false;
         if(cf.user._currentCapacityElixir < elixir) this._constructAble = false;
@@ -813,7 +823,7 @@ var BuildingNode = cc.Node.extend({
     updateResource: function()
     {
         var str = this._buildingSTR;
-        var level = this._level;
+        var level = Math.min(this._level + 1, this._maxLevel);
         var gold = 0;
         var elixir = 0;
         var darkElixir = 0;
@@ -881,15 +891,19 @@ var BuildingNode = cc.Node.extend({
                 break;
         };
 
-        cf.user._currentCapacityGold -= gold;
-        cf.user._currentCapacityElixir -= elixir;
-        cf.user._currentCapacityDarkElixir -= darkElixir;
-        cf.user._currentCapacityCoin -= coin;
+        //cf.user._currentCapacityGold -= this._resRequire.gold;
+        //cf.user._currentCapacityElixir -= this._resRequire.elixir;
+        //cf.user._currentCapacityDarkElixir -= this._resRequire.darkElixir;
+        //cf.user._currentCapacityCoin -= this._resRequire.coin;
+
+        cf.user.editCurrentResource(-this._resRequire.gold, -this._resRequire.elixir, -this._resRequire.darkElixir, -this._resRequire.coin);
 
         this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
         this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
         this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
         this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+
+        //cf.user.distributeResource(gold > 0, elixir > 0, darkElixir > 0);
     },
 
     hideBuildingButton: function() {

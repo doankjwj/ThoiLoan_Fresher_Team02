@@ -391,17 +391,14 @@ var PopUpConstruct = cc.Node.extend({
             this._btnOk.visible = true;
         }
         var b = cf.user._buildingList[Math.floor(id/100) - 1][Math.floor(id%100)];
-        var level = b._level;
-        if (constructType == gv.constructType.upgrade)
-            level++;
-        this.updateIcon(b._buildingSTR, level, b._size, b._name, b._is_active, constructType);
-        this.updateBar(b._buildingSTR, level, b._size, b._name, b._is_active, constructType);
+        var level = (constructType == gv.constructType.info) ? b.getTempLevel() : b.getNextLevel();
+        this.updateIcon(b._buildingSTR, level, b._size, b._name, b._isActive, constructType);
+        this.updateBar(b._buildingSTR, b.getTempLevel(), b._size, b._name, b._isActive, constructType);
         this.updateDescription((b._description));
     },
 
     visibleBar: function(bool1, bool2, bool3)
     {
-        cc.log(bool1 + " " + bool2 + " " + bool3);
         this._bar1.visible = bool1;
         this._bar1BG.visible = bool1;
         this._bar1BG2.visible = bool1;
@@ -471,8 +468,7 @@ var PopUpConstruct = cc.Node.extend({
     {
         var buildingId = gv.building_selected;
         var b = cf.user._buildingList[Math.floor(buildingId/100) - 1][Math.floor(buildingId%100)];
-        if (constructType == gv.constructType.upgrade)
-            level --;
+
         var bar1Length = 1;
         var bar1Length2 = 1;
         var bar1MaxLength = 1;
@@ -486,8 +482,6 @@ var PopUpConstruct = cc.Node.extend({
         var preText1 = "";
         var preText2 = "";
         var preText3 = "";
-
-        if (!status) level = Math.max(1, level - 1);
 
         switch (str)
         {
@@ -700,7 +694,7 @@ var PopUpConstruct = cc.Node.extend({
 
     },
 
-    updateIcon: function(str, level, size, name, status, constructType)
+    updateIcon: function(str, level, size, name, status, constructType, tmpLevel)
     {
         /* invisible All Bar */
         //this.visibleBar(false, false, false);
@@ -712,12 +706,8 @@ var PopUpConstruct = cc.Node.extend({
         if (this.getChildByTag(this._TAG_EFFECT))
             this.removeChildByTag(this._TAG_EFFECT);
 
-        if (!status) level--;
-
-        //this._bar1Icon.setSpriteFrame(new cc.SpriteFrame(res.upgradeBuildingGUI.iconGold));
-
         /* Title Bar */
-        this._txtTitle.setString(((this._constructType == gv.constructType.upgrade) ? "Nâng lên " : "") + name + " cấp " + level);
+        this._txtTitle.setString(((this._constructType == gv.constructType.upgrade) ? "Nâng lên " : "") + name + " cấp " + (level));
 
         /* Require*/
         var gold = null;
@@ -726,22 +716,13 @@ var PopUpConstruct = cc.Node.extend({
         var coin = null;
         var time = null;
 
-        ///* Hp Bar */
-        //var bar1Length = null;
-        //var bar1MaxLength = null;
-        //var bar2Length = null;
-        //var bar2MaxLength = null;
-        //var bar3Length = null;
-        //var bar3MaxLength = null;
-
-
         switch(str)
         {
             case gv.buildingSTR.townHall:
                 time = gv.json.townHall[str][level]["buildTime"];
                 gold = gv.json.townHall[str][level]["gold"];
                 elixir = 0;
-                darkElixir = 0;
+                darkElixir = gv.json.townHall[str][level]["darkElixir"];
                 coin = 0;
                 break;
             case gv.buildingSTR.builderHut:
@@ -813,6 +794,7 @@ var PopUpConstruct = cc.Node.extend({
             default:
                 break;
         };
+
         this._cost.gold = gold;
         this._cost.elixir = elixir;
         this._cost.darkElixir = darkElixir;

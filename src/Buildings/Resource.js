@@ -11,11 +11,10 @@ var Resource = BuildingNode.extend({
     _TAG_BUTTON_HARVEST: 6252,
     _TAG_BUTTON_HARVEST_BG: 4534,
 
-    ctor: function(id, level, row, col, existed, buildingSTR)
+    ctor: function(id, level, row, col, existed, isActive, buildingSTR)
     {
         this._buildingSTR = buildingSTR;
-        if(level === 0) this._size = gv.json.resource[this._buildingSTR][level+1]["width"];
-        else this._size = gv.json.resource[this._buildingSTR][level]["width"];
+        this._size = gv.json.resource[this._buildingSTR][Math.max(level, 1)]["width"];
         this._jsonConfig = gv.json.resource;
         switch (buildingSTR)
         {
@@ -39,7 +38,7 @@ var Resource = BuildingNode.extend({
                 break;
         }
 
-        this._super(id, level, row, col, existed);
+        this._super(id, level, row, col, existed, isActive);
 
         this.addCenterBuilding();
         this.initHarvestButton();
@@ -52,14 +51,14 @@ var Resource = BuildingNode.extend({
         this._effectAnim.anchorY = 0.5;
 
         this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
-        this._effectAnim.runAction(((this._buildingSTR == gv.buildingSTR.resource_1) ? cf.animationRes1[this._level].clone() : cf.animationRes2[this._level]).clone().repeatForever());
+        this._effectAnim.runAction(((this._buildingSTR == gv.buildingSTR.resource_1) ? cf.animationRes1[this.getTempLevel()].clone() : cf.animationRes2[this.getTempLevel()]).clone().repeatForever());
 
-        if (!this._is_active)
-        {
-            this.onStartBuild(gv.startConstructType.loadConstruct);
-        }
-        else
-            this.initCapacity();
+        //if (!this._isActive)
+        //{
+        //    this.onStartBuild(gv.startConstructType.loadConstruct);
+        //}
+        //else
+        if (this._isActive) this.initCapacity();
 
         this.schedule(this.onScheduleUpdateCapacity, 0.2);
     },
@@ -67,29 +66,30 @@ var Resource = BuildingNode.extend({
     {
         this.initAnimation();
         this._effectAnim.stopAllActions();
-        this._effectAnim.runAction(((this._buildingSTR == gv.buildingSTR.resource_1) ? cf.animationRes1[this._level].clone() : cf.animationRes2[this._level]).clone().repeatForever());
+        this._effectAnim.runAction(((this._buildingSTR == gv.buildingSTR.resource_1) ? cf.animationRes1[this.getTempLevel()].clone() : cf.animationRes2[this.getTempLevel()]).clone().repeatForever());
     },
     initAnimation: function()
     {
-        if (this._buildingSTR == gv.buildingSTR.resource_1 && cf.animationRes1[this._level] == null)
+        var tmpLevel = this.getTempLevel();
+        if (this._buildingSTR == gv.buildingSTR.resource_1 && cf.animationRes1[tmpLevel] == null)
         {
-            cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_res_1_" + this._level + ".plist", res.folder_effect + "effect_res_1_" + this._level + ".png");
-            cf.animationRes1[this._level] = fn.getAnimation("effect_res_1_" + this._level + " ", 1, 10);
-            cf.animationRes1[this._level].retain();
+            cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_res_1_" + tmpLevel + ".plist", res.folder_effect + "effect_res_1_" + tmpLevel + ".png");
+            cf.animationRes1[tmpLevel] = fn.getAnimation("effect_res_1_" + tmpLevel + " ", 1, 10);
+            cf.animationRes1[tmpLevel].retain();
         }
 
-        if (this._buildingSTR == gv.buildingSTR.resource_2 && cf.animationRes2[this._level] == null)
+        if (this._buildingSTR == gv.buildingSTR.resource_2 && cf.animationRes2[tmpLevel] == null)
         {
-            cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_res_2_" + this._level + ".plist", res.folder_effect + "effect_res_2_" + this._level + ".png");
-            cf.animationRes2[this._level] = fn.getAnimation("effect_res_2_" + this._level + " ", 1, 10);
-            cf.animationRes2[this._level].retain();
+            cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_res_2_" + tmpLevel + ".plist", res.folder_effect + "effect_res_2_" + tmpLevel + ".png");
+            cf.animationRes2[tmpLevel] = fn.getAnimation("effect_res_2_" + tmpLevel + " ", 1, 10);
+            cf.animationRes2[tmpLevel].retain();
         }
     },
 
     initCapacity: function()
     {
-        this._productivity = gv.json.resource[this._buildingSTR][this._level]["productivity"];
-        this._maxCapacity = gv.json.resource[this._buildingSTR][this._level]["capacity"];
+        this._productivity = gv.json.resource[this._buildingSTR][this.getTempLevel()]["productivity"];
+        this._maxCapacity = gv.json.resource[this._buildingSTR][this.getTempLevel()]["capacity"];
     },
     initHarvestButton: function()
     {
@@ -138,7 +138,7 @@ var Resource = BuildingNode.extend({
     // Schedule liên tục cho đến khi đủ phần trăm kho
     onScheduleUpdateCapacity: function()
     {
-        if (!this._is_active || !this._existed) return;
+        if (!this._isActive || !this._existed) return;
         /* Kiểm tra sức chứa  và trạng thái button Harvest*/
         if (this._currentCapacity >= this._maxCapacity || this._btnHarvest.visible) return;
         /* thời gian từ lần cuối thu hoạch hoặc lần cuối xây dựng */
@@ -155,7 +155,7 @@ var Resource = BuildingNode.extend({
     // Cập nhật khi nhấn button thu hoạch và xem thông tin
     onHardUpdateCapacity: function()
     {
-        //if (!this._is_active || !this._existed) return;
+        //if (!this._isActive || !this._existed) return;
         ///* Kiểm tra sức chứa  và trạng thái button Harvest*/
         //if (this._currentCapacity >= this._maxCapacity || this._btnHarvest.visible) return;
         ///* thời gian từ lần cuối thu hoạch hoặc lần cuối xây dựng */
@@ -254,7 +254,7 @@ var Resource = BuildingNode.extend({
             parent._effectCollectRes = cc.LabelBMFont("Resource Label", font.soji20);
             parent._effectCollectRes.scale = 2;
             parent._effectCollectRes.setPosition(cc.p(this.x, this.y));
-            parent.addChild(parent._effectCollectRes, 40*2 + 1);
+            parent.addChild(parent._effectCollectRes, 201);
         };
 
         var act = cc.Sequence.create(
