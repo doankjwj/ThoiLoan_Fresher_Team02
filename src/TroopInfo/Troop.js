@@ -16,8 +16,6 @@ var Troop = cc.Class.extend
         },
         init: function ()
         {
-            if (gv.plist[this.getTroopNameWithLevel()] !== true)
-                fn.loadPlist(this.getTroopNameWithLevel());
             this.setLogicPosition(this.position);
             if (this.type === 3)
                 this.visualization.shadow = new cc.Sprite("res/Art/Map/map_obj_bg/big_shadow_troop.png");
@@ -48,6 +46,8 @@ var Troop = cc.Class.extend
         },
         randomMoveArmyCamp: function ()
         {
+            if (gv.plist[this.getTroopNameWithLevel()] !== true)
+                fn.loadPlist(this.getTroopNameWithLevel());
             this.visualization.isMoving = false;
             var armyCampLogicPosition = this.getArmyCampPosition();
             do
