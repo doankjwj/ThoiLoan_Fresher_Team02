@@ -333,7 +333,6 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                 if (this.map.STO_3[i].finishBuildOrUpgradeTime > 0)
                     this.map.STO_3[i].finishBuildOrUpgradeTime -= gv.timeOffset;
             }
-
             /* Resource 1 */
             Amount = this.getByte();
             this.map.RES_1 = [];
@@ -348,7 +347,6 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                 if (this.map.RES_1[i].finishBuildOrUpgradeTime > 0)
                     this.map.RES_1[i].finishBuildOrUpgradeTime -= gv.timeOffset;
             }
-
             /* Resource 2 */
             Amount = this.getByte();
             this.map.RES_2 = [];
@@ -363,7 +361,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                 if (this.map.RES_2[i].finishBuildOrUpgradeTime > 0)
                     this.map.RES_2[i].finishBuildOrUpgradeTime -= gv.timeOffset;
             }
-
+            cc.log(JSON.stringify(this));
             /* Resource 3 */
             Amount = this.getByte();
             this.map.RES_3 = [];
@@ -721,6 +719,7 @@ testnetwork.packetMap[gv.CMD.ERROR] = fr.InPacket.extend({
         cc.log(" /*********/ Error: " + errorCode);
         fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode + "\nRestart");
         try{
+            cc.log("Error: "+ errorCode);
             fr.view(MainLayer);
         } catch(e)
         {
