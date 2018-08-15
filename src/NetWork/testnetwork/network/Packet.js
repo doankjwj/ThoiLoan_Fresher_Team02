@@ -669,6 +669,32 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
             }
 
             Amount = this.getByte();
+            this.map.WAL_1 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.WAL_1.push(new Object());
+                this.map.WAL_1[i].X = this.getByte() ;
+                this.map.WAL_1[i].Y = this.getByte() ;
+                this.map.WAL_1[i].level = this.getByte();
+                this.map.WAL_1[i].finishBuildOrUpgradeTime = this.getLong();
+                if (this.map.WAL_1[i].finishBuildOrUpgradeTime > 0)
+                    this.map.WAL_1[i].finishBuildOrUpgradeTime -= gv.timeOffset;
+            }
+
+            Amount = this.getByte();
+            this.map.CLC_1 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.CLC_1.push(new Object());
+                this.map.CLC_1[i].X = this.getByte() ;
+                this.map.CLC_1[i].Y = this.getByte() ;
+                this.map.CLC_1[i].level = this.getByte();
+                this.map.CLC_1[i].finishBuildOrUpgradeTime = this.getLong();
+                if (this.map.CLC_1[i].finishBuildOrUpgradeTime > 0)
+                    this.map.CLC_1[i].finishBuildOrUpgradeTime -= gv.timeOffset;
+            }
+
+            Amount = this.getByte();
             this.map.OBS = [];
             {
                 for (var i = 0; i < Amount; i += 1)
