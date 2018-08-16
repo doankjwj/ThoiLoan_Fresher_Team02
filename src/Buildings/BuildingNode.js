@@ -482,10 +482,9 @@ var BuildingNode = cc.Node.extend({
         cf.user.updateBuilder();
 
 
-        /* Update sprite */
-        //if (this._level > 1) {
-        //    this._level -= 1;
-        //} else
+        if (this._level > 0) {
+            this._isActive = true;
+        } else
         {
             cf.user._buildingList[this._orderInUserBuildingList].splice(this._id%100, 1);
             cf.user._buildingListCount[this._orderInUserBuildingList] -= 1;
@@ -524,7 +523,7 @@ var BuildingNode = cc.Node.extend({
         }
         this.updateLabelName();
         if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
-            this._lastHarvestTime = new Date().getTime();
+            this._finishing_time = new Date().getTime();
     },
 
     onUpdateSpriteFrame: function()
@@ -897,7 +896,7 @@ var BuildingNode = cc.Node.extend({
         //cf.user._currentCapacityDarkElixir -= this._resRequire.darkElixir;
         //cf.user._currentCapacityCoin -= this._resRequire.coin;
 
-        cf.user.editCurrentResource(-this._resRequire.gold, this._resRequire.elixir, this._resRequire.darkElixir, this._resRequire.coin);
+        cf.user.editCurrentResource(-this._resRequire.gold, -this._resRequire.elixir, -this._resRequire.darkElixir, -this._resRequire.coin);
 
         this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
         this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
