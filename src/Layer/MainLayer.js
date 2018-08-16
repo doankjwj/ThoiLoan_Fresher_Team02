@@ -2,15 +2,18 @@
     _map: null,
     _shop: null,
 
+    // Log In GUI
     _usernameField: null,
     _passwordField: null,
 
+    // Resource Bar
     _resBarGold: null,
     _resBarElixir: null,
     _resBarDarkElixir: null,
     _resBarCoin: null,
     _builderBar: null,
 
+    // GUI Button && Pop Up
     _guiButtonBuildingInfo: null,
     _guiButtonBuildingUpgrade: null,
     _guiInstantlyDone: null,
@@ -22,29 +25,26 @@
     _popUpResearchTroop: null,
     _popUpTraining: null,
 
+    // Cheat Button
     _resetUserButton: null,
     _restartGameButton: null,
-
     _addGoldButton: null,
     _subGoldButton: null,
-
     _addElixirButton: null,
     _subElixirButton: null,
-
     _addCoinButton: null,
     _subCoinButton: null,
 
-
-    _action1Pull: null,
-    _action2Pull: null,
-    _action1Push: null,
-    _action2Push: null,
-
+    // Zoom & Move Map
     _listenerOnMoveMap: null,
     _mapScaleOnZoom: null,
     _mapXOnZoom: null,
     _mapHeightOnZoom: null,
 
+    // GUI Clan Chat
+    _guiButtonClanChat: null,
+
+    // Tag
     _TAG_BG: 242342,
     _TAG_LOGO: 738271,
     _TAG_USERNAME_FIELD: 30000,
@@ -52,7 +52,7 @@
     _TAG_LOGIN_BUTTON  : 30002,
     _TAG_BUTTON_HARVEST: 63721,
     _TAG_BUTTON_RESEARCH: 34231,
-
+    _TAG_LAYER_CLAN_CHAT: 32231,
 
     ctor:function () {
         this._super();
@@ -213,6 +213,7 @@
         this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
         this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
         this.addCheatButton();
+        this.addClanChatGUI();
     },
 
     updateResourceBar: function() {
@@ -379,6 +380,55 @@
         this.addChild(this._addElixirButton, 1);
         this.addChild(this._subElixirButton, 1);
 
+    },
+
+    addClanChatGUI: function()
+    {
+        var self = this;
+        var isExpanded = false;
+        this._guiButtonClanChat = ccui.Button(res.clanChatGUI.buttonBG);
+        this._guiButtonClanChat.setAnchorPoint(0, 0.5);
+        this._guiButtonClanChat.scale = 1.4;
+        this._guiButtonClanChat.setPosition(0, cc.winSize.height/2);
+        this.addChild(this._guiButtonClanChat, 2);
+        this._guiButtonClanChat.addClickEventListener(function(){
+            if (!gvGUI.layerClanChat)
+            {
+                gvGUI.layerClanChat = new LayerClanChat();
+                gvGUI.layerClanChat.scale = cc.winSize.height/gvGUI.layerClanChat._bg.height;
+                gvGUI.layerClanChat.setPosition(- gvGUI.layerClanChat.scale*(gvGUI.layerClanChat._bg.width + gvGUI.layerClanChat._layerUserOnline.width) + 5, 0);
+                gvGUI.layerClanChat.retain();
+            };
+
+            if (!self.getChildByTag(self._TAG_LAYER_CLAN_CHAT))
+                self.addChild(gvGUI.layerClanChat, 2, self._TAG_LAYER_CLAN_CHAT);
+            var actAppearLayer = cc.MoveBy(0.65, cc.p(gvGUI.layerClanChat.scale*(gvGUI.layerClanChat._bg.width + gvGUI.layerClanChat._layerUserOnline.width) - 5, 0));
+            var actAppearButton = cc.MoveBy(0.65, cc.p(gvGUI.layerClanChat.scale*(gvGUI.layerClanChat._bg.width + gvGUI.layerClanChat._layerUserOnline.width) - 10, 0));
+            if (!isExpanded){
+                gvGUI.layerClanChat.updateContent();
+                fn.replaceSpriteImage(iconButton, res.clanChatGUI.buttonCollapse);
+                self._guiButtonClanChat.runAction(actAppearButton.clone());
+                iconButton.runAction(actAppearButton.clone());
+                gvGUI.layerClanChat.runAction(actAppearLayer.clone());
+            }
+            else {
+                fn.replaceSpriteImage(iconButton, res.clanChatGUI.buttonExpand);
+                self._guiButtonClanChat.runAction(actAppearButton.clone().reverse());
+                iconButton.runAction(actAppearButton.clone().reverse());
+                gvGUI.layerClanChat.runAction(actAppearLayer.clone().reverse());
+            }
+            isExpanded = !isExpanded;
+        }.bind(this));
+
+        var iconButton = null;
+        if (isExpanded)
+            iconButton = cc.Sprite(res.clanChatGUI.buttonCollapse);
+        else
+            iconButton = cc.Sprite(res.clanChatGUI.buttonExpand);
+        iconButton.scale = 1.4;
+        iconButton.setAnchorPoint(0, 0.5);
+        iconButton.setPosition(this._guiButtonClanChat.x, this._guiButtonClanChat.y);
+        this.addChild(iconButton, 2);
     },
 
     releaseTroop: function()

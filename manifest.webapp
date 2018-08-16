@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "name": "TemplateGSN",
-  "description": "TemplateGSN",
+  "name": "ThoiLoan",
+  "description": "ThoiLoan",
   "launch_path": "/index.html",
   "icons": {
     "128": "/res/icon.png"

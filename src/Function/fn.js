@@ -339,3 +339,9 @@ fn.convertSecondToHour = function (sec)
 {
     return sec / 60 / 60;
 };
+
+/* Replace Sprite Image */
+fn.replaceSpriteImage= function(sprite, url){
+    var textture = cc.textureCache.addImage(url);
+    sprite.setTexture(textture);
+}

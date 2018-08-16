@@ -24,6 +24,7 @@
         "src/Config/Config.js",
         "src/Function/fn.js",
         "src/GlobalVar/gv.js",
+        "src/GlobalVar/varGUI.js",
 
         "src/Layer/MainLayer.js",
         "src/Layer/Map.js",
@@ -61,6 +62,10 @@
         "src/GUI/PopUpResearchTroop.js",
         "src/GUI/ItemResearchTroop.js",
         "src/GUI/PopUpTroopInfo.js",
+
+        "src/GUI/ClanChat/LayerClanChat.js",
+        "src/GUI/ClanChat/ItemUserOnline.js",
+        "src/GUI/ClanChat/ItemChat.js",
 
         "src/NetWork/framework/Utility/ClientConfig.js",
         "src/NetWork/framework/Utility/Localization.js",
