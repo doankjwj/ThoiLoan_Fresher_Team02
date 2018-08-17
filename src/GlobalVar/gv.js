@@ -42,3 +42,10 @@ gv.troopStr = {
 
 
 gv.troopMaxLevel = [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4];
+
+gv.clanChatEventManager = {
+    chatStatusUpdated: false,
+    userOnlineUpdated: false
+};
+
+gv.listenerNullForPopUpDonate = null;

@@ -409,7 +409,6 @@ cf.stringToItemInit = function(str, index) {
         case "RES_1":
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
             isActive = finishTime <= currentTime;
-            cc.log(finishTime - currentTime);
             building = new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_1], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, isActive, gv.buildingSTR.resource_1);
             building._finishing_time = finishTime;
             //building._isActive = (finishTime <= currentTime);

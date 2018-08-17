@@ -361,7 +361,6 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                 if (this.map.RES_2[i].finishBuildOrUpgradeTime > 0)
                     this.map.RES_2[i].finishBuildOrUpgradeTime -= gv.timeOffset;
             }
-            cc.log(JSON.stringify(this));
             /* Resource 3 */
             Amount = this.getByte();
             this.map.RES_3 = [];

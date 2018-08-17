@@ -382,8 +382,10 @@
 
     },
 
-    addClanChatGUI: function()
+    _addClanChatGUI: function()
     {
+
+
         var self = this;
         var isExpanded = false;
         this._guiButtonClanChat = ccui.Button(res.clanChatGUI.buttonBG);
@@ -392,6 +394,7 @@
         this._guiButtonClanChat.setPosition(0, cc.winSize.height/2);
         this.addChild(this._guiButtonClanChat, 2);
         this._guiButtonClanChat.addClickEventListener(function(){
+            // Tạo Layer clan chat và Add vào MainLayer
             if (!gvGUI.layerClanChat)
             {
                 gvGUI.layerClanChat = new LayerClanChat();
@@ -399,23 +402,36 @@
                 gvGUI.layerClanChat.setPosition(- gvGUI.layerClanChat.scale*(gvGUI.layerClanChat._bg.width + gvGUI.layerClanChat._layerUserOnline.width) + 5, 0);
                 gvGUI.layerClanChat.retain();
             };
-
             if (!self.getChildByTag(self._TAG_LAYER_CLAN_CHAT))
                 self.addChild(gvGUI.layerClanChat, 2, self._TAG_LAYER_CLAN_CHAT);
+
             var actAppearLayer = cc.MoveBy(0.65, cc.p(gvGUI.layerClanChat.scale*(gvGUI.layerClanChat._bg.width + gvGUI.layerClanChat._layerUserOnline.width) - 5, 0));
             var actAppearButton = cc.MoveBy(0.65, cc.p(gvGUI.layerClanChat.scale*(gvGUI.layerClanChat._bg.width + gvGUI.layerClanChat._layerUserOnline.width) - 10, 0));
             if (!isExpanded){
-                gvGUI.layerClanChat.updateContent();
+                if (gvGUI.layerClanChat._listItemUserOnline.length == 0) // lần đầu khởi tạo
+                    gvGUI.layerClanChat.initContent();
+                if (!gv.clanChatEventManager.chatStatusUpdated)
+                    gvGUI.layerClanChat.updateChatEvent();
+                if (!gv.clanChatEventManager.userOnlineUpdated)
+                    gvGUI.layerClanChat.updateUserOnlineEvent();
+
+                // Cập nhật lại thời gian cho thanh chat
+                gvGUI.layerClanChat.updateTimeScrollChat();
+
+                // Thay hình ảnh cho button và chạy Action
                 fn.replaceSpriteImage(iconButton, res.clanChatGUI.buttonCollapse);
                 self._guiButtonClanChat.runAction(actAppearButton.clone());
                 iconButton.runAction(actAppearButton.clone());
                 gvGUI.layerClanChat.runAction(actAppearLayer.clone());
+                gvGUI.layerClanChat.onAppear();
             }
             else {
+                // Thay hính ảnh cho button và chạy Action
                 fn.replaceSpriteImage(iconButton, res.clanChatGUI.buttonExpand);
                 self._guiButtonClanChat.runAction(actAppearButton.clone().reverse());
                 iconButton.runAction(actAppearButton.clone().reverse());
                 gvGUI.layerClanChat.runAction(actAppearLayer.clone().reverse());
+                gvGUI.layerClanChat.onDisappear();
             }
             isExpanded = !isExpanded;
         }.bind(this));
@@ -431,6 +447,17 @@
         this.addChild(iconButton, 2);
     },
 
+    addClanChatGUI: function(){
+        if (!gvGUI.layerClanChat)
+        {
+            gvGUI.layerClanChat = new LayerClanChat();
+            gvGUI.layerClanChat.scale = cc.winSize.height/gvGUI.layerClanChat._bg.height;
+            gvGUI.layerClanChat.setPosition(- gvGUI.layerClanChat.scale*(gvGUI.layerClanChat._bg.width + gvGUI.layerClanChat._layerUserOnline.width) + 5, 0);
+            gvGUI.layerClanChat.retain();
+        };
+        if (!this.getChildByTag(this._TAG_LAYER_CLAN_CHAT))
+            this.addChild(gvGUI.layerClanChat, 2, this._TAG_LAYER_CLAN_CHAT);
+    },
     releaseTroop: function()
     {
         for(var i = 0; i<cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1].length; i++)
