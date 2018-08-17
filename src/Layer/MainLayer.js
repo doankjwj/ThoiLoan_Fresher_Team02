@@ -184,7 +184,9 @@
                 var theChosenArmyCamp = armyCampMostSpacePercent();
                 if (theChosenArmyCamp._troopList == null)
                     theChosenArmyCamp._troopList = new Array();
-                theChosenArmyCamp._troopList.push(new Troop(i, this._map, theChosenArmyCamp._row + 2, theChosenArmyCamp._col + 2, theChosenArmyCamp._id));
+                var troop = new Troop(i, theChosenArmyCamp._row + 2, theChosenArmyCamp._col + 2, theChosenArmyCamp._id);
+                this._map.addChild(troop);
+                theChosenArmyCamp._troopList.push(troop);
                 theChosenArmyCamp._troopQuantity += gv.json.troopBase["ARM_" + (i + 1)]["housingSpace"];
             }
     },
@@ -231,7 +233,7 @@
         this._resetUserButton = gv.commonButton(80, 64, 70, cc.winSize.height-100, "Reset");
         this._resetUserButton.addClickEventListener(function()
         {
-            this.releaseTroop();
+            //this.releaseTroop();
             testnetwork.connector.sendResetUser();
             audioPlayer.stopAll();
             try{
@@ -245,7 +247,7 @@
         this._restartGameButton = gv.commonButton(80, 64, 70, 90, "Re-\nstart");
         this._restartGameButton.addClickEventListener(function()
         {
-            this.releaseTroop();
+            //this.releaseTroop();
             audioPlayer.stopAll();
             try{
                 fr.view(MainLayer);
