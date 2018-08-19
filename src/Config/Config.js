@@ -271,7 +271,7 @@ gv.tag =
         TAG_POPUP: 2000,
         TAG_POPUP_MESSAGE: 2001,
         TAG_POPUP_TRAINING: 1890,
-        TAG_POPUP_RESEARCH_TROOP: 3421
+        TAG_POPUP_RESEARCH_TROOP: 3421,
         TAG_BUTTON_TROOP: 1905,
     };
 /* Pop Up */
@@ -453,7 +453,7 @@ cf.stringToItemInit = function(str, index) {
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
             building =  new Laboratory(cf.user._buildingListCount[gv.orderInUserBuildingList.lab], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
             building._finishing_time = finishTime;
-            building._is_active = (finishTime <= currentTime);
+            building._isActive = (finishTime <= currentTime);
             break;
     }
     return building;

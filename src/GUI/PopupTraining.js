@@ -124,7 +124,7 @@ var PopupTraining = cc.Layer.extend({
     },
 
     updateStatus: function(){
-        if(!this._barrack._is_active) return;
+        if(!this._barrack._isActive) return;
         if(this._timeTraining > 0) this._timeTraining -= 1;
         if(this._currentTrainingTime > 0 ) {
             this._currentTrainingTime -= 1;
@@ -168,7 +168,7 @@ var PopupTraining = cc.Layer.extend({
 
         }
 
-        var troop = new Troop(id-1, this.getParent()._map, this._barrack._row, this._barrack._col, armyCamp._id);
+        var troop = new Troop(id-1, this._barrack._row, this._barrack._col, armyCamp._id);
         // armyCamp._troopQuantity += troop.space
         armyCamp._troopQuantity += 1;
         cf.user._listTroop.push(troop);
@@ -321,8 +321,8 @@ var PopupTraining = cc.Layer.extend({
                     previousBarrackID =  previousBarrackID % barrackListSize;
                     var previousBarrackFullID = this._barrackID - this._barrackID%100 + previousBarrackID;
                     var previousBarrack = cf.user._buildingList[Math.floor(previousBarrackFullID/ 100) - 1][previousBarrackFullID % 100];
-
-                    while(!previousBarrack._is_active){
+                    // cc.log(previousBarrack)
+                    while(!previousBarrack._isActive){
                         previousBarrackID -= 1;
                         previousBarrackFullID = this._barrackID - this._barrackID%100 + previousBarrackID;
                         previousBarrack = cf.user._buildingList[Math.floor(previousBarrackFullID/ 100) - 1][previousBarrackFullID % 100];
@@ -356,7 +356,7 @@ var PopupTraining = cc.Layer.extend({
                     var nextBarrackFullID = this._barrackID - this._barrackID%100 + nextBarrackID;
                     var nextBarrack = cf.user._buildingList[Math.floor(nextBarrackFullID/ 100) - 1][nextBarrackFullID % 100];
 
-                    while(!nextBarrack._is_active){
+                    while(!nextBarrack._isActive){
                         nextBarrackID += 1;
                         nextBarrackFullID = this._barrackID - this._barrackID%100 + nextBarrackID;
                         nextBarrack = cf.user._buildingList[Math.floor(nextBarrackFullID/ 100) - 1][nextBarrackFullID % 100];
