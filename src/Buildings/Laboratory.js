@@ -11,7 +11,6 @@ var Laboratory = BuildingNode.extend({
 
     _currentTroop: null,
     _currentTroopLevel: null,
-
     ctor: function(id, level, row, col, existed, isActive)
     {
 

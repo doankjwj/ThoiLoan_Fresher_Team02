@@ -399,6 +399,7 @@ var PopUpConstruct = cc.Node.extend({
 
     visibleBar: function(bool1, bool2, bool3)
     {
+        cc.log(bool1 + " " + bool2 + " " + bool3);
         this._bar1.visible = bool1;
         this._bar1BG.visible = bool1;
         this._bar1BG2.visible = bool1;
@@ -468,7 +469,6 @@ var PopUpConstruct = cc.Node.extend({
     {
         var buildingId = gv.building_selected;
         var b = cf.user._buildingList[Math.floor(buildingId/100) - 1][Math.floor(buildingId%100)];
-
         var bar1Length = 1;
         var bar1Length2 = 1;
         var bar1MaxLength = 1;
@@ -715,7 +715,6 @@ var PopUpConstruct = cc.Node.extend({
         var darkElixir = null;
         var coin = null;
         var time = null;
-
         switch(str)
         {
             case gv.buildingSTR.townHall:
@@ -794,7 +793,6 @@ var PopUpConstruct = cc.Node.extend({
             default:
                 break;
         };
-
         this._cost.gold = gold;
         this._cost.elixir = elixir;
         this._cost.darkElixir = darkElixir;

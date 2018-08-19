@@ -1,3 +1,4 @@
+
 var Troop = cc.Node.extend
 (
     {
@@ -194,12 +195,14 @@ var Troop = cc.Node.extend
                 targetTruePointStep.y += cf.tileSize.height* (1 - Math.random()*2) / 2;
             }
             var actionMove = cc.MoveTo(cc.pDistance(this.position.toTruePoint(), targetTruePointStep) / gv.json.troopBase[this.getTroopName()]["moveSpeed"] / 3, targetTruePointStep);
+
             var self = this;
             var actionEnd = cc.callFunc(function ()
                                         {
                                             self.onEndStep()
                                         });
             this.runAction(cc.sequence(actionMove, actionEnd));
+
         },
         onEndStep: function ()
         {

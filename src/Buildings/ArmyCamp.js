@@ -1,6 +1,6 @@
 var ArmyCamp = BuildingNode.extend({
     _troopQuantity: 0,
-    _troopList: null,
+    _capacity: null,
 
     ctor: function(id, level, row, col, existed, isActive)
     {
@@ -8,6 +8,7 @@ var ArmyCamp = BuildingNode.extend({
         this._size = gv.json.armyCamp[this._buildingSTR][Math.max(level, 1)]["width"];
         this._jsonConfig = gv.json.armyCamp;
         this._maxLevel = gv.buildingMaxLevel.armyCamp_1;
+        this._capacity = gv.json.armyCamp[this._buildingSTR][level]["capacity"];
         this._orderInUserBuildingList = gv.orderInUserBuildingList.armyCamp_1;
         this._name = gv.buildingName.armyCamp_1;
         this._description = gv.buildingDescription.armyCamp_1;

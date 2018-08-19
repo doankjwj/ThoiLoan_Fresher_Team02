@@ -257,14 +257,18 @@ var User = cc.Class.extend({
     /*getAvaiable Capacity*/
     getAvaiableCapacity: function(resSTR)
     {
+        cc.log(resSTR);
         switch(resSTR) {
             case gv.buildingSTR.resource_1:
+                cc.log("gold");
                 return (this._maxCapacityGold - this._currentCapacityGold);
                 break;
             case gv.buildingSTR.resource_2:
+                cc.log("elixir");
                 return (this._maxCapacityElixir - this._currentCapacityElixir);
                 break;
             case gv.buildingSTR.resource_3:
+                cc.log("dark elixir");
                 return (this._maxCapacityDarkElixir - this._currentCapacityDarkElixir);
                 break;
             default:

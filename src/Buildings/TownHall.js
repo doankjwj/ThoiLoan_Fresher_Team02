@@ -30,10 +30,6 @@ var TownHall = BuildingNode.extend({
         this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
         this._effectAnim.runAction(cf.animationTownHall.clone().repeatForever());
 
-        //if (!this._isActive)
-        //{
-        //    this.onStartBuild(gv.startConstructType.loadConstruct);
-        //}
     },
 
     updateAnim: function()

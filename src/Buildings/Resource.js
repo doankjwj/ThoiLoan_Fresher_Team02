@@ -256,7 +256,6 @@ var Resource = BuildingNode.extend({
             parent._effectCollectRes.setPosition(cc.p(this.x, this.y));
             parent.addChild(parent._effectCollectRes, 201);
         };
-
         var act = cc.Sequence.create(
             cc.CallFunc(function(){
                 parent._effectCollectRes.setPosition(self.x, self.y);

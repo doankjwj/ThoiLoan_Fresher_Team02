@@ -85,6 +85,14 @@ fn.loadPlist = function (troopNameWithLevel)
 {
     cc.spriteFrameCache.addSpriteFrames("res/Art/Troops/" + troopNameWithLevel + "/" + troopNameWithLevel + ".plist");
     gv.plist[troopNameWithLevel] = true;
+}
+
+fn.loadPlist = function()
+{
+    cc.spriteFrameCache.addSpriteFrames("res/Art/Troops/ARM_1_Animation.plist");
+    cc.spriteFrameCache.addSpriteFrames("res/Art/Troops/ARM_2_Animation.plist");
+    cc.spriteFrameCache.addSpriteFrames("res/Art/Troops/ARM_3_Animation.plist");
+    cc.spriteFrameCache.addSpriteFrames("res/Art/Troops/ARM_4_Animation.plist");
 };
 /* Map */
 fn.getRowColFromPos = function (pos) // Lấy ra Tọa độ dòng, cột của building từ pos
@@ -122,6 +130,7 @@ fn.pointInsidePolygon = function (point, vs) //Kiểm tra 1 điểm nằm trong 
     }
     return inside;
 };                              // BuildingNode.js
+
 fn.distance2Points = function(p0, p1)
 {
     return Math.sqrt(((p0.x - p1.x)*(p0.x - p1.x) + (p0.y - p1.y)*(p0.y - p1.y)));
@@ -156,8 +165,7 @@ fn.getAnimation = function (str, n1, n2)
     {
         var frame = cc.spriteFrameCache.getSpriteFrame(str + "(" + i + ").png");
         arr_effect.push(frame)
-    }
-
+    };
     return cc.Animate(new cc.Animation(arr_effect, cf.time_refresh))
 };                              // Barack + ArmyCamp + ..
 /* Shop */

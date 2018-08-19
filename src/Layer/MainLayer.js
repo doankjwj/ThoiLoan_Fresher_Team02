@@ -117,7 +117,7 @@
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "quanleanh";
         gv.passwordSendToServer = this._passwordField.string;
 
         gv.gameClient.connect();
@@ -208,9 +208,6 @@
         this.addUserBar();
         this.addBuilderBar();
 
-        this._popUpTraining = new PopupTraining();
-        this.addChild(this._popUpTraining, 1, gv.tag.TAG_POPUP_TRAINING);
-
         this._popUp = new PopUpConstruct();
         this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
         this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
@@ -248,6 +245,18 @@
         this._restartGameButton.addClickEventListener(function()
         {
             //this.releaseTroop();
+            audioPlayer.stopAll();
+            try{
+                fr.view(MainLayer);
+            } catch(e)
+            {
+                cc.log(e)
+            };
+        }.bind(this));
+
+        this._restartGameButton = gv.commonButton(80, 64, 70, 90, "Re-\nstart");
+        this._restartGameButton.addClickEventListener(function()
+        {
             audioPlayer.stopAll();
             try{
                 fr.view(MainLayer);
@@ -381,7 +390,6 @@
 
         this.addChild(this._addElixirButton, 1);
         this.addChild(this._subElixirButton, 1);
-
     },
 
     _addClanChatGUI: function()
@@ -760,7 +768,15 @@
             if (order === orderBuilderHut) return;
             if (building._isActive === false) return;
 
-            self.getChildByTag(gv.tag.TAG_POPUP_TRAINING).onAppear();
+            if(this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING) === null) {
+                var popupTraining = new PopupTraining(gv.building_selected);
+                this.addChild(popupTraining, 1, gv.tag.TAG_POPUP_TRAINING*(gv.building_selected%100));
+                popupTraining.onAppear();
+            }
+            else {
+                var popup = this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING);
+                popup.onAppear();
+            }
 
         }.bind(this));
 
@@ -1059,6 +1075,45 @@
     distance: function(p, q, x) {
         if(!x) x = 0;
         return Math.sqrt((p.x - q.x)*(p.x - q.x) + (p.y - q.y)*(p.y - q.y));
+    },
+
+    _zoomMap: function() {
+        var self = this;
+        var touchLocation_0;
+        var touchLocation_1;
+        var curMidPoint;
+        var newMidPoint;
+        var newMapPos;
+        if(self === null) return;
+        cc.log("ZOOM MAP");
+        cc.eventManager.addListener({
+            event: cc.EventListener.TOUCH_ALL_AT_ONCE,
+            swallowTouches: true,
+            onTouchesBegan: function(touches, event) {
+                return true;
+            },
+            onTouchesMoved: function(touches, event) {
+                if(touches.length < 2) return;
+                cc.log(touches.length);
+
+                curMidPoint = cc.p(touchLocation_0.x/2 + touchLocation_1.x/2 - self._map.x, touchLocation_0.y/2 + touchLocation_1.y/2 - self._map.y);
+                var dis0 = self.distance(touchLocation_0, touchLocation_1, 1);
+                var delta0 = touches[0].getDelta();
+                var delta1 = touches[1].getDelta();
+
+                var dis1 = self.distance(cc.pAddIn(touchLocation_0, delta0), cc.pAddIn(touchLocation_1, delta1), 2);
+
+                var scale = dis1/dis0;
+                self._map.scale *= scale;
+                newMidPoint = cc.p(curMidPoint.x*scale, curMidPoint.y*scale);
+                newMapPos = cc.pSubIn(curMidPoint.x, newMidPoint);
+                self._map.setPosition(newMapPos);
+                self.repositioning();
+            },
+            onTouchesEnded: function(touches, event) {
+            }
+        }, this);
+
     },
 
     zoomMap: function() {

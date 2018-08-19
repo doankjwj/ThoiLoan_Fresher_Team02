@@ -306,6 +306,12 @@ var BuildingNode = cc.Node.extend({
                         self.unlocate_map_array(cf.current_r, cf.current_c, size);
                         self.locate_map_array(self);
                         testnetwork.connector.sendMove(self._id, self._row, self._col);
+                        if (Math.floor( self._id/100) == 9)
+                        {
+                            for(var i = 0; i < cf.user._listTroop.length;i+=1)
+                                if (cf.user._listTroop[i].armyCampId == self._id)
+                                    cf.user._listTroop[i].randomMoveArmyCamp();
+                        }
                     }
                     return false;
                 }
@@ -660,6 +666,9 @@ var BuildingNode = cc.Node.extend({
                 break;
             case gv.buildingSTR.lab:
                 this._center_building = cc.Sprite(res.folder_laboratory + "LAB_1_" + this.getTempLevel() + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
+            case gv.buildingSTR.lab:
+                this._center_building = cc.Sprite(res.folder_laboratory + "LAB_1_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             default:
                 break;
