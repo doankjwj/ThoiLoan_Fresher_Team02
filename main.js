@@ -17,14 +17,14 @@ cc.game.onStart = function(){
         if (sys.isNative)
         {
             cc.view.setContentScaleFactor(fr.clientConfig.getResourceScale());
-        };
+        }
         fr.clientConfig.updateResourceSearchPath();
 
         gv.gameClient = new GameClient();
         gv.poolObjects  = new PoolObject();
         testnetwork.connector = new testnetwork.Connector(gv.gameClient);
         fn.loadJson();
-        fn.loadPlist();
+        // fn.loadPlist();
         fr.view(MainLayer);
     }, this);
 

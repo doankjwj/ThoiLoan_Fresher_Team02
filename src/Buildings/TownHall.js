@@ -2,17 +2,17 @@ var TownHall = BuildingNode.extend({
     _currentCapacityGold: 0,
     _currentCapacityElixir: 0,
 
-    ctor: function(id, level, row, col, existed)
+    ctor: function(id, level, row, col, existed, isActive)
     {
         this._buildingSTR = gv.buildingSTR.townHall;
-        this._size = gv.json.townHall[this._buildingSTR][level]["width"];
+        this._size = gv.json.townHall[this._buildingSTR][Math.max(level, 1)]["width"];
         this._jsonConfig = gv.json.townHall;
         this._orderInUserBuildingList = gv.orderInUserBuildingList.townHall;
         this._name = gv.buildingName.townHall;
         this._maxLevel = gv.buildingMaxLevel.townHall;
         this._description = gv.buildingDescription.townHall_1;
 
-        this._super(id, level, row, col, existed);
+        this._super(id, level, row, col, existed, isActive);
 
 
 
@@ -30,10 +30,6 @@ var TownHall = BuildingNode.extend({
         this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
         this._effectAnim.runAction(cf.animationTownHall.clone().repeatForever());
 
-        if (!this._is_active)
-        {
-            this.onStartBuild(gv.startConstructType.loadConstruct);
-        }
     },
 
     updateAnim: function()

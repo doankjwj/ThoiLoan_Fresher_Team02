@@ -11,20 +11,18 @@ var Laboratory = BuildingNode.extend({
 
     _currentTroop: null,
     _currentTroopLevel: null,
-
-    ctor: function(id, level, row, col, existed)
+    ctor: function(id, level, row, col, existed, isActive)
     {
 
         this._buildingSTR = gv.buildingSTR.lab;
-        if(level === 0) level = 1;
-        this._size = gv.json.laboratory[this._buildingSTR][level]["width"];
+        this._size = gv.json.laboratory[this._buildingSTR][Math.max(level, 1)]["width"];
         this._jsonConfig = gv.json.laboratory;
         this._maxLevel = gv.buildingMaxLevel.lab;
         this._orderInUserBuildingList = gv.orderInUserBuildingList.lab;
         this._name = gv.buildingName.lab;
         this._description = gv.buildingDescription.laboratory;
 
-        this._super(id, level, row, col, existed);
+        this._super(id, level, row, col, existed, isActive);
         /* Add Center Building */
         this.addCenterBuilding();
 
@@ -39,16 +37,16 @@ var Laboratory = BuildingNode.extend({
         this._effectAnim.scale = cf.SCALE;
         this._effectAnim.visible = false;
         this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
-        if (this._level > 1) {
+        if (this.getTempLevel() > 1) {
             this._effectAnim.stopAllActions();
             this._effectAnim.visible = true;
-            this._effectAnim.runAction(cf.animationLab[this._level].clone().repeatForever());
+            this._effectAnim.runAction(cf.animationLab[this.getTempLevel()].clone().repeatForever());
         };
 
-        if (!this._is_active)
-        {
-            this.onStartBuild(gv.startConstructType.loadConstruct);
-        }
+        //if (!this._isActive)
+        //{
+        //    this.onStartBuild(gv.startConstructType.loadConstruct);
+        //}
 
         /* Effect Researching */
         this._effectResearching = cc.Sprite(res.tmp_effect);
@@ -182,19 +180,20 @@ var Laboratory = BuildingNode.extend({
     updateAnim: function()
     {
         this.initAnimation();
-            if (this._level > 1) this._effectAnim.visible = true;
+            if (this.getTempLevel() > 1) this._effectAnim.visible = true;
             this._effectAnim.stopAllActions();
-            this._effectAnim.runAction(cf.animationLab[this._level].clone().repeatForever());
+            this._effectAnim.runAction(cf.animationLab[this.getTempLevel()].clone().repeatForever());
     },
 
     initAnimation: function()
     {
-        if (this._level < 2) return;
-        if (cf.animationLab[this._level] == undefined)
+        var tmpLevel = this.getTempLevel();
+        if (tmpLevel < 2) return;
+        if (cf.animationLab[tmpLevel] == undefined)
         {
-            cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_lab_1_" + this._level +".plist", res.folder_effect + "effect_lab_1_" + this._level +".png");
-            cf.animationLab[this._level] = fn.getAnimation("effect_lab_1_" + this._level + " ", 1, 6);
-            cf.animationLab[this._level].retain();
+            cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_lab_1_" + tmpLevel +".plist", res.folder_effect + "effect_lab_1_" + tmpLevel +".png");
+            cf.animationLab[tmpLevel] = fn.getAnimation("effect_lab_1_" + tmpLevel + " ", 1, 6);
+            cf.animationLab[tmpLevel].retain();
         }
     }
 })

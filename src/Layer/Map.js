@@ -52,7 +52,8 @@ var Map = cc.Node.extend({
          for (var i = 0; i < Object.keys(gv.jsonInfo["map"]["OBS"]).length; i++)
                 {
                     var obs = gv.jsonInfo["map"]["OBS"][i];
-                    var obstacle = new Obstacle((gv.orderInUserBuildingList.obstacle * 100 + 1 + i), obs["type"], obs["X"], obs["Y"], true);
+                    var obstacle = new Obstacle((gv.orderInUserBuildingList.obstacle * 100 + 1 + i), obs["type"], obs["X"], obs["Y"], true, true);
+
                     cf.user._buildingList[obstacle._orderInUserBuildingList][cf.user._buildingListCount[obstacle._orderInUserBuildingList]] = (obstacle);
                     cf.user._buildingListCount[obstacle._orderInUserBuildingList] ++;
                     this.addChild(obstacle);

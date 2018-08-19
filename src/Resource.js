@@ -12,6 +12,8 @@ var folderBuildingActionicon = "res/Art/GUIs/Action_Building_Icon/";
 var folderUpgradeBuildingGUI = guiFolder + "upgrade_building_gui/";
 var troopIconFolder = guiFolder + "train_troop_gui/icon/";
 var soundFolder = "res/Sounds/";
+var folderClanChat = "res/Art/GUIs/Chat/";
+var folderClan = "res/Art/Bang hoi/";
 
 var res = {
     image_postfix_1: "idle/image000",
@@ -96,6 +98,33 @@ res.researchTroopGUI =
     slost: researchTroopFolder + "slost.png",
     grass: researchTroopFolderTroopIcon + "troop_bg.png",
     iconCoin: guiFolder + "pop_up/G.png",
+};
+res.clanChatGUI = {
+    barDonateTroopBG: folderClanChat + "1_0001_Layer-1.png",
+    barDonateTroop: folderClanChat + "1_0000_Layer-2.png",
+    buttonGreen: folderClanChat + "button 2.png",
+    buttonBlue: folderClanChat + "button 1.png",
+    buttonCollapse: folderClanChat + "button chinh 1.png",
+    buttonExpand: folderClanChat + "button chinh.png",
+    buttonBG: folderClanChat + "c_0002_Layer-85.png",
+    lineSeparateChat: folderClanChat + "dong ke.png",
+    lineSeparateOnline: folderClanChat + "vc_0002_Layer-3.png",
+    buttonChat: folderClanChat + "icon thoai.png",
+    buttonInfo: folderClanChat + "Icon_ thong tin.png",
+    donateTroopBG: folderClanChat + "nen 2.png",
+    buttonTabSelected: folderClanChat + "nen button 2.png",
+    buttonTabUnselected: folderClanChat + "nen button 1.png",
+    chatBG: folderClanChat + "nen.png",
+    buttonClose: folderClanChat + "nut x.png",
+    editTextChat: folderClanChat + "s.png",
+    iconUserOffline: folderClanChat + "vc_0000_Layer-4.png",
+    iconUserOnline: folderClanChat + "vc_0001_Shape-84.png",
+    layerUserOnline: folderClanChat + "vc_0004_Layer-80-copy.png",
+    layerUserOnlineSeparate: folderClanChat +  "vc_0002_Layer-3.png",
+    barUserOnline: folderClanChat + "vc_0003_Layer-2.png",
+};
+res.clanGUI = {
+    iconStarSmall: folderClan + "sao nho.png",
 };
 
 var shopGUI = {

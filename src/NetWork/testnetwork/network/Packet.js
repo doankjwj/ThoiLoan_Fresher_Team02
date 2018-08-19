@@ -13,8 +13,8 @@ gv.CMD.UPGRADE_BUILDING = 2110;
 gv.CMD.CHEAT = 2880;
 gv.CMD.SEND_INSTANT = 2150;
 gv.CMD.SEND_CANCEL = 2210;
-gv.CMD.SEND_HARVEST = 2410
-gv.CMD.SEND_RESEARCH = 2510;;
+gv.CMD.SEND_HARVEST = 2410;
+gv.CMD.SEND_RESEARCH = 2510;
 gv.CMD.SEND_RESEARCH_FINISH_IMMIDIATELY = 2550;
 gv.CMD.RESET_USER = 2890;
 
@@ -42,7 +42,7 @@ CmdSendHandshake = fr.OutPacket.extend(
             this.updateSize();
         }
     }
-)
+);
 CmdSendUserInfo = fr.OutPacket.extend(
     {
         ctor:function()
@@ -56,7 +56,7 @@ CmdSendUserInfo = fr.OutPacket.extend(
             this.updateSize();
         }
     }
-)
+);
 
 CmdSendLogin = fr.OutPacket.extend(
     {
@@ -73,7 +73,7 @@ CmdSendLogin = fr.OutPacket.extend(
             this.updateSize();
         }
     }
-)
+);
 
 CmdSendBuild = fr.OutPacket.extend(
     {
@@ -120,7 +120,7 @@ CmdSendHarvest = fr.OutPacket.extend({
         this.putByte(resourceSlot);
         this.updateSize();
     }
-})
+});
 
 CmdSendResearch = fr.OutPacket.extend({
     ctor: function() {
@@ -181,7 +181,7 @@ CmdSendMove = fr.OutPacket.extend(
             this.updateSize();
         }
     }
-)
+);
 
 CmdSendCheat = fr.OutPacket.extend(
     {
@@ -277,16 +277,19 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
             gv.timeOffset = this.ServerTimeStamp - new Date().getTime();
 
             /* Town Hall */
-            this.map = new Object();
+            this.map = {};
             var Amount = this.getByte();
+            for (var i = 0; i < Amount; i += 1)
+            {
             this.map.TOW_1 = [];
             this.map.TOW_1.push(new Object);
-            this.map.TOW_1[0].X = this.getByte() ;
-            this.map.TOW_1[0].Y = this.getByte() ;
-            this.map.TOW_1[0].level = this.getByte();
-            this.map.TOW_1[0].finishBuildOrUpgradeTime = this.getLong();
-            if (this.map.TOW_1[0].finishBuildOrUpgradeTime > 0)
-                this.map.TOW_1[0].finishBuildOrUpgradeTime -= gv.timeOffset;
+            this.map.TOW_1[i].X = this.getByte() ;
+            this.map.TOW_1[i].Y = this.getByte() ;
+            this.map.TOW_1[i].level = this.getByte();
+            this.map.TOW_1[i].finishBuildOrUpgradeTime = this.getLong();
+            if (this.map.TOW_1[i].finishBuildOrUpgradeTime > 0)
+                this.map.TOW_1[i].finishBuildOrUpgradeTime -= gv.timeOffset;
+            }
 
 
             /* Storage 1 */
@@ -330,7 +333,6 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                 if (this.map.STO_3[i].finishBuildOrUpgradeTime > 0)
                     this.map.STO_3[i].finishBuildOrUpgradeTime -= gv.timeOffset;
             }
-
             /* Resource 1 */
             Amount = this.getByte();
             this.map.RES_1 = [];
@@ -345,7 +347,6 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                 if (this.map.RES_1[i].finishBuildOrUpgradeTime > 0)
                     this.map.RES_1[i].finishBuildOrUpgradeTime -= gv.timeOffset;
             }
-
             /* Resource 2 */
             Amount = this.getByte();
             this.map.RES_2 = [];
@@ -360,7 +361,6 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                 if (this.map.RES_2[i].finishBuildOrUpgradeTime > 0)
                     this.map.RES_2[i].finishBuildOrUpgradeTime -= gv.timeOffset;
             }
-
             /* Resource 3 */
             Amount = this.getByte();
             this.map.RES_3 = [];
@@ -430,9 +430,9 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                     {
                         this.map.BAR_1[i].startTrainingTime -= gv.timeOffset;
                         var QueueSize = this.getByte();
-                        this.map.BAR_1[i].trainingTroopTypes = []
-                        this.map.BAR_1[i].trainingQueue = []
-                        for (j = 0; j < QueueSize; j += 1)
+                        this.map.BAR_1[i].trainingTroopTypes = [];
+                        this.map.BAR_1[i].trainingQueue = [];
+                        for (var j = 0; j < QueueSize; j += 1)
                         {
                             this.map.BAR_1[i].trainingTroopTypes.push(this.getByte());
                             this.map.BAR_1[i].trainingQueue.push(this.getShort());
@@ -460,9 +460,9 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                     {
                         this.map.BAR_2[i].startTrainingTime -= gv.timeOffset;
                         var QueueSize = this.getByte();
-                        this.map.BAR_2[i].trainingTroopTypes = []
-                        this.map.BAR_2[i].trainingQueue = []
-                        for (j = 0; j < QueueSize; j += 1)
+                        this.map.BAR_2[i].trainingTroopTypes = [];
+                        this.map.BAR_2[i].trainingQueue = [];
+                        for (var j = 0; j < QueueSize; j += 1)
                         {
                             this.map.BAR_2[i].trainingTroopTypes.push(this.getByte());
                             this.map.BAR_2[i].trainingQueue.push(this.getShort());
@@ -668,6 +668,32 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
             }
 
             Amount = this.getByte();
+            this.map.WAL_1 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.WAL_1.push(new Object());
+                this.map.WAL_1[i].X = this.getByte() ;
+                this.map.WAL_1[i].Y = this.getByte() ;
+                this.map.WAL_1[i].level = this.getByte();
+                this.map.WAL_1[i].finishBuildOrUpgradeTime = this.getLong();
+                if (this.map.WAL_1[i].finishBuildOrUpgradeTime > 0)
+                    this.map.WAL_1[i].finishBuildOrUpgradeTime -= gv.timeOffset;
+            }
+
+            Amount = this.getByte();
+            this.map.CLC_1 = [];
+            for (var i = 0; i < Amount; i += 1)
+            {
+                this.map.CLC_1.push(new Object());
+                this.map.CLC_1[i].X = this.getByte() ;
+                this.map.CLC_1[i].Y = this.getByte() ;
+                this.map.CLC_1[i].level = this.getByte();
+                this.map.CLC_1[i].finishBuildOrUpgradeTime = this.getLong();
+                if (this.map.CLC_1[i].finishBuildOrUpgradeTime > 0)
+                    this.map.CLC_1[i].finishBuildOrUpgradeTime -= gv.timeOffset;
+            }
+
+            Amount = this.getByte();
             this.map.OBS = [];
             {
                 for (var i = 0; i < Amount; i += 1)
@@ -699,7 +725,10 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                 this.player.troopLevel.push(this.getByte());
                 this.player.troopAmount.push(this.getShort());
             }
+            this.player.troopAmount.length = 0;
+            this.player.troopAmount.push(4,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
             gv.jsonInfo = this;
+            cc.log(JSON.stringify(this));
         }
     }
 );
@@ -712,14 +741,16 @@ testnetwork.packetMap[gv.CMD.ERROR] = fr.InPacket.extend({
     readData: function()
     {
         var errorCode = this.getShort();
+        cc.log(" /*********/ Error: " + errorCode);
         fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode + "\nRestart");
         try{
+            cc.log("Error: "+ errorCode);
             fr.view(MainLayer);
         } catch(e)
         {
             cc.log(e)
         }
     }
-})
+});
 
 

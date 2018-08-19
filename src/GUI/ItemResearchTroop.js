@@ -86,12 +86,15 @@ var ItemResearchTroop = ccui.Button.extend({
         if (!this.checkBarrackLevel())
         {
 
-            this.onDisabled(false, "Yêu cầu nhà\n lính cấp " + gv.json.troopBase["ARM_" + this._troopOrder]["barracksLevelRequired"])
+            this.onDisabled(false, "Yêu cầu nhà\n lính cấp " + gv.json.troopBase["ARM_" + this._troopOrder]["barracksLevelRequired"]);
+            var act = cc.tintTo(0, 127.5, 127.5, 127.5 );
+            this._icon.runAction(act);
         }
         else
             if (!this.checkLaboratoryLevel())
             {
                 this.onDisabled(true, "Yêu cầu nhà\nnghiên cứu\n  cấp " + this._levelLabRequire);
+                this.setBright(true);
             }
             else
                 this.initResource();
@@ -106,11 +109,11 @@ var ItemResearchTroop = ccui.Button.extend({
     onDisabled: function(labelLevelAppear, str)
     {
         this._labelLevel.visible = labelLevelAppear;
-        var act = cc.tintTo(0, 127.5, 127.5, 127.5 );
+
         this.setBright(false);
         this.setEnabled(false);
         this._labelRrequire.setColor(cc.color(255, 0, 0, 255));
-        this._icon.runAction(act.clone());
+
         // this._labelLevel.runAction(act.clone());
         this._labelRrequire.visible = true;
         this._resIcon.visible = false;
@@ -125,7 +128,7 @@ var ItemResearchTroop = ccui.Button.extend({
         for (var i = 0; i < cf.user._buildingListCount[gv.orderInUserBuildingList.barrack_1]; i++)
         {
             b = cf.user._buildingList[gv.orderInUserBuildingList.barrack_1][i];
-            max = Math.max(max, (b._is_active) ? b._level : b._level - 1);
+            max = Math.max(max, b._level);
         }
         return (max >= gv.json.troopBase["ARM_" + this._troopOrder]["barracksLevelRequired"] );
     },

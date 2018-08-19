@@ -61,14 +61,30 @@ fn.loadJson = function ()
         gv.json.obstacle = data;
     });
     gv.json.troopAnimation = {};
+
     for (var i = 1; i < 5; i += 1)
-        for (var j = 1; j < 5; j += 1)
-            if (i != 3 && j != 4)
-                cc.loader.loadJson(res.folder_troop_animation + "ARM_" + i + "_" + j + "/ARM_" + i + "_" + j + "/ARM_" + i + "_" + j + "_info.json",
+        for (var j = 1; j < 4; j += 1)
+            try
+            {
+                cc.loader.loadJson(res.folder_troop_animation + "ARM_" + i + "_" + j + "/ARM_" + i + "_" + j + "_info.json",
                                    function (error, data)
                                    {
                                        gv.json.troopAnimation["ARM_" + i + "_" + j] = data;
                                    });
+            }
+            catch(e)
+            {
+                cc.loader.loadJson(res.folder_troop_animation + "ARM_" + i + "_" + 1 + "/ARM_" + i + "_" + 1 + "_info.json",
+                                   function (error, data)
+                                   {
+                                       gv.json.troopAnimation["ARM_" + i + "_" + j] = data;
+                                   });
+            }
+};
+fn.loadPlist = function (troopNameWithLevel)
+{
+    cc.spriteFrameCache.addSpriteFrames("res/Art/Troops/" + troopNameWithLevel + "/" + troopNameWithLevel + ".plist");
+    gv.plist[troopNameWithLevel] = true;
 }
 
 fn.loadPlist = function()
@@ -82,14 +98,14 @@ fn.loadPlist = function()
 fn.getRowColFromPos = function (pos) // Lấy ra Tọa độ dòng, cột của building từ pos
 {
     var loc = cc.p(0, 0);
-    var xx = pos.x - cf.tileLocation[40][40].x / 2;
-    var yy = pos.y - cf.tileLocation[40][40].y / 2 + 0.25 * cf.tileSize.height;
-    var TILE_HEIGHT = cf.tileSize.height / 2;
-    var TILE_WIDTH = cf.tileSize.width / 2;
+    var xx = pos.x - cf.tileLocation[40][40].x * cf.BIG_MAP_SCALE;
+    var yy = pos.y - cf.tileLocation[40][40].y * cf.BIG_MAP_SCALE + 0.5 * cf.tileSize.height * cf.BIG_MAP_SCALE;
+    var TILE_HEIGHT = cf.tileSize.height * cf.BIG_MAP_SCALE;
+    var TILE_WIDTH = cf.tileSize.width * cf.BIG_MAP_SCALE;
     loc.x = parseInt(((yy / (TILE_HEIGHT / 2) - xx / (TILE_WIDTH / 2)) / 2).toFixed(0)) + 1;
     loc.y = parseInt(((xx / (TILE_WIDTH / 2) + yy / (TILE_HEIGHT / 2)) / 2).toFixed(0)) + 1;
     if (!fn.insideMap(loc.x, loc.y))
-        return (cc.p(gv.buildingMove.row, gv.buildingMove.col));
+        return (cc.p(gv.buildingMove.currentRow, gv.buildingMove.currentCol));
     return (cc.p(41 - loc.x, 41 - loc.y));
     /* Boundary */
     loc.x = (loc.x > 40) ? 40 : loc.x;
@@ -114,13 +130,29 @@ fn.pointInsidePolygon = function (point, vs) //Kiểm tra 1 điểm nằm trong 
     }
     return inside;
 };                              // BuildingNode.js
+
+fn.distance2Points = function(p0, p1)
+{
+    return Math.sqrt(((p0.x - p1.x)*(p0.x - p1.x) + (p0.y - p1.y)*(p0.y - p1.y)));
+};
+fn.boundary = function(n0, n1, x)
+{
+    if (n0 > n1) {
+        n0 = n1 + n0;
+        n1 = n0 - n1;
+        n0 = n0 - n1;
+    }
+    if (x < n0) return n0;
+    if (x > n1) return n1;
+    return x;
+}
 fn.getItemOccurenceInArray = function (arr, item)
 {
     var res = 0;
     for (var i = 0; i < arr.length; i++)
         if (arr[i] === item) res++;
     return res;
-}
+};
 fn.insideMap = function (row, col)   // Kiểm tra Coor nằm trong giới hạn (1-40/ 1-40)
 {
     return (0 < row && row < 41 && 0 < col && col < 41);
@@ -133,8 +165,7 @@ fn.getAnimation = function (str, n1, n2)
     {
         var frame = cc.spriteFrameCache.getSpriteFrame(str + "(" + i + ").png");
         arr_effect.push(frame)
-    }
-    ;
+    };
     return cc.Animate(new cc.Animation(arr_effect, cf.time_refresh))
 };                              // Barack + ArmyCamp + ..
 /* Shop */
@@ -316,3 +347,9 @@ fn.convertSecondToHour = function (sec)
 {
     return sec / 60 / 60;
 };
+
+/* Replace Sprite Image */
+fn.replaceSpriteImage= function(sprite, url){
+    var textture = cc.textureCache.addImage(url);
+    sprite.setTexture(textture);
+}
