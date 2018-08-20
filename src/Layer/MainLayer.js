@@ -63,7 +63,7 @@
     },
 
     initClan: function(){
-        //testnetwork.connector.sendCreateClan("Clan 02 Frssher GSN", 26, "Bá chủ Thiên Hà", 0);
+        //testnetwork.connector.sendCreateClan("Clan 02 Fresher GSN", 26, "Bá chủ Thiên Hà", 0);
         //testnetwork.connector.sendJoinClan(0);
     },
 
