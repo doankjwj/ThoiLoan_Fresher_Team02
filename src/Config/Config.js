@@ -462,3 +462,9 @@ cf.secondsToLongTime = function(seconds)
     seconds  -= mnts*60;
     return (days != 0 ? (days.toString() + "d") : "" ) + (hrs != 0 ? (hrs.toString() + "h") : "") + (mnts != 0 ? (mnts.toString() + "m") : "") + ((seconds!=0) ? (seconds.toString() + "s") : "" );
 };
+
+
+//Clan Chat
+cf.clanChat = {
+    maxTroopDonate: 5
+}

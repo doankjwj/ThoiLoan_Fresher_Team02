@@ -15,8 +15,22 @@
         "src/**/*.js"
     ],
     "jsList": [
-
+        "src/User.js",
         "src/AudioPlayer/AudioPlayer.js",
+
+        "src/Config/Config.js",
+        "src/Function/fn.js",
+        "src/GlobalVar/gv.js",
+        "src/GlobalVar/varGUI.js",
+
+        "src/Layer/MainLayer.js",
+        "src/Layer/Map.js",
+        "src/Layer/Shop/Shop.js",
+        "src/Layer/Shop/ShopCategory.js",
+        "src/Layer/Shop/ShopItem.js",
+        "src/Layer/Shop/ShopItemList.js",
+        "src/Layer/Shop/ResourceItem.js",
+        "src/Resource.js",
 
         "src/Buildings/Building.js",
         "src/Buildings/BuildingNode.js",
@@ -33,16 +47,6 @@
         "src/Buildings/Canon.js",
         "src/Buildings/Laboratory.js",
 
-        "src/Classes/ClassItemChat.js",
-        "src/Classes/ClassItemUserOnline.js",
-
-        "src/Config/Config.js",
-
-        "src/Function/fn.js",
-        "src/Function/onUpdateContentDonate.js",
-
-        "src/GlobalVar/gv.js",
-        "src/GlobalVar/varGUI.js",
 
         "src/GUI/ResourceBar.js",
         "src/GUI/IconActionBuilding.js",
@@ -59,15 +63,8 @@
         "src/GUI/ClanChat/LayerClanChat.js",
         "src/GUI/ClanChat/ItemUserOnline.js",
         "src/GUI/ClanChat/ItemChat.js",
-
-        "src/Layer/MainLayer.js",
-        "src/Layer/Map.js",
-        "src/Layer/Shop/Shop.js",
-        "src/Layer/Shop/ShopCategory.js",
-        "src/Layer/Shop/ShopItem.js",
-        "src/Layer/Shop/ShopItemList.js",
-        "src/Layer/Shop/ResourceItem.js",
-        "src/Resource.js",
+        "src/GUI/ClanChat/ButtonTroopDonate.js",
+        "src/GUI/ClanChat/PopUpdonateTroop.js",
 
         "src/NetWork/framework/Utility/ClientConfig.js",
         "src/NetWork/framework/Utility/Localization.js",
@@ -92,8 +89,6 @@
 
         "src/TroopInfo/LogicDirection.js",
         "src/TroopInfo/LogicPoint.js",
-        "src/TroopInfo/Troop.js",
-
-        "src/User.js"
+        "src/TroopInfo/Troop.js"
     ]
 }

@@ -1,6 +1,9 @@
 var Troop = cc.Node.extend
 (
     {
+        type: null,
+        released: false,
+
         ctor:function(troopType, startRow, startColumn, armyCampId)
         {
             this._super();
@@ -58,6 +61,21 @@ var Troop = cc.Node.extend
             if (armyCampLogicPosition !== undefined)
                 this.savedPosition = armyCampLogicPosition;
             this.targetLogicPoint = new LogicPoint(this.savedPosition.logicRow + offsetRow, this.savedPosition.logicColumn + offsetColumn);
+            this.facingDirection = this.position.getDirectionTo(this.targetLogicPoint);
+            try
+            {
+                this.stopAllActions();
+                this.unit.stopAllActions();
+            }
+            catch (e)
+            {
+                this.visualizeOnIdle();
+            }
+            this.move();
+        },
+        freeToDonate: function (rơ, col)
+        {
+            this.targetLogicPoint = new LogicPoint(rơ, col);
             this.facingDirection = this.position.getDirectionTo(this.targetLogicPoint);
             try
             {

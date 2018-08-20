@@ -71,6 +71,7 @@ var User = cc.Class.extend({
         for (var i = 0; i < gv.jsonInfo["player"]["troopLevel"].length; i++)
         {
             this._listTroopLevel[i] = gv.jsonInfo["player"]["troopLevel"][i];
+            this._listTroop[i] = gv.jsonInfo["player"]["troopAmount"][i];
         }
     },
     /* Update Storage Capacity from User Buildings (Town Hall + Storage) */

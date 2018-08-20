@@ -27,12 +27,10 @@ var LayerClanChat = cc.Node.extend({
         userOnlineScrollView: 1,
     },
 
-    // Độ dài tối đa danh sách tin nhắn và độ dài tin nhắn mà Client resquest
-    _maxLengthChat: 90,
+    _maxLengthChat: 90,             // Độ dài tối đa danh sách tin nhắn và độ dài tin nhắn mà Client resquest
     _lengthChatPerLoad: 30,
-
-    // Listener On Appear
-    _listenerAppear: null,
+    _listenerAppear: null,          // Listener On Appear
+    _currentChatItemIndex: null,          // Item Chat hiện tại
 
     ctor: function() {
         this._super();
@@ -253,7 +251,7 @@ var LayerClanChat = cc.Node.extend({
         if (this._listItemChat.length != 0) return;
         this._listItemChat = [];
         for (var i = 0; i < chatQuantity; i++){
-            var itemClanChat = new ItemChat(i, i%3, "User " + i, i, "Hello, I am User " + i, new Date("Thu Aug 16 2018 17:35:35 GMT+0700 (SE Asia Standard Time)").getTime(), [1, 2, 3, 4], [23, 30, 42, 11], 100)
+            var itemClanChat = new ItemChat(i, i%3, "User " + i, i, "Hello, I am User " + i, new Date("Thu Aug 16 2018 17:35:35 GMT+0700 (SE Asia Standard Time)").getTime(), [2, 1, 0, 2], [0, 2, 1, 0], 25)
             this._listItemChat.push(itemClanChat);
         }
 
@@ -270,7 +268,6 @@ var LayerClanChat = cc.Node.extend({
     },
 
     initScrollviewUserOnline: function(){
-
         if (!this._scrollviewUserOnline)
         {
             this._scrollviewUserOnline = ccui.ScrollView();
@@ -334,9 +331,10 @@ var LayerClanChat = cc.Node.extend({
 
     onChat: function()
     {
-        if (this._textFieldChat.length == 0) return;
+        cc.log(this._textFieldChat.string.length);
+        if (this._textFieldChat.string.length == 0) return;
         var index = this._listItemChat.length;
-        var newItemChat = new ItemChat(index, Math.floor(Math.random()*3), "User " + cf.user._name, index, this._textFieldChat.string, new Date().getTime(), [0, 2, 4, 1], [34, 12, 1, 2], 100);
+        var newItemChat = new ItemChat(index, 0, "User " + cf.user._name, index, this._textFieldChat.string, new Date().getTime());
 
         var containerSize = this._scrollviewChat.getInnerContainerSize();
         this._listItemChatY[index] = (index == 0) ? containerSize.height : this._listItemChatY[index-1] + this._listItemChat[index-1]._height;
@@ -352,10 +350,13 @@ var LayerClanChat = cc.Node.extend({
             this._scrollviewChat.removeChild(this._listItemChat[0]);
             this._listItemChat.slice(0, 1);
         };
-
         this.updateInnerContaninerSize(this._typeDefine.chatScrollView);
-
         this._textFieldChat.string = "";
+        this.updateTimeForAllItem();
+    },
+    updateTimeForAllItem: function(){
+        for (var i=0; i<this._listItemChat.length; i++)
+            this._listItemChat[i].updateTime();
     },
     // cập nhật lại inner container size
     updateInnerContaninerSize: function(type){
