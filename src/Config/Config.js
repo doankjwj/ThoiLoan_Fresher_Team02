@@ -103,7 +103,8 @@ gv.json =
     troopBase: null,
     itemList: null,
     defence: null,
-    troopAnimation: null
+    troopAnimation: null,
+    clanCastle: null,
 };
 gv.plist =
     {
@@ -134,7 +135,7 @@ cf.animationConstructLevelUp = null;
 cf.animationDefence_1 = [];
 
 
-cf.MAX_BUILDING_TYPE = 20;
+cf.MAX_BUILDING_TYPE = 40;
 cf.MAX_BUILDING_LEVEL = 20;
 
 cf.shopResourceItem = {
@@ -163,7 +164,8 @@ gv.buildingSTR = {
     barrack_2: "BAR_2",
     builderHut: "BDH_1",
     obstacle: "OBS",
-    defence_1: "DEF_1"
+    defence_1: "DEF_1",
+    clanCastle: "CLC_1",
 };
 gv.buildOnMoveGUI =
 {
@@ -204,8 +206,8 @@ gv.orderInUserBuildingList =
     barrack_2: 10,
     builderHut: 11,
     obstacle: 13,
-    defence_1: 12
-
+    defence_1: 12,
+    clanCastle: 26,
 };
 gv.buildingMaxLevel = {
     townHall: 11,
@@ -221,7 +223,8 @@ gv.buildingMaxLevel = {
     barrack_2: 6,
     builderHut: 5,
     obstacle: 27,
-    defence_1: 17
+    defence_1: 17,
+    clanCastle: 6,
 };
 gv.constructType =
 {
@@ -411,14 +414,15 @@ cf.stringToItemInit = function(str, index) {
             isActive = finishTime <= currentTime;
             building = new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_1], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, isActive, gv.buildingSTR.resource_1);
             building._finishing_time = finishTime;
-            //building._isActive = (finishTime <= currentTime);
+            building._lastHarvestTime = gv.jsonInfo["map"][str][index]["lastHarvestTime"];
+            cc.log(new Date(building._lastHarvestTime));
             break;
         case "RES_2":
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
             isActive = finishTime <= currentTime;
             building = new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_2], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, isActive, gv.buildingSTR.resource_2);
             building._finishing_time = finishTime;
-            //building._isActive = (finishTime <= currentTime);
+            building._lastHarvestTime = gv.jsonInfo["map"][str][index]["lastHarvestTime"];
             break;
         case "AMC_1":
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
@@ -447,6 +451,12 @@ cf.stringToItemInit = function(str, index) {
             building =  new Laboratory(cf.user._buildingListCount[gv.orderInUserBuildingList.lab], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, isActive);
             building._finishing_time = finishTime;
             //building._isActive = (finishTime <= currentTime);
+            break;
+        case "CLC_1":
+            finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
+            isActive = finishTime <= currentTime;
+            building = new ClanCastle(cf.user._buildingListCount[gv.orderInUserBuildingList.clanCastle], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, isActive);
+            building._finishing_time = finishTime;
             break;
     }
     return building;

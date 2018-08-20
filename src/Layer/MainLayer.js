@@ -86,6 +86,7 @@
         var size = cc.winSize;
         this._usernameField = new ccui.TextField();
         this._usernameField .setTouchEnabled(true);
+        //this._usernameField.setFontName(font.soji20);
         this._usernameField .fontName = "Arial";
         this._usernameField .setPlaceHolder("Username: Default admin");
         this._usernameField.setTextColor(cc.color(255, 255, 255, 255));

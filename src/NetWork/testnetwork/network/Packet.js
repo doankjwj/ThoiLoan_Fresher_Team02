@@ -399,10 +399,10 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                 this.map.RES_1[i].X = this.getByte() ;
                 this.map.RES_1[i].Y = this.getByte() ;
                 this.map.RES_1[i].level = this.getByte();
-                this.map.RES_1[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
-                this.map.RES_1[i].lastHarvestTime = this.getLong();
+                this.map.RES_1[i].finishBuildOrUpgradeTime = this.getLong();
                 if (this.map.RES_1[i].finishBuildOrUpgradeTime > 0)
-                    this.map.RES_1[i].lastHarvestTime -= gv.timeOffset;
+                    this.map.RES_1[i].finishBuildOrUpgradeTime -= gv.timeOffset;
+                else this.map.RES_1[i].lastHarvestTime = this.getLong()- gv.timeOffset;
             }
             // for (var i = 0; i < Amount; i += 1)
             //{
@@ -424,10 +424,10 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                 this.map.RES_2[i].X = this.getByte() ;
                 this.map.RES_2[i].Y = this.getByte() ;
                 this.map.RES_2[i].level = this.getByte();
-                this.map.RES_2[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
-                this.map.RES_2[i].lastHarvestTime = this.getLong();
+                this.map.RES_2[i].finishBuildOrUpgradeTime = this.getLong();
                 if (this.map.RES_2[i].finishBuildOrUpgradeTime > 0)
-                    this.map.RES_2[i].lastHarvestTime -= gv.timeOffset;
+                    this.map.RES_2[i].finishBuildOrUpgradeTime -= gv.timeOffset;
+                else this.map.RES_2[i].lastHarvestTime = this.getLong()- gv.timeOffset;
             }
             /* Resource 3 */
             Amount = this.getByte();
@@ -438,10 +438,10 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                 this.map.RES_3[i].X = this.getByte() ;
                 this.map.RES_3[i].Y = this.getByte() ;
                 this.map.RES_3[i].level = this.getByte();
-                this.map.RES_3[i].finishBuildOrUpgradeTime = this.getLong() - gv.timeOffset;
-                this.map.RES_3[i].lastHarvestTime = this.getLong();
+                this.map.RES_3[i].finishBuildOrUpgradeTime = this.getLong();
                 if (this.map.RES_3[i].finishBuildOrUpgradeTime > 0)
-                    this.map.RES_3[i].lastHarvestTime -= gv.timeOffset;
+                    this.map.RES_3[i].finishBuildOrUpgradeTime -= gv.timeOffset;
+                else this.map.RES_3[i].lastHarvestTime = this.getLong()- gv.timeOffset;
             }
 
             /* Laboratory 1 */

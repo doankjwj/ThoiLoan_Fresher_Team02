@@ -53,9 +53,9 @@ fn.loadJson = function ()
     {
         gv.json.defence = data;
     });
-    //cc.loader.loadJson("res/ConfigJson/ShopList.json", function(error, data){
-    //    cf.ShopItemList = data;
-    //});
+    cc.loader.loadJson(res.clanCastleJson, function(error, data){
+        gv.json.clanCastle = data;
+    });
     cc.loader.loadJson(res.obstacleJson, function (error, data)
     {
         gv.json.obstacle = data;

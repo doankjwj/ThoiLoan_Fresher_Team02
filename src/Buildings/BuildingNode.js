@@ -180,6 +180,7 @@ var BuildingNode = cc.Node.extend({
             // swallowTouches: true,
             onTouchBegan: function(touch, event) {
                 if(cf.isDeciding) return false;
+                //if (self._buildingSTR == gv.buildingSTR.clanCastle) return false;
                 var locationNote = self.convertToNodeSpace(touch.getLocation());
                 var w = self._size * cf.tileSize.width / 2 ;
                 var h = self._size * cf.tileSize.height / 2 ;
@@ -523,7 +524,7 @@ var BuildingNode = cc.Node.extend({
         }
         this.updateLabelName();
         if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
-            this._finishing_time = new Date().getTime();
+            this._lastHarvestTime = new Date().getTime();
     },
 
     onUpdateSpriteFrame: function()
@@ -660,6 +661,9 @@ var BuildingNode = cc.Node.extend({
                 break;
             case gv.buildingSTR.lab:
                 this._center_building = cc.Sprite(res.folder_laboratory + "LAB_1_" + this.getTempLevel() + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
+            case gv.buildingSTR.clanCastle:
+                this._center_building = cc.Sprite(res.folder_clan_castle + "CLC_1_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             default:
                 break;
