@@ -110,8 +110,17 @@ var JoinClan = PopupClan.extend({
         }, this);
 
         this._buttonBG2.addTouchEventListener(function(sender, type) {
+            var popupSearch;
+            var self = this;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
+                    if(self.getParent().getChildByTag(gv.tag.TAG_CLAN_SEARCH) === null) {
+                        popupSearch = new SearchClan();
+                        self.getParent().addChild(popupSearch, 1);
+                        popupSearch.setTag(gv.tag.TAG_CLAN_SEARCH);
+                    } else popupSearch = self.getParent().getChildByTag(gv.tag.TAG_CLAN_SEARCH);
+                    self.onDisappear();
+                    popupSearch.onAppear();
                     sender.setScale(sender.scale*0.9);
                     break;
                 case ccui.Widget.TOUCH_MOVED:

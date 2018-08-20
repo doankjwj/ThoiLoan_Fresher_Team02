@@ -26,9 +26,10 @@ var ClanItem = ccui.Button.extend({
         this.addChild(this._clanIcon, 1);
         this._clanIcon.setPosition(cc.p(this.width*this.scale/8, this.height*this.scale/2));
 
-        this._textOrder = cc.LabelBMFont(this._order + ".", font.soji20);
+        this._textOrder = cc.LabelBMFont((this._order >= 10 ? this._order : ("0" + this._order)) + ".", font.soji20);
+        this._textOrder.setAnchorPoint(cc.p(0.5, 0.5))
         this.addChild(this._textOrder, 1);
-        this._textOrder.setPosition(cc.p(this._textOrder.width, this.height/2));
+        this._textOrder.setPosition(cc.p(30, this.height/2));
 
         this._textName = cc.LabelBMFont(this._clan.name, font.soji20);
         this._textName.scale = 0.5;

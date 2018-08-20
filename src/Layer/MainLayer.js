@@ -798,8 +798,7 @@
             if(self.getChildByTag(gv.tag.TAG_CLAN_JOIN) === null) {
                 var popupClan = new JoinClan();
                 popupClan.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
-                this.addChild(popupClan, 1);
-                popupClan.setTag(gv.tag.TAG_CLAN_JOIN);
+                this.addChild(popupClan, 1, gv.tag.TAG_CLAN_JOIN);
                 popupClan.onAppear();
             } else self.getChildByTag(gv.tag.TAG_CLAN_JOIN).onAppear();
 

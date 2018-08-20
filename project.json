@@ -64,6 +64,8 @@
         "src/GUI/PopupClan/JoinClan.js",
         "src/GUI/PopupClan/ClanItem.js",
         "src/GUI/PopupClan/Clan.js",
+        "src/GUI/PopupClan/SearchClan.js",
+
 
         "src/Layer/MainLayer.js",
         "src/Layer/Map.js",
