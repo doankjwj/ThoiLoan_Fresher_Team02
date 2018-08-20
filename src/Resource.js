@@ -125,6 +125,14 @@ res.clanChatGUI = {
 };
 res.clanGUI = {
     iconStarSmall: folderClan + "sao nho.png",
+    iconClan: folderClan +  "icon bang hoi.png",
+    slotBackground: folderClan + "slost nen 2.png",
+    bg: folderClan + "nen 1.png",
+    flagOpen: folderClan + "co 1.png",
+    flagClose: folderClan + "co 2.png",
+    buttonBG: folderClan + "o duoi.png",
+    buttonBGClose: folderClan + "o duoi 1.png",
+    clanItemBackground: folderClan + "slost.png",
 };
 
 var shopGUI = {

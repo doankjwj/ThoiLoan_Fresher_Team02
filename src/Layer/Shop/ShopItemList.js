@@ -134,7 +134,6 @@ var ShopItemList = cc.Layer.extend({
         this._scrollView.setDirection(ccui.ScrollView.DIR_HORIZONTAL);
         this._scrollView.setTouchEnabled(true);
         this._scrollView.setBounceEnabled(true);
-        this._scrollView.setAnchorPoint(cc.p(0.5, 0.5));
         this._scrollView.setContentSize(cc.size(item.width*item.scale, item.height*item.scale));
         this._scrollView.setInnerContainerSize(cc.size(item.width*item.scale * (gv.json.shopItemList["ShopList"][this._shopName].length + 0.3), item.height*item.scale));
         this._scrollView.setAnchorPoint(cc.p(0, 0));

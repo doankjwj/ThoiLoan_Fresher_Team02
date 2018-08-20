@@ -19,6 +19,7 @@
     _guiInstantlyDone: null,
     _guiCancelBuildButton: null,
     _guiTraningArmyButton: null,
+    _guiClanButton: null,
     _guiButtonHarvest: null,
     _guiButtonResearch: null,
     _popUp: null,
@@ -748,8 +749,6 @@
         }.bind(this));
 
         this._guiTraningArmyButton = new IconActionBuilding(cf.CODE_TRAINING);
-
-
         this._guiTraningArmyButton.attr({
             anchorX: 0.5,
             anchorY: 0.5,
@@ -777,6 +776,32 @@
                 var popup = this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING);
                 popup.onAppear();
             }
+
+        }.bind(this));
+
+        this._guiClanButton = new IconActionBuilding(cf.CODE_CLAN);
+        this._guiClanButton.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: this._guiButtonBuildingUpgrade.x + this._guiClanButton.width/2*this._guiClanButton.scale + 20,
+            y: this._guiClanButton.y - 200
+        });
+
+        this.addChild(this._guiClanButton, 2);
+
+        this._guiClanButton.addClickEventListener(function() {
+            self.hideListBotButton();
+            if (gv.building_selected === undefined) return;
+            var building = cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)];
+            if (building._isActive === false) return;
+
+            if(self.getChildByTag(gv.tag.TAG_CLAN_JOIN) === null) {
+                var popupClan = new JoinClan();
+                popupClan.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
+                this.addChild(popupClan, 1);
+                popupClan.setTag(gv.tag.TAG_CLAN_JOIN);
+                popupClan.onAppear();
+            } else self.getChildByTag(gv.tag.TAG_CLAN_JOIN).onAppear();
 
         }.bind(this));
 
@@ -828,49 +853,20 @@
         this._guiInstantlyDone.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
         this._guiCancelBuildButton.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
         this._guiTraningArmyButton.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
-        if (this._guiButtonHarvest != undefined) this._guiButtonHarvest.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
-        if (this._guiButtonResearch != undefined) this._guiButtonResearch.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
+        this._guiClanButton.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
+        if (this._guiButtonHarvest !== undefined) this._guiButtonHarvest.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
+        if (this._guiButtonResearch !== undefined) this._guiButtonResearch.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
     },
 
-    _showListBotButton: function() {
-        var moveToPos1 = cc.MoveTo(0.1, cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - 2 * cf.offSetGuiResourceBar, this._guiButtonBuildingInfo.height/2*this.scale + cf.offSetGuiResourceBar));
-        this._guiButtonBuildingInfo.runAction(moveToPos1);
-        var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
-        var moveToPos2 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + cf.offSetGuiResourceBar - 25, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
-        if (building._buildingSTR !== gv.buildingSTR.builderHut)
-        {
-            if (building._isActive) {
-                var moveToPos3 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + 2 * cf.offSetGuiResourceBar + this._guiInstantlyDone.width/2*this._guiInstantlyDone.scale + 20, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
-                this._guiButtonBuildingUpgrade.runAction(moveToPos2);
-                if(building._buildingSTR === gv.buildingSTR.barrack_1)this._guiTraningArmyButton.runAction(moveToPos3);
-            }
-        else {
-            this._guiCancelBuildButton.runAction(moveToPos2);
-            var moveToPos3 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + 2 * cf.offSetGuiResourceBar + this._guiInstantlyDone.width/2*this._guiInstantlyDone.scale + 20, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
-            this._guiInstantlyDone.runAction(moveToPos3);
-            this._guiInstantlyDone.updateContent();}
-        }
-
-        /* Thêm nút thu hoạch */
-        if (building._isActive)
-        {
-            if (building._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && building._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
-            {
-                this.popUpButtonHarvest(building);
-            };
-            if (building._orderInUserBuildingList == gv.orderInUserBuildingList.lab)
-                this.popUpButtonResearch();
-        }
-    },
     showListBotButton: function(buildingID)
     {
-        /* Infor(0) --- Upgrade(1) --- Cancel(2) --- Instance Finish(3) --- Collect(4) -- Research(5) -- Train(6) */
+        /* Infor(0) --- Upgrade(1) --- Cancel(2) --- Instance Finish(3) --- Collect(4) -- Research(5) -- Train(6) -- Clan(7) */
         var buildingOrder = Math.floor(buildingID/100) - 1;
         var buildingNum = buildingID % 100;
         var building = cf.user._buildingList[buildingOrder][buildingNum];
 
         var bool_0 = true ; var bool_1 = true ; var bool_2 = true ; var bool_3 = true;
-        var bool_4 = false; var bool_5 = false; var bool_6 = false;
+        var bool_4 = false; var bool_5 = false; var bool_6 = false; var bool_7 = false;
         if (building._level == building._maxLevel || !building._isActive || buildingOrder == gv.orderInUserBuildingList.builderHut) bool_1 = false;
         if (building._isActive) bool_2 = false;
         if (building._isActive) bool_3 = false;
@@ -901,15 +897,19 @@
                 break;
             case gv.orderInUserBuildingList.barrack_1:
                 if (building._isActive) bool_6 = true;
+                break;
+            case gv.orderInUserBuildingList.builderHut:
+                if(building._isActive) bool_7 = true;
+                break;
         }
 
-        this.onPopUpButton(bool_0, bool_1, bool_2, bool_3, bool_4, bool_5, bool_6);
+        this.onPopUpButton(bool_0, bool_1, bool_2, bool_3, bool_4, bool_5, bool_6, bool_7);
     },
 
-    onPopUpButton: function(bool_0, bool_1, bool_2, bool_3, bool_4, bool_5, bool_6)
+    onPopUpButton: function(bool_0, bool_1, bool_2, bool_3, bool_4, bool_5, bool_6, bool_7)
     {
-        /* Infor --- Upgrade --- Cancel --- Instance Finish --- Collect -- Research -- Train */
-        var popUpButtonCount = fn.getItemOccurenceInArray([bool_0, bool_1, bool_2, bool_3, bool_4, bool_5, bool_6], true);
+        /* Infor --- Upgrade --- Cancel --- Instance Finish --- Collect -- Research -- Train -- Clan */
+        var popUpButtonCount = fn.getItemOccurenceInArray([bool_0, bool_1, bool_2, bool_3, bool_4, bool_5, bool_6, bool_7], true);
         var y = this._guiButtonBuildingInfo.height;
         // var x = cc.winSize.width * 1/3;
         var x = cc.winSize.width/2 - popUpButtonCount/2 * this._guiButtonBuildingInfo.width;
@@ -949,12 +949,18 @@
             var act = cc.MoveTo(0.1, cc.p(x, y));
             this._guiButtonResearch.runAction(act);
             x += offSet;
-        }if (bool_6)
-    {
-        var act = cc.MoveTo(0.1, cc.p(x, y));
-        this._guiTraningArmyButton.runAction(act);
-        x += offSet;
-    }
+        }
+        if (bool_6)
+        {
+            var act = cc.MoveTo(0.1, cc.p(x, y));
+            this._guiTraningArmyButton.runAction(act);
+            x += offSet;
+        }
+        if(bool_7) {
+            var act = cc.MoveTo(0.1, cc.p(x, y));
+            this._guiClanButton.runAction(act);
+            x += offSet;
+        }
     },
     popUpButtonHarvest: function(x, y)
     {
