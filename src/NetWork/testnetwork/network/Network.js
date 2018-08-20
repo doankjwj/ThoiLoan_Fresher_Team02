@@ -40,7 +40,9 @@ testnetwork.Connector = cc.Class.extend({
             //catch(e)
             //{
             //}
-            //break;
+            break;
+            case gv.CMD.RECEIVE_CHAT:
+                break;
 
         }
     },
@@ -125,6 +127,25 @@ testnetwork.Connector = cc.Class.extend({
         cc.log("SEND RESEARCH IMMIDIATELY: " + troopType);
         var pk = this.gameClient.getOutPacket(CmdSendResearchFinishImmidiately);
         pk.pack();
+        this.gameClient.sendPacket(pk);
+    },
+
+    sendCreateClan: function(clanName, flag, description, authentication){
+        cc.log("SEND CREATE CLAN : " + clanName);
+        var pk = this.gameClient.getOutPacket(CmdSendCreateClan);
+        pk.pack(clanName, flag, description, authentication);
+        this.gameClient.sendPacket(pk);
+    },
+    sendJoinClan: function(clanId){
+        cc.log("SEND JOIN CLAN : " + clanId);
+        var pk = this.gameClient.getOutPacket(CmdSendJoinClan);
+        pk.pack(clanId);
+        this.gameClient.sendPacket(pk);
+    },
+    sendChat: function(msg){
+        cc.log("SEND CLAN CHAT: " + msg);
+        var pk = this.gameClient.getOutPacket(CmdSendChat);
+        pk.pack(msg);
         this.gameClient.sendPacket(pk);
     }
 

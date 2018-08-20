@@ -2,6 +2,17 @@ var Troop = cc.Node.extend
 (
     {
         type: null,
+        position: null,
+        facingDirection: null,
+        logicMap: null,
+        armyCampId: null,
+        freeMoveMode: null,
+        targetLogicPoint: null,
+        targetLogicPointStep: null,
+        bestDirection: null,
+        shadow: null,
+        unit: null,
+
         released: false,
 
         ctor:function(troopType, startRow, startColumn, armyCampId)

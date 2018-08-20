@@ -18,7 +18,13 @@ gv.CMD.SEND_RESEARCH = 2510;
 gv.CMD.SEND_RESEARCH_FINISH_IMMIDIATELY = 2550;
 gv.CMD.RESET_USER = 2890;
 
+gv.CMD.SEND_CREATE_CLAN = 2250;
+gv.CMD.SEND_JOIN_CLAN = 2251;
+gv.CMD.SEND_CLAN_CHAT = 2252;
+gv.CMD.RECEIVE_CHAT = 2253;
+
 gv.CMD.ERROR = 2999;
+
 
 testnetwork = testnetwork||{};
 testnetwork.packetMap = {};
@@ -195,6 +201,57 @@ CmdSendCheat = fr.OutPacket.extend(
             this.packHeader();
             this.putByte(type);
             this.putInt(num);
+            this.updateSize();
+        }
+    }
+);
+
+CmdSendCreateClan = fr.OutPacket.extend(
+    {
+        ctor:function()
+        {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.SEND_CREATE_CLAN);
+        },
+        pack:function(clanName, flag, description, authentication){
+            this.packHeader();
+            this.putString(clanName);
+            this.putByte(flag);
+            this.putString(description);
+            this.putByte(authentication);
+            this.updateSize();
+        }
+    }
+);
+
+CmdSendJoinClan = fr.OutPacket.extend(
+    {
+        ctor:function()
+        {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.SEND_JOIN_CLAN);
+        },
+        pack:function(clanId){
+            this.packHeader();
+            this.putInt(clanId);
+            this.updateSize();
+        }
+    }
+);
+
+CmdSendChat = fr.OutPacket.extend(
+    {
+        ctor:function()
+        {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.SEND_CLAN_CHAT);
+        },
+        pack:function(msg){
+            this.packHeader();
+            this.putString(msg);
             this.updateSize();
         }
     }
@@ -738,6 +795,12 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
             }
             this.player.troopAmount.length = 0;
             this.player.troopAmount.push(4,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+
+            this.clanId = this.getInt();
+            if (this.clanId == -1){
+                this.timeFinishClanPenalty = this.getLong();
+                if (this.timeFinishClanPenalty != 0) this.timeFinishClanPenalty -= gv.timeOffset;
+            }
             gv.jsonInfo = this;
             cc.log(JSON.stringify(this));
         }
@@ -761,6 +824,17 @@ testnetwork.packetMap[gv.CMD.ERROR] = fr.InPacket.extend({
         {
             cc.log(e)
         }
+    }}
+);
+
+testnetwork.packetMap[gv.CMD.RECEIVE_CHAT] = fr.InPacket.extend({
+    ctor: function()
+    {
+        this._super();
+    },
+    readData: function()
+    {
+        cc.log("New Message: " + this.getString());
     }
 });
 

@@ -351,8 +351,12 @@ var LayerClanChat = cc.Node.extend({
             this._listItemChat.slice(0, 1);
         };
         this.updateInnerContaninerSize(this._typeDefine.chatScrollView);
+        testnetwork.connector.sendChat(this._textFieldChat.string);
         this._textFieldChat.string = "";
         this.updateTimeForAllItem();
+
+
+
     },
     updateTimeForAllItem: function(){
         for (var i=0; i<this._listItemChat.length; i++)

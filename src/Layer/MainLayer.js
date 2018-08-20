@@ -55,9 +55,16 @@
     _TAG_LAYER_CLAN_CHAT: 32231,
 
     ctor:function () {
+
         this._super();
         this.setTag(1000000);
         this.init();
+
+    },
+
+    initClan: function(){
+        //testnetwork.connector.sendCreateClan("Clan 02 Frssher GSN", 26, "Bá chủ Thiên Hà", 0);
+        //testnetwork.connector.sendJoinClan(0);
     },
 
     init: function() {
@@ -154,6 +161,7 @@
         cf.user.distributeResource(true, true, true);
         this.initTroops();
 
+        this.initClan();
         // ======================
     },
     initTroops: function ()
