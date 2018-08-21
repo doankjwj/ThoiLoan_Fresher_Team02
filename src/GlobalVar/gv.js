@@ -49,3 +49,9 @@ gv.clanChatEventManager = {
 };
 
 gv.listenerNullForPopUpDonate = null;
+
+// Chat
+gv.clanChat={
+    jsonChatItem: null,
+    jsonDonateItem: null,
+}

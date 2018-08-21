@@ -46,7 +46,7 @@
         "src/Buildings/Obstacle.js",
         "src/Buildings/Canon.js",
         "src/Buildings/Laboratory.js",
-
+        "src/Buildings/ClanCastle.js",
 
         "src/GUI/ResourceBar.js",
         "src/GUI/IconActionBuilding.js",

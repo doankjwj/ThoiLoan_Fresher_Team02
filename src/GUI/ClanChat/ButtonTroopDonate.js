@@ -127,8 +127,8 @@ var ButtonTroopDonate = ccui.Button.extend({
         this._labelTroopLevel.setString(this._troopLevel);
     },
     onReleaseTroop: function(){
-        var rowRelease = 20;    // dòng con troop chạy ra rồi tan biến
-        var colRelease = 1;     // cột con troop chạy ra rồi tan biến
+        var rowRelease = 41;    // dòng con troop chạy ra rồi tan biến
+        var colRelease = 20;     // cột con troop chạy ra rồi tan biến
         for (var i=0; i<cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1].length; i++){
             var amc = cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][i];
             for (var j = 0; j<amc._troopList.length; j++)
@@ -136,14 +136,17 @@ var ButtonTroopDonate = ccui.Button.extend({
                 var troop = amc._troopList[j];
                 if (troop.type == this._troopOrder && !troop.released){
                     troop.released = true;
+                    amc._troopList.splice(j, 1);
                     var actRelease = cc.Sequence.create(cc.CallFunc(function(){
                         troop.freeToDonate(rowRelease, colRelease);
-                    }),
-                    cc.DelayTime(10),
-                    cc.CallFunc(function(){
-                        fr.getCurrentScreen()._map.removeChild(troop);
-                        amc._troopList.splice(j, 1);
-                    }));
+                    })
+                    //cc.DelayTime(20),
+                    //cc.CallFunc(function(){
+                    //    fr.getCurrentScreen()._map.removeChild(troop);
+                    //
+                    //}
+            )
+            //);
                     this.runAction(actRelease);
                     return;
                 }

@@ -42,6 +42,7 @@ testnetwork.Connector = cc.Class.extend({
             //}
             break;
             case gv.CMD.RECEIVE_CHAT:
+                gvGUI.layerClanChat.onChatFromServer();
                 break;
 
         }

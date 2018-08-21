@@ -22,7 +22,8 @@ gv.CMD.SEND_CREATE_CLAN = 2250;
 gv.CMD.SEND_JOIN_CLAN = 2251;
 gv.CMD.SEND_CLAN_CHAT = 2252;
 gv.CMD.RECEIVE_CHAT = 2253;
-
+gv.CMD.SEND_REQUEST_DONATE = 2254;
+gv.CMD.RECEIVE_DONATE = 2255;
 gv.CMD.ERROR = 2999;
 
 
@@ -776,6 +777,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                 }
             }
 
+            cc.log("++++ Map Done " + JSON.stringify(this))
             /* Player */
             this.player = new Object();
             this.player.name = this.getString();
@@ -796,11 +798,13 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
             this.player.troopAmount.length = 0;
             this.player.troopAmount.push(4,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 
+            cc.log("Player done");
             this.clanId = this.getInt();
             if (this.clanId == -1){
                 this.timeFinishClanPenalty = this.getLong();
                 if (this.timeFinishClanPenalty != 0) this.timeFinishClanPenalty -= gv.timeOffset;
             }
+            cc.log("clan done");
             gv.jsonInfo = this;
             cc.log(JSON.stringify(this));
         }
@@ -834,8 +838,30 @@ testnetwork.packetMap[gv.CMD.RECEIVE_CHAT] = fr.InPacket.extend({
     },
     readData: function()
     {
-        cc.log("New Message: " + this.getString());
+        this.userName = this.getString();
+        this.userLevel = this.getInt();
+        this.msg = this.getString();
+        gv.clanChat.jsonChatItem = this;
+        cc.log(JSON.stringify(this));
     }
 });
+
+testnetwork.packetMap[gv.CMD.RECEIVE_DONATE] = fr.InPacket.extend({
+    ctor: function()
+    {
+        this._super();
+    },
+    readData: function()
+    {
+        this.userName = this.getString();
+        this.userLevel = this.getInt();
+        this.msg = this.getString();
+        var userDonatedQuantity = this.getByte();
+        for (var i=0; i<0; i++)
+        {
+            //this
+        }
+    }
+})
 
 

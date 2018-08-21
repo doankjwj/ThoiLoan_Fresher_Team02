@@ -84,9 +84,9 @@ var Troop = cc.Node.extend
             }
             this.move();
         },
-        freeToDonate: function (rơ, col)
+        freeToDonate: function (row, col)
         {
-            this.targetLogicPoint = new LogicPoint(rơ, col);
+            this.targetLogicPoint = new LogicPoint(row, col);
             this.facingDirection = this.position.getDirectionTo(this.targetLogicPoint);
             try
             {
@@ -101,9 +101,12 @@ var Troop = cc.Node.extend
         },
         move: function ()
         {
+            // Kết thúc chạy
             if (this.position.isEqualTo(this.targetLogicPoint))
             {
                 this.isMoving = false;
+                if (this.released == true)
+                    fr.getCurrentScreen()._map.removeChild(this);
                 this.visualizeOnIdle();
                 this.delayRandomMove();
                 return;

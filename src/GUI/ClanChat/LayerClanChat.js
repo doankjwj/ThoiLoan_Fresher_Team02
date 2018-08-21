@@ -84,11 +84,14 @@ var LayerClanChat = cc.Node.extend({
         textFieldChatBG.setAnchorPoint(0, 0.5);
         textFieldChatBG.setPosition(5, this._iconClan.y - 35);
         this.addChild(textFieldChatBG, 1);
-        this._textFieldChat = ccui.TextField();
+        this._textFieldChat = ccui.TextField("", font.soji20, 45);
         this._textFieldChat.setTextColor(cc.color(0, 0, 0, 255));
         this._textFieldChat.setPlaceHolder("                                         ");
         this._textFieldChat.setAnchorPoint(0, 0.5);
         this._textFieldChat.setPosition(15, this._iconClan.y - 35);
+        this._textFieldChat.setMaxLength(45);
+        this._textFieldChat.setMaxLengthEnabled(true);
+        this._textFieldChat.set
         this.addChild(this._textFieldChat, 1);
 
         var buttonInfo = ccui.Button(res.clanChatGUI.buttonInfo);
@@ -329,13 +332,8 @@ var LayerClanChat = cc.Node.extend({
         }
     },
 
-    onChat: function()
-    {
-        cc.log(this._textFieldChat.string.length);
-        if (this._textFieldChat.string.length == 0) return;
+    addItemChat: function(newItemChat){
         var index = this._listItemChat.length;
-        var newItemChat = new ItemChat(index, 0, "User " + cf.user._name, index, this._textFieldChat.string, new Date().getTime());
-
         var containerSize = this._scrollviewChat.getInnerContainerSize();
         this._listItemChatY[index] = (index == 0) ? containerSize.height : this._listItemChatY[index-1] + this._listItemChat[index-1]._height;
         newItemChat.setPosition(this._scrollviewChat.width/2 - 6, this._listItemChatY[index]);
@@ -351,12 +349,40 @@ var LayerClanChat = cc.Node.extend({
             this._listItemChat.slice(0, 1);
         };
         this.updateInnerContaninerSize(this._typeDefine.chatScrollView);
+        this.updateTimeForAllItem();
+    },
+    onChat: function()
+    {
+        if (this._textFieldChat.string.length == 0) return;
+        // var index = this._listItemChat.length;
+        // var newItemChat = new ItemChat(index, 0, "User " + cf.user._name, index, this._textFieldChat.string, new Date().getTime());
+        //
+        // this.addItemChat(newItemChat)
+        // var containerSize = this._scrollviewChat.getInnerContainerSize();
+        // this._listItemChatY[index] = (index == 0) ? containerSize.height : this._listItemChatY[index-1] + this._listItemChat[index-1]._height;
+        // newItemChat.setPosition(this._scrollviewChat.width/2 - 6, this._listItemChatY[index]);
+        // this._listItemChat.push(newItemChat);
+        //
+        // var line = cc.Sprite(res.clanChatGUI.lineSeparateChat);
+        // line.setPosition(this._scrollviewChat.width/2 - 6, this._listItemChatY[index]);
+        // this._scrollviewChat.addChild(line);
+        //
+        // if (this._listItemChat.length > this._maxLengthChat)
+        // {
+        //     this._scrollviewChat.removeChild(this._listItemChat[0]);
+        //     this._listItemChat.slice(0, 1);
+        // };
+        // this.updateInnerContaninerSize(this._typeDefine.chatScrollView);
         testnetwork.connector.sendChat(this._textFieldChat.string);
         this._textFieldChat.string = "";
-        this.updateTimeForAllItem();
-
-
-
+        // this.updateTimeForAllItem();
+    },
+    onChatFromServer: function(){
+        var userName = gv.clanChat.jsonChatItem["userName"];
+        var userLevel = gv.clanChat.jsonChatItem["userLevel"];
+        var msg = gv.clanChat.jsonChatItem["msg"];
+        var newItemChat = new ItemChat(0, 0, userName, userLevel, msg, new Date().getTime());
+        this.addItemChat(newItemChat);
     },
     updateTimeForAllItem: function(){
         for (var i=0; i<this._listItemChat.length; i++)
