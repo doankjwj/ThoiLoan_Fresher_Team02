@@ -615,6 +615,9 @@ var BuildingNode = cc.Node.extend({
             case gv.buildingSTR.lab:
                 json = gv.json.laboratory;
                 break;
+            case gv.buildingSTR.clanCastle:
+                json = gv.json.clanCastle;
+                break;
             default:
                 break;
         }

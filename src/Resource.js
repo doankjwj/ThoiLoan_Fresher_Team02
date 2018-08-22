@@ -197,6 +197,7 @@ var buildingGUI = {
     iconHarvest_3: folderBuildingActionicon + "harvest_dark_elixir.png",
     instant: res.folder_gui_action_building + "quick_finish.png",
     iconResearch: res.folder_gui_action_building + "research_icon.png",
+    iconRequestDonate: res.folder_gui_action_building + "request_troop_button.png",
     bg: folderBuildingActionicon + "bg_button.png",
 
     trainIcon: folderBuildingActionicon + "train_icon.png",
@@ -284,6 +285,7 @@ var logInGUI =
     bg:  logInFolder + "loading.jpg",
     btnOk: logInFolder + "okbutton.png",
     logo: logInFolder + "logo.png",
+    textFieldBG: logInFolder + "g_background.png",
 }
 res.sound = {
     soundBackgound : soundFolder + "theme.mp3",

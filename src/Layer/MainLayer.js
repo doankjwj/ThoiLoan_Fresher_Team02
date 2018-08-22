@@ -21,9 +21,11 @@
     _guiTraningArmyButton: null,
     _guiButtonHarvest: null,
     _guiButtonResearch: null,
+    _guiButtonRequestDonate: null,
     _popUp: null,
     _popUpResearchTroop: null,
     _popUpTraining: null,
+    _popUpRequestDonate: null,
 
     // Cheat Button
     _resetUserButton: null,
@@ -53,6 +55,7 @@
     _TAG_BUTTON_HARVEST: 63721,
     _TAG_BUTTON_RESEARCH: 34231,
     _TAG_LAYER_CLAN_CHAT: 32231,
+    _TAG_BUTTON_REQUEST_DONATE: 42342,
 
     ctor:function () {
 
@@ -63,8 +66,8 @@
     },
 
     initClan: function(){
-         //testnetwork.connector.sendCreateClan("Clan 02 Fresher GSN", 26, "Bá chủ Thiên Hà", 0);
-         //testnetwork.connector.sendJoinClan(0);
+         // testnetwork.connector.sendCreateClan("Clan 02 Fresher GSN", 26, "Bá chủ Thiên Hà", 0);
+         // testnetwork.connector.sendJoinClan(0);
     },
 
     init: function() {
@@ -84,11 +87,21 @@
         this.addChild(logo, 0, this._TAG_LOGO);
 
         var size = cc.winSize;
+        this._bgField = cc.Sprite(logInGUI.textFieldBG);
+        this._bgField.setScaleX(2.5);
+        this._bgField.setPosition(size.width/2, size.height/2 + 18);
+        this.addChild(this._bgField, 0);
+
+        this._bgField2 = cc.Sprite(logInGUI.textFieldBG);
+        this._bgField2.setScaleX(2.5);
+        this._bgField2.setPosition(size.width/2, size.height/2 - 26);
+        this.addChild(this._bgField2, 0);
+
         this._usernameField = new ccui.TextField();
         this._usernameField .setTouchEnabled(true);
         //this._usernameField.setFontName(font.soji20);
         this._usernameField .fontName = "Arial";
-        this._usernameField .setPlaceHolder("Username: Default admin");
+        this._usernameField .setPlaceHolder("Username:");
         this._usernameField.setTextColor(cc.color(255, 255, 255, 255));
         this._usernameField .fontSize = 30;
         this._usernameField .x = size.width/2;
@@ -134,11 +147,13 @@
     onConnectSuccess: function()
     {
         cc.log("================= " + "Connect Success => Send Handshake");
-        this.getChildByTag(this._TAG_USERNAME_FIELD).visible = false;
-        this.getChildByTag(this._TAG_PASSWORD_FIELD).visible = false;
-        this.getChildByTag(this._TAG_LOGIN_BUTTON).visible = false;
-        this.getChildByTag(this._TAG_BG).visible = false;
-        this.getChildByTag(this._TAG_LOGO).visible = false;
+        this.removeChildByTag(this._TAG_USERNAME_FIELD);
+        this.removeChildByTag(this._TAG_PASSWORD_FIELD);
+        this.removeChildByTag(this._TAG_LOGIN_BUTTON);
+        this.removeChildByTag(this._TAG_BG);
+        this.removeChildByTag(this._TAG_LOGO);
+        this.removeChild(this._bgField);
+        this.removeChild(this._bgField2);
     },
 
     onConnectFail: function()
@@ -466,6 +481,9 @@
             gvGUI.layerClanChat.setPosition(- gvGUI.layerClanChat.scale*(gvGUI.layerClanChat._bg.width + gvGUI.layerClanChat._layerUserOnline.width) + 5, 0);
             gvGUI.layerClanChat.retain();
         };
+        gvGUI.layerClanChat.initContent();
+        gvGUI.layerClanChat.updateTimeScrollChat();
+
         if (!this.getChildByTag(this._TAG_LAYER_CLAN_CHAT))
             this.addChild(gvGUI.layerClanChat, 2, this._TAG_LAYER_CLAN_CHAT);
     },
@@ -631,6 +649,20 @@
             self.hideListBotButton();
         }.bind(this));
 
+        /*Button Request Donate */
+        this._guiButtonRequestDonate = new IconActionBuilding(cf.CODE_BUILDING_REQUEST_DONATE);
+        this._guiButtonRequestDonate.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: cc.winSize.width/2,
+            y: -cc.winSize.height/2
+        });
+        this.addChild(this._guiButtonRequestDonate, 2, this._TAG_BUTTON_REQUEST_DONATE);
+        this._guiButtonRequestDonate.addClickEventListener(function(){
+            self.onPopUpRequestDonate();
+            self.hideListBotButton();
+        }.bind(this));
+
 
         this._guiButtonBuildingUpgrade.addClickEventListener(function()
         {
@@ -782,10 +814,23 @@
         var researching = cf.user._buildingList[gv.orderInUserBuildingList.lab][0]._researching;
         var troopOrder = cf.user._buildingList[gv.orderInUserBuildingList.lab][0]._currentTroop;
         this._popUpResearchTroop = new PopUpResearchTroop(researching, troopOrder);
-        this._popUpResearchTroop.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
-        this.addChild(this._popUpResearchTroop, 1, gv.tag.TAG_POPUP_RESEARCH_TROOP);
         this._popUpResearchTroop.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
+        this.addChild(this._popUpResearchTroop, 1, gv.tag.TAG_POPUP_RESEARCH_TROOP);
         this._popUpResearchTroop.onAppear();
+    },
+    onPopUpRequestDonate: function()
+    {
+        if (!this._popUpRequestDonate)
+            //this.addChild(this._popUpRequestDonate);
+        {
+            this._popUpRequestDonate = new PopUpRequestDonate();
+            this._popUpRequestDonate.setPosition(0, cc.winSize.height/2);
+            this.addChild(this._popUpRequestDonate, 1);
+        }
+        //this._popUpRequestDonate.setPosition(cc.winSize.width/2, cc.winSize.height/2);
+        //this.addChild(this._popUpRequestDonate, 1);
+        this._popUpRequestDonate.show();
+        this._popUpRequestDonate.onAppear();
     },
     onPopUpTroopInfo: function(troopOrder)
     {
@@ -821,6 +866,7 @@
         this._guiInstantlyDone.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
         this._guiCancelBuildButton.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
         this._guiTraningArmyButton.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
+        this._guiButtonRequestDonate.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
         if (this._guiButtonHarvest != undefined) this._guiButtonHarvest.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
         if (this._guiButtonResearch != undefined) this._guiButtonResearch.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
     },
@@ -857,13 +903,13 @@
     },
     showListBotButton: function(buildingID)
     {
-        /* Infor(0) --- Upgrade(1) --- Cancel(2) --- Instance Finish(3) --- Collect(4) -- Research(5) -- Train(6) */
+        /* Infor(0) --- Upgrade(1) --- Cancel(2) --- Instance Finish(3) --- Collect(4) -- Research(5) -- Train(6) -- Request Donate(7)*/
         var buildingOrder = Math.floor(buildingID/100) - 1;
         var buildingNum = buildingID % 100;
         var building = cf.user._buildingList[buildingOrder][buildingNum];
 
         var bool_0 = true ; var bool_1 = true ; var bool_2 = true ; var bool_3 = true;
-        var bool_4 = false; var bool_5 = false; var bool_6 = false;
+        var bool_4 = false; var bool_5 = false; var bool_6 = false; var bool_7 = false;
         if (building._level == building._maxLevel || !building._isActive || buildingOrder == gv.orderInUserBuildingList.builderHut) bool_1 = false;
         if (building._isActive) bool_2 = false;
         if (building._isActive) bool_3 = false;
@@ -894,15 +940,20 @@
                 break;
             case gv.orderInUserBuildingList.barrack_1:
                 if (building._isActive) bool_6 = true;
+                break;
+            case gv.orderInUserBuildingList.clanCastle:
+                cc.log(building._isActive);
+                if (building._isActive) bool_7 = true;
+                break;
         }
 
-        this.onPopUpButton(bool_0, bool_1, bool_2, bool_3, bool_4, bool_5, bool_6);
+        this.onPopUpButton(bool_0, bool_1, bool_2, bool_3, bool_4, bool_5, bool_6, bool_7);
     },
 
-    onPopUpButton: function(bool_0, bool_1, bool_2, bool_3, bool_4, bool_5, bool_6)
+    onPopUpButton: function(bool_0, bool_1, bool_2, bool_3, bool_4, bool_5, bool_6, bool_7)
     {
         /* Infor --- Upgrade --- Cancel --- Instance Finish --- Collect -- Research -- Train */
-        var popUpButtonCount = fn.getItemOccurenceInArray([bool_0, bool_1, bool_2, bool_3, bool_4, bool_5, bool_6], true);
+        var popUpButtonCount = fn.getItemOccurenceInArray([bool_0, bool_1, bool_2, bool_3, bool_4, bool_5, bool_6, bool_7], true);
         var y = this._guiButtonBuildingInfo.height;
         // var x = cc.winSize.width * 1/3;
         var x = cc.winSize.width/2 - popUpButtonCount/2 * this._guiButtonBuildingInfo.width;
@@ -942,12 +993,19 @@
             var act = cc.MoveTo(0.1, cc.p(x, y));
             this._guiButtonResearch.runAction(act);
             x += offSet;
-        }if (bool_6)
-    {
-        var act = cc.MoveTo(0.1, cc.p(x, y));
-        this._guiTraningArmyButton.runAction(act);
-        x += offSet;
-    }
+        }
+        if (bool_6)
+        {
+            var act = cc.MoveTo(0.1, cc.p(x, y));
+            this._guiTraningArmyButton.runAction(act);
+            x += offSet;
+        }
+        if (bool_7)
+        {
+            var act = cc.MoveTo(0.1, cc.p(x, y));
+            this._guiButtonRequestDonate.runAction(act);
+            x += offSet;
+        }
     },
     popUpButtonHarvest: function(x, y)
     {

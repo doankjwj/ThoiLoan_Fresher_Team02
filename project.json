@@ -59,6 +59,7 @@
         "src/GUI/PopUpResearchTroop.js",
         "src/GUI/ItemResearchTroop.js",
         "src/GUI/PopUpTroopInfo.js",
+        "src/GUI/PopUpRequestDonate.js",
 
         "src/GUI/ClanChat/LayerClanChat.js",
         "src/GUI/ClanChat/ItemUserOnline.js",

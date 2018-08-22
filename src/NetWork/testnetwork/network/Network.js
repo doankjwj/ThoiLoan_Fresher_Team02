@@ -33,18 +33,15 @@ testnetwork.Connector = cc.Class.extend({
                 fr.getCurrentScreen().updateMove(packet.x, packet.y);
                 break;
             case gv.CMD.ERROR:
-            //try
-            //{
-            //    fr.view(MainLayer);
-            //}
-            //catch(e)
-            //{
-            //}
-            break;
+                break;
             case gv.CMD.RECEIVE_CHAT:
                 gvGUI.layerClanChat.onChatFromServer();
                 break;
-
+            case gv.CMD.RECEIVE_DONATE:
+                gvGUI.layerClanChat.onRequestDonateFromServer();
+                break;
+            case 37:
+                break;
         }
     },
     sendGetUserInfo:function()
@@ -143,13 +140,36 @@ testnetwork.Connector = cc.Class.extend({
         pk.pack(clanId);
         this.gameClient.sendPacket(pk);
     },
+
+    // Gửi 1 request Chat
     sendChat: function(msg){
         cc.log("SEND CLAN CHAT: " + msg);
         var pk = this.gameClient.getOutPacket(CmdSendChat);
         pk.pack(msg);
         this.gameClient.sendPacket(pk);
+    },
+    // Gửi 1 request Donate
+    sendRequestDonate: function(msg){
+        cc.log("NEW REQUEST DONATE: " + msg);
+        var pk = this.gameClient.getOutPacket(CmdSendRequestDonate);
+        pk.pack(msg);
+        this.gameClient.sendPacket(pk);
+    },
+    // Gửi Request Donate cho 1 người khác
+    sendDonate: function(tag, troopOrder)
+    {
+        cc.log("NEW DONATE: " + "tag: " + tag + ", troopOrder: " + troopOrder);
+        var pk = this.gameClient.getOutPacket(CmdSendDonate);
+        pk.pack(tag, troopOrder);
+        this.gameClient.sendPacket(pk);
+    },
+    // Gửi Request lấy lịch sử chat Text
+    sendRequestLoadClanChat: function(){
+        cc.log("SEND REQUEST LOAD CLAN CHAT HISTORY");
+        var pk = this.gameClient.getOutPacket(CmdSendRequestLoadClanChat);
+        pk.pack();
+        this.gameClient.sendPacket(pk);
     }
-
 });
 
 

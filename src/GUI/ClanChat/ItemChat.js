@@ -67,7 +67,10 @@ var ItemChat = cc.Node.extend({
 
         this._labelName = cc.LabelBMFont(this._userName, font.soji20);
         this._labelName.scale = 0.6;
-        this._labelName.setColor(cc.color(255, 255, 102, 255));
+        if (this._userName != cf.user._name)
+            this._labelName.setColor(cc.color(255, 255, 102, 255));
+        else
+            this._labelName.setColor(cc.color(80, 255, 102, 255));
         this._labelName.setAnchorPoint(0, 0.5);
         this._labelName.setPosition(iconStar.x + 20, this._labelLevel.y);
         this.addChild(this._labelName);
@@ -89,9 +92,11 @@ var ItemChat = cc.Node.extend({
         this._labelTime.setPosition(165, 10);
         this.addChild(this._labelTime);
 
-        // Widget cho quân
+        var line = cc.Sprite(res.clanChatGUI.lineSeparateChat);
+        line.setPosition(0, this._labelTime.y - 10);
+        this.addChild(line);
+
         if (this._type == this.typeDefine.requestDonate){
-            this._labelMessage.setString("Cho mình xin quân nhé !");
             this._labelMessage.setColor(cc.color(255, 255, 255, 255));
 
             this._barDonateBG = cc.Sprite(res.clanChatGUI.barDonateTroopBG);
@@ -103,22 +108,27 @@ var ItemChat = cc.Node.extend({
             this._barDonate.setPosition(-38.5, 61);
             this.addChild(this._barDonate);
 
-            this._buttonDonate = ccui.Button(res.clanChatGUI.buttonGreen);
-            this._buttonDonate.setTitleText("Cho Quân");
-            this._buttonDonate.setTitleFontSize(20);
-            this._buttonDonate.setTitleColor(cc.color(255, 255, 255, 255));
-            this._buttonDonate.scale = 0.85;
-            this._buttonDonate.setPosition(0, 30);
-            this.addChild(this._buttonDonate);
+            if (this._userName != cf.user._name)
+            {
+                this._buttonDonate = ccui.Button(res.clanChatGUI.buttonGreen);
+                this._buttonDonate.setTitleText("Cho Quân");
+                this._buttonDonate.setTitleFontSize(20);
+                this._buttonDonate.setTitleColor(cc.color(255, 255, 255, 255));
+                this._buttonDonate.scale = 0.85;
+                this._buttonDonate.setPosition(0, 30);
+                this.addChild(this._buttonDonate);
 
-            this._buttonDonate.addClickEventListener(function(){
-                var root = this.getParent().getParent().getParent();
-                root._currentChatItemIndex = root._listItemChat.indexOf(self);      // Lưu Item chat hiện tại
-                self.onPopUpTroopDonate();
-                gvGUI.popUpDonateTroop.updateStatus();      // Disable nút nếu hết housing Space và ngược lại
+                this._buttonDonate.addClickEventListener(function(){
+                    var root = this.getParent().getParent().getParent();
+                    root._currentChatItemIndex = root._listItemChat.indexOf(self);      // Lưu Item chat hiện tại
+                    self.onPopUpTroopDonate();
+                    gv.clanChat.itemDonateTag = self._time;
+                    cc.log(gv.clanChat.itemDonateTag);
+                    gvGUI.popUpDonateTroop.updateStatus();      // Disable nút nếu hết housing Space và ngược lại
 
-                //cc.log("=====/// " + self._troopDonatedArr[0] + " = " + self._troopDonatedArr[1] + " = " + self._troopDonatedArr[2] + " = " + self._troopDonatedArr[3]);
-            }.bind(this));
+                    //cc.log("=====/// " + self._troopDonatedArr[0] + " = " + self._troopDonatedArr[1] + " = " + self._troopDonatedArr[2] + " = " + self._troopDonatedArr[3]);
+                }.bind(this));
+            }
 
             this._labelTroop = cc.LabelBMFont("", font.soji20);
             this._labelTroop.scale = 0.6;

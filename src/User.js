@@ -79,7 +79,9 @@ var User = cc.Class.extend({
     },
 
     initClanInfo: function(){
-
+        if (gv.jsonInfo["player"]["clanId"] != -1) {
+            testnetwork.connector.sendRequestLoadClanChat();
+        }
     },
     /* Update Storage Capacity from User Buildings (Town Hall + Storage) */
     updateMaxStorage: function()

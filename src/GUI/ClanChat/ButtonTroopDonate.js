@@ -74,6 +74,7 @@ var ButtonTroopDonate = ccui.Button.extend({
         this.onUpdateToUserListTroop();
         this.getParent().updateStatus();
         this.onReleaseTroop();
+        this.onSendRequest();
     },
     // Cập nhật số quân đã cho cho button
     onUpdateTroopDonated: function(quantity){
@@ -128,7 +129,7 @@ var ButtonTroopDonate = ccui.Button.extend({
     },
     onReleaseTroop: function(){
         var rowRelease = 41;    // dòng con troop chạy ra rồi tan biến
-        var colRelease = 20;     // cột con troop chạy ra rồi tan biến
+        var colRelease = 20;    // cột con troop chạy ra rồi tan biến
         for (var i=0; i<cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1].length; i++){
             var amc = cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][i];
             for (var j = 0; j<amc._troopList.length; j++)
@@ -140,17 +141,15 @@ var ButtonTroopDonate = ccui.Button.extend({
                     var actRelease = cc.Sequence.create(cc.CallFunc(function(){
                         troop.freeToDonate(rowRelease, colRelease);
                     })
-                    //cc.DelayTime(20),
-                    //cc.CallFunc(function(){
-                    //    fr.getCurrentScreen()._map.removeChild(troop);
-                    //
-                    //}
             )
-            //);
                     this.runAction(actRelease);
                     return;
                 }
             }
         }
+    },
+    onSendRequest: function()
+    {
+        testnetwork.connector.sendDonate(gv.clanChat.itemDonateTag + gv.timeOffset.loadClanChatDonate, this._troopOrder);
     }
 })

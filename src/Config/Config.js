@@ -48,6 +48,7 @@ cf.CODE_BUILDING_HARVEST_2 = 346286421;
 cf.CODE_BUILDING_HARVEST_3 = 346286431;
 cf.CODE_BUILDING_RESEARCH = 23423324;
 cf.CODE_TRAINING = 27071993;
+cf.CODE_BUILDING_REQUEST_DONATE = 232423;
 
 cf.user = null;
 
@@ -476,5 +477,6 @@ cf.secondsToLongTime = function(seconds)
 
 //Clan Chat
 cf.clanChat = {
-    maxTroopDonate: 5
+    maxTroopDonate: 5,
+    troopDonateLength: 4,
 }
