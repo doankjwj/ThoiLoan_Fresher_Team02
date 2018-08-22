@@ -53,11 +53,12 @@ gv.listenerNullForPopUpDonate = null;
 
 // Chat
 gv.clanChat={
-    jsonChatItem: null,             // Data 1 chat mới
-    jsonRequestDonateItem: null,    // Data 1 request xin quân mới]
+    jsonChatText: null,             // Data 1 chat Text mới
+    jsonChatDonate: null,           // Data 1 request xin quân mới
+    jsonDonate: null,               // Data kết quả 1 lượt Donate
     jsonLoadText: null,             // Data load đoạn hội thoại chat Text
-    jsonLoadDonate: null,             // Data load đoạn hội thoại chat Donate
-    jsonLoadEvent: null,             // Data load đoạn hội thoại chat Event
+    jsonLoadDonate: null,           // Data load đoạn hội thoại chat Donate
+    jsonLoadEvent: null,            // Data load đoạn hội thoại chat Event
     itemDonateTag: null,
 }
 

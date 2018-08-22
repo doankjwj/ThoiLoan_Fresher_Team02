@@ -354,10 +354,10 @@ var LayerClanChat = cc.Node.extend({
     },
 
     //Nhận 1 Response Chat mới từ server
-    onChatFromServer: function(){
-        var userName = gv.clanChat.jsonChatItem["userName"];
-        var userLevel = gv.clanChat.jsonChatItem["userLevel"];
-        var msg = gv.clanChat.jsonChatItem["msg"];
+    onReceiveChatText: function(){
+        var userName = gv.clanChat.jsonChatText["userName"];
+        var userLevel = gv.clanChat.jsonChatText["userLevel"];
+        var msg = gv.clanChat.jsonChatText["msg"];
         var newItemChat = new ItemChat(0, 0, userName, userLevel, msg, new Date().getTime());
         this._listItemChat.push(newItemChat);
         var index = this._listItemChat.length-1;
@@ -368,12 +368,12 @@ var LayerClanChat = cc.Node.extend({
         this._scrollviewChat.scrollToTop(1, 0);
     },
     // Nhận 1 Response Donate mới từ server
-    onRequestDonateFromServer: function(){
-        var userName = gv.clanChat.jsonRequestDonateItem["userName"];
-        var userLevel = gv.clanChat.jsonRequestDonateItem["userLevel"];
-        var msg = gv.clanChat.jsonRequestDonateItem["msg"];
-        var currentHousingSpace = gv.clanChat.jsonRequestDonateItem["housingSpaceDonated"];
-        var maxHousingSpace = gv.clanChat.jsonRequestDonateItem["maxHousingSpace"];
+    onReceiveChatDonate: function(){
+        var userName = gv.clanChat.jsonChatDonate["userName"];
+        var userLevel = gv.clanChat.jsonChatDonate["userLevel"];
+        var msg = gv.clanChat.jsonChatDonate["msg"];
+        var currentHousingSpace = gv.clanChat.jsonChatDonate["housingSpaceDonated"];
+        var maxHousingSpace = gv.clanChat.jsonChatDonate["maxHousingSpace"];
         var newItemChat = new ItemChat(0, 1, userName, userLevel, msg, new Date().getTime(), currentHousingSpace, [0, 0, 0, 0], maxHousingSpace);
 
         var indexExisted = this.getItemChatByUserName(1, userName);
@@ -391,6 +391,16 @@ var LayerClanChat = cc.Node.extend({
         this.addItemChat(index);
         this._scrollviewChat.scrollToTop(1, 0);
     },
+    onReceiveDonate: function()
+    {
+        var userName = gv.clanChat.jsonDonate["userName"];
+        var troopOrder = gv.clanChat.jsonDonate["troopOrder"];
+        var troopLevel = gv.clanChat.jsonDonate["troopLevel"];
+        var index = this.getItemChatByUserName(1, userName);
+        if (index == null) return;
+        this._listItemChat[index].onAddTroop(troopOrder);
+    },
+
     // Lấy ra 1 Item chat qua loại, user name __ nếu = null: user chưa có lượt donate và ngược lại
     getItemChatByUserName: function(type, userName)
     {

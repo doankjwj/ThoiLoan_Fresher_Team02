@@ -21,11 +21,12 @@ gv.CMD.RESET_USER = 2890;
 gv.CMD.SEND_CREATE_CLAN = 2250;
 gv.CMD.SEND_JOIN_CLAN = 2251;
 
-gv.CMD.SEND_CLAN_CHAT = 2252;
-gv.CMD.RECEIVE_CHAT = 2253;
-gv.CMD.SEND_REQUEST_DONATE = 2254;
-gv.CMD.RECEIVE_DONATE = 2255;
+gv.CMD.SEND_CLAN_CHAT_TEXT = 2252;
+gv.CMD.RECEIVE_CLAN_CHAT_TEXT = 2253;
+gv.CMD.SEND_CLAN_CHAT_DONATE = 2254;
+gv.CMD.RECEIVE_CLAN_CHAT_DONATE = 2255;
 gv.CMD.SEND_DONATE = 2260;
+gv.CMD.RECEIVE_DONATE = 2261;
 
 gv.CMD.SEND_LOAD_CLAN_CHAT = 2256;
 gv.CMD.RECEIVE_LOAD_CLAN_CHAT_TEXT = 2257;
@@ -257,7 +258,7 @@ CmdSendChat = fr.OutPacket.extend(
         {
             this._super();
             this.initData(100);
-            this.setCmdId(gv.CMD.SEND_CLAN_CHAT);
+            this.setCmdId(gv.CMD.SEND_CLAN_CHAT_TEXT);
         },
         pack:function(msg){
             this.packHeader();
@@ -272,7 +273,7 @@ CmdSendRequestDonate = fr.OutPacket.extend(
         {
             this._super();
             this.initData(100);
-            this.setCmdId(gv.CMD.SEND_REQUEST_DONATE);
+            this.setCmdId(gv.CMD.SEND_CLAN_CHAT_DONATE);
         },
         pack:function(msg){
             this.packHeader();
@@ -293,7 +294,7 @@ CmdSendDonate = fr.OutPacket.extend(
         pack: function(tag, troopOrder)
         {
             this.packHeader();
-            this.putLong(tag);
+            this.putString(tag);
             this.putByte(troopOrder);
             this.updateSize();
         }
@@ -886,7 +887,7 @@ testnetwork.packetMap[gv.CMD.ERROR] = fr.InPacket.extend({
 
 
 // Nhận 1 gói chat
-testnetwork.packetMap[gv.CMD.RECEIVE_CHAT] = fr.InPacket.extend({
+testnetwork.packetMap[gv.CMD.RECEIVE_CLAN_CHAT_TEXT] = fr.InPacket.extend({
     ctor: function()
     {
         this._super();
@@ -896,12 +897,12 @@ testnetwork.packetMap[gv.CMD.RECEIVE_CHAT] = fr.InPacket.extend({
         this.userName = this.getString();
         this.userLevel = this.getInt();
         this.msg = this.getString();
-        gv.clanChat.jsonChatItem = this;
+        gv.clanChat.jsonChatText = this;
         cc.log(JSON.stringify(this));
     }
 });
 //Nhận 1 gói Donate
-testnetwork.packetMap[gv.CMD.RECEIVE_DONATE] = fr.InPacket.extend({
+testnetwork.packetMap[gv.CMD.RECEIVE_CLAN_CHAT_DONATE] = fr.InPacket.extend({
     ctor: function()
     {
         this._super();
@@ -913,7 +914,22 @@ testnetwork.packetMap[gv.CMD.RECEIVE_DONATE] = fr.InPacket.extend({
         this.msg = this.getString();
         this.housingSpaceDonated = this.getByte() // Houssing space các user đã donate
         this.maxHousingSpace = this.getByte() // Housing space tối đa
-        gv.clanChat.jsonRequestDonateItem = this;
+        gv.clanChat.jsonChatDonate = this;
+        cc.log(JSON.stringify(this));
+    }
+})
+// Nhận kết quả 1 lượt donate
+testnetwork.packetMap[gv.CMD.RECEIVE_DONATE] = fr.InPacket.extend({
+    ctor: function()
+    {
+        this._super();
+    },
+    readData: function()
+    {
+        this.userName = this.getString();
+        this.troopOrder = this.getByte();
+        this.troopLevel = this.getByte();
+        gv.clanChat.jsonDonate = this;
         cc.log(JSON.stringify(this));
     }
 })

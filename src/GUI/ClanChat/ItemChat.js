@@ -111,7 +111,7 @@ var ItemChat = cc.Node.extend({
                     var root = this.getParent().getParent().getParent();
                     root._currentChatItemIndex = root._listItemChat.indexOf(self);      // Lưu Item chat hiện tại
                     self.onPopUpTroopDonate();
-                    gv.clanChat.itemDonateTag = self._time;
+                    gv.clanChat.itemDonateTag = self._userName;
                     gvGUI.popUpDonateTroop.updateStatus();      // Disable nút nếu hết housing Space và ngược lại
                 }.bind(this));
 
@@ -309,4 +309,22 @@ var ItemChat = cc.Node.extend({
         gvGUI.popUpDonateTroop.runAction(seq);
     },
 
+    // Thêm 1 troop từ server
+    onAddTroop: function(troopOrder)
+    {
+        this._troopDonatedArr[troopOrder] += 1;
+        this.updateCurrentTroopAmount(troopOrder, 1);
+
+        var troopAmountDonated = 0;
+        for (var i=0; i<this._troopDonatedArr.length; i++)
+        {
+            troopAmountDonated += this._troopDonatedArr[i];
+            gvGUI.popUpDonateTroop._listButton[i].onUpdateTroopDonated(this._troopDonatedArr[i]);
+        }
+
+        if (troopAmountDonated >= cf.clanChat.maxTroopDonate){
+            this._buttonDonate.setTitleText("Xem lại");
+            this._buttonDonate.loadTextures(res.clanChatGUI.buttonBlue, res.clanChatGUI.buttonBlue);
+        }
+    }
 })

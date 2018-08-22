@@ -70,7 +70,7 @@ var ButtonTroopDonate = ccui.Button.extend({
         this.onUpdateTroopDonated(this._troopDonated + 1);
         this.onUpdateTroopQuantity(this._troopQuantity - 1);
         this.onUpdateStatusForPopUpDonate();
-        this.onUpdateForChatItem();
+        //this.onUpdateForChatItem();
         this.onUpdateToUserListTroop();
         this.getParent().updateStatus();
         this.onReleaseTroop();
@@ -152,6 +152,6 @@ var ButtonTroopDonate = ccui.Button.extend({
     },
     onSendRequest: function()
     {
-        testnetwork.connector.sendDonate(gv.clanChat.itemDonateTag + gv.timeOffset.loadClanChatDonate, this._troopOrder);
+        testnetwork.connector.sendDonate(gv.clanChat.itemDonateTag, this._troopOrder);
     }
 })

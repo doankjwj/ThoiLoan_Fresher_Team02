@@ -34,11 +34,14 @@ testnetwork.Connector = cc.Class.extend({
                 break;
             case gv.CMD.ERROR:
                 break;
-            case gv.CMD.RECEIVE_CHAT:
-                gvGUI.layerClanChat.onChatFromServer();
+            case gv.CMD.RECEIVE_CLAN_CHAT_TEXT:
+                gvGUI.layerClanChat.onReceiveChatText();
+                break;
+            case gv.CMD.RECEIVE_CLAN_CHAT_DONATE:
+                gvGUI.layerClanChat.onReceiveChatDonate();
                 break;
             case gv.CMD.RECEIVE_DONATE:
-                gvGUI.layerClanChat.onRequestDonateFromServer();
+                gvGUI.layerClanChat.onReceiveDonate();
                 break;
             case 37:
                 break;
