@@ -194,7 +194,7 @@
 
     initGameSound: function()
     {
-        audioPlayer.play(res.sound.soundBackgound, true);
+        // audioPlayer.play(res.sound.soundBackgound, true);
     },
     initUser: function()
     {

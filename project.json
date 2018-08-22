@@ -60,6 +60,7 @@
         "src/GUI/ClanChat/ItemUserOnline.js",
         "src/GUI/ClanChat/ItemChat.js",
 
+        "src/GUI/PopupClan/RadioButton.js",
         "src/GUI/PopupClan/PopupClan.js",
         "src/GUI/PopupClan/JoinClan.js",
         "src/GUI/PopupClan/ClanItem.js",

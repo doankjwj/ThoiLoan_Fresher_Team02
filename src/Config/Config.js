@@ -275,7 +275,9 @@ gv.tag =
         TAG_POPUP_RESEARCH_TROOP: 3421,
         TAG_BUTTON_TROOP: 1905,
         TAG_CLAN_JOIN: 1906,
-        TAG_CLAN_SEARCH: 1907
+        TAG_CLAN_SEARCH: 1907,
+        TAG_BUTTON_SEARCH_BY_NAME: 10,
+        TAG_BUTTON_SEARCH_BY_ID: 11,
     };
 /* Pop Up */
 gv.popUpConstruct = null;
