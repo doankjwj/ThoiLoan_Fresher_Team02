@@ -15,9 +15,12 @@ var SearchClan = PopupClan.extend({
     _byName: null,
     _byId: null,
 
+    listClan: null,
+    listClanVis: null,
+
     _searchButton: null,
 
-    _maxLength: 30,
+    _maxLength: 20,
 
     ctor: function(){
         this._super();
@@ -79,7 +82,6 @@ var SearchClan = PopupClan.extend({
         this._fieldSearch.setMaxLengthEnabled(true);
         this._fieldSearchBg.addChild(this._fieldSearch, 2);
         this._fieldSearch.setPosition(cc.p(this._fieldSearch.width/2 + 5, this._fieldSearchBg.height/2));
-        this._fieldSearch.attachWithIME();
         this._fieldSearch.setTextHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
         this._fieldSearch.setTextVerticalAlignment(cc.VERTICAL_TEXT_ALIGNMENT_CENTER);
         this._fieldSearch.setTouchSize(cc.size(this._fieldSearchBg.width, this._fieldSearchBg.height));
@@ -123,6 +125,60 @@ var SearchClan = PopupClan.extend({
         this._searchButton.setPosition(cc.p(this._byId.x + this._searchButton.width/2 + 70, this._fieldSearchBg.y));
         this._searchButton.setZoomScale(0.03);
 
+        var label = cc.LabelBMFont("Search", font.soji20);
+        label.scale = 0.8;
+        this._searchButton.addChild(label, 1);
+        label.setPosition(cc.p(this._searchButton.width/2, this._searchButton.height/2));
+
+        this.listClan = [];
+        this.listClanVis = new ccui.ScrollView();
+        var clan = new Clan(123, 20, "AAA", 1, 20, 0, 12000);
+        var item = new ClanItem(1, clan);
+
+        this._bg.addChild(this.listClanVis, 1);
+        this.listClanVis.setDirection(ccui.ScrollView.DIR_VERTICAL);
+        this.listClanVis.setTouchEnabled(true);
+        this.listClanVis.setBounceEnabled(true);
+        this.listClanVis.setAnchorPoint(cc.p(0.5, 0.5));
+        this.listClanVis.setPosition(cc.p(this._bg.width/2, this._bg.height/2 - 55));
+        this.listClanVis.setContentSize(cc.size(item.width*item.scale, item.height*item.scale));
+        this.listClanVis.setInnerContainerSize(cc.size(item.width*item.scale, item.height*item.scale * 50));
+
+        this.listClanVis.width = this._bg.width;
+        this.listClanVis.height = this._bg.height - 180;
+
+        this.listClanVis.visible = false;
+
+        // cc.log(this.listClanVis.width + " " + this.listClanVis.height);
+
+        // this.listClanVis.addChild(item, 2);
+
+        for(var i = 0; i<50; i++) {
+            this.listClan.push(new ClanItem(i+1, new Clan(123, Math.floor(Math.random()*28 + 1), "Hoàn Quân Đoàn", Math.floor(Math.random()*3), Math.floor(Math.random()*50+1), Math.floor(Math.random() + 1), Math.floor(Math.random()*20000))));
+        }
+
+        for(var i = 0; i<50; i++) {
+            // cc.log(this.listClan[i]._order + " " + this.listClan[i]._clan.level);
+            // cc.log(this.listClan[i]);
+            this.listClanVis.addChild(this.listClan[i], 2);
+            this.listClan[i].setPosition(cc.p(this.listClanVis.width/2, this.listClanVis.getInnerContainerSize().height - (i+0.5)*this.listClan[i].height*this.listClan[i].scale));
+        }
+
+
+        this._searchButton.addTouchEventListener(function(sender, type) {
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED :
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    if(!this.listClanVis.visible) this.listClanVis.visible = true;
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+        }, this);
+
     },
 
     updateButtonStatus: function(){
@@ -158,7 +214,7 @@ var SearchClan = PopupClan.extend({
             }
             else if (this._fieldSearch.string.length >= 3 && this._fieldSearch.string.length < this._maxLength) this._statusText.visible = false;
             else if (this._fieldSearch.string.length >= this._maxLength) {
-                this._statusText.setString("Max 30 kí tự");
+                this._statusText.setString("Max 20 kí tự");
                 this._statusText.visible = true;
             }
         }
@@ -169,8 +225,17 @@ var SearchClan = PopupClan.extend({
     initTouch: function(){
 
         this._buttonBG1.addTouchEventListener(function(sender, type) {
+            var pupupCreateClan;
+            var self = this;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
+                    if(self.getParent().getChildByTag(gv.tag.TAG_CLAN_CREATE) === null) {
+                        pupupCreateClan = new CreateClan();
+                        self.getParent().addChild(pupupCreateClan, 1);
+                        pupupCreateClan.setTag(gv.tag.TAG_CLAN_CREATE);
+                    } else pupupCreateClan = self.getParent().getChildByTag(gv.tag.TAG_CLAN_CREATE);
+                    self.onDisappear();
+                    pupupCreateClan.onAppear();
                     sender.setScale(sender.scale*0.9);
                     break;
                 case ccui.Widget.TOUCH_MOVED:
@@ -218,6 +283,6 @@ var SearchClan = PopupClan.extend({
     onDisappear: function() {
         this._swallowTouch.setEnabled(false);
         this.visible = false;
+        if(this.listClanVis) this.listClanVis.visible = false;
     }
-
 });

@@ -62,6 +62,8 @@
 
         "src/GUI/PopupClan/RadioButton.js",
         "src/GUI/PopupClan/PopupClan.js",
+        "src/GUI/PopupClan/ChooseClanIcon.js",
+        "src/GUI/PopupClan/CreateClan.js",
         "src/GUI/PopupClan/JoinClan.js",
         "src/GUI/PopupClan/ClanItem.js",
         "src/GUI/PopupClan/Clan.js",

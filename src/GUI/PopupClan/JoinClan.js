@@ -17,7 +17,7 @@ var JoinClan = PopupClan.extend({
         this._flagOpen = cc.Sprite(res.clanGUI.flagOpen);
         this._bg.addChild(this._flagOpen, 2);
         this._flagOpen.setAnchorPoint(cc.p(0.5, 0.5));
-        this._flagOpen.setPosition(cc.p(this._flagOpen.width/2+50, this._bg.height - this._flagOpen.height/2 + 5));
+        this._flagOpen.setPosition(cc.p(this._flagOpen.width/2+54, this._bg.height - this._flagOpen.height/2 + 5));
         this._buttonBG = cc.Sprite(res.clanGUI.buttonBG);
         this._bg.addChild(this._buttonBG, 0);
         this._buttonBG.setPosition(cc.p(this._flagOpen.x, this._flagOpen.y + 5));
@@ -67,7 +67,7 @@ var JoinClan = PopupClan.extend({
         this.listClanVis.width = this._bg.width;
         this.listClanVis.height = this._bg.height - 100;
 
-        cc.log(this.listClanVis.width + " " + this.listClanVis.height);
+        // cc.log(this.listClanVis.width + " " + this.listClanVis.height);
 
         // this.listClanVis.addChild(item, 2);
 
@@ -93,8 +93,17 @@ var JoinClan = PopupClan.extend({
     initTouch: function(){
 
         this._buttonBG1.addTouchEventListener(function(sender, type) {
+            var pupupCreateClan;
+            var self = this;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
+                    if(self.getParent().getChildByTag(gv.tag.TAG_CLAN_CREATE) === null) {
+                        pupupCreateClan = new CreateClan();
+                        self.getParent().addChild(pupupCreateClan, 1);
+                        pupupCreateClan.setTag(gv.tag.TAG_CLAN_CREATE);
+                    } else pupupCreateClan = self.getParent().getChildByTag(gv.tag.TAG_CLAN_CREATE);
+                    self.onDisappear();
+                    pupupCreateClan.onAppear();
                     sender.setScale(sender.scale*0.9);
                     break;
                 case ccui.Widget.TOUCH_MOVED:
