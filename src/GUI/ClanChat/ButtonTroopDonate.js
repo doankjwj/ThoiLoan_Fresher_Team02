@@ -55,15 +55,15 @@ var ButtonTroopDonate = ccui.Button.extend({
         this.addChild(this._labelTroopLevel, 2);
 
         this._labelTroopQuantity = cc.LabelBMFont("X " + this._troopQuantity, font.soji20);
-        this._labelTroopQuantity.setColor(cc.color(255, 255, 255, 255));
-        this._labelTroopQuantity.setPosition(30, 20);
+        this._labelTroopQuantity.setColor(cc.color(255, 151, 0, 255));
+        this._labelTroopQuantity.setPosition(this.width/2, -10);
         this._labelTroopQuantity.scale = 0.8;
         this.addChild(this._labelTroopQuantity, 1);
 
         this._labelTroopDonated = cc.LabelBMFont("", font.soji20);
         this._labelTroopDonated.scale = 0.7;
-        this._labelTroopDonated.setColor(cc.color(255, 151, 0, 255));
-        this._labelTroopDonated.setPosition(this.width/2, -10);
+        this._labelTroopDonated.setColor(cc.color(255, 255, 255, 255));
+        this._labelTroopDonated.setPosition(30, 20);
         this.addChild(this._labelTroopDonated);
     },
     onClick: function(){
@@ -122,6 +122,8 @@ var ButtonTroopDonate = ccui.Button.extend({
     },
     // Cập nhật troop Quantity và troop Level từ user
     onUpdate: function(){
+        //this.setEnabled(true);
+        //this.setBright(true);
         this._troopQuantity = this.getQuantityFromUser();
         this._troopLevel = this.getLevelFromUser();
         this._labelTroopQuantity.setString(this._troopQuantity);

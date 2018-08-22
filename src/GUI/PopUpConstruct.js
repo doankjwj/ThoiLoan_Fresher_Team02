@@ -9,6 +9,8 @@ var PopUpConstruct = cc.Node.extend({
     _btnClose: null,
     _btnOk: null,
 
+    _btnDeleteTroop: null,
+
     /* Text Description */
     _bgTxtDescription: null,
     _txtDescreption: null,
@@ -164,6 +166,10 @@ var PopUpConstruct = cc.Node.extend({
                     break;
             }
         }, this._btnOk);
+
+        /* Button Delete Troop // Tùy chọn nhà Clan */
+        this._btnDeleteTroop = ccui.Button(logInGUI.btnOk);
+        this._btnDeleteTroop.setTitleText("Xóa troop");
 
         /* Building Icon */
         this._icon = cc.Sprite(res.tmp_effect);

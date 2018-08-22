@@ -852,8 +852,6 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                 this.player.troopLevel.push(this.getByte());
                 this.player.troopAmount.push(this.getShort());
             }
-            this.player.troopAmount.length = 0;
-            this.player.troopAmount.push(4,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 
             this.clanId = this.getInt();
             if (this.clanId == -1){
@@ -913,7 +911,7 @@ testnetwork.packetMap[gv.CMD.RECEIVE_DONATE] = fr.InPacket.extend({
         this.userName = this.getString();
         this.userLevel = this.getInt();
         this.msg = this.getString();
-        //this.housingSpaceDonated = this.getByte() // Houssing space các user đã donate
+        this.housingSpaceDonated = this.getByte() // Houssing space các user đã donate
         this.maxHousingSpace = this.getByte() // Housing space tối đa
         gv.clanChat.jsonRequestDonateItem = this;
         cc.log(JSON.stringify(this));

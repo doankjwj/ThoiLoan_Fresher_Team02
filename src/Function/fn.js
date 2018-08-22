@@ -345,3 +345,12 @@ fn.replaceSpriteImage= function(sprite, url){
     var textture = cc.textureCache.addImage(url);
     sprite.setTexture(textture);
 }
+
+/* Tính tổng 1 mảng */
+fn.sumArr = function(arr, length)
+{
+    var sum=0;
+    for (var i=0; i<length; i++)
+        sum += arr[i];
+    return sum;
+}

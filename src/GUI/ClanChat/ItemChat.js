@@ -9,7 +9,7 @@ var ItemChat = cc.Node.extend({
     _text: null,
     _time: null,
 
-    _currentTroopQuantityArr: null,     // Mảng Troop đã donate hiện tại [0, 2, 2, 0...]
+    _currentTroopQuantity: null,     // Lượng Troop đã donate hiện tại [0, 2, 2, 0...]
     _troopDonatedArr: null,             // Mảng Troop User hiện tại đã donate [0, 0, 1, 0]
     _maxTroopQuantity: null,            // Số lượng Slot tối đa donate được
     _currentDonatedTroopSpace: 0,      // Slot Troop đã donate
@@ -20,7 +20,7 @@ var ItemChat = cc.Node.extend({
         eventClan: 2,
     },
 
-    ctor: function(id, type, userName, userLevel, text, time, currentTroopQuantityArr /*Array*/, troopDonatedArr, maxTroopquantity){
+    ctor: function(id, type, userName, userLevel, text, time, currentHousingSpace /*Array*/, troopDonatedArr, maxHousingSpace){
         this._super();
         this._id = id;
         this._type = type;
@@ -31,24 +31,12 @@ var ItemChat = cc.Node.extend({
 
         // Chat Xin quân
         if (this._type == this.typeDefine.requestDonate) {
-            this._currentTroopQuantityArr = currentTroopQuantityArr;
+            this._currentDonatedTroopSpace = currentHousingSpace;
             this._troopDonatedArr = troopDonatedArr;
-            this._maxTroopQuantity = maxTroopquantity;
-            this.initCurrentTroopDonated();
+            this._maxTroopQuantity = maxHousingSpace;
         }
 
         this.init();
-    },
-
-    //Khởi tạo Troop Amount và Troop Max Amount
-    initCurrentTroopDonated: function(){
-        var slotPerUnit= null;
-        var quantity = null;
-        for (var i=0; i<this._currentTroopQuantityArr.length; i++){
-            quantity = this._currentTroopQuantityArr[i];
-            slotPerUnit = gv.json.troopBase["ARM_" + (i+1)]["housingSpace"];
-            this._currentDonatedTroopSpace += quantity*slotPerUnit;
-        };
     },
 
     init: function(){
@@ -97,6 +85,7 @@ var ItemChat = cc.Node.extend({
         this.addChild(line);
 
         if (this._type == this.typeDefine.requestDonate){
+
             this._labelMessage.setColor(cc.color(255, 255, 255, 255));
 
             this._barDonateBG = cc.Sprite(res.clanChatGUI.barDonateTroopBG);
@@ -123,11 +112,17 @@ var ItemChat = cc.Node.extend({
                     root._currentChatItemIndex = root._listItemChat.indexOf(self);      // Lưu Item chat hiện tại
                     self.onPopUpTroopDonate();
                     gv.clanChat.itemDonateTag = self._time;
-                    cc.log(gv.clanChat.itemDonateTag);
                     gvGUI.popUpDonateTroop.updateStatus();      // Disable nút nếu hết housing Space và ngược lại
-
-                    //cc.log("=====/// " + self._troopDonatedArr[0] + " = " + self._troopDonatedArr[1] + " = " + self._troopDonatedArr[2] + " = " + self._troopDonatedArr[3]);
                 }.bind(this));
+
+                this._currentTroopQuantity = this.getTroopAmountDonated();
+                /* Nếu đã cho đủ 5 troop */
+                if (this._currentTroopQuantity >= cf.clanChat.maxTroopDonate)
+                {
+                    this._buttonDonate.setTitleText("Xem lại");
+                    this._buttonDonate.loadTextures(res.clanChatGUI.buttonBlue, res.clanChatGUI.buttonBlue);
+                }
+
             }
 
             this._labelTroop = cc.LabelBMFont("", font.soji20);
@@ -140,6 +135,7 @@ var ItemChat = cc.Node.extend({
             this._labelLevel.setPosition(iconStar.x, iconStar.y);
             this._labelName.setPosition(iconStar.x + 20, this._labelLevel.y);
             this._labelMessage.setPosition(-320/2, 80);
+
 
             /* Cập nhật Label và Bar Troop */
             this.onUpdateBarAndLabelTroop();
@@ -271,18 +267,35 @@ var ItemChat = cc.Node.extend({
             gvGUI.popUpDonateTroop._listButton[3]= gvGUI.popUpDonateTroop._itemDonate3;
             gvGUI.popUpDonateTroop.addChild(gvGUI.popUpDonateTroop._itemDonate3, 1);
         }
+        //for (var i=0; i<3; i++) gvGUI.popUpDonateTroop._listButton[i].setEnabled(true);
     },
     updateContentForPopUpDonateDetail: function(){
-        var troopAmountDonated = 0;
-        for (var i=0; i<this._troopDonatedArr.length; i++)
+        var troopAmountDonated = 0;     // tổng quân đã donate
+        var troopDonateCount;           // quân donate cho từng loại/ Button
+        for (var i=0; i<cf.clanChat.troopDonateLength; i++)
         {
-            troopAmountDonated += this._troopDonatedArr[i];
-            gvGUI.popUpDonateTroop._listButton[i].onUpdateTroopDonated(this._troopDonatedArr[i]);
+            troopDonateCount = this._troopDonatedArr[i];
+            troopAmountDonated += troopDonateCount;
+            gvGUI.popUpDonateTroop._listButton[i].onUpdateTroopDonated(troopDonateCount);
         }
 
         var labelTroopDonated = gvGUI.popUpDonateTroop._labelTroopDonated;
         labelTroopDonated.setString(troopAmountDonated + "/" + cf.clanChat.maxTroopDonate);
+        //for (var i=0; i<3; i++) gvGUI.popUpDonateTroop._listButton[i].setEnabled(true);
     },
+    // tổng quân đã donate
+    getTroopAmountDonated: function()
+    {
+        var troopAmountDonated = 0;     // tổng quân đã donate
+        var troopDonateCount;           // quân donate cho từng loại/ Button
+        for (var i=0; i<cf.clanChat.troopDonateLength; i++)
+        {
+            troopDonateCount = this._troopDonatedArr[i];
+            troopAmountDonated += troopDonateCount;
+        }
+        return troopAmountDonated;
+    },
+
     // Ẩn popUp Donate
     onDisappearPopupDonateTroop: function(){
         gv.listenerNullForPopUpDonate.setEnabled(false);
@@ -295,4 +308,5 @@ var ItemChat = cc.Node.extend({
         );
         gvGUI.popUpDonateTroop.runAction(seq);
     },
+
 })

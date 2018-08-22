@@ -479,4 +479,5 @@ cf.secondsToLongTime = function(seconds)
 cf.clanChat = {
     maxTroopDonate: 5,
     troopDonateLength: 4,
+    troopDonateLevel: 10,
 }

@@ -9,6 +9,8 @@ var ClanCastle = BuildingNode.extend({
     _existed: null,
     isActive: null,
 
+    _troopAmount: null,
+
     ctor: function(id, level, row, col, existed, isActive){
         this._buildingSTR = gv.buildingSTR.clanCastle;
         this._orderInUserBuildingList = gv.orderInUserBuildingList.clanCastle;
@@ -21,8 +23,14 @@ var ClanCastle = BuildingNode.extend({
         this._col = col;
         this._existed = existed;
         this._isActive = isActive;
+        this._troopAmount = [0, 0, 0, 0];
 
         this._super(id, level, row, col, existed, isActive);
         this.addCenterBuilding();
+    },
+
+    resetTroop: function()
+    {
+        this._troopAmount = [0, 0, 0, 0];
     }
 })

@@ -255,7 +255,6 @@ var LayerClanChat = cc.Node.extend({
     loadChatTextFromServer: function()
     {
         var chatQuantity = gv.clanChat.jsonLoadText["chatQuantity"];
-        if (chatQuantity < 1) return;
         if (!this._listItemChat) this._listItemChat = [];
         var jsonItem = null;
         for (var i=0; i<chatQuantity; i++){
@@ -271,7 +270,6 @@ var LayerClanChat = cc.Node.extend({
     loadChatDonateFromServer: function()
     {
         var chatQuantity = gv.clanChat.jsonLoadDonate["chatQuantity"];
-        if (chatQuantity < 1) return;
         if (!this._listItemChat) this._listItemChat = [];
         var jsonItem = null;
         for (var i=0; i<chatQuantity; i++){
@@ -298,7 +296,6 @@ var LayerClanChat = cc.Node.extend({
         this._listItemChat.sort(function(a, b){
             return a._time - b._time;
         });
-        cc.log(this._listItemChat.length);
         this._scrollviewChat.setInnerContainerSize(this.getScrollviewInnerContainerSize(this._typeDefine.chatScrollView));
         var height = this._scrollviewChat.getInnerContainerSize().height;
         var length = this._listItemChat.length-1;
@@ -307,7 +304,6 @@ var LayerClanChat = cc.Node.extend({
             this._listItemChatY[i] = ((i==length)? height : this._listItemChatY[i+1]) - this._listItemChat[i]._height ;
         }
         for (var i = 0; i < length+1; i++){
-            cc.log(i);
             this._listItemChat[i].setPosition(this._scrollviewChat.width/2 - 6, this._listItemChatY[i]);
             this._scrollviewChat.addChild(this._listItemChat[i], 2);
         };
@@ -376,8 +372,17 @@ var LayerClanChat = cc.Node.extend({
         var userName = gv.clanChat.jsonRequestDonateItem["userName"];
         var userLevel = gv.clanChat.jsonRequestDonateItem["userLevel"];
         var msg = gv.clanChat.jsonRequestDonateItem["msg"];
+        var currentHousingSpace = gv.clanChat.jsonRequestDonateItem["housingSpaceDonated"];
         var maxHousingSpace = gv.clanChat.jsonRequestDonateItem["maxHousingSpace"];
-        var newItemChat = new ItemChat(0, 1, userName, userLevel, msg, new Date().getTime(), [0, 0, 0, 0], [0, 0, 0, 0], maxHousingSpace);
+        var newItemChat = new ItemChat(0, 1, userName, userLevel, msg, new Date().getTime(), currentHousingSpace, [0, 0, 0, 0], maxHousingSpace);
+
+        var indexExisted = this.getItemChatByUserName(1, userName);
+        if (indexExisted != null)        // Item Request đang tồn tại thì đưa lên trên
+        {
+            this._listItemChat[indexExisted]._time = new Date().getTime();
+            this.onMoveUpItem(this.getItemChatByUserName(1, userName));
+            return;
+        }
         this._listItemChat.push(newItemChat);
         var index = this._listItemChat.length-1;
         var newHeight = (index == 0)? this._scrollviewChat.height : this._scrollviewChat.getInnerContainerSize().height + this._listItemChat[index]._height;
@@ -385,6 +390,36 @@ var LayerClanChat = cc.Node.extend({
         this.updateListChatItemY();
         this.addItemChat(index);
         this._scrollviewChat.scrollToTop(1, 0);
+    },
+    // Lấy ra 1 Item chat qua loại, user name __ nếu = null: user chưa có lượt donate và ngược lại
+    getItemChatByUserName: function(type, userName)
+    {
+        for (var i=0; i<this._listItemChat.length; i++)
+        {
+            var item = this._listItemChat[i];
+            if (item._userName == userName && item._type == type)
+                return i;
+        }
+        return null;
+    },
+    // Đưa Item chat có chỉ số index lên trên đầu tiên
+    onMoveUpItem: function(index)
+    {
+        cc.log(index);
+        var length = this._listItemChat.length;
+        for (var i=index; i<length-1; i++)
+        {
+            var h = this._listItemChat[i+1]._height;
+            var y = this._listItemChatY[i];
+            var tmpItem = this._listItemChat[i];
+            this._listItemChat[i] = this._listItemChat[i+1];
+            this._listItemChat[i+1] = tmpItem;
+
+            this._listItemChatY[i] = y;
+            this._listItemChat[i].y = this._listItemChatY[i];
+            this._listItemChatY[i+1] = this._listItemChatY[i] + h;
+            this._listItemChat[i+1].y = this._listItemChatY[i+1];
+        }
     },
     initScrollviewUserOnline: function(){
         if (!this._scrollviewUserOnline)

@@ -66,8 +66,8 @@
     },
 
     initClan: function(){
-         // testnetwork.connector.sendCreateClan("Clan 02 Fresher GSN", 26, "Bá chủ Thiên Hà", 0);
-         // testnetwork.connector.sendJoinClan(0);
+          //testnetwork.connector.sendCreateClan("Clan 02 Fresher GSN", 26, "Bá chủ Thiên Hà", 0);
+          //testnetwork.connector.sendJoinClan(0);
     },
 
     init: function() {
@@ -436,10 +436,10 @@
             if (!isExpanded){
                 if (gvGUI.layerClanChat._listItemUserOnline.length == 0) // lần đầu khởi tạo
                     gvGUI.layerClanChat.initContent();
-                if (!gv.clanChatEventManager.chatStatusUpdated)
-                    gvGUI.layerClanChat.updateChatEvent();
-                if (!gv.clanChatEventManager.userOnlineUpdated)
-                    gvGUI.layerClanChat.updateUserOnlineEvent();
+                //if (!gv.clanChatEventManager.chatStatusUpdated)
+                //    gvGUI.layerClanChat.updateChatEvent();
+                //if (!gv.clanChatEventManager.userOnlineUpdated)
+                //    gvGUI.layerClanChat.updateUserOnlineEvent();
 
                 // Cập nhật lại thời gian cho thanh chat
                 gvGUI.layerClanChat.updateTimeScrollChat();
@@ -942,7 +942,6 @@
                 if (building._isActive) bool_6 = true;
                 break;
             case gv.orderInUserBuildingList.clanCastle:
-                cc.log(building._isActive);
                 if (building._isActive) bool_7 = true;
                 break;
         }
