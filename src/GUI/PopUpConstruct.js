@@ -409,7 +409,7 @@ var PopUpConstruct = cc.Node.extend({
         this.updateDescription((b._description));
 
         if (constructType == gv.constructType.info && b._buildingSTR == gv.buildingSTR.clanCastle)
-            this._btnDeleteTroop.visible = true;
+            this._btnDeleteTroop.visible = false;
         else
             this._btnDeleteTroop.visible = false;
     },

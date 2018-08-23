@@ -19,15 +19,20 @@ var PopUpDonateTroop = cc.Sprite.extend({
     updateStatus: function(){
         this.updateButton();
         var parent = this.getParent();  // Chat Layer
-        for (var i=0; i<parent._listItemChat.length; i++)
-        {
-            var item = parent._listItemChat[i];
-            if (gv.clanChat.itemDonateTag.equals(item._userName) && item._type == 1)
-            {
-                cc.log(" !!!!! " + i);
-                break;
-            }
-        }
+
+        var s = "";
+        var t;
+        //for (var i=0; i<parent._listItemChat.length; i++)
+        //{
+        //    var item = parent._listItemChat[i];
+        //    s = s + " - " + item._userName;
+        //    if ((gv.clanChat.itemDonateTag == item._userName) && item._type == 1)
+        //    {
+        //        t = i;
+        //    }
+        //}
+        cc.log(s);
+        cc.log(" -> find: " + t);
         var currentItemchat = parent._listItemChat[parent._currentChatItemIndex];
         cc.log("BUGGGGGG : " + parent._currentChatItemIndex);
         var troopHousingSpaceDonated = currentItemchat._currentDonatedTroopSpace;

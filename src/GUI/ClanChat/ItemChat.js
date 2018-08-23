@@ -311,12 +311,20 @@ var ItemChat = cc.Node.extend({
     },
 
     // Thêm 1 troop từ server
-    onAddTroop: function(troopOrder, userNameReceive)
+    onAddTroop: function(troopOrder, userDonate)
     {
+        /* Cập nhật cho Item chat */
         this._troopDonatedArr[troopOrder] += 1;
         this.updateCurrentTroopAmount(troopOrder, 1);
 
-        if (cf.user._name == userNameReceive) return;
+        // Đã Donate đủ Housing Space
+        if (this._currentDonatedTroopSpace == this._maxTroopQuantity)
+        {
+            this.onRelease();
+        }
+
+        /* Nếu chủ Request này không phải người nhận */
+        if (cf.user._name != userDonate) return;
         var troopAmountDonated = 0;
         for (var i=0; i<this._troopDonatedArr.length; i++)
         {
@@ -330,11 +338,7 @@ var ItemChat = cc.Node.extend({
         }
 
 
-        // Đã Donate đủ Housing Space
-        if (this._currentDonatedTroopSpace == this._maxTroopQuantity)
-        {
-            this.onRelease();
-        }
+
     },
     //Release Request khi donate đủ Housing Space
     onRelease: function()

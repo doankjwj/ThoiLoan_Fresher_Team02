@@ -32,7 +32,7 @@ testnetwork.Connector = cc.Class.extend({
                 cc.log("MOVE:", packet.x, packet.y);
                 fr.getCurrentScreen().updateMove(packet.x, packet.y);
                 break;
-            case gv.CMD.ERROR:
+            case gv.CMD.USER_ERROR:
                 break;
             case gv.CMD.RECEIVE_CLAN_CHAT_TEXT:
                 gvGUI.layerClanChat.onReceiveChatText();
@@ -43,6 +43,8 @@ testnetwork.Connector = cc.Class.extend({
             case gv.CMD.RECEIVE_DONATE:
                 gvGUI.layerClanChat.onReceiveDonate();
                 cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].addTroop();
+                break;
+            case gv.CMD.CLAN_ERROR:
                 break;
             case 37:
                 break;

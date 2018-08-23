@@ -198,6 +198,8 @@ var buildingGUI = {
     instant: res.folder_gui_action_building + "quick_finish.png",
     iconResearch: res.folder_gui_action_building + "research_icon.png",
     iconRequestDonate: res.folder_gui_action_building + "request_troop_button.png",
+    iconClan: "res/Art/Bang hoi/icon bang hoi.png",
+
     bg: folderBuildingActionicon + "bg_button.png",
 
     trainIcon: folderBuildingActionicon + "train_icon.png",

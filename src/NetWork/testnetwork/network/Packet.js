@@ -7,34 +7,34 @@ gv.CMD.HAND_SHAKE = 0;
 gv.CMD.USER_LOGIN = 1;
 
 gv.CMD.USER_INFO = 1001;
-gv.CMD.MOVE = 2310;
-gv.CMD.BUILD = 2010;
-gv.CMD.UPGRADE_BUILDING = 2110;
-gv.CMD.CHEAT = 2880;
-gv.CMD.SEND_INSTANT = 2150;
-gv.CMD.SEND_CANCEL = 2210;
-gv.CMD.SEND_HARVEST = 2410;
-gv.CMD.SEND_RESEARCH = 2510;
-gv.CMD.SEND_RESEARCH_FINISH_IMMIDIATELY = 2550;
-gv.CMD.RESET_USER = 2890;
+gv.CMD.MOVE = 2011;
+gv.CMD.BUILD = 2001;
+gv.CMD.UPGRADE_BUILDING = 2003;
+gv.CMD.CHEAT = 2102;
+gv.CMD.SEND_INSTANT = 2005;
+gv.CMD.SEND_CANCEL = 2006;
+gv.CMD.SEND_HARVEST = 2021;
+gv.CMD.SEND_RESEARCH = 2031;
+gv.CMD.SEND_RESEARCH_FINISH_IMMIDIATELY = 2033;
+gv.CMD.RESET_USER = 2101;
 
-gv.CMD.SEND_CREATE_CLAN = 2250;
-gv.CMD.SEND_JOIN_CLAN = 2251;
+gv.CMD.SEND_CREATE_CLAN = 3001;
+gv.CMD.SEND_JOIN_CLAN = 3011;
 
-gv.CMD.SEND_CLAN_CHAT_TEXT = 2252;
-gv.CMD.RECEIVE_CLAN_CHAT_TEXT = 2253;
-gv.CMD.SEND_CLAN_CHAT_DONATE = 2254;
-gv.CMD.RECEIVE_CLAN_CHAT_DONATE = 2255;
-gv.CMD.SEND_DONATE = 2260;
-gv.CMD.RECEIVE_DONATE = 2261;
+gv.CMD.SEND_CLAN_CHAT_TEXT = 3211;
+gv.CMD.RECEIVE_CLAN_CHAT_TEXT = gv.CMD.SEND_CLAN_CHAT_TEXT;
+gv.CMD.SEND_CLAN_CHAT_DONATE = 3212;
+gv.CMD.RECEIVE_CLAN_CHAT_DONATE = gv.CMD.SEND_CLAN_CHAT_DONATE;
+gv.CMD.SEND_DONATE = 3213;
+gv.CMD.RECEIVE_DONATE = 3214;
 
-gv.CMD.SEND_LOAD_CLAN_CHAT = 2256;
-gv.CMD.RECEIVE_LOAD_CLAN_CHAT_TEXT = 2257;
-gv.CMD.RECEIVE_LOAD_CLAN_CHAT_DONATE = 2258;
-gv.CMD.RECEIVE_LOAD_CLAN_CHAT_EVENT = 2259;
+gv.CMD.SEND_LOAD_CLAN_CHAT = 3103;
+gv.CMD.RECEIVE_LOAD_CLAN_CHAT_TEXT = 2257;//Server chua lam
+gv.CMD.RECEIVE_LOAD_CLAN_CHAT_DONATE = 2258;//Server chua lam
+gv.CMD.RECEIVE_LOAD_CLAN_CHAT_EVENT = 2259;//Server chua lam
 
-gv.CMD.ERROR = 2999;
-
+gv.CMD.USER_ERROR = 2999;
+gv.CMD.CLAN_ERROR = 3999;
 
 testnetwork = testnetwork||{};
 testnetwork.packetMap = {};
@@ -807,7 +807,6 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                 if (this.map.WAL_1[i].finishBuildOrUpgradeTime > 0)
                     this.map.WAL_1[i].finishBuildOrUpgradeTime -= gv.timeOffset.userInfo;
             }
-
             Amount = this.getByte();
             this.map.CLC_1 = [];
             for (var i = 0; i < Amount; i += 1)
@@ -819,8 +818,19 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                 this.map.CLC_1[i].finishBuildOrUpgradeTime = this.getLong();
                 if (this.map.CLC_1[i].finishBuildOrUpgradeTime > 0)
                     this.map.CLC_1[i].finishBuildOrUpgradeTime -= gv.timeOffset.userInfo;
+                this.map.CLC_1[i].timeDonateAgain = this.getLong();
+                if (this.map.CLC_1[i].timeDonateAgain > 0)
+                    this.map.CLC_1[i].timeDonateAgain -= gv.timeOffset.userInfo;
+                var Amount2 = this.getByte();
+                this.map.CLC_1[i].troopArr = [];
+                for (var j=0; j<Amount2; j++)
+                {
+                    this.map.CLC_1[i].troopArr.push(new Object());
+                    this.map.CLC_1[i].troopArr[j].troopOrder = this.getByte();
+                    this.map.CLC_1[i].troopArr[j].troopLevel = this.getByte();
+                    this.map.CLC_1[i].troopArr[j].troopQuantity = this.getByte();
+                }
             }
-
             Amount = this.getByte();
             this.map.OBS = [];
             {
@@ -854,10 +864,10 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                 this.player.troopAmount.push(this.getShort());
             }
 
-            this.clanId = this.getInt();
-            if (this.clanId == -1){
-                this.timeFinishClanPenalty = this.getLong();
-                if (this.timeFinishClanPenalty != 0) this.timeFinishClanPenalty -= gv.timeOffset.userInfo;
+            this.player.clanId = this.getInt();
+            if (this.player.clanId == -1){
+                this.player.timeFinishClanPenalty = this.getLong();
+                if (this.player.timeFinishClanPenalty != 0) this.player.timeFinishClanPenalty -= gv.timeOffset.userInfo;
             }
             gv.jsonInfo = this;
             cc.log(JSON.stringify(this));
@@ -865,15 +875,34 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
     }
 );
 
-testnetwork.packetMap[gv.CMD.ERROR] = fr.InPacket.extend({
+testnetwork.packetMap[gv.CMD.USER_ERROR] = fr.InPacket.extend({
     ctor: function()
     {
         this._super();
     },
     readData: function()
     {
-        var errorCode = this.getShort();
-        cc.log(" /*********/ Error: " + errorCode);
+        var errorCode = this.getByte();
+        cc.log(" /*********/ Error User: " + errorCode);
+        fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode + "\nRestart");
+        try{
+            cc.log("Error: "+ errorCode);
+            fr.view(MainLayer);
+        } catch(e)
+        {
+            cc.log(e)
+        }
+    }}
+);
+testnetwork.packetMap[gv.CMD.CLAN_ERROR] = fr.InPacket.extend({
+    ctor: function()
+    {
+        this._super();
+    },
+    readData: function()
+    {
+        var errorCode = this.getByte();
+        cc.log(" /*********/ Error Clan: " + errorCode);
         fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode + "\nRestart");
         try{
             cc.log("Error: "+ errorCode);

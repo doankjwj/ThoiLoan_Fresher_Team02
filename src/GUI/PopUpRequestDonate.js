@@ -110,6 +110,7 @@ var PopUpRequestDonate = cc.Node.extend({
 
     onRequest: function()
     {
+
         var msg = (this._textField.string.length == 0) ? this._textField.getPlaceHolder() : this._textField.string;
         testnetwork.connector.sendRequestDonate(msg);
         gvGUI.layerClanChat._scrollviewChat.scrollToTop(1, 0);

@@ -34,8 +34,17 @@ var ClanCastle = BuildingNode.extend({
 
         this.resetTroop();
         this.addCenterBuilding();
+        //this.loadTroopAmountFromJson();
     },
-
+    loadTroopAmountFromJson: function()
+    {
+        var jsonItem = gv.jsonInfo["map"]["CLC_1"][0]["troopArr"];
+        for (var i=0; i < Object.keys(jsonItem).length; i++)
+        {
+            var obj = gv.jsonInfo["map"]["CLC_1"][0]["troopArr"][i];
+            this._troopReceive[obj["troopOrder"]][obj["troopType"]] = obj["quantity"];
+        }
+    },
     resetTroop: function()
     {
         for (var i =0; i<cf.clanChat.troopDonateLength; i++)
@@ -75,6 +84,11 @@ var ClanCastle = BuildingNode.extend({
             s += this._troopReceive[i][cf.clanChat.troopDonateLevel-1];
             cc.log(s);
         }
+    },
+    isEnoughTroop: function()
+    {
+        cc.log(this.getCurrentHousingSpace() + " ++++");
+        return (this.getCurrentHousingSpace() >= gv.json.clanCastle["CLC_1"][this._level]["troopCapacity"]);
     },
     updateAnim: function()
     {

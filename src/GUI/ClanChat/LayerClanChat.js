@@ -412,7 +412,7 @@ var LayerClanChat = cc.Node.extend({
 
         var index = this.getItemChatByUserName(1, userName);
         if (index == null) return;
-        this._listItemChat[index].onAddTroop(troopOrder, userName);
+        this._listItemChat[index].onAddTroop(troopOrder, userDonate);
         if (userDonate == cf.user._name)
             gvGUI.popUpDonateTroop.updateStatus();
     },
@@ -469,9 +469,19 @@ var LayerClanChat = cc.Node.extend({
         cc.log("++++ Inner ConatainerSize: " + size.height + " =>> " + (size.height - lastItem._height));
         this._scrollviewChat.setInnerContainerSize(cc.size(size.width, size.height - lastItem._height));
         this._scrollviewChat.removeChild(lastItem);
+        this._listItemChat[this._listItemChat.length-1]._userName = null;
+        this.onUpdateItemY();
+    },
+    _onRemoveItem: function(index)
+    {
+        this.onMoveUpItem(index);
+        var size = this._scrollviewChat.getInnerContainerSize();
+        var lastItem = this._listItemChat[this._listItemChat.length-1];
+        cc.log("++++ Inner ConatainerSize: " + size.height + " =>> " + (size.height - lastItem._height));
+        this._scrollviewChat.setInnerContainerSize(cc.size(size.width, size.height - lastItem._height));
+        this._scrollviewChat.removeChild(lastItem);
         this._listItemChat = this._listItemChat.splice(this._listItemChat.length-1, 1);
         this.onUpdateItemY();
-        //this._scrollviewChat.scrollToTop(1);
     },
     // Cập nhật lại độ cao các Item
     onUpdateItemY: function()
