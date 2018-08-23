@@ -42,6 +42,7 @@ testnetwork.Connector = cc.Class.extend({
                 break;
             case gv.CMD.RECEIVE_DONATE:
                 gvGUI.layerClanChat.onReceiveDonate();
+                cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].addTroop();
                 break;
             case 37:
                 break;

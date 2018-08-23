@@ -345,6 +345,7 @@ var LayerClanChat = cc.Node.extend({
         if (this._textFieldChat.string.length == 0) return;
         testnetwork.connector.sendChat(this._textFieldChat.string);
         this._textFieldChat.string = "";
+        this.updateListChatItemY()
     },
     //Cập nhật mảng tọa độ y cho Item mới nhất
     updateListChatItemY: function()
@@ -380,6 +381,11 @@ var LayerClanChat = cc.Node.extend({
         if (indexExisted != null)        // Item Request đang tồn tại thì đưa lên trên
         {
             this._listItemChat[indexExisted]._time = new Date().getTime();
+            this._listItemChat[indexExisted]._userLevel = userLevel;
+            this._listItemChat[indexExisted]._text = msg;
+            this._listItemChat[indexExisted]._maxTroopQuantity = maxHousingSpace;
+            this._listItemChat[indexExisted].visualizeByArg();
+
             this.onMoveUpItem(this.getItemChatByUserName(1, userName));
             return;
         }
@@ -394,11 +400,21 @@ var LayerClanChat = cc.Node.extend({
     onReceiveDonate: function()
     {
         var userName = gv.clanChat.jsonDonate["userName"];
+        var userDonate = gv.clanChat.jsonDonate["userDonate"];
         var troopOrder = gv.clanChat.jsonDonate["troopOrder"];
         var troopLevel = gv.clanChat.jsonDonate["troopLevel"];
+
+        if (userName == cf.user._name)
+        {
+            var troopName = gv.troopName[troopOrder];
+            fr.getCurrentScreen().onBubble("Nhận được 1x " + troopName + " level " + troopLevel + " từ " + userDonate);
+        }
+
         var index = this.getItemChatByUserName(1, userName);
         if (index == null) return;
-        this._listItemChat[index].onAddTroop(troopOrder);
+        this._listItemChat[index].onAddTroop(troopOrder, userName);
+        if (userDonate == cf.user._name)
+            gvGUI.popUpDonateTroop.updateStatus();
     },
 
     // Lấy ra 1 Item chat qua loại, user name __ nếu = null: user chưa có lượt donate và ngược lại
@@ -430,7 +446,46 @@ var LayerClanChat = cc.Node.extend({
             this._listItemChatY[i+1] = this._listItemChatY[i] + h;
             this._listItemChat[i+1].y = this._listItemChatY[i+1];
         }
+        //for (var i=index; i<length-1; i++)
+        //{
+        //    var h = this._listItemChat[i+1]._height;
+        //    var y = this._listItemChatY[i];
+        //    var tmpItem = this._listItemChat[i];
+        //    this._listItemChat[i] = this._listItemChat[i+1];
+        //    this._listItemChat[i+1] = tmpItem;
+        //
+        //    this._listItemChatY[i] = y;
+        //    this._listItemChat[i].y = this._listItemChatY[i];
+        //    this._listItemChatY[i+1] = this._listItemChatY[i] + h;
+        //    this._listItemChat[i+1].y = this._listItemChatY[i+1];
+        //}
     },
+    // Xóa 1 Item
+    onRemoveItem: function(index)
+    {
+        this.onMoveUpItem(index);
+        var size = this._scrollviewChat.getInnerContainerSize();
+        var lastItem = this._listItemChat[this._listItemChat.length-1];
+        cc.log("++++ Inner ConatainerSize: " + size.height + " =>> " + (size.height - lastItem._height));
+        this._scrollviewChat.setInnerContainerSize(cc.size(size.width, size.height - lastItem._height));
+        this._scrollviewChat.removeChild(lastItem);
+        this._listItemChat = this._listItemChat.splice(this._listItemChat.length-1, 1);
+        this.onUpdateItemY();
+        //this._scrollviewChat.scrollToTop(1);
+    },
+    // Cập nhật lại độ cao các Item
+    onUpdateItemY: function()
+    {
+        var length = this._scrollviewChat.length-1;
+        var size = this._scrollviewChat.getInnerContainerSize();
+        for (var i=length; i>-1; i-- )
+        {
+            var item = this._listItemChat[i];
+            this._listItemChatY[i] = ((i == length) ? size.height : this._listItemChatY[i+1]) - item._height;
+            this._listItemChat[i].y = this._listItemChatY[i];
+        }
+    },
+
     initScrollviewUserOnline: function(){
         if (!this._scrollviewUserOnline)
         {

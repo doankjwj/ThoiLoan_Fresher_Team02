@@ -94,7 +94,7 @@ var ItemChat = cc.Node.extend({
             this.addChild(this._barDonateBG);
             this._barDonate = cc.Sprite(res.clanChatGUI.barDonateTroop);
             this._barDonate.setAnchorPoint(0, 0.5);
-            this._barDonate.setPosition(-38.5, 61);
+            this._barDonate.setPosition(-38, 61);
             this.addChild(this._barDonate);
 
             if (this._userName != cf.user._name)
@@ -109,6 +109,7 @@ var ItemChat = cc.Node.extend({
 
                 this._buttonDonate.addClickEventListener(function(){
                     var root = this.getParent().getParent().getParent();
+                    cc.log(root._listItemChat.length);
                     root._currentChatItemIndex = root._listItemChat.indexOf(self);      // Lưu Item chat hiện tại
                     self.onPopUpTroopDonate();
                     gv.clanChat.itemDonateTag = self._userName;
@@ -310,11 +311,12 @@ var ItemChat = cc.Node.extend({
     },
 
     // Thêm 1 troop từ server
-    onAddTroop: function(troopOrder)
+    onAddTroop: function(troopOrder, userNameReceive)
     {
         this._troopDonatedArr[troopOrder] += 1;
         this.updateCurrentTroopAmount(troopOrder, 1);
 
+        if (cf.user._name == userNameReceive) return;
         var troopAmountDonated = 0;
         for (var i=0; i<this._troopDonatedArr.length; i++)
         {
@@ -322,9 +324,36 @@ var ItemChat = cc.Node.extend({
             gvGUI.popUpDonateTroop._listButton[i].onUpdateTroopDonated(this._troopDonatedArr[i]);
         }
 
-        if (troopAmountDonated >= cf.clanChat.maxTroopDonate){
+        if (troopAmountDonated >= cf.clanChat.maxTroopDonate && this._userName != cf.user._name){
             this._buttonDonate.setTitleText("Xem lại");
             this._buttonDonate.loadTextures(res.clanChatGUI.buttonBlue, res.clanChatGUI.buttonBlue);
         }
+
+
+        // Đã Donate đủ Housing Space
+        if (this._currentDonatedTroopSpace == this._maxTroopQuantity)
+        {
+            this.onRelease();
+        }
+    },
+    //Release Request khi donate đủ Housing Space
+    onRelease: function()
+    {
+        cc.log("Donate enough !");
+
+        var act = cc.FadeOut(1.5);
+        var root = this.getParent().getParent().getParent();    // Layer Chat
+        var index = root.getItemChatByUserName(1, this._userName);
+        this.runAction(cc.Sequence.create(
+            act,
+            cc.CallFunc(function(){
+                root.onRemoveItem(index);
+            })
+        ))
+    },
+    visualizeByArg: function()
+    {
+        this._labelLevel.setString(this._userLevel);
+        this.onUpdateBarAndLabelTroop();
     }
 })

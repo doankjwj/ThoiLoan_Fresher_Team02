@@ -84,6 +84,7 @@ var PopUpConstruct = cc.Node.extend({
 
     _TAG_TXT_TIME_REQUIRE: 9966,
     _TAG_CONTENT_REQUIRE: 8766,
+    _TAG_TROOP_AMOUNT: 3223,
 
     ctor: function() {
         this._super();
@@ -169,8 +170,13 @@ var PopUpConstruct = cc.Node.extend({
 
         /* Button Delete Troop // Tùy chọn nhà Clan */
         this._btnDeleteTroop = ccui.Button(logInGUI.btnOk);
-        this._btnDeleteTroop.setTitleText("Xóa troop");
-
+        this._btnDeleteTroop.setTitleText("XÓA TOÀN BỘ");
+        this._btnDeleteTroop.setPosition(0, -this._bg.height / 2 + this._btnOk.height * this._btnOk.scale / 2);
+        this._btnDeleteTroop.scale = 1.5;
+        this.addChild(this._btnDeleteTroop);
+        this._btnDeleteTroop.addClickEventListener(function(){
+            self.onDeleteTroop();
+        }.bind(this));
         /* Building Icon */
         this._icon = cc.Sprite(res.tmp_effect);
         this._icon.setAnchorPoint(cc.p(0.5, 0.5));
@@ -401,6 +407,11 @@ var PopUpConstruct = cc.Node.extend({
         this.updateIcon(b._buildingSTR, level, b._size, b._name, b._isActive, constructType);
         this.updateBar(b._buildingSTR, b.getTempLevel(), b._size, b._name, b._isActive, constructType);
         this.updateDescription((b._description));
+
+        if (constructType == gv.constructType.info && b._buildingSTR == gv.buildingSTR.clanCastle)
+            this._btnDeleteTroop.visible = true;
+        else
+            this._btnDeleteTroop.visible = false;
     },
 
     visibleBar: function(bool1, bool2, bool3)
@@ -649,8 +660,8 @@ var PopUpConstruct = cc.Node.extend({
                 bar1Length2 = gv.json.defence[str][Math.min(level + 1, gv.buildingMaxLevel.defence_1)]["hitpoints"];
                 bar1MaxLength = gv.json.defence[str][gv.buildingMaxLevel.defence_1]["hitpoints"];
                 bar2Length = gv.json.defence[str][level]["damagePerShot"];
-                bar2Length2 = gv.json.defence[str][Math.min(level + 1, gv.buildingMaxLevel.storage_2)]["damagePerShot"];
-                bar2MaxLength = gv.json.defence[str][gv.buildingMaxLevel.storage_2]["damagePerShot"];
+                bar2Length2 = gv.json.defence[str][Math.min(level + 1, gv.buildingMaxLevel.defence_1)]["damagePerShot"];
+                bar2MaxLength = gv.json.defence[str][gv.buildingMaxLevel.defence_1]["damagePerShot"];
                 this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
                 this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconDameDef);
                 preText1 = "Máu: ";
@@ -667,6 +678,25 @@ var PopUpConstruct = cc.Node.extend({
                 // this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconDameDef);
                 preText1 = "Máu: ";
                 // preText2 = "Sát thương: ";
+                break;
+            case gv.buildingSTR.clanCastle:
+                this.visibleBar(true, true, false);
+                bar1Length = (level==0)? 0: gv.json.clanCastle[str][level]["hitpoints"];
+                bar1Length2 = gv.json.clanCastle[str][Math.min(level + 1, gv.buildingMaxLevel.clanCastle)]["hitpoints"];
+                bar1MaxLength = gv.json.clanCastle[str][gv.buildingMaxLevel.clanCastle]["hitpoints"];
+                if (constructType == gv.constructType.upgrade)
+                {
+                    bar2Length = (level==0)? 0: gv.json.clanCastle[str][level]["troopCapacity"];
+                    bar2Length2 = gv.json.clanCastle[str][Math.min(level + 1, gv.buildingMaxLevel.clanCastle)]["troopCapacity"];
+                    bar2MaxLength = gv.json.clanCastle[str][gv.buildingMaxLevel.clanCastle]["troopCapacity"];
+                }
+                else
+                {
+                    bar2Length = cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].getCurrentHousingSpace();
+                    bar2MaxLength = gv.json.clanCastle[str][level]["troopCapacity"];
+                }
+                this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
+                this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconTroopCapacity);
                 break;
             default:
                 break;
@@ -797,6 +827,13 @@ var PopUpConstruct = cc.Node.extend({
                 darkElixir = gv.json.laboratory[str][level]["darkElixir"];
                 coin = 0;
                 break;
+            case gv.buildingSTR.clanCastle:
+                time = gv.json.clanCastle[str][level]["buildTime"];
+                gold = gv.json.clanCastle[str][level]["gold"];
+                elixir = 0;
+                darkElixir = gv.json.clanCastle[str][level]["darkElixir"];
+                coin = 0;
+                break;
             default:
                 break;
         };
@@ -811,7 +848,9 @@ var PopUpConstruct = cc.Node.extend({
         /* Time Require */
         if (this._constructType == gv.constructType.upgrade)
         {
-            this._timeRequireTXT.setString("Thời gian nâng cấp\n" + cf.secondsToLongTime(time));
+            var t = cf.secondsToLongTime(time);
+            t = (t!="") ? t : "0s";
+            this._timeRequireTXT.setString("Thời gian nâng cấp\n" + t);
             this._timeRequireTXT.visible = true;
         }
         else
@@ -830,6 +869,23 @@ var PopUpConstruct = cc.Node.extend({
                 y: this._btnOk.y
             })
             this.addChild(tmp, 5, this._TAG_CONTENT_REQUIRE);
+        }
+
+        /* Troop Amount -- option Clan Castle*/
+        if (this.getChildByTag(this._TAG_TROOP_AMOUNT))
+            this.removeChildByTag(this._TAG_TROOP_AMOUNT);
+        var buildingId = gv.building_selected;
+        var b = cf.user._buildingList[Math.floor(buildingId/100) - 1][Math.floor(buildingId%100)];
+        if (this._constructType == gv.constructType.info && b._buildingSTR == gv.buildingSTR.clanCastle)
+        {
+            var tmp = new PopUpConstruct.getNodeTroopAmount();
+            tmp.attr({
+                anchorX: 0.5,
+                anchorY: 0.5,
+                x: this._btnOk.x,
+                y: this._btnOk.y + 100
+            })
+            this.addChild(tmp, 5, this._TAG_TROOP_AMOUNT);
         }
 
         /* Center Icon */
@@ -868,6 +924,9 @@ var PopUpConstruct = cc.Node.extend({
             case gv.buildingSTR.lab:
                 this._icon = cc.Sprite(res.folder_laboratory + str + "_" + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
+            case gv.buildingSTR.clanCastle:
+                this._icon = cc.Sprite(res.folder_clan_castle + str + "_" + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
             default:
                 break;
         }
@@ -893,6 +952,8 @@ var PopUpConstruct = cc.Node.extend({
         //if ((str == gv.buildingSTR.barrack_1 && level <4) || str == gv.buildingSTR.builderHut || str == gv.buildingSTR.storage_1 || str == gv.buildingSTR.storage_2) return;
         var arrNoEffect = [gv.buildingSTR.builderHut, gv.buildingSTR.storage_1, gv.buildingSTR.storage_2, gv.buildingSTR.storage_3, gv.buildingSTR.defence_1];
         if ((str == gv.buildingSTR.barrack_1 && level <4) || arrNoEffect.indexOf(str) >= 0 || (str == gv.buildingSTR.lab && level <2)) return;
+        if (str == gv.buildingSTR.clanCastle) return;
+
         if (str != gv.buildingSTR.armyCamp_1 && str != gv.buildingSTR.townHall)
             this._effect = cc.Sprite("res/Art/Effects/" + str + "_" + level + "_effect/00.png");
         if (str == gv.buildingSTR.armyCamp_1)
@@ -911,7 +972,11 @@ var PopUpConstruct = cc.Node.extend({
     {
         this._txtDescreption.visible = true;
         this._txtDescreption.setString(description)
-    }
+    },
+    onDeleteTroop: function()
+    {
+        cc.log("Delete Troop");
+    },
 })
 
 PopUpConstruct.getOrCreate = function()
@@ -1015,5 +1080,62 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             this.addChild(this.iconCoin, 0);
         };
 
-    }
+    },
+
+
 })
+PopUpConstruct.getNodeTroopAmount = cc.Node.extend({
+    ctor: function()
+    {
+        this._super();
+        var troopAmountArr = this.getTroopAmountFromClanCastle();
+
+        var iconTroop0 = cc.Sprite(trainingQueueGUI.ARM_1);
+        iconTroop0.scale = 1.5;
+        iconTroop0.setPosition(-160, 0);
+        this.addChild(iconTroop0);
+        var label0 = cc.LabelBMFont("x" + troopAmountArr[0], font.soji20);
+        label0.setPosition(iconTroop0.x - 30, iconTroop0.y - 30);
+        this.addChild(label0);
+
+        var iconTroop1 = cc.Sprite(trainingQueueGUI.ARM_2);
+        iconTroop1.scale = 1.5;
+        iconTroop1.setPosition(-60, 0);
+        this.addChild(iconTroop1);
+        var label1 = cc.LabelBMFont("x" + troopAmountArr[1], font.soji20);
+        label1.setPosition(iconTroop1.x - 30, iconTroop1.y - 30);
+        this.addChild(label1);
+
+        var iconTroop2 = cc.Sprite(trainingQueueGUI.ARM_3);
+        iconTroop2.scale = 1.5;
+        iconTroop2.setPosition(60, 0);
+        this.addChild(iconTroop2);
+        var label2 = cc.LabelBMFont("x" + troopAmountArr[2], font.soji20);
+        label2.setPosition(iconTroop2.x - 30, iconTroop2.y - 30);
+        this.addChild(label2);
+
+        var iconTroop3 = cc.Sprite(trainingQueueGUI.ARM_4);
+        iconTroop3.scale = 1.5;
+        iconTroop3.setPosition(160, 0);
+        this.addChild(iconTroop3);
+        var label3 = cc.LabelBMFont("x" + troopAmountArr[3], font.soji20);
+        label3.setPosition(iconTroop3.x - 30, iconTroop3.y - 30);
+        this.addChild(label3);
+
+    },
+
+    getTroopAmountFromClanCastle: function()
+    {
+        var arr = [];
+        var clanCastle = cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0];
+        for (var i=0; i<cf.clanChat.troopDonateLength; i++)
+        {
+            var s = 0;
+            for (var j=0; j<cf.clanChat.troopDonateLevel-1; j++)
+                s += clanCastle._troopReceive[i][j];
+            arr[i] = s;
+        }
+        return arr;
+    }
+
+});

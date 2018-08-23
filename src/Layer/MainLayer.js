@@ -66,8 +66,8 @@
     },
 
     initClan: function(){
-          //testnetwork.connector.sendCreateClan("Clan 02 Fresher GSN", 26, "Bá chủ Thiên Hà", 0);
-          //testnetwork.connector.sendJoinClan(0);
+           //testnetwork.connector.sendCreateClan("Clan 02 Fresher GSN", 26, "Bá chủ Thiên Hà", 0);
+           //testnetwork.connector.sendJoinClan(0);
     },
 
     init: function() {
@@ -603,7 +603,9 @@
         this._guiButtonBuildingInfo.addClickEventListener(function()
         {
             self.hideListBotButton();
-            if (gv.building_selected === undefined) return;
+            var id = gv.building_selected;
+            var buiding = cf.user._buildingList[Math.floor(id/100) - 1][id%100];
+            if (gv.building_selected === undefined || (buiding._buildingSTR == gv.buildingSTR.clanCastle && buiding._level == 0)) return;
             if (!self.getChildByTag(gv.tag.TAG_POPUP))
             {
                 var popUp = PopUpConstruct.getOrCreate();
@@ -859,6 +861,22 @@
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).onAppear();
     },
 
+    onBubble: function(str)
+    {
+        var s = cc.LabelBMFont(str, font.soji20);
+        s.setPosition(cc.winSize.height/2, 100);
+        s.scale = 1.2;
+        this.addChild(s, 30);
+        var moveUp = cc.MoveBy(2,cc.p(0, 150));
+        var act = cc.Sequence.create(moveUp,
+            // cc.DelayTime(2),
+            cc.CallFunc(function(){
+                fr.getCurrentScreen().removeChild(s);
+            }));
+        s.runAction(act);
+
+    },
+
     hideListBotButton: function()
     {
         this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - 2 * cf.offSetGuiResourceBar, -200));
@@ -871,36 +889,6 @@
         if (this._guiButtonResearch != undefined) this._guiButtonResearch.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
     },
 
-    _showListBotButton: function() {
-        var moveToPos1 = cc.MoveTo(0.1, cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - 2 * cf.offSetGuiResourceBar, this._guiButtonBuildingInfo.height/2*this.scale + cf.offSetGuiResourceBar));
-        this._guiButtonBuildingInfo.runAction(moveToPos1);
-        var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
-        var moveToPos2 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + cf.offSetGuiResourceBar - 25, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
-        if (building._buildingSTR !== gv.buildingSTR.builderHut)
-        {
-            if (building._isActive) {
-                var moveToPos3 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + 2 * cf.offSetGuiResourceBar + this._guiInstantlyDone.width/2*this._guiInstantlyDone.scale + 20, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
-                this._guiButtonBuildingUpgrade.runAction(moveToPos2);
-                if(building._buildingSTR === gv.buildingSTR.barrack_1)this._guiTraningArmyButton.runAction(moveToPos3);
-            }
-        else {
-            this._guiCancelBuildButton.runAction(moveToPos2);
-            var moveToPos3 = cc.MoveTo(0.1, cc.p(cc.winSize.width / 2 + this._guiButtonBuildingUpgrade.width / 2 + 2 * cf.offSetGuiResourceBar + this._guiInstantlyDone.width/2*this._guiInstantlyDone.scale + 20, this._guiButtonBuildingUpgrade.height / 2 * this.scale + cf.offSetGuiResourceBar));
-            this._guiInstantlyDone.runAction(moveToPos3);
-            this._guiInstantlyDone.updateContent();}
-        }
-
-        /* Thêm nút thu hoạch */
-        if (building._isActive)
-        {
-            if (building._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && building._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
-            {
-                this.popUpButtonHarvest(building);
-            };
-            if (building._orderInUserBuildingList == gv.orderInUserBuildingList.lab)
-                this.popUpButtonResearch();
-        }
-    },
     showListBotButton: function(buildingID)
     {
         /* Infor(0) --- Upgrade(1) --- Cancel(2) --- Instance Finish(3) --- Collect(4) -- Research(5) -- Train(6) -- Request Donate(7)*/
@@ -942,7 +930,7 @@
                 if (building._isActive) bool_6 = true;
                 break;
             case gv.orderInUserBuildingList.clanCastle:
-                if (building._isActive) bool_7 = true;
+                if (building._isActive && building._level > 0) bool_7 = true;
                 break;
         }
 

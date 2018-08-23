@@ -927,6 +927,7 @@ testnetwork.packetMap[gv.CMD.RECEIVE_DONATE] = fr.InPacket.extend({
     readData: function()
     {
         this.userName = this.getString();
+        this.userDonate = this.getString();
         this.troopOrder = this.getByte();
         this.troopLevel = this.getByte();
         gv.clanChat.jsonDonate = this;

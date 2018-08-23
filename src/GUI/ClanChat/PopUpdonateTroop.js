@@ -19,7 +19,17 @@ var PopUpDonateTroop = cc.Sprite.extend({
     updateStatus: function(){
         this.updateButton();
         var parent = this.getParent();  // Chat Layer
+        for (var i=0; i<parent._listItemChat.length; i++)
+        {
+            var item = parent._listItemChat[i];
+            if (gv.clanChat.itemDonateTag.equals(item._userName) && item._type == 1)
+            {
+                cc.log(" !!!!! " + i);
+                break;
+            }
+        }
         var currentItemchat = parent._listItemChat[parent._currentChatItemIndex];
+        cc.log("BUGGGGGG : " + parent._currentChatItemIndex);
         var troopHousingSpaceDonated = currentItemchat._currentDonatedTroopSpace;
         var housingSpaceAvaiable = currentItemchat._maxTroopQuantity - troopHousingSpaceDonated;
 
@@ -39,6 +49,16 @@ var PopUpDonateTroop = cc.Sprite.extend({
             clickAble = !troopDonatedEnough && button._troopHousingSpace<=housingSpaceAvaiable && cf.user._listTroop[i] > 0;
             button.setBright(clickAble);
             button.setEnabled(clickAble);
+
+            if (!clickAble)
+            {
+                var act = cc.TintTo(0, 127.5, 127.5, 127.5 );
+                button._iconTroop.runAction(act);
+            }
+            else{
+                var act = cc.TintTo(0, 255, 255, 255, 255);
+                button._iconTroop.runAction(act)
+            }
         };
     },
     updateButton: function(){

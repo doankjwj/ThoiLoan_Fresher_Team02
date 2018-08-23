@@ -189,8 +189,8 @@ gv.buildingName =
     barrack_2: "Nhà lính đen",
     builderHut: "Nhà thợ xây",
     obstacle: "Vật cản",
-    defence_1: "Pháo thần công"
-
+    defence_1: "Pháo thần công",
+    clanCastle: "Nhà Bang Hội"
 };
 gv.orderInUserBuildingList =
 {
@@ -477,7 +477,7 @@ cf.secondsToLongTime = function(seconds)
 
 //Clan Chat
 cf.clanChat = {
-    maxTroopDonate: 5,
-    troopDonateLength: 4,
-    troopDonateLevel: 10,
+    maxTroopDonate: 5,      // Donate nhiều hất 5 con troop
+    troopDonateLength: 4,   // 4 loại troop Donate
+    troopDonateLevel: 10,   // Cấp cao nhất của troop
 }

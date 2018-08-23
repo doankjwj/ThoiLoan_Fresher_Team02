@@ -40,6 +40,7 @@ gv.troopStr = {
     ARM_16: "ARM_16",
     ARM_17: "ARM_17"
 };
+gv.troopName = ["Đấu Sĩ", "Pháp Sư", "Ăn Trộm", "Khổng Lồ"];
 
 
 gv.troopMaxLevel = [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4];

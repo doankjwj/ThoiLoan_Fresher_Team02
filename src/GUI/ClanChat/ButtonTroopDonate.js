@@ -72,7 +72,8 @@ var ButtonTroopDonate = ccui.Button.extend({
         this.onUpdateStatusForPopUpDonate();
         //this.onUpdateForChatItem();
         this.onUpdateToUserListTroop();
-        this.getParent().updateStatus();
+        // this.getParent(
+        // ).updateStatus();
         this.onReleaseTroop();
         this.onSendRequest();
     },
