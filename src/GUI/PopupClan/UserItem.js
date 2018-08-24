@@ -22,7 +22,7 @@ var UserItem = ccui.Button.extend({
         this._order = order;
 
         this._textOrder = cc.LabelBMFont(this._order, font.soji20);
-        this._textOrder.setAnchorPoint(cc.p(0.5, 0.5))
+        this._textOrder.setAnchorPoint(cc.p(0.5, 0.5));
         this.addChild(this._textOrder, 1);
         this._textOrder.setPosition(cc.p(30, this.height/2));
 
@@ -107,25 +107,31 @@ var UserItem = ccui.Button.extend({
     openPopup: function(sender, type){
         var popup;
         var tag = 99;
-        // var clanDetailLayer = this.getParent().getParent().getParent().getParent();
+        var clanDetailLayer = this.getParent().getParent().getParent().getParent();
         switch (type){
             case ccui.Widget.TOUCH_BEGAN:
                 break;
             case ccui.Widget.TOUCH_MOVED :
                 break;
             case ccui.Widget.TOUCH_ENDED:
-
-                cc.log(this.getParent().getParent().convertToNodeSpace(this.getPosition()).x + " " + this.getParent().getParent().convertToNodeSpace(this.getPosition()).y);
-
-                if(this.getParent().getChildByTag(tag) === null) {
-                    popup = cc.Sprite(folderClan + "POPUP_0004_Layer-3.png");
+                var pos = this.convertToWorldSpace();
+                if(clanDetailLayer.getChildByTag(tag) === null) {
+                    popup = new PopupMenuButton();
+                    popup.setAnchorPoint(cc.p(0, 0.5));
                     popup.setTag(tag);
-                    this.getParent().addChild(popup, 2);
-                    popup.setGlobalZOrder(10);
-                } else popup = this.getParent().getChildByTag(tag);
-                popup.setPosition(cc.p(this.x, this.y));
-                popup.visible = !this._isPressed;
-                this._isPressed = !this._isPressed;
+                    popup.setGlobalZOrder(20);
+                    clanDetailLayer.addChild(popup, 2);
+                } else popup = clanDetailLayer.getChildByTag(tag);
+                popup.setPosition(cc.p(pos.x, pos.y - 320));
+                popup.updateInfo(this._user);
+                // popup.setPositionZ(20);
+                if(!popup.visible) {
+                    popup.visible = true;
+                    this._isPressed = true;
+                } else {
+                    popup.visible = false;
+                    this._isPressed = false;
+                }
                 break;
             case ccui.Widget.TOUCH_CANCELED:
                 break;

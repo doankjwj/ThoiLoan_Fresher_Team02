@@ -22,21 +22,6 @@ var Clan = cc.Class.extend({
         this.iconId = iconId;
         this.trophyRequired = trophyReq;
 
-        // for(var i=0; i<this.quantity; i++) {
-        //     this._listUser.push(
-        //         new UserItem(
-        //             i+1,
-        //             new UserClan("QUAN LE ANH",
-        //                 Math.floor(Math.random()*200),
-        //                 Math.floor(Math.random()*3),
-        //                 Math.floor(Math.random()*2000),
-        //                 Math.floor(Math.random()*5000),
-        //                 Math.floor(Math.random()*20000))
-        //         )
-        //     );
-        // }
-
-
     },
 
     getStatusText: function () {
@@ -44,9 +29,9 @@ var Clan = cc.Class.extend({
         switch (this.status) {
 
             case 0:
-                return "Mở";
+                return "Đóng";
             case 1:
-                return "Xác thực";
+                return "Mở";
             default: return "UNDEFINED";
 
         }

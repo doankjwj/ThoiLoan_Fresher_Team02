@@ -69,8 +69,11 @@
         "src/GUI/PopupClan/Clan.js",
         "src/GUI/PopupClan/SearchClan.js",
         "src/GUI/PopupClan/ClanDetail.js",
+        "src/GUI/PopupClan/ClanMemberList.js",
         "src/GUI/PopupClan/UserClan.js",
         "src/GUI/PopupClan/UserItem.js",
+        "src/GUI/PopupClan/PopupMenuButton.js",
+
 
 
 
