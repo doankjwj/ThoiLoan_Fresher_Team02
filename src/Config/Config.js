@@ -280,6 +280,7 @@ gv.tag =
         TAG_BUTTON_SEARCH_BY_NAME: 10,
         TAG_BUTTON_SEARCH_BY_ID: 11,
         TAG_ICON_CLAN_LAYER: 12,
+        TAG_CLAN_DETAIL: 13,
     };
 /* Pop Up */
 gv.popUpConstruct = null;

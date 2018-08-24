@@ -69,22 +69,29 @@ var ClanItem = ccui.Button.extend({
         this.addChild(this._textTrophy, 1);
 
         this.addTouchEventListener(function(sender, type) {
+            var self = this;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
                 case ccui.Widget.TOUCH_MOVED :
                     break;
                 case ccui.Widget.TOUCH_ENDED:
+                    var popup;
+                    var mainLayer = this.getParent().getParent().getParent().getParent().getParent();
+                    // cc.log(mainLayer.getTag());
+                    if(mainLayer.getChildByTag(gv.tag.TAG_CLAN_DETAIL) === null) {
+                        popup = new ClanDetail();
+                        mainLayer.addChild(popup, 1);
+                        popup.setTag(gv.tag.TAG_CLAN_DETAIL);
+                    } else popup = mainLayer.getChildByTag(gv.tag.TAG_CLAN_DETAIL);
+                    this.getParent().getParent().getParent().getParent().onDisappear();
+                    popup.onAppear(this._clan);
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;
             }
         }, this);
 
-
-
-    },
-
-
+    }
 
 });

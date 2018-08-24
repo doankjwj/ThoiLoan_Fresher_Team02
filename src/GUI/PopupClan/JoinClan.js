@@ -72,7 +72,7 @@ var JoinClan = PopupClan.extend({
         // this.listClanVis.addChild(item, 2);
 
         for(var i = 0; i<50; i++) {
-            this.listClan.push(new ClanItem(i+1, new Clan(123, Math.floor(Math.random()*28 + 1), "Hoàn Quân Đoàn", Math.floor(Math.random()*3), Math.floor(Math.random()*50+1), Math.floor(Math.random() + 1), Math.floor(Math.random()*20000))));
+            this.listClan.push(new ClanItem(i+1, new Clan(123, Math.floor(Math.random()*28 + 1), "Hoàn Quân Đoàn", Math.floor(Math.random()*3), Math.floor(Math.random()*50+1), Math.floor(Math.random() + 1), Math.floor(Math.random()*20000), Math.floor(Math.random()*10)*100)));
         }
 
         for(var i = 0; i<50; i++) {

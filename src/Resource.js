@@ -75,7 +75,9 @@ var res = {
 
 var font = {
 
-    soji20: fontFolder + "soji_20.fnt"
+    soji20: fontFolder + "soji_20.fnt",
+    soji12: fontFolder + "soji_12.fnt",
+    fista16: fontFolder + "fista_16_non.fnt",
 
 };
 

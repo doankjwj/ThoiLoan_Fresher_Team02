@@ -68,6 +68,10 @@
         "src/GUI/PopupClan/ClanItem.js",
         "src/GUI/PopupClan/Clan.js",
         "src/GUI/PopupClan/SearchClan.js",
+        "src/GUI/PopupClan/ClanDetail.js",
+        "src/GUI/PopupClan/UserClan.js",
+        "src/GUI/PopupClan/UserItem.js",
+
 
 
         "src/Layer/MainLayer.js",
