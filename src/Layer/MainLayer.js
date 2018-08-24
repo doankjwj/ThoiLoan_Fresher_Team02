@@ -71,7 +71,7 @@
 
     initClan: function(){
            // cc.log(cf.user._clanId);
-           //testnetwork.connector.sendCreateClan("Clan 02 Fresher GSN", 26, "Bá chủ Thiên Hà", 0);
+           // testnetwork.connector.sendCreateClan("Clan 02 Fresher GSN", 26, "Bá chủ Thiên Hà", 0);
            // testnetwork.connector.sendQuitClan();
            // cf.user._clanId = -1;
     },
