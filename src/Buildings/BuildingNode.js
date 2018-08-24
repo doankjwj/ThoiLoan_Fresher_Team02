@@ -886,6 +886,12 @@ var BuildingNode = cc.Node.extend({
                 darkElixir = gv.json.defence[str][nextLevel]["darkElixir"];
                 coin = 0;
                 break;
+            case gv.buildingSTR.lab:
+                gold = 0;
+                elixir = gv.json.laboratory[str][nextLevel]["elixir"];
+                darkElixir = gv.json.defence[str][nextLevel]["darkElixir"];
+                coin = 0;
+                break;
             case gv.buildingSTR.obstacle:
                 break;
             default:

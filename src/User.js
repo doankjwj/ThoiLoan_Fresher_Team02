@@ -294,20 +294,4 @@ var User = cc.Class.extend({
         this.distributeResource(res_1 != 0, res_2 != 0, res_3 != 0);
     },
 
-    /* Cộng resource nhà chính lên 1 lượng quantity <= maxCapacity */
-    updateTownHallCurrentCapacity: function(resType, quantity)
-    {
-        switch(resType)
-        {
-            case gv.buildingSTR.resource_1:
-                cf.user._buildingList[gv.orderInUserBuildingList.townHall][0]._currentCapacityGold += quantity;
-                break;
-            case gv.buildingSTR.resource_2:
-                cf.user._buildingList[gv.orderInUserBuildingList.townHall][0]._currentCapacityElixir += quantity;
-                break;
-            case gv.buildingSTR.resource_3:
-                cf.user._buildingList[gv.orderInUserBuildingList.townHall][0]._currentCapacityDarkElixir += quantity;
-                break;
-        }
-    }
 });

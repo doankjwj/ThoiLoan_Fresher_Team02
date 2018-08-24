@@ -124,10 +124,7 @@ var NodeCreateClan = cc.Node.extend({
 
         testnetwork.connector.sendCreateClan(clanName, flagType-1, clanDescription, type);
 
-        setTimeout(function(){
-            // gvGUI.layerClanChat.resetScrollViewChat();
-            testnetwork.connector.sendRequestLoadClanChat();
-        }, 2);
+        //testnetwork.connector.sendRequestLoadClanChat();
 
         var parent = this.getParent();
         parent.setPosition(cc.p(0, - cc.winSize.height));

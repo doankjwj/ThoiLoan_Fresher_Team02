@@ -41,6 +41,7 @@ var ClanCastle = BuildingNode.extend({
         var jsonItem = gv.jsonInfo["map"]["CLC_1"][0]["troopArr"];
         for (var i=0; i < Object.keys(jsonItem).length; i++)
         {
+            cc.log(i + " ++++");
             var obj = gv.jsonInfo["map"]["CLC_1"][0]["troopArr"][i];
             this._troopReceive[obj["troopOrder"]][obj["troopType"]] = obj["quantity"];
         }

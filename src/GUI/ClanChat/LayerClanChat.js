@@ -106,6 +106,7 @@ var LayerClanChat = cc.Node.extend({
         this.addChild(buttonChat);
         buttonChat.addClickEventListener(function(){
             self.onChat();
+            self.resetScrollViewChat();
         }.bind(this));
 
         this._layerUserOnline = cc.Sprite(res.clanChatGUI.layerUserOnline);
@@ -250,6 +251,13 @@ var LayerClanChat = cc.Node.extend({
             this._scrollviewChat.height = this._bg.height - 115;
             this.addChild(this._scrollviewChat, 1);
         }
+    },
+    resetScrollViewChat: function()
+    {
+        this.removeChild(this._scrollviewChat);
+        this._listItemChat.length = 0;
+        this._listItemChatY = 0;
+        this.initScrollviewChat();
     },
 
     loadChatFromServer:function()

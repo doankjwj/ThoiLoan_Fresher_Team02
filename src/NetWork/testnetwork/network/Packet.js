@@ -847,7 +847,6 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                     this.map.WAL_1[i].finishBuildOrUpgradeTime -= gv.timeOffset.userInfo;
             }
 
-            cc.log(JSON.stringify(this));
             Amount = this.getByte();
             this.map.CLC_1 = [];
             for (var i = 0; i < Amount; i += 1)
