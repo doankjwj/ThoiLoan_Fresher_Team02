@@ -180,7 +180,6 @@ var BuildingNode = cc.Node.extend({
             // swallowTouches: true,
             onTouchBegan: function(touch, event) {
                 if(cf.isDeciding) return false;
-                //if (self._buildingSTR == gv.buildingSTR.clanCastle) return false;
                 var locationNote = self.convertToNodeSpace(touch.getLocation());
                 var w = self._size * cf.tileSize.width / 2 ;
                 var h = self._size * cf.tileSize.height / 2 ;
@@ -211,8 +210,7 @@ var BuildingNode = cc.Node.extend({
 
             onTouchEnded: function(touch, event) {
                 if(!cf.isMapMoving) {
-                    if (self._buildingSTR != gv.buildingSTR.clanCastle || self._level != 0)
-                        self.onClick();
+                    self.onClick();
                     gv.building_selected = self._id;
                     self.getParent().getParent().showListBotButton(self._id);
                     cf.current_r = self._row;
@@ -323,7 +321,6 @@ var BuildingNode = cc.Node.extend({
             },
             onTouchMoved: function(touch, event)
             {
-                if (self._buildingSTR == gv.buildingSTR.clanCastle && self._level == 0) return true;
                 if (self._id !== gv.building_selected) return;
                 var location_touch = touch.getLocation();
                 var tile_location = null;
@@ -526,13 +523,13 @@ var BuildingNode = cc.Node.extend({
         cf.user.updateBuilder();
 
         /* Update sprite */
-        if (this._level > 1 || this._buildingSTR == gv.buildingSTR.clanCastle)
+        if (this._level > 1)
         {
             this.onUpdateSpriteFrame();
         }
         this.updateLabelName();
         if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
-            this._lastHarvestTime = new Date().getTime();
+            this._finishing_time = new Date().getTime();
     },
 
     onUpdateSpriteFrame: function()
@@ -574,9 +571,6 @@ var BuildingNode = cc.Node.extend({
                 break;
             case gv.buildingSTR.lab:
                 this._center_building = cc.Sprite(res.folder_laboratory + "LAB_1_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
-                break;
-            case gv.buildingSTR.clanCastle:
-                this._center_building = cc.Sprite(res.folder_clan_castle + "CLC_1_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             default:
                 break;
@@ -626,9 +620,6 @@ var BuildingNode = cc.Node.extend({
             case gv.buildingSTR.lab:
                 json = gv.json.laboratory;
                 break;
-            case gv.buildingSTR.clanCastle:
-                json = gv.json.clanCastle;
-                break;
             default:
                 break;
         }
@@ -676,8 +667,8 @@ var BuildingNode = cc.Node.extend({
             case gv.buildingSTR.lab:
                 this._center_building = cc.Sprite(res.folder_laboratory + "LAB_1_" + this.getTempLevel() + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
-            case gv.buildingSTR.clanCastle:
-                this._center_building = cc.Sprite(res.folder_clan_castle + "CLC_1_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+            case gv.buildingSTR.lab:
+                this._center_building = cc.Sprite(res.folder_laboratory + "LAB_1_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             default:
                 break;

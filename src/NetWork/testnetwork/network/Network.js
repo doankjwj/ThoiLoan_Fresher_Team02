@@ -32,22 +32,16 @@ testnetwork.Connector = cc.Class.extend({
                 cc.log("MOVE:", packet.x, packet.y);
                 fr.getCurrentScreen().updateMove(packet.x, packet.y);
                 break;
-            case gv.CMD.USER_ERROR:
-                break;
-            case gv.CMD.RECEIVE_CLAN_CHAT_TEXT:
-                gvGUI.layerClanChat.onReceiveChatText();
-                break;
-            case gv.CMD.RECEIVE_CLAN_CHAT_DONATE:
-                gvGUI.layerClanChat.onReceiveChatDonate();
-                break;
-            case gv.CMD.RECEIVE_DONATE:
-                gvGUI.layerClanChat.onReceiveDonate();
-                cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].addTroop();
-                break;
-            case gv.CMD.CLAN_ERROR:
-                break;
-            case 37:
-                break;
+            case gv.CMD.ERROR:
+            //try
+            //{
+            //    fr.view(MainLayer);
+            //}
+            //catch(e)
+            //{
+            //}
+            //break;
+
         }
     },
     sendGetUserInfo:function()
@@ -132,50 +126,8 @@ testnetwork.Connector = cc.Class.extend({
         var pk = this.gameClient.getOutPacket(CmdSendResearchFinishImmidiately);
         pk.pack();
         this.gameClient.sendPacket(pk);
-    },
-
-    sendCreateClan: function(clanName, flag, description, authentication){
-        cc.log("SEND CREATE CLAN : " + clanName);
-        var pk = this.gameClient.getOutPacket(CmdSendCreateClan);
-        pk.pack(clanName, flag, description, authentication);
-        this.gameClient.sendPacket(pk);
-    },
-    sendJoinClan: function(clanId){
-        cc.log("SEND JOIN CLAN : " + clanId);
-        var pk = this.gameClient.getOutPacket(CmdSendJoinClan);
-        pk.pack(clanId);
-        this.gameClient.sendPacket(pk);
-    },
-
-    // Gửi 1 request Chat
-    sendChat: function(msg){
-        cc.log("SEND CLAN CHAT: " + msg);
-        var pk = this.gameClient.getOutPacket(CmdSendChat);
-        pk.pack(msg);
-        this.gameClient.sendPacket(pk);
-    },
-    // Gửi 1 request Donate
-    sendRequestDonate: function(msg){
-        cc.log("NEW REQUEST DONATE: " + msg);
-        var pk = this.gameClient.getOutPacket(CmdSendRequestDonate);
-        pk.pack(msg);
-        this.gameClient.sendPacket(pk);
-    },
-    // Gửi Request Donate cho 1 người khác
-    sendDonate: function(tag, troopOrder)
-    {
-        cc.log("NEW DONATE: " + "tag: " + tag + ", troopOrder: " + troopOrder);
-        var pk = this.gameClient.getOutPacket(CmdSendDonate);
-        pk.pack(tag, troopOrder);
-        this.gameClient.sendPacket(pk);
-    },
-    // Gửi Request lấy lịch sử chat Text
-    sendRequestLoadClanChat: function(){
-        cc.log("SEND REQUEST LOAD CLAN CHAT HISTORY");
-        var pk = this.gameClient.getOutPacket(CmdSendRequestLoadClanChat);
-        pk.pack();
-        this.gameClient.sendPacket(pk);
     }
+
 });
 
 

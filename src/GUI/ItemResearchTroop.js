@@ -149,4 +149,5 @@ var ItemResearchTroop = ccui.Button.extend({
     {
         fr.getCurrentScreen().onPopUpTroopInfo(this._troopOrder);
     }
+
 });

@@ -49,8 +49,6 @@ cf.CODE_BUILDING_HARVEST_3 = 346286431;
 cf.CODE_BUILDING_RESEARCH = 23423324;
 cf.CODE_TRAINING = 27071993;
 cf.CODE_CLAN = 19051890;
-cf.CODE_BUILDING_REQUEST_DONATE = 232423;
-cf.CODE_BUILDING_CLAN = 2342343;
 
 cf.user = null;
 
@@ -106,8 +104,7 @@ gv.json =
     troopBase: null,
     itemList: null,
     defence: null,
-    troopAnimation: null,
-    clanCastle: null,
+    troopAnimation: null
 };
 gv.plist =
     {
@@ -138,7 +135,7 @@ cf.animationConstructLevelUp = null;
 cf.animationDefence_1 = [];
 
 
-cf.MAX_BUILDING_TYPE = 40;
+cf.MAX_BUILDING_TYPE = 20;
 cf.MAX_BUILDING_LEVEL = 20;
 
 cf.shopResourceItem = {
@@ -167,8 +164,7 @@ gv.buildingSTR = {
     barrack_2: "BAR_2",
     builderHut: "BDH_1",
     obstacle: "OBS",
-    defence_1: "DEF_1",
-    clanCastle: "CLC_1",
+    defence_1: "DEF_1"
 };
 gv.buildOnMoveGUI =
 {
@@ -191,8 +187,8 @@ gv.buildingName =
     barrack_2: "Nhà lính đen",
     builderHut: "Nhà thợ xây",
     obstacle: "Vật cản",
-    defence_1: "Pháo thần công",
-    clanCastle: "Nhà Bang Hội"
+    defence_1: "Pháo thần công"
+
 };
 gv.orderInUserBuildingList =
 {
@@ -209,8 +205,8 @@ gv.orderInUserBuildingList =
     barrack_2: 10,
     builderHut: 11,
     obstacle: 13,
-    defence_1: 12,
-    clanCastle: 26,
+    defence_1: 12
+
 };
 gv.buildingMaxLevel = {
     townHall: 11,
@@ -226,8 +222,7 @@ gv.buildingMaxLevel = {
     barrack_2: 6,
     builderHut: 5,
     obstacle: 27,
-    defence_1: 17,
-    clanCastle: 6,
+    defence_1: 17
 };
 gv.constructType =
 {
@@ -426,15 +421,14 @@ cf.stringToItemInit = function(str, index) {
             isActive = finishTime <= currentTime;
             building = new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_1], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, isActive, gv.buildingSTR.resource_1);
             building._finishing_time = finishTime;
-            building._lastHarvestTime = gv.jsonInfo["map"][str][index]["lastHarvestTime"];
-            cc.log(new Date(building._lastHarvestTime));
+            //building._isActive = (finishTime <= currentTime);
             break;
         case "RES_2":
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
             isActive = finishTime <= currentTime;
             building = new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_2], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, isActive, gv.buildingSTR.resource_2);
             building._finishing_time = finishTime;
-            building._lastHarvestTime = gv.jsonInfo["map"][str][index]["lastHarvestTime"];
+            //building._isActive = (finishTime <= currentTime);
             break;
         case "AMC_1":
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
@@ -464,11 +458,11 @@ cf.stringToItemInit = function(str, index) {
             building._finishing_time = finishTime;
             //building._isActive = (finishTime <= currentTime);
             break;
-        case "CLC_1":
+        case "LAB_1":
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
-            isActive = finishTime <= currentTime;
-            building = new ClanCastle(cf.user._buildingListCount[gv.orderInUserBuildingList.clanCastle], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, isActive);
+            building =  new Laboratory(cf.user._buildingListCount[gv.orderInUserBuildingList.lab], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true);
             building._finishing_time = finishTime;
+            building._isActive = (finishTime <= currentTime);
             break;
     }
     return building;
@@ -484,24 +478,3 @@ cf.secondsToLongTime = function(seconds)
     seconds  -= mnts*60;
     return (days != 0 ? (days.toString() + "d") : "" ) + (hrs != 0 ? (hrs.toString() + "h") : "") + (mnts != 0 ? (mnts.toString() + "m") : "") + ((seconds!=0) ? (seconds.toString() + "s") : "" );
 };
-
-
-//Clan Chat
-cf.clanChat = {
-    maxTroopDonate: 5,      // Donate nhiều hất 5 con troop
-    troopDonateLength: 4,   // 4 loại troop Donate
-    troopDonateLevel: 10,   // Cấp cao nhất của troop
-};
-
-cf.clan =
-{
-    goldBuildClanCastle: 40000,
-
-}
-
-/* Thông tin popUp xây, nâng coin*/
-cf.constructType =
-    {
-        build: 0,
-        upgrade: 1
-    }

@@ -42,12 +42,8 @@ var IconActionBuilding = ccui.Button.extend({
                 this._super(buildingGUI.iconResearch);
                 this._txt = cc.LabelBMFont("NGHIÊN CỨU", font.soji20);
                 break;
-            case cf.CODE_BUILDING_REQUEST_DONATE:
-                this._super(buildingGUI.iconRequestDonate);
-                this._txt = cc.LabelBMFont("XIN QUÂN", font.soji20);
-                break;
             case cf.CODE_CLAN:
-                this._super(buildingGUI.iconClan);
+                this._super(res.clanGUI.iconClan);
                 this._txt = cc.LabelBMFont("BANG HỘI", font.soji20);
                 break;
             default:

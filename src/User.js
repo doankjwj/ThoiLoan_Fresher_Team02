@@ -24,8 +24,6 @@ var User = cc.Class.extend({
     _builderTotal: null,
     _builderFree: null,
 
-    _clanId: null,
-
     /*
      0: TownHall
      1: Gold Storage
@@ -56,7 +54,6 @@ var User = cc.Class.extend({
         this._currentCapacityCoin = (gv.jsonInfo["player"]["coin"] === null) ? 0 : gv.jsonInfo["player"]["coin"];
         this.initBuildingList();
         this.initTroopLevelList();
-        this.initClanInfo();
     },
 
     initBuildingList: function()
@@ -74,13 +71,6 @@ var User = cc.Class.extend({
         for (var i = 0; i < gv.jsonInfo["player"]["troopLevel"].length; i++)
         {
             this._listTroopLevel[i] = gv.jsonInfo["player"]["troopLevel"][i];
-            this._listTroop[i] = gv.jsonInfo["player"]["troopAmount"][i];
-        }
-    },
-
-    initClanInfo: function(){
-        if (gv.jsonInfo["player"]["clanId"] != -1) {
-            testnetwork.connector.sendRequestLoadClanChat();
         }
     },
     /* Update Storage Capacity from User Buildings (Town Hall + Storage) */

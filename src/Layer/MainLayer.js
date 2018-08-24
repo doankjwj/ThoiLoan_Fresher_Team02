@@ -1,4 +1,4 @@
-﻿﻿var MainLayer = cc.Layer.extend({
+﻿var MainLayer = cc.Layer.extend({
     _map: null,
     _shop: null,
 

@@ -30,13 +30,13 @@ var LogicPoint = cc.Class.extend
             var trueY = cf.tileLocation[overloadRow][overloadColumn].y;
             if (this.logicRow > 40)
             {
-                trueX += (cf.tileSize.width / 2)*(this.logicRow - 40);
-                trueY -= (cf.tileSize.height / 2)*(this.logicRow - 40);
+                trueX += cf.tileSize.width / 2;
+                trueY -= cf.tileSize.height / 2;
             }
             if (this.logicColumn > 40)
             {
-                trueX -= (cf.tileSize.width / 2)*(this.logicColumn - 40);
-                trueY -= (cf.tileSize.height / 2)*(this.logicColumn - 40);
+                trueX -= cf.tileSize.width / 2;
+                trueY -= cf.tileSize.height / 2;
             }
             return cc.p(trueX,
                         trueY);

@@ -39,7 +39,6 @@ var res = {
     obstacleJson: jsonFolder + "Obstacle.json",
     shopItemList: jsonFolder + "ShopList.json",
     defenceJson: jsonFolder + "Defence.json",
-    clanCastleJson: jsonFolder + "ClanCastle.json",
 
     folder_builder_hut: buildingsFolder + "builderHut/",
     folder_army_camp: buildingsFolder + "armyCamp/",
@@ -53,7 +52,6 @@ var res = {
     folder_defense_base: buildingsFolder + "defense_base/",
     folder_obs: buildingsFolder + "obstacle/",
     folder_laboratory: buildingsFolder + "labratory/",
-    folder_clan_castle: buildingsFolder + "clan_castle/",
 
     folder_gui_action_building: guiFolder + "Action_Building_Icon/",
     folder_gui_build: guiFolder + "/upgrade_building_gui/",
@@ -137,16 +135,6 @@ res.clanGUI = {
     buttonBG: folderClan + "o duoi.png",
     buttonBGClose: folderClan + "o duoi 1.png",
     clanItemBackground: folderClan + "slost.png",
-    background: folderClan + "nen 1.png",
-    tabBar: folderClan + "o duoi.png",
-    tabBarBG: folderClan + "o duoi 1.png",
-    flag: folderClan + "co 1.png",
-    flagBG: folderClan + "co 2.png",
-    textFieldClanNameBG: folderClan + "slost nen 1.png",
-    textFieldClanDescriptionBG: folderClan + "slost nen 2.png",
-    buttonTraThu: folderClan + "button _ tra thu.png",
-    buttonXemLai: folderClan + "button _xem lai.png",
-
 };
 
 var shopGUI = {
@@ -217,9 +205,6 @@ var buildingGUI = {
     iconHarvest_3: folderBuildingActionicon + "harvest_dark_elixir.png",
     instant: res.folder_gui_action_building + "quick_finish.png",
     iconResearch: res.folder_gui_action_building + "research_icon.png",
-    iconRequestDonate: res.folder_gui_action_building + "request_troop_button.png",
-    iconClan: "res/Art/Bang hoi/icon bang hoi.png",
-
     bg: folderBuildingActionicon + "bg_button.png",
 
     trainIcon: folderBuildingActionicon + "train_icon.png",
@@ -307,11 +292,7 @@ var logInGUI =
     bg:  logInFolder + "loading.jpg",
     btnOk: logInFolder + "okbutton.png",
     logo: logInFolder + "logo.png",
-    textFieldBG: logInFolder + "g_background.png",
-};
-
-
-
+}
 res.sound = {
     soundBackgound : soundFolder + "theme.mp3",
     collectGold: soundFolder + "sfx/collect_gold.mp3",
