@@ -22,24 +22,22 @@ var LayerClanChat = cc.Node.extend({
     //_listChat: [],                  // Danh sách đối tượng Chat
     //_listUserOnline: [],            // Danh sách đối tượng User Online
 
+    _clanChatLoaded: 0,             // Số loại Clan Chat đã đọc về (3 == đọc xong hết)
     _typeDefine: {
         chatScrollView: 0,
         userOnlineScrollView: 1,
     },
 
-    // Độ dài tối đa danh sách tin nhắn và độ dài tin nhắn mà Client resquest
-    _maxLengthChat: 90,
+    _maxLengthChat: 100,             // Độ dài tối đa danh sách tin nhắn và độ dài tin nhắn mà Client resquest
     _lengthChatPerLoad: 30,
-
-    // Listener On Appear
-    _listenerAppear: null,
+    _listenerAppear: null,          // Listener On Appear
+    _currentChatItemIndex: null,          // Item Chat hiện tại
 
     ctor: function() {
         this._super();
         this.setAnchorPoint(0, 0);
 
         this.init();
-        //this.updateContent();
         this.initListenerAppear();
         this.addButtonExpand();
     },
@@ -86,11 +84,14 @@ var LayerClanChat = cc.Node.extend({
         textFieldChatBG.setAnchorPoint(0, 0.5);
         textFieldChatBG.setPosition(5, this._iconClan.y - 35);
         this.addChild(textFieldChatBG, 1);
-        this._textFieldChat = ccui.TextField();
+        this._textFieldChat = ccui.TextField("", font.soji20, 45);
         this._textFieldChat.setTextColor(cc.color(0, 0, 0, 255));
         this._textFieldChat.setPlaceHolder("                                         ");
         this._textFieldChat.setAnchorPoint(0, 0.5);
         this._textFieldChat.setPosition(15, this._iconClan.y - 35);
+        this._textFieldChat.setMaxLength(45);
+        this._textFieldChat.setMaxLengthEnabled(true);
+        this._textFieldChat.set
         this.addChild(this._textFieldChat, 1);
 
         var buttonInfo = ccui.Button(res.clanChatGUI.buttonInfo);
@@ -165,10 +166,10 @@ var LayerClanChat = cc.Node.extend({
             if (!isExpanded){
                 if (self._listItemUserOnline.length == 0) // lần đầu khởi tạo
                     self.initContent();
-                if (!gv.clanChatEventManager.chatStatusUpdated)
-                    self.updateChatEvent();
-                if (!gv.clanChatEventManager.userOnlineUpdated)
-                    self.updateUserOnlineEvent();
+                // if (!gv.clanChatEventManager.chatStatusUpdated)
+                //     self.updateChatEvent();
+                // if (!gv.clanChatEventManager.userOnlineUpdated)
+                //     self.updateUserOnlineEvent();
 
                 // Cập nhật lại thời gian cho thanh chat
                 self.updateTimeScrollChat();
@@ -203,25 +204,30 @@ var LayerClanChat = cc.Node.extend({
     },
     initContent: function(){
         this.initClanInfo();
-        //this.initListClassItem();
         this.initScrollviewChat();
         this.initScrollviewUserOnline();
     },
+
+    // Cập nhật lại thời gian Chat khi nhấn mở layer
+    updateTimeScrollChat: function(){
+        for (var i=0; i < this._listItemChat.length; i++){
+            this._listItemChat[i].updateTime();
+        }
+    },
+
     initClanInfo: function(){
         var iconClanOrder = Math.floor(Math.random() * 28) + 1;
         fn.replaceSpriteImage(this._iconClan, "res/Art/Bang hoi/bieu tuong nho/" + iconClanOrder + ".png");
         this._labelClanName.setString("Clan No." + iconClanOrder);
     },
-    // Lấy ra độ cao của Container và set độ cao cho từng Item
+    // Lấy ra độ cao của Container
     getScrollviewInnerContainerSize: function(type){
         var width = 0;
         var height = 0;
         if (type == 0){
             for (var i = 0; i < this._listItemChat.length; i++)
-            {
                 height += this._listItemChat[i]._height ;
-                this._listItemChatY[i] = (i == 0) ? 0 : this._listItemChatY[i-1] + this._listItemChat[i-1]._height;
-            }
+            height = Math.max(360, height);
             width = this._scrollviewChat.width;
         }
         if (type == 1){
@@ -233,11 +239,8 @@ var LayerClanChat = cc.Node.extend({
         }
         return cc.size(width, height);
     },
-
-    initScrollviewChat: function(){
-        var chatQuantity = 15;
-        if (!this._scrollviewChat)
-        {
+    initScrollviewChat: function() {
+        if (!this._scrollviewChat) {
             this._scrollviewChat = ccui.ScrollView();
             this._scrollviewChat.setDirection(ccui.ScrollView.DIR_VERTICAL);
             this._scrollviewChat.setTouchEnabled(true);
@@ -245,32 +248,291 @@ var LayerClanChat = cc.Node.extend({
             this._scrollviewChat.setPosition(0, 0);
             this._scrollviewChat.width = this._bg.width + 10;
             this._scrollviewChat.height = this._bg.height - 115;
-            //this._scrollviewChat.setInnerContainerSize(cc.size(0, 0));
-
             this.addChild(this._scrollviewChat, 1);
-        };
+        }
+    },
 
-        if (this._listItemChat.length != 0) return;
-        this._listItemChat = [];
-        for (var i = 0; i < chatQuantity; i++){
-            var itemClanChat = new ItemChat(i, i%3, "User " + i, i, "Hello, I am User " + i, new Date("Thu Aug 16 2018 17:35:35 GMT+0700 (SE Asia Standard Time)").getTime(), [1, 2, 3, 4], [23, 30, 42, 11], 100)
+    loadChatFromServer:function()
+    {
+        cc.log("CHAT RECEIVED: " + JSON.stringify(gv.clanChat.jsonLoad));
+        if (!this._listItemChat) this._listItemChat = [];
+        var allChat = gv.clanChat.jsonLoad["chatText"];
+        var jsonItem = null;
+        for (var i=0; i<allChat.length; i++){
+            jsonItem = allChat[i];
+            var itemClanChat = new ItemChat(i, 0, jsonItem["userName"], jsonItem["level"], jsonItem["message"], jsonItem["timeCreated"]);
+            itemClanChat.retain();
             this._listItemChat.push(itemClanChat);
         }
+        this._clanChatLoaded ++;
 
-        if (chatQuantity < 1) return;
+        var allDonate = gv.clanChat.jsonLoad["donate"];
+        for (var i = 0; i < allDonate.length; i += 1)
+        {
+            jsonItem = allDonate[i];
+            var userName = jsonItem["userName"];
+            var userLevel = jsonItem["level"];
+            var msg = jsonItem["message"];
+            var timeCreated = jsonItem["timeCreated"];
+            var curentHousingSpace = jsonItem["troopHousingSpace"];
+            var maxHousingSpace = jsonItem["troopCapacity"];
+            var jsonTroopDonated = jsonItem["selfDonatedTroop"];
+            var troopDonated = [0,0,0,0];
+            for (var j = 0; j < jsonTroopDonated.length; j += 1)
+                troopDonated[jsonTroopDonated[j]["troopOrder"]] += 1;
+            var itemClanChat = new ItemChat(i, 1, userName, userLevel, msg, timeCreated, curentHousingSpace, troopDonated, maxHousingSpace);
+            itemClanChat.retain();
+            this._listItemChat.push(itemClanChat);
+        }
+        this._clanChatLoaded ++;
+        this.onCombileChatFromServer();
+    },
+    //Load lịch sử chat từ server
+    loadChatTextFromServer: function()
+    {
+        var chatQuantity = gv.clanChat.jsonLoadText["chatQuantity"];
+        if (!this._listItemChat) this._listItemChat = [];
+        var jsonItem = null;
+        for (var i=0; i<chatQuantity; i++){
+            jsonItem = gv.clanChat.jsonLoadText["detail"][i];
+            var itemClanChat = new ItemChat(i, 0, jsonItem["userName"], jsonItem["userLevel"], jsonItem["msg"], jsonItem["timeCreated"]);
+            itemClanChat.retain();
+            this._listItemChat.push(itemClanChat);
+        }
+        this._clanChatLoaded ++;
+        if (this._clanChatLoaded == 2)
+            this.onCombileChatFromServer();
+    },
+    loadChatDonateFromServer: function()
+    {
+        var chatQuantity = gv.clanChat.jsonLoadDonate["chatQuantity"];
+        if (!this._listItemChat) this._listItemChat = [];
+        var jsonItem = null;
+        for (var i=0; i<chatQuantity; i++){
+            jsonItem = gv.clanChat.jsonLoadDonate["detail"][i];
+            var userName = jsonItem["userName"];
+            var userLevel = jsonItem["userLevel"];
+            var msg = jsonItem["msg"];
+            var timeCreated = jsonItem["timeCreated"];
+            var curentHousingSpace = jsonItem["currentHousingSpace"];
+            var maxHousingSpace = jsonItem["maxHousingSpace"];
+            var jsonTroopDonated = jsonItem["troopDonated"];
+            var troopDonated = [jsonTroopDonated["troop_0"], jsonTroopDonated["troop_1"], jsonTroopDonated["troop_2"], jsonTroopDonated["troop_3"]];
+            var itemClanChat = new ItemChat(i, 1, userName, userLevel, msg, timeCreated, curentHousingSpace, troopDonated, maxHousingSpace);
+            itemClanChat.retain();
+            this._listItemChat.push(itemClanChat);
+        }
+        this._clanChatLoaded ++;
+        if (this._clanChatLoaded == 2)
+            this.onCombileChatFromServer();
+    },
+    onCombileChatFromServer: function()
+    {
         // Cập nhật lại độ cao cho Inner container
+        this._listItemChat.sort(function(a, b){
+            return a._time - b._time;
+        });
         this._scrollviewChat.setInnerContainerSize(this.getScrollviewInnerContainerSize(this._typeDefine.chatScrollView));
-        for (var i = 0; i < chatQuantity; i++){
+        var height = this._scrollviewChat.getInnerContainerSize().height;
+        var length = this._listItemChat.length-1;
+        for (var i=length; i>-1; i--)
+        {
+            this._listItemChatY[i] = ((i==length)? height : this._listItemChatY[i+1]) - this._listItemChat[i]._height ;
+        }
+        for (var i = 0; i < length+1; i++){
             this._listItemChat[i].setPosition(this._scrollviewChat.width/2 - 6, this._listItemChatY[i]);
             this._scrollviewChat.addChild(this._listItemChat[i], 2);
-            var line = cc.Sprite(res.clanChatGUI.lineSeparateChat);
-            line.setPosition(this._scrollviewChat.width/2 - 6, this._listItemChatY[i]);
-            this._scrollviewChat.addChild(line);
         };
+    },
+    //Cập nhật vị trí các ItemChat khi tràn 100
+    updateOnOutOfMax: function()
+    {
+        this._scrollviewChat.setInnerContainerSize(this.getScrollviewInnerContainerSize(this._typeDefine.chatScrollView));
+        var length = this._listItemChat.length;
+        for (var i=length-1; i>-1; i--)
+        {
+            var y = (i== length-1)? this._scrollviewChat.getInnerContainerSize().height - this._listItemChat[length-1]._height : this._listItemChatY[i+1] - this._listItemChat[i]._height;
+            this._listItemChatY[i] = y;
+            this._listItemChat[i].y = y;
+        }
+    },
+    //Đẩy Item chat mới vào mảng và Add vào ScrollView
+    addItemChat: function(index){
+        var newItemChat = this._listItemChat[index];
+        newItemChat.setPosition(this._scrollviewChat.width/2 - 6, this._listItemChatY[index]);
+        this._scrollviewChat.addChild(newItemChat, 2);
+
+        if (this._listItemChat.length > this._maxLengthChat)
+        {
+            var length = this._listItemChat.length;
+            for (var t=0; t<=length-this._maxLengthChat-1; t++) {
+                this._scrollviewChat.removeChild(this._listItemChat[t]);
+            }
+            this._listItemChat = this._listItemChat.slice(length - this._maxLengthChat, length);
+            this._listItemChat.length = this._maxLengthChat;
+            this._listItemChatY = this._listItemChatY.slice(length - this._maxLengthChat, length);
+            this._listItemChatY.length = this._maxLengthChat;
+            this.updateOnOutOfMax();
+        };
+        this.updateTimeScrollChat();
+    },
+    onChat: function()
+    {
+        if (this._textFieldChat.string.length == 0) return;
+        testnetwork.connector.sendChat(this._textFieldChat.string);
+        this._textFieldChat.string = "";
+        // this.updateListChatItemY()
+    },
+    //Cập nhật mảng tọa độ y cho Item mới nhất
+    updateListChatItemY: function()
+    {
+        var length = this._listItemChat.length;
+        cc.log(length);
+        this._listItemChatY[length-1] = (length == 1)? 360-this._listItemChat[0]._height : (this._listItemChatY[length-2] + this._listItemChat[length-2]._height);
+    },
+
+    //Nhận 1 Response Chat mới từ server
+    onReceiveChatText: function(){
+        var userName = gv.clanChat.jsonChatText["userName"];
+        var userLevel = gv.clanChat.jsonChatText["userLevel"];
+        var msg = gv.clanChat.jsonChatText["msg"];
+        var newItemChat = new ItemChat(0, 0, userName, userLevel, msg, new Date().getTime());
+        this._listItemChat.push(newItemChat);
+        var index = this._listItemChat.length-1;
+        var newHeight = (index == 0)? this._scrollviewChat.height : this._scrollviewChat.getInnerContainerSize().height + this._listItemChat[index]._height;
+        this._scrollviewChat.setInnerContainerSize(cc.size(this._scrollviewChat.width, newHeight));
+        this.updateListChatItemY();
+        this.addItemChat(index);
+        this._scrollviewChat.scrollToTop(1, 0);
+    },
+    // Nhận 1 Response Donate mới từ server
+    onReceiveChatDonate: function(){
+        var userName = gv.clanChat.jsonChatDonate["userName"];
+        var userLevel = gv.clanChat.jsonChatDonate["userLevel"];
+        var msg = gv.clanChat.jsonChatDonate["msg"];
+        var currentHousingSpace = gv.clanChat.jsonChatDonate["housingSpaceDonated"];
+        var maxHousingSpace = gv.clanChat.jsonChatDonate["maxHousingSpace"];
+        var newItemChat = new ItemChat(0, 1, userName, userLevel, msg, new Date().getTime(), currentHousingSpace, [0, 0, 0, 0], maxHousingSpace);
+
+        var indexExisted = this.getItemChatByUserName(1, userName);
+        if (indexExisted != null)        // Item Request đang tồn tại thì đưa lên trên
+        {
+            this._listItemChat[indexExisted]._time = new Date().getTime();
+            this._listItemChat[indexExisted]._userLevel = userLevel;
+            this._listItemChat[indexExisted]._text = msg;
+            this._listItemChat[indexExisted]._maxTroopQuantity = maxHousingSpace;
+            this._listItemChat[indexExisted].visualizeByArg();
+
+            this.onMoveUpItem(this.getItemChatByUserName(1, userName));
+            return;
+        }
+        this._listItemChat.push(newItemChat);
+        var index = this._listItemChat.length-1;
+        var newHeight = (index == 0)? this._scrollviewChat.height : this._scrollviewChat.getInnerContainerSize().height + this._listItemChat[index]._height;
+        this._scrollviewChat.setInnerContainerSize(cc.size(this._scrollviewChat.width, newHeight));
+        this.updateListChatItemY();
+        this.addItemChat(index);
+        this._scrollviewChat.scrollToTop(1, 0);
+    },
+    onReceiveDonate: function()
+    {
+        var userName = gv.clanChat.jsonDonate["userName"];
+        var userDonate = gv.clanChat.jsonDonate["userDonate"];
+        var troopOrder = gv.clanChat.jsonDonate["troopOrder"];
+        var troopLevel = gv.clanChat.jsonDonate["troopLevel"];
+
+        if (userName == cf.user._name)
+        {
+            var troopName = gv.troopName[troopOrder];
+            fr.getCurrentScreen().onBubble("Nhận được 1x " + troopName + " level " + troopLevel + " từ " + userDonate);
+        }
+
+        var index = this.getItemChatByUserName(1, userName);
+        if (index == null) return;
+        this._listItemChat[index].onAddTroop(troopOrder, userDonate);
+        if (userDonate == cf.user._name)
+            gvGUI.popUpDonateTroop.updateStatus();
+    },
+    // Lấy ra 1 Item chat qua loại, user name __ nếu = null: user chưa có lượt donate và ngược lại
+    getItemChatByUserName: function(type, userName)
+    {
+        for (var i=0; i<this._listItemChat.length; i++)
+        {
+            var item = this._listItemChat[i];
+            if (item._userName == userName && item._type == type)
+                return i;
+        }
+        return null;
+    },
+    // Đưa Item chat có chỉ số index lên trên đầu tiên
+    onMoveUpItem: function(index)
+    {
+        cc.log(index);
+        var length = this._listItemChat.length;
+        for (var i=index; i<length-1; i++)
+        {
+            var h = this._listItemChat[i+1]._height;
+            var y = this._listItemChatY[i];
+            var tmpItem = this._listItemChat[i];
+            this._listItemChat[i] = this._listItemChat[i+1];
+            this._listItemChat[i+1] = tmpItem;
+
+            this._listItemChatY[i] = y;
+            this._listItemChat[i].y = this._listItemChatY[i];
+            this._listItemChatY[i+1] = this._listItemChatY[i] + h;
+            this._listItemChat[i+1].y = this._listItemChatY[i+1];
+        }
+        //for (var i=index; i<length-1; i++)
+        //{
+        //    var h = this._listItemChat[i+1]._height;
+        //    var y = this._listItemChatY[i];
+        //    var tmpItem = this._listItemChat[i];
+        //    this._listItemChat[i] = this._listItemChat[i+1];
+        //    this._listItemChat[i+1] = tmpItem;
+        //
+        //    this._listItemChatY[i] = y;
+        //    this._listItemChat[i].y = this._listItemChatY[i];
+        //    this._listItemChatY[i+1] = this._listItemChatY[i] + h;
+        //    this._listItemChat[i+1].y = this._listItemChatY[i+1];
+        //}
+    },
+    // Xóa 1 Item
+    onRemoveItem: function(index)
+    {
+        this.onMoveUpItem(index);
+        var size = this._scrollviewChat.getInnerContainerSize();
+        var lastItem = this._listItemChat[this._listItemChat.length-1];
+        cc.log("++++ Inner ConatainerSize: " + size.height + " =>> " + (size.height - lastItem._height));
+        this._scrollviewChat.setInnerContainerSize(cc.size(size.width, size.height - lastItem._height));
+        this._scrollviewChat.removeChild(lastItem);
+        this._listItemChat[this._listItemChat.length-1]._userName = null;
+        this.onUpdateItemY();
+    },
+    _onRemoveItem: function(index)
+    {
+        this.onMoveUpItem(index);
+        var size = this._scrollviewChat.getInnerContainerSize();
+        var lastItem = this._listItemChat[this._listItemChat.length-1];
+        cc.log("++++ Inner ConatainerSize: " + size.height + " =>> " + (size.height - lastItem._height));
+        this._scrollviewChat.setInnerContainerSize(cc.size(size.width, size.height - lastItem._height));
+        this._scrollviewChat.removeChild(lastItem);
+        this._listItemChat = this._listItemChat.splice(this._listItemChat.length-1, 1);
+        this.onUpdateItemY();
+    },
+    // Cập nhật lại độ cao các Item
+    onUpdateItemY: function()
+    {
+        var length = this._scrollviewChat.length-1;
+        var size = this._scrollviewChat.getInnerContainerSize();
+        for (var i=length; i>-1; i-- )
+        {
+            var item = this._listItemChat[i];
+            this._listItemChatY[i] = ((i == length) ? size.height : this._listItemChatY[i+1]) - item._height;
+            this._listItemChat[i].y = this._listItemChatY[i];
+        }
     },
 
     initScrollviewUserOnline: function(){
-
         if (!this._scrollviewUserOnline)
         {
             this._scrollviewUserOnline = ccui.ScrollView();
@@ -315,55 +577,5 @@ var LayerClanChat = cc.Node.extend({
         for (var i = 0; i < memberQuantity-1; i++){
             this._listItemUserOnline[i].setPosition(this._scrollviewUserOnline.width/2 - 6, this._scrollviewUserOnline.getInnerContainerSize().height - 10 - i*20 );
         };
-    },
-
-    updateChatEvent: function(){
-
-    },
-
-    updateUserOnlineEvent: function(){
-        //
-    },
-
-    // Cập nhật lại thời gian Chat khi nhấn mở layer
-    updateTimeScrollChat: function(){
-        for (var i=0; i < this._listItemChat.length; i++){
-            this._listItemChat[i].updateTime();
-        }
-    },
-
-    onChat: function()
-    {
-        if (this._textFieldChat.length == 0) return;
-        var index = this._listItemChat.length;
-        var newItemChat = new ItemChat(index, Math.floor(Math.random()*3), "User " + cf.user._name, index, this._textFieldChat.string, new Date().getTime(), [0, 2, 4, 1], [34, 12, 1, 2], 100);
-
-        var containerSize = this._scrollviewChat.getInnerContainerSize();
-        this._listItemChatY[index] = (index == 0) ? containerSize.height : this._listItemChatY[index-1] + this._listItemChat[index-1]._height;
-        newItemChat.setPosition(this._scrollviewChat.width/2 - 6, this._listItemChatY[index]);
-        this._listItemChat.push(newItemChat);
-
-        var line = cc.Sprite(res.clanChatGUI.lineSeparateChat);
-        line.setPosition(this._scrollviewChat.width/2 - 6, this._listItemChatY[index]);
-        this._scrollviewChat.addChild(line);
-
-        if (this._listItemChat.length > this._maxLengthChat)
-        {
-            this._scrollviewChat.removeChild(this._listItemChat[0]);
-            this._listItemChat.slice(0, 1);
-        };
-
-        this.updateInnerContaninerSize(this._typeDefine.chatScrollView);
-
-        this._textFieldChat.string = "";
-    },
-    // cập nhật lại inner container size
-    updateInnerContaninerSize: function(type){
-        if (type == this._typeDefine.chatScrollView){
-            var size = this._scrollviewChat.getInnerContainerSize();
-            this._scrollviewChat.setInnerContainerSize(cc.size(size.width, size.height + this._listItemChat[this._listItemChat.length-1]._height));
-            this._scrollviewChat.addChild(this._listItemChat[this._listItemChat.length - 1]);
-            this._scrollviewChat.scrollToTop(1, true);
-        }
     },
 })

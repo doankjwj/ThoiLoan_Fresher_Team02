@@ -53,9 +53,9 @@ fn.loadJson = function ()
     {
         gv.json.defence = data;
     });
-    //cc.loader.loadJson("res/ConfigJson/ShopList.json", function(error, data){
-    //    cf.ShopItemList = data;
-    //});
+    cc.loader.loadJson(res.clanCastleJson, function(error, data){
+        gv.json.clanCastle = data;
+    });
     cc.loader.loadJson(res.obstacleJson, function (error, data)
     {
         gv.json.obstacle = data;
@@ -352,4 +352,13 @@ fn.convertSecondToHour = function (sec)
 fn.replaceSpriteImage= function(sprite, url){
     var textture = cc.textureCache.addImage(url);
     sprite.setTexture(textture);
+}
+
+/* Tính tổng 1 mảng */
+fn.sumArr = function(arr, length)
+{
+    var sum=0;
+    for (var i=0; i<length; i++)
+        sum += arr[i];
+    return sum;
 }

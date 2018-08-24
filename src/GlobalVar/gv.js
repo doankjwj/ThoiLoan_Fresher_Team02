@@ -8,6 +8,9 @@ gv.buildingMove =
     currentRow : null,
     currentCol : null,
 }
+/*Tài nguyên yêu cầu xây dựng*/
+gv.upgradeAble = gv.upgradeAble || {};
+gv.upgradeAble.etcToCoin = 0;
 
 gv.reloaded = false;
 
@@ -23,6 +26,7 @@ gv.buildingDescription =
     storage_1: "Kho vàng là nơi cất trữ toàn bộ vàng của vương quốc, hãy cất giữ nơi này nghiêm ngặt\n nếu không muốn trắng tay sau 1 đêm thức dậy",
     storage_2: "Cùng với kho vàng, kho dầu là nơi lưu trữ tài nguyên quan trọng của vương quốc, \nhãy nâng cấp kho dầu liên tục đẻ lưu trữ nhiều hơn những dòng dầu óng ánh",
     laboratory: "Nhà nâng cấp lính",
+    clanCastle: "Nhà bang hội là nơi giữ lính phòng thủ quan trọng",
 };
 
 gv.troopStr = {
@@ -39,6 +43,8 @@ gv.troopStr = {
     ARM_16: "ARM_16",
     ARM_17: "ARM_17"
 };
+gv.troopName = ["Đấu Sĩ", "Pháp Sư", "Ăn Trộm", "Khổng Lồ"];
+
 
 gv.troopMaxLevel = [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4];
 
@@ -48,3 +54,21 @@ gv.clanChatEventManager = {
 };
 
 gv.listenerNullForPopUpDonate = null;
+
+// Chat
+gv.clanChat={
+    jsonChatText: null,             // Data 1 chat Text mới
+    jsonChatDonate: null,           // Data 1 request xin quân mới
+    jsonDonate: null,               // Data kết quả 1 lượt Donate
+    jsonLoadText: null,             // Data load đoạn hội thoại chat Text
+    jsonLoadDonate: null,           // Data load đoạn hội thoại chat Donate
+    jsonLoadEvent: null,            // Data load đoạn hội thoại chat Event
+    itemDonateTag: null,
+}
+
+// Time Offset
+gv.timeOffset = {
+    userInfo: 0,
+    loadClanChatText: 0,
+    loadClanChatDonate: 0
+}

@@ -2,6 +2,20 @@
 var Troop = cc.Node.extend
 (
     {
+        type: null,
+        position: null,
+        facingDirection: null,
+        logicMap: null,
+        armyCampId: null,
+        freeMoveMode: null,
+        targetLogicPoint: null,
+        targetLogicPointStep: null,
+        bestDirection: null,
+        shadow: null,
+        unit: null,
+
+        released: false,
+
         ctor:function(troopType, startRow, startColumn, armyCampId)
         {
             this._super();
@@ -71,11 +85,29 @@ var Troop = cc.Node.extend
             }
             this.move();
         },
+        freeToDonate: function (row, col)
+        {
+            this.targetLogicPoint = new LogicPoint(row, col);
+            this.facingDirection = this.position.getDirectionTo(this.targetLogicPoint);
+            try
+            {
+                this.stopAllActions();
+                this.unit.stopAllActions();
+            }
+            catch (e)
+            {
+                this.visualizeOnIdle();
+            }
+            this.move();
+        },
         move: function ()
         {
+            // Kết thúc chạy
             if (this.position.isEqualTo(this.targetLogicPoint))
             {
                 this.isMoving = false;
+                if (this.released == true)
+                    fr.getCurrentScreen()._map.removeChild(this);
                 this.visualizeOnIdle();
                 this.delayRandomMove();
                 return;

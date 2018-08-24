@@ -4,6 +4,7 @@ var Resource = BuildingNode.extend({
     _productivity: null,
     _percentPopupHarvest: 0.01,
     _capacityIsFulled: false,
+    _lastHarvestTime: null,
 
     _btnHarvest: null,
     _btnHarvestBG: null,
@@ -142,7 +143,7 @@ var Resource = BuildingNode.extend({
         /* Kiểm tra sức chứa  và trạng thái button Harvest*/
         if (this._currentCapacity >= this._maxCapacity || this._btnHarvest.visible) return;
         /* thời gian từ lần cuối thu hoạch hoặc lần cuối xây dựng */
-        var timeDistance = (new Date().getTime() - this._finishing_time) / 1000;
+        var timeDistance = (new Date().getTime() - this._lastHarvestTime) / 1000;
         this._currentCapacity = Math.floor(this._productivity * fn.convertSecondToHour(timeDistance));
         this._currentCapacity = Math.min(this._currentCapacity, this._maxCapacity);
         if (this._currentCapacity/this._maxCapacity >= this._percentPopupHarvest)
@@ -159,7 +160,7 @@ var Resource = BuildingNode.extend({
         ///* Kiểm tra sức chứa  và trạng thái button Harvest*/
         //if (this._currentCapacity >= this._maxCapacity || this._btnHarvest.visible) return;
         ///* thời gian từ lần cuối thu hoạch hoặc lần cuối xây dựng */
-        var timeDistance = (new Date().getTime() - this._finishing_time) / 1000;
+        var timeDistance = (new Date().getTime() - this._lastHarvestTime) / 1000;
         this._currentCapacity = Math.floor(this._productivity * fn.convertSecondToHour(timeDistance));
         this._currentCapacity = Math.min(this._currentCapacity, this._maxCapacity);
         if (this._currentCapacity/this._maxCapacity >= this._percentPopupHarvest)
@@ -270,6 +271,6 @@ var Resource = BuildingNode.extend({
         parent._effectCollectRes.runAction(act);
     },
     onUpdateLastHarvestTime: function(){
-        this._finishing_time = new Date().getTime();
+        this._lastHarvestTime = new Date().getTime();
     }
 })
