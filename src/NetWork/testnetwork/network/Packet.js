@@ -1101,6 +1101,7 @@ testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT] = fr.InPacket.extend({
     readData: function()
     {
         this.serverTime = this.getLong();
+        this.clanId = this.getInt();
         gv.timeOffset.loadClanChat = this.serverTime - new Date().getTime();
         this.clanFlag = this.getByte();
         this.clanName = this.getString();

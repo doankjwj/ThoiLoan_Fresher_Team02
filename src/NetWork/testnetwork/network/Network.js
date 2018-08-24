@@ -48,6 +48,7 @@ testnetwork.Connector = cc.Class.extend({
                 gvGUI.layerClanChat.loadChatFromServer();
                 gvGUI.layerClanChat.onUpdateClanInfo();
                 cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].updateNameAndFlag(true);
+                cf.user._clanId = gv.clanChat.jsonLoad["clanId"];
                 break;
             case gv.CMD.CLAN_ERROR:
                 break;

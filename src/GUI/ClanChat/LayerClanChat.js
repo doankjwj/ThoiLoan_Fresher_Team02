@@ -140,7 +140,7 @@ var LayerClanChat = cc.Node.extend({
     {
         this._labelClanName.setString(gv.clanChat.jsonLoad["clanName"]);
         var clanFlag = gv.clanChat.jsonLoad["clanFlag"];
-        fn.replaceSpriteImage(this._iconClan, "res/Art/Bang hoi/bieu tuong nho/" + (clanFlag+1) + ".png");
+        fn.replaceSpriteImage(this._iconClan, "res/Art/Bang hoi/icon bieu tuong/" + (clanFlag+1) + ".png");
     },
     initListenerAppear: function(){
         this._bgNull = cc.Sprite(cc.tmp_effect);
