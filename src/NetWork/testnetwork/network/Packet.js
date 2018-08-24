@@ -46,6 +46,7 @@ gv.CMD.REQUEST_CLAN_MEMBER_DATA = 3102;
 gv.CMD.RECEIVE_CLAN_MEMBER_DATA = gv.CMD.REQUEST_CLAN_MEMBER_DATA;
 
 gv.CMD.REQUEST_QUIT_CLAN = 3012;
+gv.CMD.REQUEST_JOIN_CLAN = 3011;
 
 gv.CMD.SEND_SEARCH_BY_NAME = 3105;
 gv.CMD.SEND_SEARCH_BY_ID = 3104;
@@ -162,6 +163,25 @@ CmdSendQuitClan = fr.OutPacket.extend({
     }
 
 });
+
+
+CmdSendJoinClan = fr.OutPacket.extend({
+
+    ctor:function()
+    {
+        this._super();
+        this.initData(100);
+        this.setCmdId(gv.CMD.REQUEST_JOIN_CLAN);
+    },
+    pack:function(id){
+        this.packHeader();
+        this.putInt(id);
+        this.updateSize();
+    }
+
+});
+
+
 
 CmdSendBuild = fr.OutPacket.extend(
     {

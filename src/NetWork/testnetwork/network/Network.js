@@ -216,7 +216,15 @@ testnetwork.Connector = cc.Class.extend({
         var pk = this.gameClient.getOutPacket(CmdSendQuitClan);
         pk.pack();
         this.gameClient.sendPacket(pk);
-    }
+    },
+
+    sendJoinClan: function(id){
+        cc.log("SEND JOIN CLAN REQUEST");
+        var pk = this.gameClient.getOutPacket(CmdSendJoinClan);
+        pk.pack(id);
+        this.gameClient.sendPacket(pk);
+    },
+
 });
 
 

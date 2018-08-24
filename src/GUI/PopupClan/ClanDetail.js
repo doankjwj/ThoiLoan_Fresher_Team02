@@ -203,6 +203,23 @@ var ClanDetail = PopupClan.extend({
         this._bg.addChild(this._buttonJoinClan, 1);
         this._buttonJoinClan.setPosition(cc.p(this._buttonOpenMemberList.x + this._bg.width/2, this._buttonOpenMemberList.y));
 
+        this._buttonJoinClan.addTouchEventListener(function(sender, type) {
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    testnetwork.connector.sendJoinClan(this._clan.id);
+                    cf.user._clanId = this._clan.id;
+                    this.updateInfo();
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+
+        }, this);
+
         var text7 = cc.LabelBMFont("THAM GIA", font.soji20);
         text7.scale = 0.5;
         this._buttonJoinClan.addChild(text7);
