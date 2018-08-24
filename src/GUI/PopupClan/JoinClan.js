@@ -146,8 +146,37 @@ var JoinClan = PopupClan.extend({
 
     },
 
+    updateListClan: function(){
+
+            this.listClanVis.setInnerContainerSize(cc.size(this.listClan[0].width*this.listClan[0].scale, this.listClan[0].height*this.listClan[0].scale*(gv.suggestList.length+1)));
+
+            if(!this.listClanVis.visible) this.listClanVis.visible = true;
+            for(var i=0; i<50; i++) {
+                if(i < gv.suggestList.length) {
+                    //id, iconId, name, level, quantity, status, trophy, trophyReq
+                    this.listClan[i].visible = true;
+                    this.listClan[i].updateClanItem(new Clan(gv.suggestList[i].id,
+                        gv.suggestList[i].flag+1,
+                        gv.suggestList[i].name,
+                        1,
+                        gv.suggestList[i].memberCount,
+                        gv.suggestList[i].authenticationType,
+                        gv.suggestList[i].trophy,
+                        0));
+                    this.listClan[i].setPosition(cc.p(this.listClanVis.width/2, this.listClanVis.getInnerContainerSize().height - (i+0.5)*this.listClan[i].height*this.listClan[i].scale));
+                }
+
+                else {
+                    this.listClan[i].visible = false;
+                }
+            }
+
+            this.listClanVis.jumpToTop();
+    },
+
     onAppear: function() {
         testnetwork.connector.sendGetSuggestClan();
+        this.updateListClan();
         this.visible = true;
         this._swallowTouch.setEnabled(true);
     },

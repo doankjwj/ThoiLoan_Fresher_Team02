@@ -311,13 +311,24 @@ var SearchClan = PopupClan.extend({
             var self = this;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
-                    if(self.getParent().getChildByTag(gv.tag.TAG_CLAN_CREATE) === null) {
-                        pupupCreateClan = new CreateClan();
-                        self.getParent().addChild(pupupCreateClan, 1);
-                        pupupCreateClan.setTag(gv.tag.TAG_CLAN_CREATE);
-                    } else pupupCreateClan = self.getParent().getChildByTag(gv.tag.TAG_CLAN_CREATE);
+                    if(cf.user._clanId === -1) {
+                        if (self.getParent().getChildByTag(gv.tag.TAG_CLAN_CREATE) === null) {
+                            pupupCreateClan = new CreateClan();
+                            self.getParent().addChild(pupupCreateClan, 1);
+                            pupupCreateClan.setTag(gv.tag.TAG_CLAN_CREATE);
+                        } else pupupCreateClan = self.getParent().getChildByTag(gv.tag.TAG_CLAN_CREATE);
+                        pupupCreateClan.onAppear();
+                    }
+                    else {
+                        var popup;
+                        if (self.getParent().getChildByTag(gv.tag.TAG_CLAN_MEMBER) === null) {
+                            popup = new ClanMemberList();
+                            self.getParent().addChild(popup, 1);
+                            popup.setTag(gv.tag.TAG_CLAN_MEMBER);
+                        } else popup = self.getParent().getChildByTag(gv.tag.TAG_CLAN_MEMBER);
+                        popup.onAppear(gv.userClan);
+                    }
                     self.onDisappear();
-                    pupupCreateClan.onAppear();
                     sender.setScale(sender.scale*0.9);
                     break;
                 case ccui.Widget.TOUCH_MOVED:
@@ -338,8 +349,10 @@ var SearchClan = PopupClan.extend({
                 case ccui.Widget.TOUCH_BEGAN:
 
                     self.onDisappear();
-                    self.getParent().getChildByTag(gv.tag.TAG_CLAN_JOIN).onAppear();
-
+                    if(cf.user._clanId === -1) self.getParent().getChildByTag(gv.tag.TAG_CLAN_JOIN).onAppear();
+                    else {
+                        self.getParent().getChildByTag(gv.tag.TAG_CLAN_DETAIL).onAppear(gv.userClan);
+                    }
                     sender.setScale(sender.scale*0.9);
                     break;
                 case ccui.Widget.TOUCH_MOVED:
@@ -363,6 +376,12 @@ var SearchClan = PopupClan.extend({
         this.updateButtonStatus();
         this._fieldSearch.setPosition(cc.p(this._fieldSearch.width/2 + 5, this._fieldSearchBg.height/2));
         this._swallowTouch.setEnabled(true);
+
+        if(cf.user._clanId !== -1) {
+            this._textJoin.setString("BANG HỘI\nCỦA TÔI");
+            this._textCreate.setString("THÀNH VIÊN");
+        }
+
     },
 
     onDisappear: function() {

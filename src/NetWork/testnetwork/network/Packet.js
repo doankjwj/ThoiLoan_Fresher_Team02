@@ -48,6 +48,10 @@ gv.CMD.RECEIVE_CLAN_MEMBER_DATA = gv.CMD.REQUEST_CLAN_MEMBER_DATA;
 gv.CMD.REQUEST_QUIT_CLAN = 3012;
 gv.CMD.REQUEST_JOIN_CLAN = 3011;
 
+gv.CMD.REQUEST_USER_CLAN = 3101;
+gv.CMD.RECEIVE_USER_CLAN = 3101;
+
+
 gv.CMD.SEND_SEARCH_BY_NAME = 3105;
 gv.CMD.SEND_SEARCH_BY_ID = 3104;
 gv.CMD.RECEIVE_CLAN_SEARCH_BY_ID = gv.CMD.SEND_SEARCH_BY_ID;
@@ -164,6 +168,20 @@ CmdSendGetSuggestClan = fr.OutPacket.extend({
         this._super();
         this.initData(100);
         this.setCmdId(gv.CMD.REQUEST_SUGGEST_CLAN);
+    },
+    pack: function () {
+        this.packHeader();
+        this.updateSize();
+    }
+
+});
+
+CmdSendGetUserClan = fr.OutPacket.extend({
+
+    ctor: function () {
+        this._super();
+        this.initData(100);
+        this.setCmdId(gv.CMD.REQUEST_USER_CLAN);
     },
     pack: function () {
         this.packHeader();
@@ -1332,6 +1350,32 @@ testnetwork.packetMap[gv.CMD.RECEIVE_SUGGEST_CLAN] = fr.InPacket.extend
         }
         gv.suggestList = this.clanList;
         cc.log(JSON.stringify(this));
+    }
+});
+
+
+testnetwork.packetMap[gv.CMD.RECEIVE_USER_CLAN] = fr.InPacket.extend
+({
+    ctor: function () {
+        this._super();
+    },
+    readData: function () {
+        this.id = this.getInt();
+        this.name = this.getString();
+        this.flag = this.getByte();
+        this.description = this.getString();
+        this.authenticationType = this.getByte();
+        this.memberCount = this.getByte();
+        this.trophy = this.getInt();
+        gv.userClanInfo = this;
+        gv.userClan = new Clan(this.id,
+            this.flag+1,
+            this.name,
+            1,
+            this.memberCount,
+            this.authenticationType,
+            this.trophy,
+            0);
     }
 });
 

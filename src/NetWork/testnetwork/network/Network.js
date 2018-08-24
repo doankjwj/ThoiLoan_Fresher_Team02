@@ -236,6 +236,13 @@ testnetwork.Connector = cc.Class.extend({
         var pk = this.gameClient.getOutPacket(CmdSendGetSuggestClan);
         pk.pack();
         this.gameClient.sendPacket(pk);
+    },
+
+    sendGetUserClan: function(){
+        cc.log("SEND GET USER'S CLAN");
+        var pk = this.gameClient.getOutPacket(CmdSendGetUserClan);
+        pk.pack();
+        this.gameClient.sendPacket(pk);
     }
 
 });

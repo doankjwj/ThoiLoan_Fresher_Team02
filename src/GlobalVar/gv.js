@@ -94,9 +94,12 @@ gv.timeOffset = {
     loadClanChatDonate: 0
 };
 
-gv.searchResult = {
+gv.suggestList = null;
 
+gv.userClanInfo = null;
+gv.userClan = null;
+
+gv.searchResult = {
     byID: null,
     byName: null,
-
 };

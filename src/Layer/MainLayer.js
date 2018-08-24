@@ -232,6 +232,12 @@
     initUser: function()
     {
         cf.user = new User();
+        if(cf.user._clanId === -1) {
+            testnetwork.connector.sendGetSuggestClan();
+        }
+        else {
+            testnetwork.connector.sendGetUserClan();
+        }
     },
     initMainGUI: function() {
         this.addShopButton();
@@ -621,26 +627,36 @@
         });
         this.addChild(this._guiButtonClan, 2, this._TAG_BUTTON_CLAN);
         this._guiButtonClan.addClickEventListener(function(){
-            cc.log("Click On clan");
-            //self.onPopUpClan();
-            //self.hideListBotButton();
-
-            //
-
             self.hideListBotButton();
             if (gv.building_selected === undefined) return;
             var building = cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)];
             if (building._isActive === false) return;
 
-            if(self.getChildByTag(gv.tag.TAG_CLAN_JOIN) === null) {
-                var popupClan = new JoinClan();
-                popupClan.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
-                this.addChild(popupClan, 1, gv.tag.TAG_CLAN_JOIN);
-                popupClan.onAppear();
-            } else self.getChildByTag(gv.tag.TAG_CLAN_JOIN).onAppear();
 
+            if(cf.user._clanId === -1) {
+                if(self.getChildByTag(gv.tag.TAG_CLAN_JOIN) === null) {
 
+                    var popupClan = new JoinClan();
+                    popupClan.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
+                    this.addChild(popupClan, 1, gv.tag.TAG_CLAN_JOIN);
+                    popupClan.onAppear();
 
+                }
+                else self.getChildByTag(gv.tag.TAG_CLAN_JOIN).onAppear();
+            }
+            else {
+                testnetwork.connector.sendGetUserClan();
+                var clanDetail;
+                if(self.getChildByTag(gv.tag.TAG_CLAN_DETAIL) === null) {
+                    clanDetail = new ClanDetail();
+                    clanDetail.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
+                    this.addChild(clanDetail, 1, gv.tag.TAG_CLAN_DETAIL);
+                    clanDetail.onAppear(gv.userClan);
+                } else clanDetail = self.getChildByTag(gv.tag.TAG_CLAN_DETAIL);
+
+                clanDetail.onAppear(gv.userClan);
+                // cc.log("OPEN MY CLAN LAYER");
+            }
 
         }.bind(this));
 

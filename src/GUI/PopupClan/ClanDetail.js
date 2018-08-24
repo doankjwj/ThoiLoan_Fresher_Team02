@@ -212,6 +212,7 @@ var ClanDetail = PopupClan.extend({
                 case ccui.Widget.TOUCH_ENDED:
                     testnetwork.connector.sendJoinClan(this._clan.id);
                     cf.user._clanId = this._clan.id;
+                    testnetwork.connector.sendGetUserClan();
                     this.updateInfo();
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
@@ -335,6 +336,11 @@ var ClanDetail = PopupClan.extend({
 
     onAppear: function(clan) {
         this._clan = clan;
+
+        if(cf.user._clanId !== -1) {
+            this._textJoin.setString("BANG HỘI\nCỦA TÔI");
+        }
+
         // if(this.getChildByTag(99)) this.getChildByTag(99).visible = false;
         // cc.log(this._listUserVisualization.x + " " + this._listUserVisualization.y);
         this.updateInfo();

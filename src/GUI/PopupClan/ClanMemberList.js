@@ -300,6 +300,10 @@ var ClanMemberList = PopupClan.extend({
         cc.log(clan.name);
         this._clan = clan;
         if(this.getChildByTag(99)) this.getChildByTag(99).visible = false;
+
+        if(cf.user._clanId !== -1) {
+            this._textCreate.setString("BANG HỘI\nCỦA TÔI");
+        }
         // cc.log(this._listUserVisualization.x + " " + this._listUserVisualization.y);
         this.updateInfo();
         this.visible = true;

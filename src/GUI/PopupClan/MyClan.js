@@ -4,6 +4,8 @@ var MyClan = ClanDetail.extend({
         this._super();
     },
 
-    onAppear: function(){},
+    onAppear: function(){
+
+    },
 
 });
