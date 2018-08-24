@@ -251,6 +251,42 @@ var LayerClanChat = cc.Node.extend({
             this.addChild(this._scrollviewChat, 1);
         }
     },
+
+    loadChatFromServer:function()
+    {
+        cc.log("CHAT RECEIVED: " + JSON.stringify(gv.clanChat.jsonLoad));
+        if (!this._listItemChat) this._listItemChat = [];
+        var allChat = gv.clanChat.jsonLoad["chatText"];
+        var jsonItem = null;
+        for (var i=0; i<allChat.length; i++){
+            jsonItem = allChat[i];
+            var itemClanChat = new ItemChat(i, 0, jsonItem["userName"], jsonItem["level"], jsonItem["message"], jsonItem["timeCreated"]);
+            itemClanChat.retain();
+            this._listItemChat.push(itemClanChat);
+        }
+        this._clanChatLoaded ++;
+
+        var allDonate = gv.clanChat.jsonLoad["donate"];
+        for (var i = 0; i < allDonate.length; i += 1)
+        {
+            jsonItem = allDonate[i];
+            var userName = jsonItem["userName"];
+            var userLevel = jsonItem["level"];
+            var msg = jsonItem["message"];
+            var timeCreated = jsonItem["timeCreated"];
+            var curentHousingSpace = jsonItem["troopHousingSpace"];
+            var maxHousingSpace = jsonItem["troopCapacity"];
+            var jsonTroopDonated = jsonItem["selfDonatedTroop"];
+            var troopDonated = [0,0,0,0];
+            for (var j = 0; j < jsonTroopDonated.length; j += 1)
+                troopDonated[jsonTroopDonated[j]["troopOrder"]] += 1;
+            var itemClanChat = new ItemChat(i, 1, userName, userLevel, msg, timeCreated, curentHousingSpace, troopDonated, maxHousingSpace);
+            itemClanChat.retain();
+            this._listItemChat.push(itemClanChat);
+        }
+        this._clanChatLoaded ++;
+        this.onCombileChatFromServer();
+    },
     //Load lịch sử chat từ server
     loadChatTextFromServer: function()
     {
@@ -345,12 +381,13 @@ var LayerClanChat = cc.Node.extend({
         if (this._textFieldChat.string.length == 0) return;
         testnetwork.connector.sendChat(this._textFieldChat.string);
         this._textFieldChat.string = "";
-        this.updateListChatItemY()
+        // this.updateListChatItemY()
     },
     //Cập nhật mảng tọa độ y cho Item mới nhất
     updateListChatItemY: function()
     {
         var length = this._listItemChat.length;
+        cc.log(length);
         this._listItemChatY[length-1] = (length == 1)? 360-this._listItemChat[0]._height : (this._listItemChatY[length-2] + this._listItemChat[length-2]._height);
     },
 
@@ -416,7 +453,6 @@ var LayerClanChat = cc.Node.extend({
         if (userDonate == cf.user._name)
             gvGUI.popUpDonateTroop.updateStatus();
     },
-
     // Lấy ra 1 Item chat qua loại, user name __ nếu = null: user chưa có lượt donate và ngược lại
     getItemChatByUserName: function(type, userName)
     {

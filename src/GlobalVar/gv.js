@@ -8,6 +8,9 @@ gv.buildingMove =
     currentRow : null,
     currentCol : null,
 }
+/*Tài nguyên yêu cầu xây dựng*/
+gv.upgradeAble = gv.upgradeAble || {};
+gv.upgradeAble.etcToCoin = 0;
 
 gv.reloaded = false;
 

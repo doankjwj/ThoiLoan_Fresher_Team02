@@ -60,12 +60,16 @@
         "src/GUI/ItemResearchTroop.js",
         "src/GUI/PopUpTroopInfo.js",
         "src/GUI/PopUpRequestDonate.js",
+        "src/GUI/PopUpClan.js",
+        "src/GUI/PopUpToCoin.js",
 
         "src/GUI/ClanChat/LayerClanChat.js",
         "src/GUI/ClanChat/ItemUserOnline.js",
         "src/GUI/ClanChat/ItemChat.js",
         "src/GUI/ClanChat/ButtonTroopDonate.js",
         "src/GUI/ClanChat/PopUpdonateTroop.js",
+
+        "src/GUI/Clan/NodeCreateClan.js",
 
         "src/NetWork/framework/Utility/ClientConfig.js",
         "src/NetWork/framework/Utility/Localization.js",

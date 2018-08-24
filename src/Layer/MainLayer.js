@@ -26,6 +26,7 @@
 
     _popUp: null,
     _popUpResearchTroop: null,
+    _popUpClan: null,
     _popUpTraining: null,
     _popUpRequestDonate: null,
 
@@ -70,7 +71,7 @@
 
     initClan: function(){
            //testnetwork.connector.sendCreateClan("Clan 02 Fresher GSN", 26, "Bá chủ Thiên Hà", 0);
-           testnetwork.connector.sendJoinClan(0);
+           // testnetwork.connector.sendJoinClan(0);
     },
 
     init: function() {
@@ -618,6 +619,7 @@
         this.addChild(this._guiButtonClan, 2, this._TAG_BUTTON_CLAN);
         this._guiButtonClan.addClickEventListener(function(){
             cc.log("Click On clan");
+            self.onPopUpClan();
             self.hideListBotButton();
         }.bind(this));
 
@@ -776,6 +778,14 @@
         this.addChild(this._popUpResearchTroop, 1, gv.tag.TAG_POPUP_RESEARCH_TROOP);
         this._popUpResearchTroop.onAppear();
     },
+    onPopUpClan: function()
+    {
+        this.removeChild(this._popUpClan);
+        this._popUpClan = new PopUpClan();
+        this._popUpClan.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
+        this.addChild(this._popUpClan, 1);
+        this._popUpClan.onAppear();
+    },
     onPopUpRequestDonate: function()
     {
         if (!this._popUpRequestDonate)
@@ -816,7 +826,22 @@
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).show();
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).onAppear();
     },
+    /* Pop UP Bằng Coin*/
+    onPopUpToCoin: function(coinRequire)
+    {
+        var tag = 32423423;
+          if (gvGUI.popUpToCoin == null)
+          {
+              gvGUI.popUpToCoin = new PopUpToCoin();
+              gvGUI.popUpToCoin.setPosition(0, cc.winSize.height/2);
+          }
+          if (!this.getChildByTag(tag))
+              this.addChild(gvGUI.popUpToCoin, 1, tag);
 
+        gvGUI.popUpToCoin.updateCoin(coinRequire);
+        gvGUI.popUpToCoin.show();
+    },
+    /* Chạy dòng chữ khi nhận được quân*/
     onBubble: function(str)
     {
         var s = cc.LabelBMFont(str, font.soji20);
@@ -830,7 +855,6 @@
                 fr.getCurrentScreen().removeChild(s);
             }));
         s.runAction(act);
-
     },
 
     hideListBotButton: function()

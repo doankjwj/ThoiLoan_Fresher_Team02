@@ -127,6 +127,16 @@ res.clanChatGUI = {
 };
 res.clanGUI = {
     iconStarSmall: folderClan + "sao nho.png",
+    background: folderClan + "nen 1.png",
+    tabBar: folderClan + "o duoi.png",
+    tabBarBG: folderClan + "o duoi 1.png",
+    flag: folderClan + "co 1.png",
+    flagBG: folderClan + "co 2.png",
+    textFieldClanNameBG: folderClan + "slost nen 1.png",
+    textFieldClanDescriptionBG: folderClan + "slost nen 2.png",
+    buttonTraThu: folderClan + "button _ tra thu.png",
+    buttonXemLai: folderClan + "button _xem lai.png",
+
 };
 
 var shopGUI = {
@@ -288,7 +298,10 @@ var logInGUI =
     btnOk: logInFolder + "okbutton.png",
     logo: logInFolder + "logo.png",
     textFieldBG: logInFolder + "g_background.png",
-}
+};
+
+
+
 res.sound = {
     soundBackgound : soundFolder + "theme.mp3",
     collectGold: soundFolder + "sfx/collect_gold.mp3",

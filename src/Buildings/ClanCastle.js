@@ -34,7 +34,7 @@ var ClanCastle = BuildingNode.extend({
 
         this.resetTroop();
         this.addCenterBuilding();
-        //this.loadTroopAmountFromJson();
+        this.loadTroopAmountFromJson();
     },
     loadTroopAmountFromJson: function()
     {

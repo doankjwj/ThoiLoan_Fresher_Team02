@@ -481,4 +481,10 @@ cf.clanChat = {
     maxTroopDonate: 5,      // Donate nhiều hất 5 con troop
     troopDonateLength: 4,   // 4 loại troop Donate
     troopDonateLevel: 10,   // Cấp cao nhất của troop
+};
+
+cf.clan =
+{
+    goldBuildClanCastle: 40000,
+
 }

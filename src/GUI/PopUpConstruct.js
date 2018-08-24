@@ -137,31 +137,24 @@ var PopUpConstruct = cc.Node.extend({
                     break;
                 case ccui.Widget.TOUCH_ENDED:
                     self.setPosition(cc.p(0, -cc.winSize.height));
+                    self.onDisappear();
+                    //Thiếu tài nguyên
                     if (!gv.upgradeAble) {
+                        //var coinRequire = 0;
+                        //coinRequire += self._cost.gold/1000 + self._cost.elixir/1000 + self._cost.darkElixir + self._cost.coin;
+                        //coinRequire = Math.ceil(coinRequire);
+                        //gv.upgradeAble.etcToCoin = coinRequire;
+                        //self.getParent().onPopUpToCoin(coinRequire);
+
                         self.getParent().popUpMessage("Chưa đủ tài nguyên");
                         return;
+                        // self.getParent().popUpMessage("Chưa đủ tài nguyên");
+                        // return;
                     }
                     ;
-                    if (cf.user._builderFree <= 0) {
-                        self.getParent().popUpMessage("Tất cả thợ đang bận");
-                        return;
-                    }
+                    self.onConstruct();
 
-                    self.onDisappear();
-                    cf.user._buildingList[Math.floor(gv.building_selected / 100) - 1][Math.floor(gv.building_selected % 100)].onStartBuild(gv.startConstructType.newConstruct);
-                    /* Request */
-                    testnetwork.connector.sendUpgradeBuilding(gv.building_selected);
 
-                    /* Update User Infor + Resource Bar */
-                    cf.user._currentCapacityGold -= self._cost.gold;
-                    cf.user._currentCapacityElixir -= self._cost.elixir;
-                    cf.user._currentCapacityDarkElixir -= self._cost.darkElixir;
-                    cf.user._currentCapacityCoin -= self._cost.coin;
-
-                    self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
-                    self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
-                    self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
-                    self.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;
@@ -217,6 +210,44 @@ var PopUpConstruct = cc.Node.extend({
         this.addChild(this._effect, 3, this._TAG_EFFECT);
 
         this.addBars();
+    },
+
+    onConstruct: function()
+    {
+        if (cf.user._builderFree <= 0) {
+            this.getParent().popUpMessage("Tất cả thợ đang bận");
+            return;
+        }
+
+
+        cf.user._buildingList[Math.floor(gv.building_selected / 100) - 1][Math.floor(gv.building_selected % 100)].onStartBuild(gv.startConstructType.newConstruct);
+        /* Request */
+        testnetwork.connector.sendUpgradeBuilding(gv.building_selected);
+
+        /* Update User Infor + Resource Bar */
+        cf.user._currentCapacityGold -= this._cost.gold;
+        cf.user._currentCapacityElixir -= this._cost.elixir;
+        cf.user._currentCapacityDarkElixir -= this._cost.darkElixir;
+        cf.user._currentCapacityCoin -= this._cost.coin;
+
+        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+    },
+
+    onConstructByCoin: function(costCoin)
+    {
+        cf.user._buildingList[Math.floor(gv.building_selected / 100) - 1][Math.floor(gv.building_selected % 100)].onStartBuild(gv.startConstructType.newConstruct);
+        /* Request */
+        // testnetwork.connector.sendUpgradeBuildingByCoin(gv.building_selected);
+
+        cc.log("Coin: " + costCoin);
+
+        /* Update User Infor + Resource Bar */
+        cf.user._currentCapacityCoin -= costCoin;
+
+        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
     },
 
     addBars: function()
@@ -1017,7 +1048,10 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             {
                 this.txtGold.setColor(cc.color(255, 0, 0, 255));
                 gv.upgradeAble = false;
+                gv.upgradeAble.gold = gold - cf.user._currentCapacityGold;
             }
+            else
+                gv.upgradeAble.gold = 0;
             this.addChild(this.txtGold, 0);
 
             this.iconGold = cc.Sprite(res.upgradeBuildingGUI.iconGold);
@@ -1035,7 +1069,11 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             {
                 this.txtElixir.setColor(cc.color(255, 0, 0, 255));
                 gv.upgradeAble = false;
+                gv.upgradeAble.elixir = elixir - cf.user._currentCapacityElixir;
             }
+            else
+                gv.upgradeAble.elixir = 0;
+
             this.addChild(this.txtElixir, 0);
 
             this.iconElixir = cc.Sprite(res.upgradeBuildingGUI.iconElixir);
@@ -1053,7 +1091,10 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             {
                 this.txtDarkElixir.setColor(cc.color(255, 0, 0, 255));
                 gv.upgradeAble = false;
+                gv.upgradeAble.darkElixir = darkElixir - cf.user._currentCapacityDarkElixir;
             }
+            else
+                gv.upgradeAble.darkElixir = 0;
             this.addChild(this.txtDarkElixir, 0);
 
             this.iconDarkElixir = cc.Sprite(res.upgradeBuildingGUI.iconDarkElixir);
@@ -1071,7 +1112,10 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
             {
                 this.txtCoin.setColor(cc.color(255, 0, 0, 255));
                 gv.upgradeAble = false;
+                gv.upgradeAble.coin = coin - cf.user._currentCapacityCoin
             }
+            else
+                gv.upgradeAble.coin =0;
             this.addChild(this.txtCoin, 0);
 
             this.iconCoin = cc.Sprite(res.upgradeBuildingGUI.iconCoin);
