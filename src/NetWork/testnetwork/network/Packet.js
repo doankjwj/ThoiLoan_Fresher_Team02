@@ -9,7 +9,9 @@ gv.CMD.USER_LOGIN = 1;
 gv.CMD.USER_INFO = 1001;
 gv.CMD.MOVE = 2011;
 gv.CMD.BUILD = 2001;
+gv.CMD.BUILD_COIN = 2002;
 gv.CMD.UPGRADE_BUILDING = 2003;
+gv.CMD.UPGRADE_BUILDING_COIN = 2004;
 gv.CMD.CHEAT = 2102;
 gv.CMD.SEND_INSTANT = 2005;
 gv.CMD.SEND_CANCEL = 2006;
@@ -100,6 +102,25 @@ CmdSendBuild = fr.OutPacket.extend(
             this._super();
             this.initData(100);
             this.setCmdId(gv.CMD.BUILD);
+        },
+        pack:function(id, row, col){
+            var _id = Math.floor(id/100) - 1;
+            this.packHeader();
+            this.putByte(_id);
+            this.putByte(row );
+            this.putByte(col );
+            this.updateSize();
+        }
+    }
+);
+
+CmdSendBuildCoin = fr.OutPacket.extend(
+    {
+        ctor:function()
+        {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.BUILD_COIN);
         },
         pack:function(id, row, col){
             var _id = Math.floor(id/100) - 1;
@@ -326,6 +347,23 @@ CmdSendUpgradeBuilding = fr.OutPacket.extend(
             this._super();
             this.initData(100);
             this.setCmdId(gv.CMD.UPGRADE_BUILDING);
+        },
+        pack:function(id){
+            this.packHeader();
+            this.putByte(Math.floor(id / 100)-1);
+            this.putByte(id % 100);
+            this.updateSize();
+        }
+    }
+);
+
+CmdSendUpgradeBuildingcoin = fr.OutPacket.extend(
+    {
+        ctor:function()
+        {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.UPGRADE_BUILDING_COIN);
         },
         pack:function(id){
             this.packHeader();
@@ -958,7 +996,7 @@ testnetwork.packetMap[gv.CMD.RECEIVE_DONATE] = fr.InPacket.extend({
     },
     readData: function()
     {
-        // this.userName = this.getString();
+        this.userName = this.getString();
         this.userDonate = this.getString();
         this.troopOrder = this.getByte();
         this.troopLevel = this.getByte();
@@ -1051,6 +1089,15 @@ testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT] = fr.InPacket.extend({
         }
 
         amount = this.getByte();
+        this.changeClanInfo=new Array();
+        for (var i = 0; i < amount; i += 1)
+        {
+            this.changeClanInfo.push(new Object());
+            this.changeClanInfo[i].userName = this.getString();
+            this.changeClanInfo[i].timeCreated = this.getLong() - gv.timeOffset.userInfo;
+        }
+
+        amount = this.getByte();
         this.chatText=new Array();
         for (var i = 0; i < amount; i += 1)
         {
@@ -1062,21 +1109,12 @@ testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT] = fr.InPacket.extend({
         }
 
         amount = this.getByte();
-        this.changeClanInfo=new Array();
-        for (var i = 0; i < amount; i += 1)
-        {
-            this.changeClanInfo.push(new Object());
-            this.changeClanInfo[i].userName = this.getString();
-            this.changeClanInfo[i].timeCreated = this.getLong() - gv.timeOffset.userInfo;
-        }
-
-        amount = this.getByte();
         this.donate=new Array();
         for (var i = 0; i < amount; i += 1)
         {
             this.donate.push(new Object());
             this.donate[i].userName = this.getString();
-            this.chatText[i].level = this.getByte();
+            this.donate[i].level = this.getByte();
             this.donate[i].message = this.getString();
             this.donate[i].timeCreated = this.getLong() - gv.timeOffset.userInfo;
             this.donate[i].troopCapacity = this.getByte();

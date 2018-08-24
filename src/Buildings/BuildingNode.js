@@ -49,7 +49,15 @@ var BuildingNode = cc.Node.extend({
     _listenerMove: null,
 
     /* Resource Require */
-    _resRequire: {
+    _cost: {
+        gold: null,
+        elixir: null,
+        darkElixir: null,
+        coin: null,
+    },
+
+    /* Resource thiếu */
+    _require: {
         gold: null,
         elixir: null,
         darkElixir: null,
@@ -448,12 +456,14 @@ var BuildingNode = cc.Node.extend({
     },
 
     onUpdateBuildStatus: function() {
+        //cc.log(this._isActive)
         if (this._isActive)
-        {
             return;
-        }
+        if (!this._existed)
+            return ;
         if (this._time_remaining <= 0 && !this._isActive)
         {
+            cc.log(this._time_remaining + " ==== " + this._isActive);
             this.onCompleteBuild();
             return;
         }
@@ -728,26 +738,86 @@ var BuildingNode = cc.Node.extend({
                 self.onEndClick();
                 self.hideBuildingButton();
                 self.checkResource();
-                if (!this._constructAble)
-                {
-                    self.getParent().getParent().popUpMessage("Chưa đủ tài nguyên");
-                    self.hideBuildingButton();
-                    self.getParent().removeChild(self);
-                    gv.building_selected = 0;
-                    cf.isDeciding = false;
-                    return;
-                };
-                self.locate_map_array(self);
-                self.onStartBuild(gv.startConstructType.newConstruct);
+                /**/
+                //if (!this._constructAble)
+                //{
+                //    self.getParent().getParent().popUpMessage("Chưa đủ tài nguyên");
+                //    self.hideBuildingButton();
+                //    self.getParent().removeChild(self);
+                //    gv.building_selected = 0;
+                //    cf.isDeciding = false;
+                //    return;
+                //};
+                /**/
 
-                self.getParent().addBuildingToUserBuildingList(self);
-                self.updateZOrder();
-                gv.building_selected = 0;
-                cf.isDeciding = false;
-                this.updateResource();
-                testnetwork.connector.sendBuild(self._id, self._row, self._col);
+                cc.log(self._id);
+                gv.buildingNextBuild = self._id;
+                var constructEnough = (self._require.gold == 0 && self._require.elixir == 0 && self._require.darkElixir == 0 && self._require.coin == 0);
+                if (!constructEnough)
+                {
+                    var coinRequire = 0;
+                    coinRequire += Math.ceil(self._require.gold/1000) + Math.ceil(self._require.elixir/1000) + Math.ceil(self._require.darkElixir/50) + self._require.coin;
+                    cc.log(coinRequire);
+                    gv.upgradeAble.etcToCoin = coinRequire;
+
+                    var root = self.getParent().getParent();
+                    root.onPopUpToCoin(coinRequire, cf.constructType.build, self);
+                    return;
+                }
+                ;
+
+
+                
+                self.onBuild();
             }
         }.bind(this));
+    },
+    onBuild: function()
+    {
+        this.locate_map_array(this);
+        this.onStartBuild(gv.startConstructType.newConstruct);
+
+        this.getParent().addBuildingToUserBuildingList(this);
+
+        this.updateZOrder();
+        gv.building_selected = 0;
+        cf.isDeciding = false;
+        //this.updateResource();
+        testnetwork.connector.sendBuild(this._id, this._row, this._col);
+
+        cf.user._currentCapacityGold -= this._cost.gold;
+        cf.user._currentCapacityElixir -= this._cost.elixir;
+        cf.user._currentCapacityDarkElixir -= this._cost.darkElixir;
+        cf.user._currentCapacityCoin -= this._cost.coin;
+
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+    },
+    onBuildCoin: function(requireCoin)
+    {
+        this.locate_map_array(this);
+        this.onStartBuild(gv.startConstructType.newConstruct);
+
+        this.getParent().addBuildingToUserBuildingList(this);
+
+        this.updateZOrder();
+        gv.building_selected = 0;
+        cf.isDeciding = false;
+        //this.updateResource();
+        testnetwork.connector.sendBuildCoin(this._id, this._row, this._col);
+
+        cf.user._currentCapacityGold -= this._cost.gold;
+        cf.user._currentCapacityElixir -= this._cost.elixir;
+        cf.user._currentCapacityDarkElixir -= this._cost.darkElixir;
+        cf.user._currentCapacityCoin -= this._cost.coin + requireCoin;
+
+
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
     },
 
     checkResource: function()
@@ -821,10 +891,24 @@ var BuildingNode = cc.Node.extend({
             default:
                 break;
         };
-        this._resRequire.gold = gold;
-        this._resRequire.elixir = elixir;
-        this._resRequire.darkElixir = darkElixir;
-        this._resRequire.coin = coin;
+        this._cost.gold = gold;
+        this._cost.elixir = elixir;
+        this._cost.darkElixir = darkElixir;
+        this._cost.coin = coin;
+
+        this._require.gold = Math.max(0, this._cost.gold - cf.user._currentCapacityGold);
+        this._require.elixir = Math.max(0, this._cost.elixir - cf.user._currentCapacityElixir);
+        this._require.darkElixir = Math.max(0, this._cost.darkElixir - cf.user._currentCapacityDarkElixir);
+        this._require.coin = Math.max(0, this._cost.coin - cf.user._currentCapacityCoin);
+
+        cc.log("Require: " + this._require.gold + " / " +this._require.elixir + " / " + this._require.darkElixir + " / " + this._require.coin );
+
+        this._cost.gold -= this._require.gold;
+        this._cost.elixir -= this._require.elixir;
+        this._cost.darkElixir -= this._require.darkElixir;
+        this._cost.coin -= this._require.coin;
+
+
 
         if(cf.user._currentCapacityGold < gold) this._constructAble = false;
         if(cf.user._currentCapacityElixir < elixir) this._constructAble = false;
@@ -903,12 +987,12 @@ var BuildingNode = cc.Node.extend({
                 break;
         };
 
-        //cf.user._currentCapacityGold -= this._resRequire.gold;
-        //cf.user._currentCapacityElixir -= this._resRequire.elixir;
-        //cf.user._currentCapacityDarkElixir -= this._resRequire.darkElixir;
-        //cf.user._currentCapacityCoin -= this._resRequire.coin;
+        //cf.user._currentCapacityGold -= this._cost.gold;
+        //cf.user._currentCapacityElixir -= this._cost.elixir;
+        //cf.user._currentCapacityDarkElixir -= this._cost.darkElixir;
+        //cf.user._currentCapacityCoin -= this._cost.coin;
 
-        cf.user.editCurrentResource(-this._resRequire.gold, -this._resRequire.elixir, -this._resRequire.darkElixir, -this._resRequire.coin);
+        cf.user.editCurrentResource(-this._cost.gold, -this._cost.elixir, -this._cost.darkElixir, -this._cost.coin);
 
         this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
         this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();

@@ -53,6 +53,14 @@ var PopUpConstruct = cc.Node.extend({
         coin: 0
     },
 
+    _require:
+    {
+        gold: 0,
+        elixir: 0,
+        darkElixir: 0,
+        coin: 0
+    },
+
     _bgScale: 1,
     _offSetBar : 50,
     _colorBG: null,
@@ -139,14 +147,15 @@ var PopUpConstruct = cc.Node.extend({
                     self.setPosition(cc.p(0, -cc.winSize.height));
                     self.onDisappear();
                     //Thiếu tài nguyên
-                    if (!gv.upgradeAble) {
-                        //var coinRequire = 0;
-                        //coinRequire += self._cost.gold/1000 + self._cost.elixir/1000 + self._cost.darkElixir + self._cost.coin;
-                        //coinRequire = Math.ceil(coinRequire);
-                        //gv.upgradeAble.etcToCoin = coinRequire;
-                        //self.getParent().onPopUpToCoin(coinRequire);
+                    var constructEnough = (self._require.gold == 0 && self._require.elixir == 0 && self._require.darkElixir == 0 && self._require.coin == 0);
+                    if (!constructEnough)
+                     {
+                        var coinRequire = 0;
+                        coinRequire += Math.ceil(self._require.gold/1000) + Math.ceil(self._require.elixir/1000) + Math.ceil(self._require.darkElixir/50) + self._require.coin;
+                         cc.log(coinRequire);
+                        gv.upgradeAble.etcToCoin = coinRequire;
 
-                        self.getParent().popUpMessage("Chưa đủ tài nguyên");
+                        self.getParent().onPopUpToCoin(coinRequire, cf.constructType.upgrade);
                         return;
                         // self.getParent().popUpMessage("Chưa đủ tài nguyên");
                         // return;
@@ -236,18 +245,34 @@ var PopUpConstruct = cc.Node.extend({
         this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
     },
 
-    onConstructByCoin: function(costCoin)
+    onConstructByCoin: function(requireCoin)
     {
+        if (cf.user._builderFree <= 0) {
+            this.getParent().popUpMessage("Tất cả thợ đang bận");
+            return;
+        }
         cf.user._buildingList[Math.floor(gv.building_selected / 100) - 1][Math.floor(gv.building_selected % 100)].onStartBuild(gv.startConstructType.newConstruct);
-        /* Request */
-        // testnetwork.connector.sendUpgradeBuildingByCoin(gv.building_selected);
 
-        cc.log("Coin: " + costCoin);
+        if (cf.user._currentCapacityCoin < this._cost.coin + requireCoin)
+        {
+            fr.getCurrentScreen().popUpMessage("Chưa đủ tài nguyên");
+            return;
+        };
 
-        /* Update User Infor + Resource Bar */
-        cf.user._currentCapacityCoin -= costCoin;
+        /*Cập nhật cho user*/
+        cf.user._currentCapacityGold -= this._cost.gold;
+        cf.user._currentCapacityElixir -= this._cost.elixir;
+        cf.user._currentCapacityDarkElixir -= this._cost.darkElixir;
+        cf.user._currentCapacityCoin -= this._cost.coin + requireCoin;
 
+
+        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
         this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+
+        /*Gửi request*/
+        testnetwork.connector.sendUpgradeBuildingCoin(gv.building_selected);
     },
 
     addBars: function()
@@ -874,7 +899,19 @@ var PopUpConstruct = cc.Node.extend({
         this._cost.darkElixir = darkElixir;
         this._cost.coin = coin;
 
+        this._require.gold = Math.max(0, this._cost.gold - cf.user._currentCapacityGold);
+        this._require.elixir = Math.max(0, this._cost.elixir - cf.user._currentCapacityElixir);
+        this._require.darkElixir = Math.max(0, this._cost.darkElixir - cf.user._currentCapacityDarkElixir);
+        this._require.coin = Math.max(0, this._cost.coin - cf.user._currentCapacityCoin);
 
+        cc.log("Require: " + this._require.gold + " / " +this._require.elixir + " / " + this._require.darkElixir + " / " + this._require.coin );
+
+        this._cost.gold -= this._require.gold;
+        this._cost.elixir -= this._require.elixir;
+        this._cost.darkElixir -= this._require.darkElixir;
+        this._cost.coin -= this._require.coin;
+
+        cc.log("COST: " + this._cost.gold + " / " +this._cost.elixir + " / " + this._cost.darkElixir + " / " + this._cost.coin );
 
         /* Time Require */
         if (this._constructType == gv.constructType.upgrade)

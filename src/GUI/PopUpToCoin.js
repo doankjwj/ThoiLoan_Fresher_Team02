@@ -8,6 +8,8 @@ var PopUpToCoin = cc.Node.extend({
     _AGREE: null,
 
     _coin: null,
+    _type: null,
+    _building: null,
 
     ctor: function()
     {
@@ -83,12 +85,20 @@ var PopUpToCoin = cc.Node.extend({
         this._buttonCancel.setPosition(-90, -80);
         this.addChild(this._buttonCancel);
     },
-    initClickEvent: function()
+    initClickEvent: function() /*Type == 0: build && type == 1: upgrade*/
     {
         var self = this;
         this._buttonOk.addClickEventListener(function(){
             self._AGREE = true;
-            fr.getCurrentScreen().getChildByTag(2000).onConstructByCoin(self._coin);
+
+            if (self._type == cf.constructType.upgrade)
+                fr.getCurrentScreen().getChildByTag(2000).onConstructByCoin(self._coin);
+            if (self._type == cf.constructType.build)
+            {
+                self._building.onBuildCoin(self._coin);
+            }
+
+
             self.hide();
         }.bind(this));
         this._buttonCancel.addClickEventListener(function(){
@@ -97,9 +107,11 @@ var PopUpToCoin = cc.Node.extend({
         }.bind(this))
     },
 
-    updateCoin: function(coin)
+    updateCoin: function(coin, type, building)
     {
         this._coin = coin;
+        this._type = type;
+        this._building = building;
         this._labelCoin.setString(coin);
     },
 

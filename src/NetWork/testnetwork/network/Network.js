@@ -70,10 +70,24 @@ testnetwork.Connector = cc.Class.extend({
         pk.pack(id, row, col);
         this.gameClient.sendPacket(pk);
     },
+    sendBuildCoin: function(id, row, col)
+    {
+        cc.log("Send Build Coin: " + id + " row: " + row + " col: " + col);
+        var pk = this.gameClient.getOutPacket(CmdSendBuildCoin);
+        pk.pack(id, row, col);
+        this.gameClient.sendPacket(pk);
+    },
     sendUpgradeBuilding: function(id)
     {
         cc.log("Send Upgrade: " + id);
         var pk = this.gameClient.getOutPacket(CmdSendUpgradeBuilding);
+        pk.pack(id);
+        this.gameClient.sendPacket(pk);
+    },
+    sendUpgradeBuildingCoin: function(id)
+    {
+        cc.log("Send Upgrade Coin: " + id);
+        var pk = this.gameClient.getOutPacket(CmdSendUpgradeBuildingcoin);
         pk.pack(id);
         this.gameClient.sendPacket(pk);
     },

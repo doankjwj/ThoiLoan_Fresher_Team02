@@ -229,6 +229,7 @@ var User = cc.Class.extend({
                 {
                     if (resCapacity <= 0) break;
                     building = this._buildingList[gv.orderInUserBuildingList.storage_1][i];
+                    if (building._level <= 0) continue;
                     building._currentCapacity = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacity"]);
                     resCapacity -= building._jsonConfig[building._buildingSTR][building._level]["capacity"];
                 };
@@ -243,6 +244,7 @@ var User = cc.Class.extend({
                 {
                     if (resCapacity <= 0) break;
                     building = this._buildingList[gv.orderInUserBuildingList.storage_1][i];
+                    if (building._level <= 0) continue;
                     building._currentCapacity = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacity"]);
                     resCapacity -= building._jsonConfig[building._buildingSTR][building._level]["capacity"];
                 };
@@ -257,6 +259,7 @@ var User = cc.Class.extend({
                 {
                     if (resCapacity <= 0) break;
                     building = this._buildingList[gv.orderInUserBuildingList.storage_1][i];
+                    if (building._level <= 0) continue;
                     building._currentCapacity = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacity"]);
                     resCapacity -= building._jsonConfig[building._buildingSTR][building._level]["capacity"];
                 };

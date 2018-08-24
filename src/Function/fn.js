@@ -163,6 +163,7 @@ fn.getAnimation = function (str, n1, n2)
 /* Shop */
 fn.getPrice = function (str, level)
 {
+    cc.log(str + " " + level + " +++++");
     var price = {
         gold: 0,
         elixir: 0,

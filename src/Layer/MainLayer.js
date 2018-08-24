@@ -685,12 +685,15 @@
 
             if(building._isActive) return;
 
-            var price = fn.getPrice(building._buildingSTR, building._level);
+            var price = fn.getPrice(building._buildingSTR, building._level+1);
 
+            cc.log(price.gold + " " + price.elixir + " " + price.darkElixir + " " + price.coin + " Price");
             cf.user._currentCapacityCoin += price.coin/2;
             cf.user._currentCapacityGold += price.gold/2;
             cf.user._currentCapacityElixir += price.elixir/2;
             cf.user._currentCapacityDarkElixir += price.darkElixir/2;
+
+            cc.log(cf.user._currentCapacityGold + " " + cf.user._currentCapacityElixir + " " + cf.user._currentCapacityDarkElixir + " " + cf.user._currentCapacityGold +  " current");
 
             self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
             self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
@@ -827,18 +830,19 @@
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).onAppear();
     },
     /* Pop UP Bằng Coin*/
-    onPopUpToCoin: function(coinRequire)
+    onPopUpToCoin: function(coinRequire, type, building) /*Type [0: xây dựng, 1: nâng cấp]*/
     {
         var tag = 32423423;
           if (gvGUI.popUpToCoin == null)
           {
               gvGUI.popUpToCoin = new PopUpToCoin();
               gvGUI.popUpToCoin.setPosition(0, cc.winSize.height/2);
+              gvGUI.popUpToCoin.retain();
           }
           if (!this.getChildByTag(tag))
               this.addChild(gvGUI.popUpToCoin, 1, tag);
 
-        gvGUI.popUpToCoin.updateCoin(coinRequire);
+        gvGUI.popUpToCoin.updateCoin(coinRequire, type, building);
         gvGUI.popUpToCoin.show();
     },
     /* Chạy dòng chữ khi nhận được quân*/
