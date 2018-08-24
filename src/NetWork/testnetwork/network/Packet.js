@@ -30,6 +30,8 @@ gv.CMD.RECEIVE_CLAN_CHAT_DONATE = gv.CMD.SEND_CLAN_CHAT_DONATE;
 gv.CMD.SEND_DONATE = 3213;
 gv.CMD.RECEIVE_DONATE = 3214;
 
+gv.CMD.RECEIVE_BROADCAST_EVENT = 3201;//Trần Hoàn thêm
+
 gv.CMD.SEND_LOAD_CLAN_CHAT = 3103;
 gv.CMD.RECEIVE_LOAD_CLAN_CHAT = gv.CMD.SEND_LOAD_CLAN_CHAT;
 gv.CMD.RECEIVE_LOAD_CLAN_CHAT_TEXT = 2257;//Server chua lam
@@ -847,6 +849,7 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                     this.map.WAL_1[i].finishBuildOrUpgradeTime -= gv.timeOffset.userInfo;
             }
 
+            cc.log(JSON.stringify(this));
             Amount = this.getByte();
             this.map.CLC_1 = [];
             for (var i = 0; i < Amount; i += 1)
@@ -986,7 +989,7 @@ testnetwork.packetMap[gv.CMD.RECEIVE_CLAN_CHAT_DONATE] = fr.InPacket.extend({
         gv.clanChat.jsonChatDonate = this;
         cc.log(JSON.stringify(this));
     }
-})
+});
 // Nhận kết quả 1 lượt donate
 testnetwork.packetMap[gv.CMD.RECEIVE_DONATE] = fr.InPacket.extend({
     ctor: function()
@@ -1002,7 +1005,7 @@ testnetwork.packetMap[gv.CMD.RECEIVE_DONATE] = fr.InPacket.extend({
         gv.clanChat.jsonDonate = this;
         cc.log(JSON.stringify(this));
     }
-})
+});
 //Nhận lịch sử sự kiện (Trần Hoàn sửa)
 testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT] = fr.InPacket.extend({
     ctor: function()
@@ -1132,7 +1135,7 @@ testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT] = fr.InPacket.extend({
         gv.clanChat.jsonLoad = this;
         gvGUI.layerClanChat.loadChatFromServer();
     }
-})
+});
 // Nhận lịch sử Chat
 testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT_TEXT] = fr.InPacket.extend({
     ctor: function()
@@ -1162,7 +1165,7 @@ testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT_TEXT] = fr.InPacket.extend({
         //
         //}, 1);
     }
-})
+});
 testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT_DONATE] = fr.InPacket.extend({
     ctor: function()
     {
@@ -1198,5 +1201,70 @@ testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT_DONATE] = fr.InPacket.extend
         //
         //}, 1);
     }
-})
+});
+testnetwork.packetMap[gv.CMD.RECEIVE_BROADCAST_EVENT] = fr.InPacket.extend
+({
+     ctor: function()
+     {
+         this._super();
+     },
+     readData: function()
+     {
+         cc.log("step 1: "+JSON.stringify(this));
+         this.eventType = this.getByte();
+         switch (this.eventType)
+         {
+             case 0://Hệ thống bổ nhiệm bang chủ
+             case 1://Hệ thống bổ nhiệm bang phó
+             case 5://Có người join
+             case 6://Có người thoát
+             case 8://Thay đổi thông tin clan
+                 this.userName = this.getString();
+                 cc.log("step 2: "+JSON.stringify(this));
+                 break;
+             default:
+                 //2: Bổ nhiệm bang chủ
+                 //3: Bổ nhiệm bang phó
+                 //4: Cho làm thành viên
+                 //7: Kick
+                 this.userName = this.getString();
+                 this.target = this.getString();
+                 cc.log("step 3: "+JSON.stringify(this));
+         }
+         this.isRed = (this.eventType === 6 || this.eventType === 7);
+         this.text = null;
+         switch (this.eventType)
+         {
+             case 0:
+                 this.text = "Thành viên " + this.userName + " trở thành bang chủ";
+                 break;
+             case 1:
+                 this.text = "Thành viên " + this.userName + " trở thành làm phó bang chủ";
+                 break;
+             case 2:
+                 this.text = "Thành viên " + this.target + " được bổ nhiệm làm bang chủ bởi " + this.userName;
+                 break;
+             case 3:
+                 this.text = "Thành viên " + this.target + " được bổ nhiệm làm phó bang chủ bởi " + this.userName;
+                 break;
+             case 4:
+                 this.text = "Thành viên " + this.target + " được bổ nhiệm làm thành viên bởi " + this.userName;
+                 break;
+             case 5:
+                 this.text = "Thành viên " + this.userName + " đã gia nhập bang";
+                 break;
+             case 6:
+                 this.text = "Thành viên " + this.userName + " đã rời bang";
+                 break;
+             case 7:
+                 this.text = "Thành viên " + this.target + " được mời ra khỏi bang bởi " + this.userName;
+                 break;
+             case 8:
+                 this.text = "Thành viên " + this.userName + " đã thay đổi thông tin bang hội";
+                 break;
+         }
+         gv.clanChat.jsonChatEvent = this;
+         cc.log(JSON.stringify(gv.clanChat.jsonChatEvent));
+     }
+ })
 
