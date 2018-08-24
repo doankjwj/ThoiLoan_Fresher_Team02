@@ -234,9 +234,6 @@
         this.addUserBar();
         this.addBuilderBar();
 
-        this._popUpTraining = new PopupTraining();
-        this.addChild(this._popUpTraining, 1, gv.tag.TAG_POPUP_TRAINING);
-
         this._popUp = new PopUpConstruct();
         this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
         this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
@@ -408,46 +405,6 @@
         this.addChild(this._addElixirButton, 1);
         this.addChild(this._subElixirButton, 1);
 
-    },
-
-    addClanChatGUI: function(){
-        if (!gvGUI.layerClanChat)
-        {
-            gvGUI.layerClanChat = new LayerClanChat();
-            gvGUI.layerClanChat.scale = cc.winSize.height/gvGUI.layerClanChat._bg.height;
-            gvGUI.layerClanChat.setPosition(- gvGUI.layerClanChat.scale*(gvGUI.layerClanChat._bg.width + gvGUI.layerClanChat._layerUserOnline.width) + 5, 0);
-            gvGUI.layerClanChat.retain();
-        };
-        gvGUI.layerClanChat.initContent();
-        gvGUI.layerClanChat.updateTimeScrollChat();
-
-                // Thay hình ảnh cho button và chạy Action
-                fn.replaceSpriteImage(iconButton, res.clanChatGUI.buttonCollapse);
-                self._guiButtonClanChat.runAction(actAppearButton.clone());
-                iconButton.runAction(actAppearButton.clone());
-                gvGUI.layerClanChat.runAction(actAppearLayer.clone());
-                gvGUI.layerClanChat.onAppear();
-            }
-            else {
-                // Thay hính ảnh cho button và chạy Action
-                fn.replaceSpriteImage(iconButton, res.clanChatGUI.buttonExpand);
-                self._guiButtonClanChat.runAction(actAppearButton.clone().reverse());
-                iconButton.runAction(actAppearButton.clone().reverse());
-                gvGUI.layerClanChat.runAction(actAppearLayer.clone().reverse());
-                gvGUI.layerClanChat.onDisappear();
-            }
-            isExpanded = !isExpanded;
-        }.bind(this));
-
-        var iconButton = null;
-        if (isExpanded)
-            iconButton = cc.Sprite(res.clanChatGUI.buttonCollapse);
-        else
-            iconButton = cc.Sprite(res.clanChatGUI.buttonExpand);
-        iconButton.scale = 1.4;
-        iconButton.setAnchorPoint(0, 0.5);
-        iconButton.setPosition(this._guiButtonClanChat.x, this._guiButtonClanChat.y);
-        this.addChild(iconButton, 2);
     },
 
     addClanChatGUI: function(){
@@ -773,12 +730,13 @@
 
         this._guiTraningArmyButton.addClickEventListener(function(){
             self.hideListBotButton();
-            if (gv.building_selected === undefined) return;
+            if (gv.building_selected === null) return;
             var building = cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)];
             var order = (building._orderInUserBuildingList);
             var orderBuilderHut = (gv.orderInUserBuildingList.builderHut);
             if (order === orderBuilderHut) return;
             if (building._isActive === false) return;
+
 
             if(this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING) === null) {
                 var popupTraining = new PopupTraining(gv.building_selected);
@@ -958,7 +916,7 @@
                 if (building._isActive) boo[6] = true;
                 break;
             case gv.orderInUserBuildingList.clanCastle:
-                if (building._isActive && building._level > 0 && cf.user._clanId != -1) boo[7] = true;
+                if (building._isActive && building._level > 0 && cf.user._clanId !== -1) boo[7] = true;
                 if (building._isActive && building._level > 0) boo[8] = true;
                 break;
         }
@@ -1025,7 +983,7 @@
         if (boo[8])
         {
             var act = cc.MoveTo(0.1, cc.p(x, y));
-            this._guiButtonClan.runAction(act);
+            this._guiClanButton.runAction(act);
             x += offSet;
         }
     },
