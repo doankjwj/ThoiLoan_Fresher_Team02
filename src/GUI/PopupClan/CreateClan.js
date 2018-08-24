@@ -227,6 +227,7 @@ var CreateClan = PopupClan.extend({
                     if (this._clanStatus) status = 0;
                     else status = 1;
                     testnetwork.connector.sendCreateClan(this._fieldName.string, this._iconId - 1, this._fieldDetail.string, status);
+                    this.onDisappear();
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;
@@ -425,14 +426,13 @@ var CreateClan = PopupClan.extend({
         this._textTrophyRequire.setString(this._trophyRequire.toString());
         this.updateFieldDetail();
         this.updateFieldName();
-        if(cf.user._currentCapacityGold < 40000) {
+        if(cf.user._currentCapacityGold < 40000 || cf.user._clanId !== -1) {
             this._createButton.setBright(false);
             this._createButton.setTouchEnabled(false);
             this._createButton.setEnabled(false);
             this._textGoldPrice.setColor(cc.color.RED);
         }
         else {
-
             this._createButton.setBright(true);
             this._createButton.setTouchEnabled(true);
             this._createButton.setEnabled(true);

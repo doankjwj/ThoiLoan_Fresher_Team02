@@ -20,7 +20,7 @@ var SearchClan = PopupClan.extend({
 
     _searchButton: null,
 
-    _maxLength: 20,
+    _maxLength: 15,
 
     ctor: function(){
         this._super();
@@ -85,7 +85,7 @@ var SearchClan = PopupClan.extend({
         this._fieldSearch.setTextHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
         this._fieldSearch.setTextVerticalAlignment(cc.VERTICAL_TEXT_ALIGNMENT_CENTER);
         this._fieldSearch.setTouchSize(cc.size(this._fieldSearchBg.width, this._fieldSearchBg.height));
-        this._statusText = cc.LabelBMFont("Ít nhất 3 kí tự", font.soji20);
+        this._statusText = cc.LabelBMFont("Ít nhất 2 kí tự", font.soji20);
         this._statusText.setColor(cc.color.RED);
         this._statusText.visible = false;
         this._bg.addChild(this._statusText, 1);
@@ -175,7 +175,6 @@ var SearchClan = PopupClan.extend({
                         testnetwork.connector.sendSearchByName(this._fieldSearch.string);
                     } else if(!this._byName._status && this._byId._status) {
                         testnetwork.connector.sendSearchById(parseInt(this._fieldSearch.string));
-                        this.updateListById();
                     }
 
 
@@ -185,14 +184,14 @@ var SearchClan = PopupClan.extend({
             }
         }, this);
 
+        this.setEnabledSearchButton(this._byId._status);
+
     },
 
     updateListByName: function(){
 
         this._statusText.visible = false;
         this.listClanVis.setInnerContainerSize(cc.size(this.listClan[0].width*this.listClan[0].scale, this.listClan[0].height*this.listClan[0].scale*(gv.searchResult.byName.length+1)));
-
-
 
         if(!this.listClanVis.visible) this.listClanVis.visible = true;
         for(var i=0; i<50; i++) {
@@ -220,9 +219,42 @@ var SearchClan = PopupClan.extend({
 
     },
 
+    updateListById: function() {
+
+        this._statusText.visible = false;
+        this.listClanVis.setInnerContainerSize(cc.size(this.listClan[0].width*this.listClan[0].scale, this.listClan[0].height*this.listClan[0].scale*2));
+
+        if(!this.listClanVis.visible) this.listClanVis.visible = true;
+        for(var i=0; i<50; i++) {
+            this.listClan[i].visible = false;
+        }
+
+        if(gv.searchResult.byID.id !== -1) {
+            cc.log(gv.searchResult.byID.name);
+            this.listClan[0].updateClanItem(new Clan(gv.searchResult.byID.id,
+                gv.searchResult.byID.flag+1,
+                gv.searchResult.byID.name,
+                1,
+                gv.searchResult.byID.memberCount,
+                gv.searchResult.byID.authenticationType,
+                gv.searchResult.byID.trophy,
+                0));
+            this.listClan[0].visible = true;
+            this.listClan[0].setPosition(cc.p(this.listClanVis.width/2, this.listClanVis.getInnerContainerSize().height - (0+0.5)*this.listClan[0].height*this.listClan[0].scale))
+        }
+        this.listClanVis.jumpToTop();
+
+    },
+
     updateButtonStatus: function(){
         this._bg.getChildByTag(gv.tag.TAG_BUTTON_SEARCH_BY_NAME).changeStatus();
         this._bg.getChildByTag(gv.tag.TAG_BUTTON_SEARCH_BY_ID).changeStatus();
+        this._statusText.visible = !this._byId._status;
+        if(this._byId._status) {
+            this.setEnabledSearchButton(true)
+        } else {
+            this.updateSearchText();
+        }
     },
 
     textFieldEvent: function(sender, type){
@@ -242,19 +274,30 @@ var SearchClan = PopupClan.extend({
 
     },
 
+    setEnabledSearchButton: function(st) {
+        this._searchButton.setEnabled(st);
+        this._searchButton.setTouchEnabled(st);
+        this._searchButton.setBright(st);
+    },
+
     updateSearchText: function () {
         // cc.log(this._fieldSearch.string.length);
         if(this._fieldSearch.string.length === 0) {
             this._statusText.visible = false;
+            this.setEnabledSearchButton(this._byId._status);
         } else {
-            if (this._fieldSearch.string.length < 3) {
-                this._statusText.setString("Ít nhất 3 kí tự");
+            if (this._fieldSearch.string.length < 2) {
+                this._statusText.setString("Ít nhất 2 kí tự");
                 this._statusText.visible = true;
+                this.setEnabledSearchButton(false);
+                if(this._byId._status) {
+                    this._statusText.visible = false;
+                    this.setEnabledSearchButton(true);
+                }
             }
-            else if (this._fieldSearch.string.length >= 3 && this._fieldSearch.string.length < this._maxLength) this._statusText.visible = false;
-            else if (this._fieldSearch.string.length >= this._maxLength) {
-                this._statusText.setString("Max 20 kí tự");
-                this._statusText.visible = true;
+            else if (this._fieldSearch.string.length >= 2 && this._fieldSearch.string.length <= this._maxLength) {
+                this._statusText.visible = false;
+                this.setEnabledSearchButton(true);
             }
         }
         this._fieldSearch.x = this._fieldSearch.width/2 + 5;
@@ -317,6 +360,7 @@ var SearchClan = PopupClan.extend({
         this.visible = true;
         this._fieldSearch.string = "";
         this._statusText.visible = false;
+        this.updateButtonStatus();
         this._fieldSearch.setPosition(cc.p(this._fieldSearch.width/2 + 5, this._fieldSearchBg.height/2));
         this._swallowTouch.setEnabled(true);
     },

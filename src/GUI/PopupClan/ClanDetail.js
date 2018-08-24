@@ -157,12 +157,12 @@ var ClanDetail = PopupClan.extend({
 
         var trophyIcon = cc.Sprite(folderClan + "CUP 1.png");
         this._bg.addChild(trophyIcon, 1);
-        trophyIcon.setPosition(cc.p(text5.x + 170, this._textTrophy.y));
+        trophyIcon.setPosition(cc.p(text5.x + 200, this._textTrophy.y));
 
 
         var trophyIcon2 = cc.Sprite(folderClan + "CUP 1.png");
         this._bg.addChild(trophyIcon2, 1);
-        trophyIcon2.setPosition(cc.p(text5.x + 170, this._textTrophyRequired.y - 3));
+        trophyIcon2.setPosition(cc.p(text5.x + 200, this._textTrophyRequired.y - 3));
 
         this._buttonOpenMemberList = ccui.Button(folderClan + "button _ tra thu.png");
         this._buttonOpenMemberList.setZoomScale(0.01);
@@ -247,16 +247,18 @@ var ClanDetail = PopupClan.extend({
         this._textTrophyRequired.setString(this._clan.trophyRequired);
         this._textLevel.setString("Bang cấp " + this._clan.level);
 
-        this._textTrophyRequired.setPosition(cc.p(this._textName.x+ this._textName.width/2, this._textMemberQuantity.y - this._textMemberQuantity.height ));
-        this._textMemberQuantity.setPosition(cc.p(this._textName.x + this._textName.width/2, this._textClanStatus.y - this._textClanStatus.height));
-        this._textTrophy.setPosition(cc.p(this._textName.x + this._textName.width/2 - 2, this._textClanId.y - this._textClanId.height - 30));
-        this._textClanId.setPosition(cc.p(this._textName.x + this._textName.width/2 - 2, this._textName.y - this._textName.height));
-        this._textClanStatus.setPosition(cc.p(this._textName.x + this._textName.width/2, this._textTrophy.y - this._textTrophy.height));
+
         this._bg.getChildByTag(TAG_TEXT_ID).setPosition(cc.p(this._textName.x - this._textName.width/2 + 2,this._textClanId.y));
         this._bg.getChildByTag(TAG_TEXT_TROPHY).setPosition(cc.p(this._bg.getChildByTag(TAG_TEXT_ID).x, this._textTrophy.y));
         this._bg.getChildByTag(TAG_TEXT_STATUS).setPosition(cc.p(this._bg.getChildByTag(TAG_TEXT_TROPHY).x, this._textClanStatus.y));
         this._bg.getChildByTag(TAG_TEXT_QUANTITY).setPosition(cc.p( this._bg.getChildByTag(TAG_TEXT_STATUS).x, this._textMemberQuantity.y));
         this._bg.getChildByTag(TAG_TEXT_REQ).setPosition(cc.p( this._bg.getChildByTag(TAG_TEXT_STATUS).x, this._textTrophyRequired.y));
+
+        this._textTrophyRequired.setPosition(cc.p(this._bg.getChildByTag(TAG_TEXT_REQ).x + 170, this._textMemberQuantity.y - this._textMemberQuantity.height ));
+        this._textMemberQuantity.setPosition(cc.p(this._bg.getChildByTag(TAG_TEXT_REQ).x + 170, this._textClanStatus.y - this._textClanStatus.height));
+        this._textTrophy.setPosition(cc.p(this._bg.getChildByTag(TAG_TEXT_REQ).x + 170, this._textClanId.y - this._textClanId.height - 30));
+        this._textClanId.setPosition(cc.p(this._bg.getChildByTag(TAG_TEXT_REQ).x + 170, this._textName.y - this._textName.height));
+        this._textClanStatus.setPosition(cc.p(this._bg.getChildByTag(TAG_TEXT_REQ).x + 170, this._textTrophy.y - this._textTrophy.height));
 
         if(this._clan.status === 1 || cf.user._clanId !== -1) {
             this._buttonJoinClan.setBright(false);

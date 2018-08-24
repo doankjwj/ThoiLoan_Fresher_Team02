@@ -53,9 +53,9 @@ testnetwork.Connector = cc.Class.extend({
             case gv.CMD.CLAN_ERROR:
                 break;
             case gv.CMD.RECEIVE_CLAN_SEARCH_BY_ID:
+                fr.getCurrentScreen().getChildByTag(gv.tag.TAG_CLAN_SEARCH).updateListById();
                 break;
             case gv.CMD.RECEIVE_CLAN_SEARCH_BY_NAME:
-                cc.log("HERE " + gv.searchResult.byName.length);
                 fr.getCurrentScreen().getChildByTag(gv.tag.TAG_CLAN_SEARCH).updateListByName();
                 break;
             case 37:
@@ -230,6 +230,13 @@ testnetwork.Connector = cc.Class.extend({
         pk.pack(id);
         this.gameClient.sendPacket(pk);
     },
+
+    sendGetSuggestClan: function(){
+        cc.log("SEND GET SUGGEST CLAN REQUEST");
+        var pk = this.gameClient.getOutPacket(CmdSendGetSuggestClan);
+        pk.pack();
+        this.gameClient.sendPacket(pk);
+    }
 
 });
 

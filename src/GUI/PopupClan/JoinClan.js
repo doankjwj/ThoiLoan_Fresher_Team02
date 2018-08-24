@@ -146,5 +146,11 @@ var JoinClan = PopupClan.extend({
 
     },
 
+    onAppear: function() {
+        testnetwork.connector.sendGetSuggestClan();
+        this.visible = true;
+        this._swallowTouch.setEnabled(true);
+    },
+
 
 });
