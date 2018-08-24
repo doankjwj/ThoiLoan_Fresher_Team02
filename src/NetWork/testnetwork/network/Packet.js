@@ -31,6 +31,10 @@ gv.CMD.RECEIVE_CLAN_CHAT_DONATE = gv.CMD.SEND_CLAN_CHAT_DONATE;
 gv.CMD.SEND_DONATE = 3213;
 gv.CMD.RECEIVE_DONATE = 3214;
 
+gv.CMD.RECEIVE_USER_ONLINE = 3107;                  // Nhận danh sách Member online, offline
+gv.CMD.RECEIVE_USER_ONLINE_STATUS_CHANGE = 3202;    // Nhận thay đổi member
+
+
 gv.CMD.RECEIVE_BROADCAST_EVENT = 3201;//Trần Hoàn thêm
 
 gv.CMD.SEND_LOAD_CLAN_CHAT = 3103;
@@ -907,7 +911,6 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
                     this.map.WAL_1[i].finishBuildOrUpgradeTime -= gv.timeOffset.userInfo;
             }
 
-            cc.log(JSON.stringify(this));
             Amount = this.getByte();
             this.map.CLC_1 = [];
             for (var i = 0; i < Amount; i += 1) {
@@ -1120,6 +1123,37 @@ testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT] = fr.InPacket.extend({
         //gvGUI.layerClanChat.loadChatFromServer();
     }
 });
+
+/*Nhận danh sách user Online*/
+testnetwork.packetMap[gv.CMD.RECEIVE_USER_ONLINE] = fr.InPacket.extend({
+    ctor: function()
+    {
+        this._super();
+    },
+    readData: function()
+    {
+        this.memberOnline = this.getByte();
+        this.listMemberOnline = [];
+        for (var i=0; i< this.memberOnline; i++)
+        {
+            this.listMemberOnline.push(new Object());
+            this.listMemberOnline[i] = this.getString();
+        };
+
+        this.memberOffline = this.getByte();
+        this.listMemberOffline = [];
+        for (var i=0; i< this.memberOffline; i++)
+        {
+            this.listMemberOffline.push(new Object());
+            this.listMemberOffline[i] = this.getString();
+        };
+
+        gv.clanChat.jsonUserOnline = this;
+
+        cc.log(JSON.stringify(this));
+    }
+});
+
 // Nhận lịch sử Chat
 testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT_TEXT] = fr.InPacket.extend({
     ctor: function () {

@@ -50,6 +50,9 @@ testnetwork.Connector = cc.Class.extend({
                 cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].updateNameAndFlag(true);
                 cf.user._clanId = gv.clanChat.jsonLoad["clanId"];
                 break;
+            case gv.CMD.RECEIVE_USER_ONLINE:
+                gvGUI.layerClanChat.loadUserOnlineFromServer();
+                break;
             case gv.CMD.CLAN_ERROR:
                 break;
             case gv.CMD.RECEIVE_CLAN_SEARCH_BY_ID:

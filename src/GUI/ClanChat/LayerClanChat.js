@@ -333,45 +333,8 @@ var LayerClanChat = cc.Node.extend({
         this._clanChatLoaded ++;
         this.onCombileChatFromServer();
     },
-    //Load lịch sử chat từ server
-    loadChatTextFromServer: function()
-    {
-        var chatQuantity = gv.clanChat.jsonLoadText["chatQuantity"];
-        if (!this._listItemChat) this._listItemChat = [];
-        var jsonItem = null;
-        for (var i=0; i<chatQuantity; i++){
-            jsonItem = gv.clanChat.jsonLoadText["detail"][i];
-            var itemClanChat = new ItemChat(i, 0, jsonItem["userName"], jsonItem["userLevel"], jsonItem["msg"], jsonItem["timeCreated"]);
-            itemClanChat.retain();
-            this._listItemChat.push(itemClanChat);
-        }
-        this._clanChatLoaded ++;
-        if (this._clanChatLoaded == 2)
-            this.onCombileChatFromServer();
-    },
-    loadChatDonateFromServer: function()
-    {
-        var chatQuantity = gv.clanChat.jsonLoadDonate["chatQuantity"];
-        if (!this._listItemChat) this._listItemChat = [];
-        var jsonItem = null;
-        for (var i=0; i<chatQuantity; i++){
-            jsonItem = gv.clanChat.jsonLoadDonate["detail"][i];
-            var userName = jsonItem["userName"];
-            var userLevel = jsonItem["userLevel"];
-            var msg = jsonItem["msg"];
-            var timeCreated = jsonItem["timeCreated"];
-            var curentHousingSpace = jsonItem["currentHousingSpace"];
-            var maxHousingSpace = jsonItem["maxHousingSpace"];
-            var jsonTroopDonated = jsonItem["troopDonated"];
-            var troopDonated = [jsonTroopDonated["troop_0"], jsonTroopDonated["troop_1"], jsonTroopDonated["troop_2"], jsonTroopDonated["troop_3"]];
-            var itemClanChat = new ItemChat(i, 1, userName, userLevel, msg, timeCreated, curentHousingSpace, troopDonated, maxHousingSpace);
-            itemClanChat.retain();
-            this._listItemChat.push(itemClanChat);
-        }
-        this._clanChatLoaded ++;
-        if (this._clanChatLoaded == 2)
-            this.onCombileChatFromServer();
-    },
+
+
     onCombileChatFromServer: function()
     {
         // Cập nhật lại độ cao cho Inner container
@@ -554,17 +517,6 @@ var LayerClanChat = cc.Node.extend({
         this._listItemChat[this._listItemChat.length-1]._userName = null;
         this.onUpdateItemY();
     },
-    _onRemoveItem: function(index)
-    {
-        this.onMoveUpItem(index);
-        var size = this._scrollviewChat.getInnerContainerSize();
-        var lastItem = this._listItemChat[this._listItemChat.length-1];
-        cc.log("++++ Inner ConatainerSize: " + size.height + " =>> " + (size.height - lastItem._height));
-        this._scrollviewChat.setInnerContainerSize(cc.size(size.width, size.height - lastItem._height));
-        this._scrollviewChat.removeChild(lastItem);
-        this._listItemChat = this._listItemChat.splice(this._listItemChat.length-1, 1);
-        this.onUpdateItemY();
-    },
     // Cập nhật lại độ cao các Item
     onUpdateItemY: function()
     {
@@ -578,9 +530,8 @@ var LayerClanChat = cc.Node.extend({
         }
     },
 
-    initScrollviewUserOnline: function(){
-        if (!this._scrollviewUserOnline)
-        {
+    initScrollviewUserOnline: function() {
+        if (!this._scrollviewUserOnline) {
             this._scrollviewUserOnline = ccui.ScrollView();
             this._scrollviewUserOnline.setDirection(ccui.ScrollView.DIR_VERTICAL);
             this._scrollviewUserOnline.setTouchEnabled(true);
@@ -589,25 +540,61 @@ var LayerClanChat = cc.Node.extend({
             this._scrollviewUserOnline.width = this._layerUserOnline.width;
             this._scrollviewUserOnline.height = this._layerUserOnline.height - 90;
             this.addChild(this._scrollviewUserOnline, 1);
+        }
+        ;
+    },
+
+
+    loadUserOnlineFromServer: function()
+    {
+        //Tạo list Item user online
+        this._listItemUserOnline = [];
+        //var memberQuantity = gv.clanChat.jsonUserOnline["memberQuantity"];
+        //var memberOnline;
+        //var userName;
+        //var status;
+        //for (var i=0; i<memberQuantity; i++)
+        //{
+        //    userName = gv.clanChat.jsonUserOnline["memberQuantity"][i];
+        //    status = gv.clanChat.jsonUserOnline["status"][i];
+        //    if (status==1) memberOnline++;
+        //    var itemUserOnline = new ItemUserOnline(i, userName, (status == 1));
+        //    this._listItemUserOnline.push(itemUserOnline);
+        //};
+
+        var memberOnlineQuantity = gv.clanChat.jsonUserOnline["memberOnline"];
+        var jsonMemberOnline = gv.clanChat.jsonUserOnline["listMemberOnline"];
+        for (var i=0; i< memberOnlineQuantity; i++)
+        {
+            var itemUserOnline = new ItemUserOnline(i, jsonMemberOnline[i], true);
+            //itemUserOnline.retain();
+            this._listItemUserOnline.push(itemUserOnline);
         };
 
-        //Tạo list Item user online
-        if (this._listItemUserOnline.length != 0) return;
-        this._listItemUserOnline = [];
-        var memberQuantity = 20;
-        var memberOnline = 0;
-        // Đẩy Item User Online vào list và cập nhật số người Online
-        for (var i = 0; i < memberQuantity; i++){
-            this._listItemUserOnline.push(new ItemUserOnline(i, "User " + i, Math.random() < 0.5));
-            memberOnline += this._listItemUserOnline[i]._status ? 1 : 0;
+        var memberOfflineQuantity = gv.clanChat.jsonUserOnline["memberOffline"];
+        var jsonMemberOffline = gv.clanChat.jsonUserOnline["listMemberOffline"];
+        for (var i=0; i< memberOfflineQuantity; i++)
+        {
+            var itemUserOffline = new ItemUserOnline(i, jsonMemberOffline[i], false);
+            //itemUserOffline.retain();
+            this._listItemUserOnline.push(itemUserOffline);
         };
-        this._labelMemberOnline.setString(memberOnline + "/" + memberQuantity);
+
+        // Đẩy Item User Online vào list và cập nhật số người Online
+        //for (var i = 0; i < memberQuantity; i++){
+        //    this._listItemUserOnline.push(new ItemUserOnline(i, "User " + i, Math.random() < 0.5));
+        //    memberOnline += this._listItemUserOnline[i]._status ? 1 : 0;
+        //};
+
+        var memberQuantity = (memberOnlineQuantity + memberOfflineQuantity);
+        this._labelMemberOnline.setString(memberOnlineQuantity + "/" + memberQuantity);
 
         //Sắp xếp user online lên trên
         this._listItemUserOnline.sort(function(a, b){
             return (a._status ? 0 : 1) - (b._status ? 0 : 1);
         });
 
+        cc.log(this._listItemUserOnline[0]._name + " //" + this._listItemUserOnline[0]._status);
         this._scrollviewUserOnline.setInnerContainerSize(this.getScrollviewInnerContainerSize(this._typeDefine.userOnlineScrollView));
 
         // Lấy vị trí cho Item them order
@@ -617,11 +604,11 @@ var LayerClanChat = cc.Node.extend({
         };
 
         //Xóa 1 phần tử
-        this._scrollviewUserOnline.removeChild(this._listItemUserOnline[0], false);
-        this._scrollviewUserOnline.setInnerContainerSize(cc.size(this._scrollviewUserOnline.width, 20 * (memberQuantity-1)));
-        this._listItemUserOnline.splice(0, 1);
-        for (var i = 0; i < memberQuantity-1; i++){
-            this._listItemUserOnline[i].setPosition(this._scrollviewUserOnline.width/2 - 6, this._scrollviewUserOnline.getInnerContainerSize().height - 10 - i*20 );
-        };
+        //this._scrollviewUserOnline.removeChild(this._listItemUserOnline[0], false);
+        //this._scrollviewUserOnline.setInnerContainerSize(cc.size(this._scrollviewUserOnline.width, 20 * (memberQuantity-1)));
+        //this._listItemUserOnline.splice(0, 1);
+        //for (var i = 0; i < memberQuantity-1; i++){
+        //    this._listItemUserOnline[i].setPosition(this._scrollviewUserOnline.width/2 - 6, this._scrollviewUserOnline.getInnerContainerSize().height - 10 - i*20 );
+        //};
     },
 })
