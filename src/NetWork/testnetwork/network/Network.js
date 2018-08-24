@@ -44,6 +44,11 @@ testnetwork.Connector = cc.Class.extend({
                 gvGUI.layerClanChat.onReceiveDonate();
                 cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].addTroop();
                 break;
+            case gv.CMD.RECEIVE_LOAD_CLAN_CHAT:
+                gvGUI.layerClanChat.loadChatFromServer();
+                gvGUI.layerClanChat.onUpdateClanInfo();
+                cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].updateNameAndFlag(true);
+                break;
             case gv.CMD.CLAN_ERROR:
                 break;
             case gv.CMD.RECEIVE_CLAN_SEARCH_BY_ID:

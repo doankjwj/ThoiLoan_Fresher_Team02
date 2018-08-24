@@ -41,7 +41,7 @@ var LayerClanChat = cc.Node.extend({
         this.initListenerAppear();
         this.addButtonExpand();
     },
-    init: function(){
+    init: function() {
         var self = this;
 
         this._bg = cc.Sprite(res.clanChatGUI.chatBG);
@@ -50,22 +50,22 @@ var LayerClanChat = cc.Node.extend({
 
         var buttonTabClan = cc.Sprite(res.clanChatGUI.buttonTabSelected);
         var titleClan = cc.LabelBMFont("BANG HỘI", font.soji20);
-        titleClan.setPosition(buttonTabClan.width/2, buttonTabClan.height/2 - 2);
+        titleClan.setPosition(buttonTabClan.width / 2, buttonTabClan.height / 2 - 2);
         titleClan.scale = 0.8;
         titleClan.setAnchorPoint(0.5, 0.5);
         buttonTabClan.addChild(titleClan);
         buttonTabClan.setAnchorPoint(0, 1);
-        buttonTabClan.setPosition(this._bg.width/2, this._bg.height - 6);
+        buttonTabClan.setPosition(this._bg.width / 2, this._bg.height - 6);
         this.addChild(buttonTabClan, 1);
 
         var buttonTabGlobal = cc.Sprite(res.clanChatGUI.buttonTabUnselected);
         var titleGlobal = cc.LabelBMFont("THẾ GIỚI", font.soji20);
-        titleGlobal.setPosition(buttonTabGlobal.width/2, buttonTabGlobal.height/2);
+        titleGlobal.setPosition(buttonTabGlobal.width / 2, buttonTabGlobal.height / 2);
         titleGlobal.scale = 0.8;
         titleGlobal.setAnchorPoint(0.5, 0.5);
         buttonTabGlobal.addChild(titleGlobal);
         buttonTabGlobal.setAnchorPoint(1, 1);
-        buttonTabGlobal.setPosition(this._bg.width/2, this._bg.height - 6);
+        buttonTabGlobal.setPosition(this._bg.width / 2, this._bg.height - 6);
         this.addChild(buttonTabGlobal, 1);
 
         var iconClanOrder = Math.floor(Math.random() * 28) + 1;
@@ -97,14 +97,14 @@ var LayerClanChat = cc.Node.extend({
         var buttonInfo = ccui.Button(res.clanChatGUI.buttonInfo);
         buttonInfo.setPosition(this._bg.width - 35, this._iconClan.y);
         this.addChild(buttonInfo);
-        buttonInfo.addClickEventListener(function(){
+        buttonInfo.addClickEventListener(function () {
             self.onShowClanInfo();
         }.bind(this));
 
         var buttonChat = ccui.Button(res.clanChatGUI.buttonChat);
         buttonChat.setPosition(buttonInfo.x, textFieldChatBG.y);
         this.addChild(buttonChat);
-        buttonChat.addClickEventListener(function(){
+        buttonChat.addClickEventListener(function () {
             self.onChat();
             //self.resetScrollViewChat();
         }.bind(this));
@@ -130,8 +130,18 @@ var LayerClanChat = cc.Node.extend({
         var layerOnlineSeparator = cc.Sprite(res.clanChatGUI.lineSeparateOnline);
         layerOnlineSeparator.setPosition(this._labelMemberOnline.x, this._labelMemberOnline.y - 8);
         this.addChild(layerOnlineSeparator, 1);
+
+        /*Đẩy Clan Icon và clan Name*/
+        //this.onUpdateClanInfo();
     },
 
+    /*Cập nhật ảnh và Tên Clan*/
+    onUpdateClanInfo: function()
+    {
+        this._labelClanName.setString(gv.clanChat.jsonLoad["clanName"]);
+        var clanFlag = gv.clanChat.jsonLoad["clanFlag"];
+        fn.replaceSpriteImage(this._iconClan, "res/Art/Bang hoi/bieu tuong nho/" + (clanFlag+1) + ".png");
+    },
     initListenerAppear: function(){
         this._bgNull = cc.Sprite(cc.tmp_effect);
         //this._bgNull.width = cc.winSize.width;
