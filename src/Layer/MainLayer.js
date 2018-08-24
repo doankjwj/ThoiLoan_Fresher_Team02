@@ -70,8 +70,10 @@
     },
 
     initClan: function(){
+           // cc.log(cf.user._clanId);
            //testnetwork.connector.sendCreateClan("Clan 02 Fresher GSN", 26, "Bá chủ Thiên Hà", 0);
-           // testnetwork.connector.sendJoinClan(0);
+           // testnetwork.connector.sendQuitClan();
+           // cf.user._clanId = -1;
     },
 
     init: function() {
@@ -146,7 +148,7 @@
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "quanleanh";
         gv.passwordSendToServer = this._passwordField.string;
 
         gv.gameClient.connect();

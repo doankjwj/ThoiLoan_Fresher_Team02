@@ -29,9 +29,9 @@ var Clan = cc.Class.extend({
         switch (this.status) {
 
             case 0:
-                return "Đóng";
-            case 1:
                 return "Mở";
+            case 1:
+                return "Đóng";
             default: return "UNDEFINED";
 
         }

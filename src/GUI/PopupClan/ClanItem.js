@@ -92,6 +92,31 @@ var ClanItem = ccui.Button.extend({
             }
         }, this);
 
+    },
+
+    updateClanItem: function(clan) {
+
+        this._clan = clan;
+        this.changeIcon(this._clan.iconId);
+        this._textName.setString(this._clan.name);
+        this._textStatus.setString(this._clan.getStatusText());
+        this._textClanLevel.setString(this._clan.level);
+        this._textClanMemberQuantity.setString("Thành viên: " + this._clan.quantity + "/50");
+        this._textTrophy.setString(this._clan.trophy);
+
+        this._textTrophy.setPosition(cc.p(this._trophyBackground.x, this._trophyBackground.y));
+        this._textClanLevel.setPosition(cc.p(this.width/2, this.height/2));
+        this._textClanMemberQuantity.setPosition(cc.p(this._textClanLevel.x + this._textClanLevel.width*1.2, this._textClanLevel.y));
+        this._textStatus.setPosition(cc.p(this._textName.x, this.height/2 - this._textStatus.height*this._textStatus.scale));
+        this._textName.setPosition(cc.p(this._clanIcon.x + this._clanIcon.width/2+ 10, this.height/2));
+    },
+
+    changeIcon: function(iconId){
+
+        this._clanIcon.setTexture(folderClan + "icon bieu tuong/" + iconId + ".png");
+        this._clanIcon.setTextureRect(this._clanIcon.getTextureRect());
+
     }
+
 
 });

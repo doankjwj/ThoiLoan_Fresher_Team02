@@ -23,6 +23,7 @@ gv.CMD.RESET_USER = 2101;
 gv.CMD.SEND_CREATE_CLAN = 3001;
 gv.CMD.SEND_JOIN_CLAN = 3011;
 
+
 gv.CMD.SEND_CLAN_CHAT_TEXT = 3211;
 gv.CMD.RECEIVE_CLAN_CHAT_TEXT = gv.CMD.SEND_CLAN_CHAT_TEXT;
 gv.CMD.SEND_CLAN_CHAT_DONATE = 3212;
@@ -38,8 +39,23 @@ gv.CMD.RECEIVE_LOAD_CLAN_CHAT_TEXT = 2257;//Server chua lam
 gv.CMD.RECEIVE_LOAD_CLAN_CHAT_DONATE = 2258;//Server chua lam
 gv.CMD.RECEIVE_LOAD_CLAN_CHAT_EVENT = 2259;//Server chua lam
 
+
+gv.CMD.REQUEST_CLAN_DATA = 3101;
+gv.CMD.RECEIVE_CLAN_DATA = gv.CMD.REQUEST_CLAN_DATA;
+gv.CMD.REQUEST_CLAN_MEMBER_DATA = 3102;
+gv.CMD.RECEIVE_CLAN_MEMBER_DATA = gv.CMD.REQUEST_CLAN_MEMBER_DATA;
+
+gv.CMD.REQUEST_QUIT_CLAN = 3012;
+
+gv.CMD.SEND_SEARCH_BY_NAME = 3105;
+gv.CMD.SEND_SEARCH_BY_ID = 3104;
+gv.CMD.RECEIVE_CLAN_SEARCH_BY_ID = gv.CMD.SEND_SEARCH_BY_ID;
+gv.CMD.RECEIVE_CLAN_SEARCH_BY_NAME = gv.CMD.SEND_SEARCH_BY_NAME;
+
 gv.CMD.USER_ERROR = 2999;
 gv.CMD.CLAN_ERROR = 3999;
+
+
 
 
 testnetwork = testnetwork||{};
@@ -96,6 +112,56 @@ CmdSendLogin = fr.OutPacket.extend(
         }
     }
 );
+
+
+CmdSendSearchByName = fr.OutPacket.extend(
+    {
+        ctor:function()
+        {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.SEND_SEARCH_BY_NAME);
+        },
+        pack:function(string){
+            this.packHeader();
+            this.putString(string);
+            this.updateSize();
+        }
+    }
+);
+
+
+
+CmdSendSearchByID = fr.OutPacket.extend(
+    {
+        ctor:function()
+        {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.SEND_SEARCH_BY_ID);
+        },
+        pack:function(id){
+            this.packHeader();
+            this.putInt(id);
+            this.updateSize();
+        }
+    }
+);
+
+CmdSendQuitClan = fr.OutPacket.extend({
+
+    ctor:function()
+    {
+        this._super();
+        this.initData(100);
+        this.setCmdId(gv.CMD.REQUEST_QUIT_CLAN);
+    },
+    pack:function(){
+        this.packHeader();
+        this.updateSize();
+    }
+
+});
 
 CmdSendBuild = fr.OutPacket.extend(
     {
@@ -1010,93 +1076,37 @@ testnetwork.packetMap[gv.CMD.RECEIVE_DONATE] = fr.InPacket.extend({
 testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT] = fr.InPacket.extend({
     ctor: function()
     {
-       this._super();
+        this._super();
     },
     readData: function()
     {
-        var amount = this.getByte();
-        this.autoSetLeader=new Array();
-        for (var i = 0; i < amount; i += 1)
-        {
-            this.autoSetLeader.push(new Object());
-            this.autoSetLeader[i].userName = this.getString();
-            this.autoSetLeader[i].timeCreated = this.getLong() - gv.timeOffset.userInfo;
-        }
+        this.serverTime = this.getLong();
+        gv.timeOffset.loadClanChat = this.serverTime - new Date().getTime();
+        this.clanFlag = this.getByte();
+        this.clanName = this.getString();
+        this.clanEvent = [];
+        for (var k = 0; k < 9; k += 1) {
+            if (k == 0 || k == 1 || k == 5 || k == 6 || k == 8) {
 
-        amount = this.getByte();
-        this.autoSetCoLeader=new Array();
-        for (var i = 0; i < amount; i += 1)
-        {
-            this.autoSetCoLeader.push(new Object());
-            this.autoSetCoLeader[i].userName = this.getString();
-            this.autoSetCoLeader[i].timeCreated = this.getLong() - gv.timeOffset.userInfo;
-        }
+                this.clanEvent.push(new Array());
+                var amount = this.getByte();
+                for (var i = 0; i < amount; i += 1) {
+                    this.clanEvent[this.clanEvent.length - 1].push(new Object());
+                    this.clanEvent[this.clanEvent.length - 1][i].userName = this.getString();
+                    this.clanEvent[this.clanEvent.length - 1][i].timeCreated = this.getLong() - gv.timeOffset.loadClanChat;
+                }
+            }
+            if (k == 2 || k == 3 || k == 4 || k == 7) {
 
-        amount = this.getByte();
-        this.setLeader=new Array();
-        for (var i = 0; i < amount; i += 1)
-        {
-            this.setLeader.push(new Object());
-            this.setLeader[i].userName = this.getString();
-            this.setLeader[i].target = this.getString();
-            this.setLeader[i].timeCreated = this.getLong() - gv.timeOffset.userInfo;
-        }
-
-        amount = this.getByte();
-        this.setCoLeader=new Array();
-        for (var i = 0; i < amount; i += 1)
-        {
-            this.setCoLeader.push(new Object());
-            this.setCoLeader[i].userName = this.getString();
-            this.setCoLeader[i].target = this.getString();
-            this.setCoLeader[i].timeCreated = this.getLong() - gv.timeOffset.userInfo;
-        }
-
-        amount = this.getByte();
-        this.removeCoLeader=new Array();
-        for (var i = 0; i < amount; i += 1)
-        {
-            this.removeCoLeader.push(new Object());
-            this.removeCoLeader[i].userName = this.getString();
-            this.removeCoLeader[i].target = this.getString();
-            this.removeCoLeader[i].timeCreated = this.getLong() - gv.timeOffset.userInfo;
-        }
-
-        amount = this.getByte();
-        this.join=new Array();
-        for (var i = 0; i < amount; i += 1)
-        {
-            this.join.push(new Object());
-            this.join[i].userName = this.getString();
-            this.join[i].timeCreated = this.getLong() - gv.timeOffset.userInfo;
-        }
-
-        amount = this.getByte();
-        this.leave=new Array();
-        for (var i = 0; i < amount; i += 1)
-        {
-            this.leave.push(new Object());
-            this.leave[i].userName = this.getString();
-            this.leave[i].timeCreated = this.getLong() - gv.timeOffset.userInfo;
-        }
-
-        amount = this.getByte();
-        this.kicked=new Array();
-        for (var i = 0; i < amount; i += 1)
-        {
-            this.kicked.push(new Object());
-            this.kicked[i].userName = this.getString();
-            this.kicked[i].target = this.getString();
-            this.kicked[i].timeCreated = this.getLong() - gv.timeOffset.userInfo;
-        }
-
-        amount = this.getByte();
-        this.changeClanInfo=new Array();
-        for (var i = 0; i < amount; i += 1)
-        {
-            this.changeClanInfo.push(new Object());
-            this.changeClanInfo[i].userName = this.getString();
-            this.changeClanInfo[i].timeCreated = this.getLong() - gv.timeOffset.userInfo;
+                this.clanEvent.push(new Array());
+                var amount = this.getByte();
+                for (var i = 0; i < amount; i += 1) {
+                    this.clanEvent[this.clanEvent.length - 1].push(new Object());
+                    this.clanEvent[this.clanEvent.length - 1][i].userName = this.getString();
+                    this.clanEvent[this.clanEvent.length - 1][i].target = this.getString();
+                    this.clanEvent[this.clanEvent.length - 1][i].timeCreated = this.getLong() - gv.timeOffset.loadClanChat;
+                }
+            }
         }
 
         amount = this.getByte();
@@ -1107,7 +1117,7 @@ testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT] = fr.InPacket.extend({
             this.chatText[i].userName = this.getString();
             this.chatText[i].level = this.getByte();
             this.chatText[i].message = this.getString();
-            this.chatText[i].timeCreated = this.getLong() - gv.timeOffset.userInfo;
+            this.chatText[i].timeCreated = this.getLong() - gv.timeOffset.loadClanChat;
         }
 
         amount = this.getByte();
@@ -1118,7 +1128,7 @@ testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT] = fr.InPacket.extend({
             this.donate[i].userName = this.getString();
             this.donate[i].level = this.getByte();
             this.donate[i].message = this.getString();
-            this.donate[i].timeCreated = this.getLong() - gv.timeOffset.userInfo;
+            this.donate[i].timeCreated = this.getLong() - gv.timeOffset.loadClanChat;
             this.donate[i].troopCapacity = this.getByte();
             this.donate[i].troopHousingSpace = this.getByte();
             this.donate[i].selfDonatedTroop = new Array();
@@ -1266,5 +1276,101 @@ testnetwork.packetMap[gv.CMD.RECEIVE_BROADCAST_EVENT] = fr.InPacket.extend
          gv.clanChat.jsonChatEvent = this;
          cc.log(JSON.stringify(gv.clanChat.jsonChatEvent));
      }
- })
+
+ });
+
+testnetwork.packetMap[gv.CMD.RECEIVE_CLAN_DATA] = fr.InPacket.extend
+({
+    ctor: function()
+    {
+        this._super();
+    },
+    readData: function()
+    {
+        this.id = this.getInt();
+        this.name = this.getString();
+        this.flag = this.getByte();
+        this.description = this.getString();
+        this.authenticationType = this.getByte();
+        this.memberCount = this.getByte();
+        this.trophy = this.getInt();
+        cc.log(JSON.stringify(this));
+    }
+});
+
+testnetwork.packetMap[gv.CMD.RECEIVE_CLAN_MEMBER_DATA] = fr.InPacket.extend
+({
+    ctor: function()
+    {
+        this._super();
+    },
+    readData: function()
+    {
+        var amount = this.getByte();
+        this.memberList = new Array();
+        for (var i = 0; i < amount; i += 1)
+        {
+            this.memberList.push(new Object());
+            this.memberList[i].name = this.getString();
+            this.memberList[i].level = this.getShort();
+            this.memberList[i].troopDonated = this.getInt();
+            this.memberList[i].troopReceived = this.getInt();
+            this.memberList[i].trophy = this.getInt();
+            this.memberList[i].authority = this.getByte(); //0 = Leader. 2 = member
+        }
+        cc.log(JSON.stringify(this));
+    }
+});
+
+testnetwork.packetMap[gv.CMD.RECEIVE_CLAN_SEARCH_BY_ID] = fr.InPacket.extend
+({
+    ctor: function()
+    {
+        this._super();
+    },
+    readData: function()
+    {
+        this.id = this.getInt();
+        if (this.id !== -1)
+        {
+            this.name = this.getString();
+            this.flag = this.getByte();
+            this.description = this.getString();
+            this.authenticationType = this.getByte();
+            this.memberCount = this.getByte();
+            this.trophy = this.getInt();
+        }
+        cc.log(JSON.stringify(this));
+        gv.searchResult.byID = this;
+    }
+});
+
+testnetwork.packetMap[gv.CMD.RECEIVE_CLAN_SEARCH_BY_NAME] = fr.InPacket.extend
+({
+    ctor: function()
+    {
+        this._super();
+    },
+    readData: function()
+    {
+        var amount = this.getByte();
+        this.clanList = new Array();
+        for (var i = 0; i < amount; i += 1)
+        {
+
+            this.clanList.push(new Object());
+            this.clanList[i].id = this.getInt();
+            this.clanList[i].name = this.getString();
+            this.clanList[i].flag = this.getByte();
+            this.clanList[i].description = this.getString();
+            this.clanList[i].authenticationType = this.getByte();
+            this.clanList[i].memberCount = this.getByte();
+            this.clanList[i].trophy = this.getInt();
+        }
+
+        cc.log(JSON.stringify(this));
+        gv.searchResult.byName = this.clanList;
+    }
+});
+
 

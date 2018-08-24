@@ -46,6 +46,12 @@ testnetwork.Connector = cc.Class.extend({
                 break;
             case gv.CMD.CLAN_ERROR:
                 break;
+            case gv.CMD.RECEIVE_CLAN_SEARCH_BY_ID:
+                break;
+            case gv.CMD.RECEIVE_CLAN_SEARCH_BY_NAME:
+                cc.log("HERE " + gv.searchResult.byName.length);
+                fr.getCurrentScreen().getChildByTag(gv.tag.TAG_CLAN_SEARCH).updateListByName();
+                break;
             case 37:
                 break;
         }
@@ -187,6 +193,27 @@ testnetwork.Connector = cc.Class.extend({
     sendRequestLoadClanChat: function(){
         cc.log("SEND REQUEST LOAD CLAN CHAT HISTORY");
         var pk = this.gameClient.getOutPacket(CmdSendRequestLoadClanChat);
+        pk.pack();
+        this.gameClient.sendPacket(pk);
+    },
+
+    sendSearchByName: function(str) {
+        cc.log("SEND SEARCH REQUEST BY NAME");
+        var pk = this.gameClient.getOutPacket(CmdSendSearchByName);
+        pk.pack(str);
+        this.gameClient.sendPacket(pk);
+    },
+
+    sendSearchById: function(id) {
+        cc.log("SEND SEARCH REQUEST BY ID");
+        var pk = this.gameClient.getOutPacket(CmdSendSearchByID);
+        pk.pack(id);
+        this.gameClient.sendPacket(pk);
+    },
+
+    sendQuitClan: function(){
+        cc.log("SEND QUIT CLAN REQUEST");
+        var pk = this.gameClient.getOutPacket(CmdSendQuitClan);
         pk.pack();
         this.gameClient.sendPacket(pk);
     }

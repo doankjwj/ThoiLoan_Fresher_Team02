@@ -157,12 +157,12 @@ var ClanDetail = PopupClan.extend({
 
         var trophyIcon = cc.Sprite(folderClan + "CUP 1.png");
         this._bg.addChild(trophyIcon, 1);
-        trophyIcon.setPosition(cc.p(this._textTrophy.x + 75, this._textTrophy.y));
+        trophyIcon.setPosition(cc.p(text5.x + 170, this._textTrophy.y));
 
 
         var trophyIcon2 = cc.Sprite(folderClan + "CUP 1.png");
         this._bg.addChild(trophyIcon2, 1);
-        trophyIcon2.setPosition(cc.p(this._textTrophyRequired.x + 75, this._textTrophyRequired.y - 3));
+        trophyIcon2.setPosition(cc.p(text5.x + 170, this._textTrophyRequired.y - 3));
 
         this._buttonOpenMemberList = ccui.Button(folderClan + "button _ tra thu.png");
         this._buttonOpenMemberList.setZoomScale(0.01);
@@ -241,7 +241,7 @@ var ClanDetail = PopupClan.extend({
         this._bg.getChildByTag(TAG_TEXT_QUANTITY).setPosition(cc.p( this._bg.getChildByTag(TAG_TEXT_STATUS).x, this._textMemberQuantity.y));
         this._bg.getChildByTag(TAG_TEXT_REQ).setPosition(cc.p( this._bg.getChildByTag(TAG_TEXT_STATUS).x, this._textTrophyRequired.y));
 
-        if(this._clan.status === 0) {
+        if(this._clan.status === 1 || cf.user._clanId !== -1) {
             this._buttonJoinClan.setBright(false);
             this._buttonJoinClan.setTouchEnabled(false);
             this._buttonJoinClan.setEnabled(false);

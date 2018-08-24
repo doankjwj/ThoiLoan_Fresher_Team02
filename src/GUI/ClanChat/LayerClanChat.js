@@ -270,7 +270,7 @@ var LayerClanChat = cc.Node.extend({
         var jsonItem = null;
         for (var i=0; i<allChat.length; i++){
             jsonItem = allChat[i];
-            var itemClanChat = new ItemChat(i, 0, jsonItem["userName"], jsonItem["level"], jsonItem["message"], jsonItem["timeCreated"]);
+            var itemClanChat = new ItemChat(i, gv.clanChat.type.chatText, jsonItem["userName"], jsonItem["level"], jsonItem["message"], jsonItem["timeCreated"]);
             itemClanChat.retain();
             this._listItemChat.push(itemClanChat);
         }
@@ -291,13 +291,35 @@ var LayerClanChat = cc.Node.extend({
             var troopDonated = [0,0,0,0];
             for (var j = 0; j < jsonTroopDonated.length; j += 1)
                 troopDonated[jsonTroopDonated[j]["troopOrder"]] += 1;
-            var itemClanChat = new ItemChat(i, 1, userName, userLevel, msg, timeCreated, curentHousingSpace, troopDonated, maxHousingSpace);
+            var itemClanChat = new ItemChat(i, gv.clanChat.type.donate, userName, userLevel, msg, timeCreated, curentHousingSpace, troopDonated, maxHousingSpace);
             itemClanChat.retain();
             this._listItemChat.push(itemClanChat);
         }
 
         /*Event Clan: Mời, bổ nhiệm, kick, ..*/
-        //var autoSetLeader = gv.clanChat.jsonLoad("autoSetLeader");
+        var eventItemArr;
+        var eventItem;
+        var s0, s1, s2;
+        var timeCreated;
+        var msg;
+        for (var i=0; i<gv.clanChat.jsonLoad["clanEvent"].length; i++)
+        {
+            eventItemArr = gv.clanChat.jsonLoad["clanEvent"][i];
+            for (var j=0; j<eventItemArr.length; j++)
+            {
+                eventItem = eventItemArr[j];
+                s0 = eventItem["userName"];
+                if ([2, 3, 4, 7].indexOf(i) != -1)
+                    s2 = eventItem["target"];
+                else s2 = "";
+                s1 = gv.clanChat.msgArr[i];
+                msg = s0 + " " + s1 + " " + s2;
+                timeCreated = eventItem["timeCreated"];
+                var itemChat = new ItemChat(j, gv.clanChat.type.clanEvent, null, null, msg, timeCreated, null, null, null, gv.clanChat.colorArr[i]);
+                itemChat.retain();
+                this._listItemChat.push(itemChat);
+            }
+        }
         this._clanChatLoaded ++;
         this.onCombileChatFromServer();
     },
@@ -426,7 +448,7 @@ var LayerClanChat = cc.Node.extend({
         var msg = gv.clanChat.jsonChatDonate["msg"];
         var currentHousingSpace = gv.clanChat.jsonChatDonate["housingSpaceDonated"];
         var maxHousingSpace = gv.clanChat.jsonChatDonate["maxHousingSpace"];
-        var newItemChat = new ItemChat(0, 1, userName, userLevel, msg, new Date().getTime(), currentHousingSpace, [0, 0, 0, 0], maxHousingSpace);
+        var newItemChat = new ItemChat(0, gv.clanChat.type.donate, userName, userLevel, msg, new Date().getTime(), currentHousingSpace, [0, 0, 0, 0], maxHousingSpace);
 
         var indexExisted = this.getItemChatByUserName(1, userName);
         if (indexExisted != null)        // Item Request đang tồn tại thì đưa lên trên

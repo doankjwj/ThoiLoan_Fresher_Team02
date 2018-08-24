@@ -54,9 +54,10 @@ var User = cc.Class.extend({
         this._currentCapacityElixir = gv.jsonInfo["player"]["elixir"];
         this._currentCapacityDarkElixir = gv.jsonInfo["player"]["darkElixir"];
         this._currentCapacityCoin = (gv.jsonInfo["player"]["coin"] === null) ? 0 : gv.jsonInfo["player"]["coin"];
+        this._clanId = gv.jsonInfo["player"]["clanId"];
         this.initBuildingList();
         this.initTroopLevelList();
-        this.initClanInfo();
+        // this.initClanInfo();
     },
 
     initBuildingList: function()

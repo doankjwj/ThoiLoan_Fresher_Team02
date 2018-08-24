@@ -91,7 +91,7 @@ var SearchClan = PopupClan.extend({
         this._bg.addChild(this._statusText, 1);
         this._statusText.scale = 0.5;
 
-        this._statusText.setPosition(cc.p(this._fieldSearchBg.x - this._fieldSearchBg.width/2 + this._statusText.width/2*this._statusText.scale, this._fieldSearchBg.y - this._fieldSearchBg.height/2 - this._statusText.height/2*this._statusText.scale));
+        this._statusText.setPosition(cc.p(this._fieldSearchBg.x - this._fieldSearchBg.width/2 + this._statusText.width/2*this._statusText.scale, this._fieldSearchBg.y + this._fieldSearchBg.height/2 + this._statusText.height/2*this._statusText.scale));
 
         this._fieldSearch.addEventListener(this.textFieldEvent, this);
 
@@ -158,12 +158,9 @@ var SearchClan = PopupClan.extend({
         }
 
         for(var i = 0; i<50; i++) {
-            // cc.log(this.listClan[i]._order + " " + this.listClan[i]._clan.level);
-            // cc.log(this.listClan[i]);
             this.listClanVis.addChild(this.listClan[i], 2);
             this.listClan[i].setPosition(cc.p(this.listClanVis.width/2, this.listClanVis.getInnerContainerSize().height - (i+0.5)*this.listClan[i].height*this.listClan[i].scale));
         }
-
 
         this._searchButton.addTouchEventListener(function(sender, type) {
             switch (type){
@@ -172,12 +169,54 @@ var SearchClan = PopupClan.extend({
                 case ccui.Widget.TOUCH_MOVED :
                     break;
                 case ccui.Widget.TOUCH_ENDED:
-                    if(!this.listClanVis.visible) this.listClanVis.visible = true;
+                    // cc.log(this._fieldSearch.string);
+
+                    if(this._byName._status && !this._byId._status) {
+                        testnetwork.connector.sendSearchByName(this._fieldSearch.string);
+                    } else if(!this._byName._status && this._byId._status) {
+                        testnetwork.connector.sendSearchById(parseInt(this._fieldSearch.string));
+                        this.updateListById();
+                    }
+
+
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;
             }
         }, this);
+
+    },
+
+    updateListByName: function(){
+
+        this._statusText.visible = false;
+        this.listClanVis.setInnerContainerSize(cc.size(this.listClan[0].width*this.listClan[0].scale, this.listClan[0].height*this.listClan[0].scale*(gv.searchResult.byName.length+1)));
+
+
+
+        if(!this.listClanVis.visible) this.listClanVis.visible = true;
+        for(var i=0; i<50; i++) {
+
+            if(i < gv.searchResult.byName.length) {
+                //id, iconId, name, level, quantity, status, trophy, trophyReq
+                this.listClan[i].visible = true;
+                this.listClan[i].updateClanItem(new Clan(gv.searchResult.byName[i].id,
+                         gv.searchResult.byName[i].flag+1,
+                        gv.searchResult.byName[i].name,
+                        1,
+                        gv.searchResult.byName[i].memberCount,
+                        gv.searchResult.byName[i].authenticationType,
+                        gv.searchResult.byName[i].trophy,
+                        0));
+                this.listClan[i].setPosition(cc.p(this.listClanVis.width/2, this.listClanVis.getInnerContainerSize().height - (i+0.5)*this.listClan[i].height*this.listClan[i].scale));
+            }
+
+            else {
+                this.listClan[i].visible = false;
+            }
+        }
+
+        this.listClanVis.jumpToTop();
 
     },
 
@@ -204,7 +243,7 @@ var SearchClan = PopupClan.extend({
     },
 
     updateSearchText: function () {
-        cc.log(this._fieldSearch.string.length);
+        // cc.log(this._fieldSearch.string.length);
         if(this._fieldSearch.string.length === 0) {
             this._statusText.visible = false;
         } else {
@@ -277,6 +316,8 @@ var SearchClan = PopupClan.extend({
     onAppear: function() {
         this.visible = true;
         this._fieldSearch.string = "";
+        this._statusText.visible = false;
+        this._fieldSearch.setPosition(cc.p(this._fieldSearch.width/2 + 5, this._fieldSearchBg.height/2));
         this._swallowTouch.setEnabled(true);
     },
 

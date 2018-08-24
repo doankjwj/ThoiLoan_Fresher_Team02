@@ -67,11 +67,36 @@ gv.clanChat={
     jsonLoadDonate: null,           // Data load đoạn hội thoại chat Donate
     jsonLoadEvent: null,            // Data load đoạn hội thoại chat Event
     itemDonateTag: null,
-}
+
+    type:
+        {
+            chatText: 0,        // Thành viên nhắn tin trong bang
+            donate: 1,          // Thành viên yêu cầu cho quân
+            clanEvent: 2        // Sự kiện bang: thêm thành viên, bổ nhiệm, ..
+        },
+
+    msgArr: ["trở thành bang chủ",
+        "trở thành phó bang chủ",
+        "được bổ nhiệm làm bang chủ bởi",
+        "được bổ nhiệm làm phó bang chủ bởi",
+        "được bổ nhiệm làm thành viên bởi",
+        "đã gia nhập bang",
+        "đã rời bang",
+        "được mời ra khỏi bang bởi",
+        "đã thay đổi thông tin bang hội"],
+    colorArr: [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+};
 
 // Time Offset
 gv.timeOffset = {
     userInfo: 0,
     loadClanChatText: 0,
     loadClanChatDonate: 0
-}
+};
+
+gv.searchResult = {
+
+    byID: null,
+    byName: null,
+
+};

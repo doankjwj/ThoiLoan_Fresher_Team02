@@ -186,6 +186,14 @@ var CreateClan = PopupClan.extend({
         this._bg.addChild(this._textTrophyRequire, 1);
         this._textTrophyRequire.setPosition(cc.p(this._textClanStatus.x, this._increaseTrophyRequireButton.y));
 
+        this._increaseTrophyRequireButton.setEnabled(false);
+        this._increaseTrophyRequireButton.setTouchEnabled(false);
+        this._increaseTrophyRequireButton.setBright(false);
+
+        this._decreaseTrophyRequireButton.setEnabled(false);
+        this._decreaseTrophyRequireButton.setTouchEnabled(false);
+        this._decreaseTrophyRequireButton.setBright(false);
+
         var text6 = cc.LabelBMFont("Số cúp thấp nhất: ", font.soji20);
         text6.scale = 0.8;
         text6.setAnchorPoint(cc.p(0.5, 0.5));
@@ -207,6 +215,23 @@ var CreateClan = PopupClan.extend({
         goldIcon.scale = 0.7;
         this._createButton.addChild(goldIcon);
         goldIcon.setPosition(cc.p(this._textGoldPrice.x + this._textGoldPrice.width*this._textGoldPrice.scale/2 + 7, this._textGoldPrice.y));
+
+        this._createButton.addTouchEventListener(function(sender, type) {
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    var status = 0;
+                    if (this._clanStatus) status = 0;
+                    else status = 1;
+                    testnetwork.connector.sendCreateClan(this._fieldName.string, this._iconId - 1, this._fieldDetail.string, status);
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+        }, this);
 
     },
 
@@ -279,7 +304,7 @@ var CreateClan = PopupClan.extend({
             case ccui.Widget.TOUCH_ENDED:
                 this._clanStatus = !this._clanStatus;
                 if(this._clanStatus) this._textClanStatus.setString("Mở");
-                else this._textClanStatus.setString("Xác thực");
+                else this._textClanStatus.setString("Đóng");
                 break;
             case ccui.Widget.TOUCH_CANCELED:
                 break;
@@ -396,12 +421,23 @@ var CreateClan = PopupClan.extend({
         this._fieldDetail.string = "";
         this._clanStatus = true;
         this.changeClanStatus();
-        this._trophyRequire = 200;
+        this._trophyRequire = 0;
         this._textTrophyRequire.setString(this._trophyRequire.toString());
         this.updateFieldDetail();
         this.updateFieldName();
-        if(cf.user._currentCapacityGold < 40000) this._textGoldPrice.setColor(cc.color.RED);
-        else this._textGoldPrice.setColor(cc.color.WHITE);
+        if(cf.user._currentCapacityGold < 40000) {
+            this._createButton.setBright(false);
+            this._createButton.setTouchEnabled(false);
+            this._createButton.setEnabled(false);
+            this._textGoldPrice.setColor(cc.color.RED);
+        }
+        else {
+
+            this._createButton.setBright(true);
+            this._createButton.setTouchEnabled(true);
+            this._createButton.setEnabled(true);
+            this._textGoldPrice.setColor(cc.color.WHITE);
+        }
         this._iconId = 1;
         this._swallowTouch.setEnabled(true);
     },
