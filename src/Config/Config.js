@@ -498,3 +498,10 @@ cf.clan =
     goldBuildClanCastle: 40000,
 
 }
+
+/* Thông tin popUp xây, nâng coin*/
+cf.constructType =
+    {
+        build: 0,
+        upgrade: 1
+    }

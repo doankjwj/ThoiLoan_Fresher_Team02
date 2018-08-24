@@ -106,6 +106,7 @@ var LayerClanChat = cc.Node.extend({
         this.addChild(buttonChat);
         buttonChat.addClickEventListener(function(){
             self.onChat();
+            //self.resetScrollViewChat();
         }.bind(this));
 
         this._layerUserOnline = cc.Sprite(res.clanChatGUI.layerUserOnline);
@@ -164,7 +165,7 @@ var LayerClanChat = cc.Node.extend({
         this._guiButtonClanChat.addClickEventListener(function(){
             var actAppearLayer = cc.MoveBy(0.35, cc.p(self.scale*(self._bg.width + self._layerUserOnline.width) - 5, 0));
             if (!isExpanded){
-                if (self._listItemUserOnline.length == 0) // lần đầu khởi tạo
+                if (self._listItemUserOnline.length === 0) // lần đầu khởi tạo
                     self.initContent();
                 // if (!gv.clanChatEventManager.chatStatusUpdated)
                 //     self.updateChatEvent();
@@ -250,6 +251,13 @@ var LayerClanChat = cc.Node.extend({
             this._scrollviewChat.height = this._bg.height - 115;
             this.addChild(this._scrollviewChat, 1);
         }
+    },
+    resetScrollViewChat: function()
+    {
+        this.removeChild(this._scrollviewChat);
+        this._listItemChat.length = 0;
+        this._listItemChatY = 0;
+        this.initScrollviewChat();
     },
 
     loadChatFromServer:function()
