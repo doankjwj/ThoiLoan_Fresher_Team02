@@ -6,9 +6,12 @@ var TroopButton = ccui.Button.extend({
     _cost: null,
     _costText: null,
     _elixirIcon: null,
+    _space: null,
 
     _bgCost: null,
     _bgCostReq: null,
+
+    _barrackLevelReq: null,
 
     jsonTroopBase: null,
     jsonTroop:  null,
@@ -25,6 +28,8 @@ var TroopButton = ccui.Button.extend({
         this._super(trainingGUI.slotIcon);
 
         var troopID = "ARM_" + id;
+        this._space = this.jsonTroopBase[troopID]["housingSpace"];
+        this._barrackLevelReq = this.jsonTroopBase[troopID]["barracksLevelRequired"];
         this._troopIcon = cc.Sprite(fn.getTroopSprite(id));
         this._cost = this.jsonTroop[troopID][level]["trainingElixir"];
         this._costText = cc.LabelBMFont(this._cost, font.soji20);
@@ -71,8 +76,14 @@ var TroopButton = ccui.Button.extend({
             case ccui.Widget.TOUCH_MOVED:
                 break;
             case ccui.Widget.TOUCH_ENDED:
-                sender.getParent().addTroopToQueue(sender._id);
-                // sender.getParent().logQueue();
+                if(cf.user._currentCapacityElixir >= sender._cost) {
+                    sender.getParent().addTroopToQueue(sender._id);
+                    cf.user._currentCapacityElixir -= sender._cost;
+                    cf.user.distributeResource(false, true, false);
+                    sender.updateButton();
+                } else {
+                    sender.getParent().getParent().popUpMessage("Không đủ tài nguyên");
+                }
                 sender.scale /= 1.05;
                 break;
             case ccui.Widget.TOUCH_CANCELED:
@@ -88,8 +99,11 @@ var TroopButton = ccui.Button.extend({
     },
 
     updateButton: function() {
-        this._cost = this.jsonTroop[troopID][level]["trainingElixir"];
+        var troopID = "ARM_" + this._id;
+        this._cost = this.jsonTroop[troopID][this._level]["trainingElixir"];
         this._costText.setString(this._cost);
+        if(this._cost > cf.user._currentCapacityElixir) this._costText.setColor(cc.color.RED);
+        else this._costText.setColor(cc.color.WHITE);
     }
 
 });
@@ -158,7 +172,7 @@ var queueTroopButton = ccui.Button.extend({
             case 1:
                 this.visible = true;
                 this.x = this.getParent().width*5/7 + 40;
-                break;
+                break;4
             case 2:
                 this.visible = true;
                 this.x = this.getParent().width*4/7;

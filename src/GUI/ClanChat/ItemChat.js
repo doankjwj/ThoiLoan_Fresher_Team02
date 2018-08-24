@@ -84,6 +84,7 @@ var ItemChat = cc.Node.extend({
         line.setPosition(0, this._labelTime.y - 10);
         this.addChild(line);
 
+        /*Sự kiện donate*/
         if (this._type == this.typeDefine.requestDonate){
 
             this._labelMessage.setColor(cc.color(255, 255, 255, 255));
@@ -141,6 +142,9 @@ var ItemChat = cc.Node.extend({
             /* Cập nhật Label và Bar Troop */
             this.onUpdateBarAndLabelTroop();
         }
+
+        /*Sự kiện Event: vào bang, ra bang*/
+
 
         //Kích thước của Item
         if (this._type == this.typeDefine.requestDonate)

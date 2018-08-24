@@ -1,5 +1,5 @@
 var PopupTraining = cc.Layer.extend({
-
+    _barrack: null,
     _barrackID: null,
     _bg: null,
     _colorBG: null,
@@ -22,8 +22,15 @@ var PopupTraining = cc.Layer.extend({
 
     _troopListButton: null,
 
+
+
     _currentTrainingTime: null,
+    _currentTrainingTimeText: null,
     _currentTrainingTimeRequired: null,
+
+    _queueLengthMax: null,
+    _currentQueueLength: null,
+    _queueLengthText: null,
 
     _queueTraining: null,
     _queueTrainingButtonList: null,
@@ -33,8 +40,9 @@ var PopupTraining = cc.Layer.extend({
 
     _bgScale: 2.5,
 
-    ctor: function(){
-        this._barrackID = 0;
+    ctor: function(barID){
+        this._barrackID = barID;
+        this._barrack = cf.user._buildingList[Math.floor(barID/100)-1][barID % 100];
         this._super();
         this.x = cc.winSize.width/2;
         this.y = cc.winSize.height/2;
@@ -47,6 +55,8 @@ var PopupTraining = cc.Layer.extend({
 
         this._queueTraining = {};
         this._queueTrainingButtonList = [];
+        this._currentQueueLength = 0;
+        this._queueLengthMax = gv.json.barrack[gv.buildingSTR.barrack_1][this._barrack._level]["queueLength"];
 
         this.jsonTroopBase = gv.json.troopBase;
         this.jsonTroop = gv.json.troop;
@@ -59,6 +69,33 @@ var PopupTraining = cc.Layer.extend({
 
     updateContent: function() {
         this._txtTitle.setString("Nhà lính số " + (this._barrackID % 100 + 1));
+        this._queueLengthMax = gv.json.barrack[gv.buildingSTR.barrack_1][this._barrack._level]["queueLength"];
+        this._queueLengthText.setString("("+this._currentQueueLength+"/"+this._queueLengthMax+")");
+        for(var i=1; i<=17; i++) {
+            if( i > 10 && i<16) continue;
+            var button = this.getChildByTag(gv.tag.TAG_BUTTON_TROOP*i);
+            if(button._barrackLevelReq > this._barrack._level || this._currentQueueLength + button._space > this._queueLengthMax) {
+                button.setTouchEnabled(false);
+                button.setEnabled(false);
+                button.setBright(false);
+                var act = cc.tintTo(0, 127.5, 127.5, 127.5 );
+                act.retain();
+                button._troopIcon.runAction(act.clone());
+            } else {
+                button.setTouchEnabled(true);
+                button.setEnabled(true);
+                button.setBright(true);
+                var act = cc.tintTo(0, 255, 255, 255);
+                act.retain();
+                button._troopIcon.runAction(act.clone());
+                if(button._cost > cf.user._currentCapacityElixir) {
+                    button._costText.setColor(cc.color.RED);
+                }
+                else button._costText.setColor(cc.color.WHITE);
+            }
+
+        }
+
         if(this._queueTrainingButtonList.length !== 0){
             this._queueArrow.visible = true;
             this._textTime.visible = true;
@@ -66,7 +103,9 @@ var PopupTraining = cc.Layer.extend({
             this._textTimeLabel.visible = true;
             this._bgTrainBar.visible = true;
             this._trainBar.visible = true;
+            this._currentTrainingTimeText.visible = true;
             this._textTimeLabel.setString(cf.secondsToLongTime(this._timeTraining));
+            this._currentTrainingTimeText.setString(cf.secondsToLongTime(this._currentTrainingTime));
             this._currentTrainingTimeRequired = this.jsonTroopBase[fn.getTroopString(this._queueTrainingButtonList[0]._id)]["trainingTime"];
         }
         else {
@@ -76,6 +115,7 @@ var PopupTraining = cc.Layer.extend({
             this._quickFinishButton.visible = false;
             this._bgTrainBar.visible = false;
             this._trainBar.visible = false;
+            this._currentTrainingTimeText.visible = false;
             this._currentTrainingTime = 0;
             this._currentTrainingTimeRequired = 0;
             this._timeTraining = 0;
@@ -84,12 +124,71 @@ var PopupTraining = cc.Layer.extend({
     },
 
     updateStatus: function(){
-
+        if(!this._barrack._isActive) return;
         if(this._timeTraining > 0) this._timeTraining -= 1;
-        if(this._currentTrainingTime > 0 ) this._currentTrainingTime -= 1;
+        if(this._currentTrainingTime > 0 ) {
+            this._currentTrainingTime -= 1;
+            this._trainBar.setScaleX((this._currentTrainingTimeRequired-this._currentTrainingTime)/this._currentTrainingTimeRequired);
+            if (this._currentTrainingTime === 0 && this._queueTrainingButtonList.length !== 0) {
+                this.finishingTroop(this._queueTrainingButtonList[0]._id);
+                this._trainBar.setScaleX(0);
+            }
+        }
+
         this._textTimeLabel.setString(cf.secondsToLongTime(this._timeTraining));
+        this._currentTrainingTimeText.setString(cf.secondsToLongTime(this._currentTrainingTime));
+        // if(this._currentTrainingTime !== 0) cc.log("CURRENT " + this._currentTrainingTime);
 
     },
+
+    finishingTroop: function(id) {
+
+        var key = fn.getTroopString(id);
+        if(!this._queueTraining[key]) return;
+        if(this._queueTraining[key] > 1) {
+            this._queueTraining[key] -= 1;
+            this._queueTrainingButtonList[this.getPosInQueue(id)].updateButton();
+            this._currentTrainingTime = this._currentTrainingTimeRequired;
+        } else {
+            var pos = this.getPosInQueue(id);
+            this.removeAtIndex(pos);
+            this._trainingQueueBackground.removeChildByTag(id, false);
+            delete this._queueTraining[key];
+            this.updateQueueButton();
+            this._currentTrainingTime = this._currentTrainingTimeRequired;
+        }
+        this._currentQueueLength -= this.jsonTroopBase[key]["housingSpace"];
+
+        var armyCamp = this.getAvaiableArmyCamp();
+
+        if(armyCamp === null) {
+
+            cc.log("NOT ENOUGH SPACE");
+            return;
+
+        }
+
+        var troop = new Troop(id-1, this._barrack._row, this._barrack._col, armyCamp._id);
+        // armyCamp._troopQuantity += troop.space
+        armyCamp._troopQuantity += 1;
+        cf.user._listTroop.push(troop);
+
+        this.updateContent();
+    },
+
+    getAvaiableArmyCamp: function(){
+
+        // this._barrack = cf.user._buildingList[Math.floor(barID/100)-1][barID % 100];
+
+        for(var i = 0; i < cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1].length; i++){
+            var amc = cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][i];
+            if(amc._troopQuantity < amc._capacity) return amc;
+        }
+
+        return null;
+
+    },
+
 
     initContent: function() {
 
@@ -126,6 +225,11 @@ var PopupTraining = cc.Layer.extend({
         this._txtTitle.setAnchorPoint(cc.p(0.5, 0.5));
         this._txtTitle.setPosition(cc.p(0, this._bg.height / 2 * this._bgScale - this._txtTitle.height));
         this.addChild(this._txtTitle, 1);
+
+        this._queueLengthText = cc.LabelBMFont("", font.soji20);
+        this._queueLengthText.setAnchorPoint(cc.p(0.5, 0.5));
+        this._queueLengthText.setPosition(this._txtTitle.x, this._txtTitle.y - this._txtTitle.height);
+        this.addChild(this._queueLengthText, 1);
 
         /* Button Close */
         this._btnClose = ccui.Button(res.popUp.btnClose, res.popUp.btnClose);
@@ -183,22 +287,100 @@ var PopupTraining = cc.Layer.extend({
         this._trainBar.setAnchorPoint(cc.p(0.5, 0.5));
         this._bgTrainBar.setAnchorPoint(cc.p(0.5, 0.5));
 
-        this._trainBar.x = this._trainingQueueBackground.width*5/7 + 40;
-        this._trainBar.y = this._quickFinishButton.y;
-        this._trainingQueueBackground.addChild(this._trainBar, 4);
-        this._bgTrainBar.x = this._trainBar.x;
-        this._bgTrainBar.y = this._trainBar.y;
+        this._bgTrainBar.x = this._trainingQueueBackground.width*5/7 + 40;
+        this._bgTrainBar.y = this._quickFinishButton.y;
         this._trainingQueueBackground.addChild(this._bgTrainBar, 3);
+
+        this._trainBar.x = this._bgTrainBar.x - this._trainBar.width/2 + 2.5;
+        this._trainBar.y = this._bgTrainBar.y;
+        this._trainBar.setScaleX(0);
+        this._trainBar.setAnchorPoint(cc.p(0, 0.5));
+        this._trainingQueueBackground.addChild(this._trainBar, 4);
+
+        this._currentTrainingTimeText = cc.LabelBMFont("", font.soji20);
+        this._currentTrainingTimeText.setAnchorPoint(cc.p(0.5, 0.5));
+        this._currentTrainingTimeText.scale = 0.5;
+        this._currentTrainingTimeText.setPosition(cc.p(this._bgTrainBar.x, this._bgTrainBar.y - this._bgTrainBar.height/2));
+        this._trainingQueueBackground.addChild(this._currentTrainingTimeText, 5);
+
+        this._previousBarrack = ccui.Button(trainingGUI.previousIcon);
+        this._previousBarrack.setAnchorPoint(cc.p(0.5, 0.5));
+        this._previousBarrack.setPosition(cc.p(this._bg.x - this._bg.width*this._bg.scale/2 - 20, this._bg.y));
+        this.addChild(this._previousBarrack, 1);
+
+        this._previousBarrack.addTouchEventListener(function(sender, type) {
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    var barrackListSize = cf.user._buildingListCount[this._barrack._orderInUserBuildingList];
+                    var previousBarrackID = (this._barrackID % 100 - 1);
+                    while(previousBarrackID < 0) previousBarrackID += barrackListSize;
+                    previousBarrackID =  previousBarrackID % barrackListSize;
+                    var previousBarrackFullID = this._barrackID - this._barrackID%100 + previousBarrackID;
+                    var previousBarrack = cf.user._buildingList[Math.floor(previousBarrackFullID/ 100) - 1][previousBarrackFullID % 100];
+                    // cc.log(previousBarrack)
+                    while(!previousBarrack._isActive){
+                        previousBarrackID -= 1;
+                        previousBarrackFullID = this._barrackID - this._barrackID%100 + previousBarrackID;
+                        previousBarrack = cf.user._buildingList[Math.floor(previousBarrackFullID/ 100) - 1][previousBarrackFullID % 100];
+                    }
+
+                    this.getParent().getChildByTag(previousBarrackID * gv.tag.TAG_POPUP_TRAINING).onAppear();
+                    this.onDisappear();
+
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+        }, this);
+
+        this._nextBarrack = ccui.Button(trainingGUI.forwardIcon);
+        this._nextBarrack.setAnchorPoint(cc.p(0.5, 0.5));
+        this._nextBarrack.setPosition(cc.p(this._bg.x + this._bg.width*this._bg.scale/2 + 20, this._bg.y));
+        this.addChild(this._nextBarrack, 1);
+
+        this._nextBarrack.addTouchEventListener(function(sender, type) {
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    var barrackListSize = cf.user._buildingListCount[this._barrack._orderInUserBuildingList];
+                    var nextBarrackID = (this._barrackID % 100 + 1);
+                    // while(nextBarrackID < 0) nextBarrackID += barrackListSize;
+                    nextBarrackID =  nextBarrackID % barrackListSize;
+                    var nextBarrackFullID = this._barrackID - this._barrackID%100 + nextBarrackID;
+                    var nextBarrack = cf.user._buildingList[Math.floor(nextBarrackFullID/ 100) - 1][nextBarrackFullID % 100];
+
+                    while(!nextBarrack._isActive){
+                        nextBarrackID += 1;
+                        nextBarrackFullID = this._barrackID - this._barrackID%100 + nextBarrackID;
+                        nextBarrack = cf.user._buildingList[Math.floor(nextBarrackFullID/ 100) - 1][nextBarrackFullID % 100];
+                    }
+
+                    this.getParent().getChildByTag(nextBarrackID * gv.tag.TAG_POPUP_TRAINING).onAppear();
+                    this.onDisappear();
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+        }, this);
+
+
+
     },
 
     initTroopListButton: function() {
 
         for(var i=1; i<=17; i++) {
             if( i > 10 && i<16) continue;
-
             var button = new TroopButton(i);
             button.scale = 1.2;
-            this.addChild(button, 2);
+            this.addChild(button, 2, gv.tag.TAG_BUTTON_TROOP*i);
             if (i <= 6 ) {
                 button.x = -this._bg.width * this._bgScale / 2 + i * button.width * button.scale + 5;
                 button.y = this._trainingQueueBackground.y - button.height * button.scale / 2 - 20;
@@ -211,7 +393,16 @@ var PopupTraining = cc.Layer.extend({
                 button.x = -this._bg.width*this._bgScale/2 + j*button.width*button.scale + 5;
                 button.y = this._trainingQueueBackground.y - button.height * button.scale / 2 - 20 - button.height * button.scale;
             }
+            if(button._barrackLevelReq > this._barrack._level) {
 
+                button.setTouchEnabled(false);
+                button.setEnabled(false);
+                button.setBright(false);
+                var act = cc.tintTo(0, 127.5, 127.5, 127.5 );
+                act.retain();
+                button._troopIcon.runAction(act.clone());
+
+            }
         }
     },
 
@@ -254,6 +445,7 @@ var PopupTraining = cc.Layer.extend({
             var size = this.getQueueSize();
             this._queueTraining[key] = 1;
             var button = new queueTroopButton(id);
+            button.scale = 1.5;
             button.setTag(id);
             this._trainingQueueBackground.addChild(button, 2);
             this._queueTrainingButtonList.push(button);
@@ -265,7 +457,7 @@ var PopupTraining = cc.Layer.extend({
             this._queueTraining[key] += 1;
             this._queueTrainingButtonList[this.getPosInQueue(id)].updateButton();
         }
-
+        this._currentQueueLength += this.jsonTroopBase[key]["housingSpace"];
         this._timeTraining += this.jsonTroopBase[fn.getTroopString(id)]["trainingTime"];
         this.updateContent();
     },
@@ -298,15 +490,20 @@ var PopupTraining = cc.Layer.extend({
         if(this._queueTraining[key] > 1) {
             this._queueTraining[key] -= 1;
             this._queueTrainingButtonList[this.getPosInQueue(id)].updateButton();
+            this._timeTraining -= this.jsonTroopBase[fn.getTroopString(id)]["trainingTime"];
         } else {
             var pos = this.getPosInQueue(id);
             this.removeAtIndex(pos);
             this._trainingQueueBackground.removeChildByTag(id, false);
             delete this._queueTraining[key];
             this.updateQueueButton();
-            if(pos === 0) this._currentTrainingTime = this._currentTrainingTimeRequired;
+            this._trainBar.setScaleX(0);
+            if(pos === 0) {
+                this._timeTraining -= this._currentTrainingTime;
+                this._currentTrainingTime = this._currentTrainingTimeRequired;
+            }
         }
-        this._timeTraining -= this.jsonTroopBase[fn.getTroopString(id)]["trainingTime"];
+        this._currentQueueLength -= this.jsonTroopBase[key]["housingSpace"];
         this.updateContent();
     },
 

@@ -71,7 +71,7 @@
 
     initClan: function(){
            //testnetwork.connector.sendCreateClan("Clan 02 Fresher GSN", 26, "Bá chủ Thiên Hà", 0);
-           //testnetwork.connector.sendJoinClan(0);
+           // testnetwork.connector.sendJoinClan(0);
     },
 
     init: function() {
@@ -103,6 +103,8 @@
 
         this._usernameField = new ccui.TextField();
         this._usernameField .setTouchEnabled(true);
+        this._usernameField.setMaxLength(10);
+        this._usernameField.setMaxLengthEnabled(true);
         //this._usernameField.setFontName(font.soji20);
         this._usernameField .fontName = "Arial";
         this._usernameField .setPlaceHolder("Username:");
@@ -114,6 +116,8 @@
 
         this._passwordField = new ccui.TextField();
         this._passwordField.setTouchEnabled(true);
+        this._passwordField.setMaxLength(10);
+        this._passwordField.setMaxLengthEnabled(true);
         this._passwordField.fontName = "Arial";
         this._passwordField.setPlaceHolder("Password: Empty");
         this._passwordField.fontSize = 30;
@@ -235,9 +239,6 @@
         this.addResourceBar();
         this.addUserBar();
         this.addBuilderBar();
-
-        this._popUpTraining = new PopupTraining();
-        this.addChild(this._popUpTraining, 1, gv.tag.TAG_POPUP_TRAINING);
 
         this._popUp = new PopUpConstruct();
         this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
@@ -619,8 +620,26 @@
         this.addChild(this._guiButtonClan, 2, this._TAG_BUTTON_CLAN);
         this._guiButtonClan.addClickEventListener(function(){
             cc.log("Click On clan");
-            self.onPopUpClan();
+            //self.onPopUpClan();
+            //self.hideListBotButton();
+
+            //
+
             self.hideListBotButton();
+            if (gv.building_selected === undefined) return;
+            var building = cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)];
+            if (building._isActive === false) return;
+
+            if(self.getChildByTag(gv.tag.TAG_CLAN_JOIN) === null) {
+                var popupClan = new JoinClan();
+                popupClan.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
+                this.addChild(popupClan, 1, gv.tag.TAG_CLAN_JOIN);
+                popupClan.onAppear();
+            } else self.getChildByTag(gv.tag.TAG_CLAN_JOIN).onAppear();
+
+
+
+
         }.bind(this));
 
         /* Eventtttttttttttttt */
@@ -764,7 +783,15 @@
             if (order === orderBuilderHut) return;
             if (building._isActive === false) return;
 
-            self.getChildByTag(gv.tag.TAG_POPUP_TRAINING).onAppear();
+            if(this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING) === null) {
+                var popupTraining = new PopupTraining(gv.building_selected);
+                this.addChild(popupTraining, 1, gv.tag.TAG_POPUP_TRAINING*(gv.building_selected%100));
+                popupTraining.onAppear();
+            }
+            else {
+                var popup = this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING);
+                popup.onAppear();
+            }
 
         }.bind(this));
 
@@ -783,11 +810,11 @@
     },
     onPopUpClan: function()
     {
-        this.removeChild(this._popUpClan);
-        this._popUpClan = new PopUpClan();
-        this._popUpClan.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
-        this.addChild(this._popUpClan, 1);
-        this._popUpClan.onAppear();
+        //this.removeChild(this._popUpClan);
+        //this._popUpClan = new PopUpClan();
+        //this._popUpClan.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
+        //this.addChild(this._popUpClan, 1);
+        //this._popUpClan.onAppear();
     },
     onPopUpRequestDonate: function()
     {

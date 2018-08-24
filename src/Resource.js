@@ -77,7 +77,10 @@ var res = {
 
 var font = {
 
-    soji20: fontFolder + "soji_20.fnt"
+    soji20: fontFolder + "soji_20.fnt",
+    soji12: fontFolder + "soji_12.fnt",
+    fista16: fontFolder + "fista_16_non.fnt",
+
 
 };
 
@@ -137,6 +140,14 @@ res.clanGUI = {
     buttonTraThu: folderClan + "button _ tra thu.png",
     buttonXemLai: folderClan + "button _xem lai.png",
 
+    iconClan: folderClan +  "icon bang hoi.png",
+    slotBackground: folderClan + "slost nen 2.png",
+    bg: folderClan + "nen 1.png",
+    flagOpen: folderClan + "co 1.png",
+    flagClose: folderClan + "co 2.png",
+    buttonBG: folderClan + "o duoi.png",
+    buttonBGClose: folderClan + "o duoi 1.png",
+    clanItemBackground: folderClan + "slost.png",
 };
 
 var shopGUI = {

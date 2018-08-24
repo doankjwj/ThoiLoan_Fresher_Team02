@@ -275,8 +275,17 @@ gv.tag =
         TAG_RESOURCE_BAR_COIN: 1904,
         TAG_POPUP: 2000,
         TAG_POPUP_MESSAGE: 2001,
+        TAG_POPUP_RESEARCH_TROOP: 3421,
         TAG_POPUP_TRAINING: 1890,
-        TAG_POPUP_RESEARCH_TROOP: 3421
+        TAG_BUTTON_TROOP: 1905,
+        TAG_CLAN_JOIN: 1906,
+        TAG_CLAN_SEARCH: 1907,
+        TAG_CLAN_CREATE: 1908,
+        TAG_CLAN_MEMBER: 1909,
+        TAG_BUTTON_SEARCH_BY_NAME: 10,
+        TAG_BUTTON_SEARCH_BY_ID: 11,
+        TAG_ICON_CLAN_LAYER: 12,
+        TAG_CLAN_DETAIL: 13,
     };
 /* Pop Up */
 gv.popUpConstruct = null;

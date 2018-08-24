@@ -61,5 +61,12 @@ var Barrack = BuildingNode.extend({
             cf.animationBarrack[tmpLevel] = fn.getAnimation("effect_barrack_1_" + tmpLevel + " ", 1, 6);
             cf.animationBarrack[tmpLevel].retain();
         }
+    },
+    getTrainingLayer: function(){
+
+        var layer = new PopupTraining(this._id);
+        layer.setTag((this._id%100)*gv.tag.TAG_POPUP_TRAINING);
+        return layer;
+
     }
 })

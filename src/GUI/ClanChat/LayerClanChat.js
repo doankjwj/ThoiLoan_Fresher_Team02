@@ -264,6 +264,8 @@ var LayerClanChat = cc.Node.extend({
     {
         cc.log("CHAT RECEIVED: " + JSON.stringify(gv.clanChat.jsonLoad));
         if (!this._listItemChat) this._listItemChat = [];
+
+        /*Chat Text*/
         var allChat = gv.clanChat.jsonLoad["chatText"];
         var jsonItem = null;
         for (var i=0; i<allChat.length; i++){
@@ -274,6 +276,7 @@ var LayerClanChat = cc.Node.extend({
         }
         this._clanChatLoaded ++;
 
+        /*Chat Donate*/
         var allDonate = gv.clanChat.jsonLoad["donate"];
         for (var i = 0; i < allDonate.length; i += 1)
         {
@@ -292,6 +295,9 @@ var LayerClanChat = cc.Node.extend({
             itemClanChat.retain();
             this._listItemChat.push(itemClanChat);
         }
+
+        /*Event Clan: Mời, bổ nhiệm, kick, ..*/
+        //var autoSetLeader = gv.clanChat.jsonLoad("autoSetLeader");
         this._clanChatLoaded ++;
         this.onCombileChatFromServer();
     },
