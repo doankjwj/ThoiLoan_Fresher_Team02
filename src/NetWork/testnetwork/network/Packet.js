@@ -1163,7 +1163,7 @@ testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT] = fr.InPacket.extend({
             }
         }
         gv.clanChat.jsonLoad = this;
-        gvGUI.layerClanChat.loadChatFromServer();
+        //gvGUI.layerClanChat.loadChatFromServer();
     }
 });
 // Nhận lịch sử Chat

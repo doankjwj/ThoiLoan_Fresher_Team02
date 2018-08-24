@@ -14,6 +14,11 @@ var ClanCastle = BuildingNode.extend({
     _currentHousingSpace: null,
     _troopReceive: [],
 
+
+    /*Cờ và tên Clan*/
+    _iconFlag: null,
+    _labelName: null,
+
     ctor: function(id, level, row, col, existed, isActive){
         this._buildingSTR = gv.buildingSTR.clanCastle;
         this._orderInUserBuildingList = gv.orderInUserBuildingList.clanCastle;
@@ -94,5 +99,31 @@ var ClanCastle = BuildingNode.extend({
     updateAnim: function()
     {
 
+    },
+
+    updateNameAndFlag: function(boo)
+    {
+        var clanFlag = gv.clanChat.jsonLoad["clanFlag"] + 1;
+        if (!this._iconFlag)
+        {
+            this._iconFlag = cc.Sprite("res/Art/Bang hoi/icon bieu tuong/" + (clanFlag) + ".png");
+            this._iconFlag.scale = 1.5;
+            this._iconFlag.setPosition(0, 40);
+            this.addChild(this._iconFlag, 20);
+        };
+        var clanName = gv.clanChat.jsonLoad["clanName"];
+        if (!this._labelName)
+        {
+            this._labelName = cc.LabelBMFont(clanName, font.soji20);
+            this._labelName.scale = 1.5;
+            this._labelName.setPosition(0, 100);
+            this.addChild(this._labelName, 20);
+        };
+
+        this._iconFlag.visible = boo;
+        this._labelName.visible = boo;
+
+        fn.replaceSpriteImage(this._iconFlag, "res/Art/Bang hoi/icon bieu tuong/" + (clanFlag) + ".png")
+        this._labelName.setString(clanName);
     }
 })
