@@ -136,11 +136,18 @@ var LayerClanChat = cc.Node.extend({
     },
 
     /*Cập nhật ảnh và Tên Clan*/
-    onUpdateClanInfo: function()
+    onUpdateClanInfo: function(boo)
     {
         this._labelClanName.setString(gv.clanChat.jsonLoad["clanName"]);
         var clanFlag = gv.clanChat.jsonLoad["clanFlag"];
         fn.replaceSpriteImage(this._iconClan, "res/Art/Bang hoi/icon bieu tuong/" + (clanFlag+1) + ".png");
+        this.visibleInfo(boo)
+    },
+    visibleInfo: function(boo)
+    {
+        this._labelClanName.visible = boo;
+        this._iconClan.visible = boo;
+        this._labelMemberOnline.visible = boo;
     },
     initListenerAppear: function(){
         this._bgNull = cc.Sprite(cc.tmp_effect);
@@ -576,6 +583,7 @@ var LayerClanChat = cc.Node.extend({
         var jsonMemberOffline = gv.clanChat.jsonUserOnline["listMemberOffline"];
         for (var i = 0; i < this._memberOfflineQuantity; i++) {
             var itemUserOffline = new ItemUserOnline(i, jsonMemberOffline[i], false);
+            itemUserOffline.retain();
             this._listItemUserOnline.push(itemUserOffline);
         }
         ;

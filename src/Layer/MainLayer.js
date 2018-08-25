@@ -425,6 +425,7 @@
         if (!gvGUI.layerClanChat)
         {
             gvGUI.layerClanChat = new LayerClanChat();
+            gvGUI.layerClanChat.visibleInfo(false);
             gvGUI.layerClanChat.scale = cc.winSize.height/gvGUI.layerClanChat._bg.height;
             gvGUI.layerClanChat.setPosition(- gvGUI.layerClanChat.scale*(gvGUI.layerClanChat._bg.width + gvGUI.layerClanChat._layerUserOnline.width) + 5, 0);
             gvGUI.layerClanChat.retain();
