@@ -48,12 +48,13 @@ testnetwork.Connector = cc.Class.extend({
                 break;
             case gv.CMD.RECEIVE_LOAD_CLAN_CHAT:                                                 /*Nhận lịch sử chat*/
                 gvGUI.layerClanChat.loadChatFromServer();
-                gvGUI.layerClanChat.onUpdateClanInfo();
+                gvGUI.layerClanChat.onUpdateClanInfo(true);
                 cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].updateNameAndFlag(true);
                 cf.user._clanId = gv.clanChat.jsonLoad["clanId"];
                 break;
             case gv.CMD.RECEIVE_LOAD_USER_ONLINE:                                               /*Nhận danh sách user online*/
                 gvGUI.layerClanChat.loadUserOnlineFromServer();
+                gvGUI.layerClanChat.onUpdateClanInfo(true);
                 break;
             case gv.CMD.BROADCAST_USER_ONLINE_CHANGE:                                           /*Nhận thông tin 1 user online-> offline, ngược lại*/
                 gvGUI.layerClanChat.updateStatusUserOnlineChange();
