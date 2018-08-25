@@ -86,6 +86,11 @@ gv.clanChat={
         "đã thay đổi thông tin bang hội",
         "đã tạo Bang"],
     colorArr: [0, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+    eventType:
+    {
+        joinClan: 5,
+        leaveClan: 6,
+    }
 };
 
 // Time Offset

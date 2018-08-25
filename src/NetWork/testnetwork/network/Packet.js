@@ -53,7 +53,6 @@ gv.CMD.REQUEST_QUIT_CLAN = 3012;
 gv.CMD.REQUEST_JOIN_CLAN = 3011;
 
 gv.CMD.REQUEST_USER_CLAN = 3101;
-gv.CMD.RECEIVE_USER_CLAN = 3101;
 
 
 gv.CMD.SEND_SEARCH_BY_NAME = 3105;
@@ -1148,7 +1147,6 @@ testnetwork.packetMap[gv.CMD.BROADCAST_CLAN_EVENT] = fr.InPacket.extend
         this._super();
     },
     readData: function () {
-        cc.log("step 1: " + JSON.stringify(this));
         this.eventType = this.getByte();
         switch (this.eventType) {
             case 0://Hệ thống bổ nhiệm bang chủ
@@ -1166,7 +1164,6 @@ testnetwork.packetMap[gv.CMD.BROADCAST_CLAN_EVENT] = fr.InPacket.extend
                 //7: Kick
                 this.userName = this.getString();
                 this.target = this.getString();
-                cc.log("step 3: " + JSON.stringify(this));
         }
         this.isRed = (this.eventType === 6 || this.eventType === 7);
         this.text = null;

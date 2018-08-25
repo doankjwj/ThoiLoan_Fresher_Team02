@@ -148,7 +148,7 @@
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "quanleanh";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
         gv.passwordSendToServer = this._passwordField.string;
 
         gv.gameClient.connect();

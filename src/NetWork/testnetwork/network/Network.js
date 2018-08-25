@@ -33,30 +33,29 @@ testnetwork.Connector = cc.Class.extend({
                 fr.getCurrentScreen().updateMove(packet.x, packet.y);
                 break;
 
-            case gv.CMD.BROADCAST_CHAT_TEXT:
+            case gv.CMD.BROADCAST_CHAT_TEXT:                                                    /*Nhận broadcast 1 tin nhắn text*/
                 gvGUI.layerClanChat.onReceiveChatText();
                 break;
-            case gv.CMD.BROADCAST_REQUEST_DONATE:
+            case gv.CMD.BROADCAST_REQUEST_DONATE:                                               /*Nhận broadcast 1 tin nhắn xin quân*/
                 gvGUI.layerClanChat.onReceiveChatDonate();
                 break;
-            case gv.CMD.BROADCAST_CLAN_EVENT:
+        case gv.CMD.BROADCAST_CLAN_EVENT:                                                       /*Nhận broadcast 1 tin Sự kiện bang hội*/
                 gvGUI.layerClanChat.onReceiveEvent();
                 break;
-            case gv.CMD.BROADCAST_DONATE:
+            case gv.CMD.BROADCAST_DONATE:                                                       /*Nhận broadcast 1 tin nhắn cho quân*/
                 gvGUI.layerClanChat.onReceiveDonate();
                 cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].addTroop();
                 break;
-            case gv.CMD.RECEIVE_LOAD_CLAN_CHAT:
+            case gv.CMD.RECEIVE_LOAD_CLAN_CHAT:                                                 /*Nhận lịch sử chat*/
                 gvGUI.layerClanChat.loadChatFromServer();
                 gvGUI.layerClanChat.onUpdateClanInfo();
                 cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].updateNameAndFlag(true);
                 cf.user._clanId = gv.clanChat.jsonLoad["clanId"];
                 break;
-
-            case gv.CMD.RECEIVE_LOAD_USER_ONLINE:
+            case gv.CMD.RECEIVE_LOAD_USER_ONLINE:                                               /*Nhận danh sách user online*/
                 gvGUI.layerClanChat.loadUserOnlineFromServer();
                 break;
-            case gv.CMD.BROADCAST_USER_ONLINE_CHANGE:
+            case gv.CMD.BROADCAST_USER_ONLINE_CHANGE:                                           /*Nhận thông tin 1 user online-> offline, ngược lại*/
                 gvGUI.layerClanChat.updateStatusUserOnlineChange();
                 break;
             case gv.CMD.USER_ERROR:
