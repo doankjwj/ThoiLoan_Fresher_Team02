@@ -90,6 +90,7 @@ gv.clanChat={
     {
         joinClan: 5,
         leaveClan: 6,
+        kicked: 7,
     }
 };
 
@@ -104,6 +105,8 @@ gv.suggestList = null;
 
 gv.userClanInfo = null;
 gv.userClan = null;
+
+gv.clanMemberList = null;
 
 gv.searchResult = {
     byID: null,

@@ -144,6 +144,17 @@ var PopupTraining = cc.Layer.extend({
     finishingTroop: function(id) {
 
         var key = fn.getTroopString(id);
+
+        if(this.getAvailableSlot() >= this.jsonTroopBase[key]["housingSpace"]) {
+            var amc = this.getArmycamp();
+            if (amc._troopList == null)
+                amc._troopList = new Array();
+            var troop = new Troop(id, this._barrack._row + 2, this._barrack._col + 2, amc._id);
+            this.getParent()._map.addChild(troop);
+            amc._troopList.push(troop);
+            amc._troopQuantity += gv.json.troopBase["ARM_" + (i + 1)]["housingSpace"];
+        }
+
         if(!this._queueTraining[key]) return;
         if(this._queueTraining[key] > 1) {
             this._queueTraining[key] -= 1;
@@ -157,38 +168,43 @@ var PopupTraining = cc.Layer.extend({
             this.updateQueueButton();
             this._currentTrainingTime = this._currentTrainingTimeRequired;
         }
+
         this._currentQueueLength -= this.jsonTroopBase[key]["housingSpace"];
-
-        var armyCamp = this.getAvaiableArmyCamp();
-
-        if(armyCamp === null) {
-
-            cc.log("NOT ENOUGH SPACE");
-            return;
-
-        }
-
-        var troop = new Troop(id-1, this._barrack._row, this._barrack._col, armyCamp._id);
-        // armyCamp._troopQuantity += troop.space
-        armyCamp._troopQuantity += 1;
-        cf.user._listTroop.push(troop);
 
         this.updateContent();
     },
 
-    getAvaiableArmyCamp: function(){
+    getAvailableSlot: function(){
 
-        // this._barrack = cf.user._buildingList[Math.floor(barID/100)-1][barID % 100];
-
+        var slot = 0;
         for(var i = 0; i < cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1].length; i++){
             var amc = cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][i];
-            if(amc._troopQuantity < amc._capacity) return amc;
+            slot += amc.getMaxSpace() - amc._troopQuantity;
         }
-
-        return null;
+        return slot;
 
     },
 
+    getArmycamp: function(){
+
+        var firstArmyCamp = cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][0];
+        var maxSpacePercent = firstArmyCamp.getAvailableSpace() * 100 / firstArmyCamp.getMaxSpace();
+        var output = 0;
+        for (var i = 1; i < cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1]; i += 1)
+        {
+            var thisArmyCamp = cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][i];
+            if (thisArmyCamp.getMaxSpace() > 0)
+            {
+                var thisArmyCampAvailableSpacePercent = thisArmyCamp.getAvailableSpace() * 100 / thisArmyCamp.getMaxSpace();
+                if (thisArmyCampAvailableSpacePercent > maxSpacePercent)
+                {
+                    maxSpacePercent = thisArmyCampAvailableSpacePercent;
+                    output = i;
+                }
+            }
+        }
+        return cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][output];
+    },
 
     initContent: function() {
 

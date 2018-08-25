@@ -148,7 +148,7 @@
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "quanleanh";
         gv.passwordSendToServer = this._passwordField.string;
 
         gv.gameClient.connect();
@@ -645,17 +645,18 @@
                 else self.getChildByTag(gv.tag.TAG_CLAN_JOIN).onAppear();
             }
             else {
+
                 testnetwork.connector.sendGetUserClan();
+
+                if(gv.clanMemberList === null) testnetwork.connector.sendGetMemberList(gv.userClan.id);
                 var clanDetail;
                 if(self.getChildByTag(gv.tag.TAG_CLAN_DETAIL) === null) {
                     clanDetail = new ClanDetail();
                     clanDetail.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
                     this.addChild(clanDetail, 1, gv.tag.TAG_CLAN_DETAIL);
-                    clanDetail.onAppear(gv.userClan);
                 } else clanDetail = self.getChildByTag(gv.tag.TAG_CLAN_DETAIL);
 
                 clanDetail.onAppear(gv.userClan);
-                // cc.log("OPEN MY CLAN LAYER");
             }
 
         }.bind(this));

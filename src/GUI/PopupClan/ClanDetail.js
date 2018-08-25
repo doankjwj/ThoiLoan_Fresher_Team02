@@ -27,6 +27,9 @@ var ClanDetail = PopupClan.extend({
     _buttonOpenMemberList: null,
 
     _buttonJoinClan: null,
+    _buttonQuitClan: null,
+
+    _warningText: null,
 
     _clan: null,
 
@@ -212,8 +215,37 @@ var ClanDetail = PopupClan.extend({
                 case ccui.Widget.TOUCH_ENDED:
                     testnetwork.connector.sendJoinClan(this._clan.id);
                     cf.user._clanId = this._clan.id;
-                    testnetwork.connector.sendGetUserClan();
+                    // testnetwork.connector.sendGetMemberList(this._clan.id);
+                    this.onDisappear();
                     this.updateInfo();
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+
+        }, this);
+
+
+        this._buttonQuitClan = ccui.Button(folderClan + "button _ tra thu.png");
+        this._buttonQuitClan.setZoomScale(0.01);
+
+        this._bg.addChild(this._buttonQuitClan, 1);
+        this._buttonQuitClan.setPosition(cc.p(this._buttonOpenMemberList.x + this._bg.width/2, this._buttonOpenMemberList.y));
+
+        this._buttonQuitClan.addTouchEventListener(function(sender, type) {
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    cf.user._clanId = -1;
+                    testnetwork.connector.sendQuitClan();
+                    cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].updateNameAndFlag(false);
+                    var date = new Date();
+                    date.setHours(date.getHours() + 2);
+                    cf.user._timeFinishClanPenalty = date;
+                    this.onDisappear();
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;
@@ -225,6 +257,19 @@ var ClanDetail = PopupClan.extend({
         text7.scale = 0.5;
         this._buttonJoinClan.addChild(text7);
         text7.setPosition(cc.p(this._buttonJoinClan.width/2, this._buttonJoinClan.height/2));
+
+        var text8 = cc.LabelBMFont("RỜI BANG", font.soji20);
+        text8.scale = 0.5;
+        this._buttonQuitClan.addChild(text8);
+        text8.setPosition(cc.p(this._buttonQuitClan.width/2, this._buttonQuitClan.height/2));
+
+        this._warningText = cc.LabelBMFont("Ra nhập bang sau: ", font.fista16);
+        this._warningText.setColor(cc.color.RED);
+        this._bg.addChild(this._warningText, 1);
+        this._warningText.setPosition(cc.p(this._buttonQuitClan.x, this._buttonQuitClan.y + this._buttonQuitClan.height/2 + 10));
+        this._warningText.visible = false;
+
+        this._buttonQuitClan.visible = false;
 
         this.initTouch();
     },
@@ -261,10 +306,24 @@ var ClanDetail = PopupClan.extend({
         this._textClanId.setPosition(cc.p(this._bg.getChildByTag(TAG_TEXT_REQ).x + 170, this._textName.y - this._textName.height));
         this._textClanStatus.setPosition(cc.p(this._bg.getChildByTag(TAG_TEXT_REQ).x + 170, this._textTrophy.y - this._textTrophy.height));
 
-        if(this._clan.status === 1 || cf.user._clanId !== -1) {
+        var now = new Date();
+
+        var boo = false;
+
+        if(cf.user._timeFinishClanPenalty !== null) {
+             boo = now.getTime() < cf.user._timeFinishClanPenalty.getTime();
+        }
+
+        if(this._clan.status === 1 || cf.user._clanId !== -1 || boo) {
             this._buttonJoinClan.setBright(false);
             this._buttonJoinClan.setTouchEnabled(false);
             this._buttonJoinClan.setEnabled(false);
+            if(boo){
+                var timeDiff = Math.ceil((cf.user._timeFinishClanPenalty.getTime() - now.getTime())/1000);
+                this._warningText.setString("Ra nhập bang mới sau: " + cf.secondsToLongTime(timeDiff));
+                this._warningText.setPosition(cc.p(this._buttonQuitClan.x, this._buttonQuitClan.y + this._buttonQuitClan.height/2 + 10));
+                this._warningText.visible = true;
+            } else this._warningText.visible = false;
         } else {
             this._buttonJoinClan.setBright(true);
             this._buttonJoinClan.setTouchEnabled(true);
@@ -337,10 +396,18 @@ var ClanDetail = PopupClan.extend({
     onAppear: function(clan) {
         this._clan = clan;
 
-        if(cf.user._clanId !== -1) {
-            this._textJoin.setString("BANG HỘI\nCỦA TÔI");
-        }
+        testnetwork.connector.sendGetMemberList(this._clan.id);
 
+        if(cf.user._clanId === this._clan.id) {
+            this._textJoin.setString("BANG HỘI\nCỦA TÔI");
+            this._buttonJoinClan.visible = false;
+            this._buttonQuitClan.visible = true;
+        }
+        else {
+            this._textJoin.setString("THÔNG TIN\nBANG HỘI");
+            this._buttonJoinClan.visible = true;
+            this._buttonQuitClan.visible = false;
+        }
         // if(this.getChildByTag(99)) this.getChildByTag(99).visible = false;
         // cc.log(this._listUserVisualization.x + " " + this._listUserVisualization.y);
         this.updateInfo();

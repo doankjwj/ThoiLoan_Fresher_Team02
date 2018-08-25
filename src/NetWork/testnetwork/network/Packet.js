@@ -43,7 +43,6 @@ gv.CMD.RECEIVE_LOAD_CLAN_CHAT = gv.CMD.SEND_LOAD_CLAN_CHAT;
 //gv.CMD.RECEIVE_LOAD_CLAN_CHAT_DONATE = 2258;//Server chua lam
 //gv.CMD.RECEIVE_LOAD_CLAN_CHAT_EVENT = 2259;//Server chua lam
 
-
 gv.CMD.REQUEST_CLAN_DATA = 3101;
 gv.CMD.RECEIVE_CLAN_DATA = gv.CMD.REQUEST_CLAN_DATA;
 gv.CMD.REQUEST_CLAN_MEMBER_DATA = 3102;
@@ -53,6 +52,7 @@ gv.CMD.REQUEST_QUIT_CLAN = 3012;
 gv.CMD.REQUEST_JOIN_CLAN = 3011;
 
 gv.CMD.REQUEST_USER_CLAN = 3101;
+gv.CMD.RECEIVE_USER_CLAN = 3101;
 
 
 gv.CMD.SEND_SEARCH_BY_NAME = 3105;
@@ -66,6 +66,7 @@ gv.CMD.RECEIVE_SUGGEST_CLAN = 3106;
 gv.CMD.USER_ERROR = 2999;
 gv.CMD.CLAN_ERROR = 3999;
 
+gv.CMD.REQUEST_KICK_USER = 3021;
 
 testnetwork = testnetwork || {};
 testnetwork.packetMap = {};
@@ -89,6 +90,7 @@ CmdSendHandshake = fr.OutPacket.extend(
         }
     }
 );
+
 CmdSendUserInfo = fr.OutPacket.extend(
     {
         ctor: function () {
@@ -103,6 +105,35 @@ CmdSendUserInfo = fr.OutPacket.extend(
     }
 );
 
+CmdSendKickUser = fr.OutPacket.extend({
+
+    ctor: function () {
+        this._super();
+        this.initData(100);
+        this.setCmdId(gv.CMD.REQUEST_KICK_USER);
+    },
+    pack: function (name) {
+        this.packHeader();
+        this.putString(name);
+        this.updateSize();
+    }
+
+});
+
+CmdSendGetMemberList = fr.OutPacket.extend({
+
+    ctor: function () {
+        this._super();
+        this.initData(100);
+        this.setCmdId(gv.CMD.REQUEST_CLAN_MEMBER_DATA);
+    },
+    pack: function (id) {
+        this.packHeader();
+        this.putInt(id);
+        this.updateSize();
+    }
+
+});
 CmdSendLogin = fr.OutPacket.extend(
     {
         ctor: function () {
@@ -964,9 +995,9 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend(
             }
 
             this.player.clanId = this.getInt();
-            if (this.player.clanId == -1) {
+            if (this.player.clanId === -1) {
                 this.player.timeFinishClanPenalty = this.getLong();
-                if (this.player.timeFinishClanPenalty != 0) this.player.timeFinishClanPenalty -= gv.timeOffset.userInfo;
+                if (this.player.timeFinishClanPenalty !== 0) this.player.timeFinishClanPenalty -= gv.timeOffset.userInfo;
             }
             gv.jsonInfo = this;
             cc.log(JSON.stringify(this));
@@ -1331,6 +1362,7 @@ testnetwork.packetMap[gv.CMD.RECEIVE_CLAN_MEMBER_DATA] = fr.InPacket.extend
             this.memberList[i].trophy = this.getInt();
             this.memberList[i].authority = this.getByte(); //0 = Leader. 2 = member
         }
+        gv.clanMemberList = this.memberList;
         cc.log(JSON.stringify(this));
     }
 });
@@ -1419,9 +1451,10 @@ testnetwork.packetMap[gv.CMD.RECEIVE_USER_CLAN] = fr.InPacket.extend
         this.authenticationType = this.getByte();
         this.memberCount = this.getByte();
         this.trophy = this.getInt();
+        this.myAuthority = this.getByte();
         gv.userClanInfo = this;
         gv.userClan = new Clan(this.id,
-            this.flag+1,
+        this.flag+1,
             this.name,
             1,
             this.memberCount,
@@ -1430,4 +1463,3 @@ testnetwork.packetMap[gv.CMD.RECEIVE_USER_CLAN] = fr.InPacket.extend
             0);
     }
 });
-

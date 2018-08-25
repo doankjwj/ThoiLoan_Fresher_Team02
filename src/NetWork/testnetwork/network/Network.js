@@ -253,6 +253,22 @@ testnetwork.Connector = cc.Class.extend({
         var pk = this.gameClient.getOutPacket(CmdSendGetUserClan);
         pk.pack();
         this.gameClient.sendPacket(pk);
+    },
+
+    sendGetMemberList: function(id) {
+
+        cc.log("GET MEMBER LIST CLAN : " + id);
+        var pk = this.gameClient.getOutPacket(CmdSendGetMemberList);
+        pk.pack(id);
+        this.gameClient.sendPacket(pk);
+
+    },
+
+    sendKickUser: function(name) {
+        cc.log("Kick member : " + name);
+        var pk = this.gameClient.getOutPacket(CmdSendKickUser);
+        pk.pack(name);
+        this.gameClient.sendPacket(pk);
     }
 
 });

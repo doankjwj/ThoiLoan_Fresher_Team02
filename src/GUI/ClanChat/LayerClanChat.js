@@ -483,6 +483,7 @@ var LayerClanChat = cc.Node.extend({
         /* Nếu là sự kiện ra vào bang thì cập nhật lại layer user online*/
         if (eventType == gv.clanChat.eventType.joinClan || eventType == gv.clanChat.eventType.leaveClan)
             this.onChangeOnlineWhenMemberChange(eventType);
+
     },
 
     // Lấy ra 1 Item chat qua loại, user name __ nếu = null: user chưa có lượt donate và ngược lại

@@ -2,6 +2,7 @@ var UserItem = ccui.Button.extend({
 
     _user: null,
     _order: null,
+    _clan: null,
 
     _textOrder: null,
     _textLevel: null,
@@ -13,13 +14,14 @@ var UserItem = ccui.Button.extend({
 
     _isPressed: null,
 
-    ctor: function(order, user){
+    ctor: function(order, user, clan){
         this._super(res.clanGUI.clanItemBackground);
 
         this.setZoomScale(0.01);
 
         this._user = user;
         this._order = order;
+        if(clan) this._clan = clan;
 
         this._textOrder = cc.LabelBMFont(this._order, font.soji20);
         this._textOrder.setAnchorPoint(cc.p(0.5, 0.5));
@@ -93,7 +95,8 @@ var UserItem = ccui.Button.extend({
 
     },
 
-    updateInfo: function(user){
+    updateInfo: function(user, clan){
+        this._clan = clan;
         this._isPressed = false;
         this._user = user;
         this._textUsername.setString(user._name);
@@ -123,7 +126,7 @@ var UserItem = ccui.Button.extend({
                     clanDetailLayer.addChild(popup, 2);
                 } else popup = clanDetailLayer.getChildByTag(tag);
                 popup.setPosition(cc.p(pos.x, pos.y - 320));
-                popup.updateInfo(this._user);
+                popup.updateInfo(this._user, this._clan);
                 // popup.setPositionZ(20);
                 if(!popup.visible) {
                     popup.visible = true;

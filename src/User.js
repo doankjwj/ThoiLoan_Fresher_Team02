@@ -21,6 +21,8 @@ var User = cc.Class.extend({
     _listTroop: [],
     _listTroopLevel: [],
 
+    _timeFinishClanPenalty: null,
+
     _builderTotal: null,
     _builderFree: null,
 
@@ -55,6 +57,7 @@ var User = cc.Class.extend({
         this._currentCapacityDarkElixir = gv.jsonInfo["player"]["darkElixir"];
         this._currentCapacityCoin = (gv.jsonInfo["player"]["coin"] === null) ? 0 : gv.jsonInfo["player"]["coin"];
         this._clanId = gv.jsonInfo["player"]["clanId"];
+        if(this._clanId === -1) this._timeFinishClanPenalty = new Date(gv.jsonInfo["player"]["timeFinishClanPenalty"]);
         this.initBuildingList();
         this.initTroopLevelList();
         // this.initClanInfo();

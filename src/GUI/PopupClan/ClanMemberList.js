@@ -264,31 +264,24 @@ var ClanMemberList = PopupClan.extend({
         this._textMemberQuantity.setString(this._clan.quantity + "/50");
         this._textClanStatus.setString(this._clan.getStatusText());
         this._textTrophyRequired.setString(this._clan.trophyRequired);
-        if(this._clan._listUser === null) {
-            this._clan._listUser = [];
-            for (var i = 0; i < this._clan.quantity; i++) {
-                this._clan._listUser.push(
-                    new UserItem(
-                        i + 1,
-                        new UserClan("QUAN LE ANH",
-                            Math.floor(Math.random() * 200),
-                            Math.floor(Math.random() * 3),
-                            Math.floor(Math.random() * 2000),
-                            Math.floor(Math.random() * 5000),
-                            Math.floor(Math.random() * 20000))
-                    )
-                );
-            }
+
+        if(cf.user._clanId === this._clan.id) {
+            this._textCreate.setString("BANG HỘI\nCỦA TÔI");
+        }
+        else {
+            this._textCreate.setString("THÔNG TIN\nBANG HỘI");
         }
 
         var user = new UserClan("QUAN LE ANH", 20, 0, 600, 600, 12000);
         var item = new UserItem(1, user);
+
+        testnetwork.connector.sendGetMemberList(this._clan.id);
         this._listUserVisualization.setInnerContainerSize(cc.size(item.width*item.scale, item.height*item.scale*(this._clan.quantity+1)));
 
         for(var i=0; i<50; i++) {
-            if(i < this._clan.quantity) {
+            if(i < gv.clanMemberList.length) {
                 this._listUser[i].visible = true;
-                this._listUser[i].updateInfo(this._clan._listUser[i]._user);
+                this._listUser[i].updateInfo(new UserClan(gv.clanMemberList[i].name, gv.clanMemberList[i].level, gv.clanMemberList[i].authority, gv.clanMemberList[i].troopReceived, gv.clanMemberList[i].troopDonated, 0), this._clan);
                 this._listUser[i].setPosition(cc.p(this._listUserVisualization.width/2, this._listUserVisualization.getInnerContainerSize().height - (i+0.5)*this._listUser[i].height*this._listUser[i].scale));
             }
             else this._listUser[i].visible = false;
@@ -297,14 +290,18 @@ var ClanMemberList = PopupClan.extend({
     },
 
     onAppear: function(clan){
-        cc.log(clan.name);
         this._clan = clan;
+
+        testnetwork.connector.sendGetMemberList(this._clan.id);
+
         if(this.getChildByTag(99)) this.getChildByTag(99).visible = false;
 
         if(cf.user._clanId !== -1) {
             this._textCreate.setString("BANG HỘI\nCỦA TÔI");
         }
         // cc.log(this._listUserVisualization.x + " " + this._listUserVisualization.y);
+
+        setTimeout(function() {}.bind(this), 10);
         this.updateInfo();
         this.visible = true;
         this._swallowTouch.setEnabled(true);

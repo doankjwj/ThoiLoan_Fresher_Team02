@@ -19,9 +19,9 @@ var UserClan = cc.Class.extend({
     },
 
     getPositionString: function() {
-        if(this._position === 0) return "Bang chủ";
+        if(this._position === 2) return "Bang chủ";
         else if(this._position === 1) return "Phó bang chủ";
-        else if(this._position === 2) return "Thành viên";
+        else if(this._position === 0) return "Thành viên";
         else return null;
     }
 
