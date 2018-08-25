@@ -83,8 +83,9 @@ gv.clanChat={
         "đã gia nhập bang",
         "đã rời bang",
         "được mời ra khỏi bang bởi",
-        "đã thay đổi thông tin bang hội"],
-    colorArr: [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+        "đã thay đổi thông tin bang hội",
+        "đã tạo Bang"],
+    colorArr: [0, 0, 0, 0, 0, 0, 1, 1, 0, 0],
 };
 
 // Time Offset

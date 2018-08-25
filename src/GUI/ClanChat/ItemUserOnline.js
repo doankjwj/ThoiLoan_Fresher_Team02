@@ -38,5 +38,12 @@ var ItemUserOnline = cc.Layer.extend({
             this._iconStatus = cc.Sprite(res.clanChatGUI.iconUserOffline);
         this._iconStatus.setPosition(40, 0);
         this.addChild(this._iconStatus, 1);
+    },
+
+    updateStatus: function(status)
+    {
+        var url = (status==1)? res.clanChatGUI.iconUserOnline : res.clanChatGUI.iconUserOffline;
+        cc.log(url);
+        fn.replaceSpriteImage(this._iconStatus, url);
     }
 })

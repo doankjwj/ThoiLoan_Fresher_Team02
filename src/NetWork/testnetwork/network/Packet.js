@@ -25,23 +25,23 @@ gv.CMD.SEND_JOIN_CLAN = 3011;
 
 
 gv.CMD.SEND_CLAN_CHAT_TEXT = 3211;
-gv.CMD.RECEIVE_CLAN_CHAT_TEXT = gv.CMD.SEND_CLAN_CHAT_TEXT;
+gv.CMD.BROADCAST_CHAT_TEXT = gv.CMD.SEND_CLAN_CHAT_TEXT;
 gv.CMD.SEND_CLAN_CHAT_DONATE = 3212;
-gv.CMD.RECEIVE_CLAN_CHAT_DONATE = gv.CMD.SEND_CLAN_CHAT_DONATE;
+gv.CMD.BROADCAST_REQUEST_DONATE = gv.CMD.SEND_CLAN_CHAT_DONATE;
 gv.CMD.SEND_DONATE = 3213;
-gv.CMD.RECEIVE_DONATE = 3214;
+gv.CMD.BROADCAST_DONATE = 3214;
 
-gv.CMD.RECEIVE_USER_ONLINE = 3107;                  // Nhận danh sách Member online, offline
-gv.CMD.RECEIVE_USER_ONLINE_STATUS_CHANGE = 3202;    // Nhận thay đổi member
+gv.CMD.RECEIVE_LOAD_USER_ONLINE = 3107;                  // Nhận danh sách Member online, offline
+gv.CMD.BROADCAST_USER_ONLINE_CHANGE = 3202;    // Nhận thay đổi member
 
 
-gv.CMD.RECEIVE_BROADCAST_EVENT = 3201;//Trần Hoàn thêm
+gv.CMD.BROADCAST_CLAN_EVENT = 3201;//Trần Hoàn thêm
 
 gv.CMD.SEND_LOAD_CLAN_CHAT = 3103;
 gv.CMD.RECEIVE_LOAD_CLAN_CHAT = gv.CMD.SEND_LOAD_CLAN_CHAT;
-gv.CMD.RECEIVE_LOAD_CLAN_CHAT_TEXT = 2257;//Server chua lam
-gv.CMD.RECEIVE_LOAD_CLAN_CHAT_DONATE = 2258;//Server chua lam
-gv.CMD.RECEIVE_LOAD_CLAN_CHAT_EVENT = 2259;//Server chua lam
+//gv.CMD.RECEIVE_LOAD_CLAN_CHAT_TEXT = 2257;//Server chua lam
+//gv.CMD.RECEIVE_LOAD_CLAN_CHAT_DONATE = 2258;//Server chua lam
+//gv.CMD.RECEIVE_LOAD_CLAN_CHAT_EVENT = 2259;//Server chua lam
 
 
 gv.CMD.REQUEST_CLAN_DATA = 3101;
@@ -1011,48 +1011,8 @@ testnetwork.packetMap[gv.CMD.CLAN_ERROR] = fr.InPacket.extend({
     }
 );
 
-// Nhận 1 gói chat
-testnetwork.packetMap[gv.CMD.RECEIVE_CLAN_CHAT_TEXT] = fr.InPacket.extend({
-    ctor: function () {
-        this._super();
-    },
-    readData: function () {
-        this.userName = this.getString();
-        this.userLevel = this.getShort();
-        this.msg = this.getString();
-        gv.clanChat.jsonChatText = this;
-        cc.log(JSON.stringify(this));
-    }
-});
-//Nhận 1 gói Donate
-testnetwork.packetMap[gv.CMD.RECEIVE_CLAN_CHAT_DONATE] = fr.InPacket.extend({
-    ctor: function () {
-        this._super();
-    },
-    readData: function () {
-        this.userName = this.getString();
-        this.userLevel = this.getShort();
-        this.msg = this.getString();
-        this.housingSpaceDonated = this.getByte() // Houssing space các user đã donate
-        this.maxHousingSpace = this.getByte() // Housing space tối đa
-        gv.clanChat.jsonChatDonate = this;
-        cc.log(JSON.stringify(this));
-    }
-});
-// Nhận kết quả 1 lượt donate
-testnetwork.packetMap[gv.CMD.RECEIVE_DONATE] = fr.InPacket.extend({
-    ctor: function () {
-        this._super();
-    },
-    readData: function () {
-        this.userName = this.getString();
-        this.userDonate = this.getString();
-        this.troopOrder = this.getByte();
-        this.troopLevel = this.getByte();
-        gv.clanChat.jsonDonate = this;
-        cc.log(JSON.stringify(this));
-    }
-});
+
+///======================  Clan CHAT
 //Nhận lịch sử sự kiện (Trần Hoàn sửa)
 testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT] = fr.InPacket.extend({
     ctor: function () {
@@ -1065,8 +1025,8 @@ testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT] = fr.InPacket.extend({
         this.clanFlag = this.getByte();
         this.clanName = this.getString();
         this.clanEvent = [];
-        for (var k = 0; k < 9; k += 1) {
-            if (k == 0 || k == 1 || k == 5 || k == 6 || k == 8) {
+        for (var k = 0; k < 10; k += 1) {
+            if (k == 0 || k == 1 || k == 5 || k == 6 || k == 8 || k == 9) {
 
                 this.clanEvent.push(new Array());
                 var amount = this.getByte();
@@ -1123,9 +1083,8 @@ testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT] = fr.InPacket.extend({
         //gvGUI.layerClanChat.loadChatFromServer();
     }
 });
-
 /*Nhận danh sách user Online*/
-testnetwork.packetMap[gv.CMD.RECEIVE_USER_ONLINE] = fr.InPacket.extend({
+testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_USER_ONLINE] = fr.InPacket.extend({
     ctor: function()
     {
         this._super();
@@ -1154,69 +1113,36 @@ testnetwork.packetMap[gv.CMD.RECEIVE_USER_ONLINE] = fr.InPacket.extend({
     }
 });
 
-// Nhận lịch sử Chat
-testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT_TEXT] = fr.InPacket.extend({
+/* BroadCast 1 lượt nhắn tin*/
+testnetwork.packetMap[gv.CMD.BROADCAST_CHAT_TEXT] = fr.InPacket.extend({
     ctor: function () {
         this._super();
     },
     readData: function () {
-
-        this.serverTime = this.getLong();
-        gv.timeOffset.loadClanChatText = this.serverTime - new Date().getTime();
-        this.chatQuantity = this.getByte();
-        this.detail = [];
-        for (var i = 0; i < this.chatQuantity; i++) {
-            this.detail.push(new Object());
-            this.detail[i].userName = this.getString();
-            this.detail[i].userLevel = this.getInt();
-            this.detail[i].msg = this.getString();
-            this.detail[i].timeCreated = this.getLong() - gv.timeOffset.loadClanChatText;
-        }
-        ;
-        gv.clanChat.jsonLoadText = this;
+        this.userName = this.getString();
+        this.userLevel = this.getShort();
+        this.msg = this.getString();
+        gv.clanChat.jsonChatText = this;
         cc.log(JSON.stringify(this));
-
-        gvGUI.layerClanChat.loadChatTextFromServer();
-        //setTimeout(function(){
-        //
-        //}, 1);
     }
 });
-testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT_DONATE] = fr.InPacket.extend({
+/* BroadCast 1 lượt xin quân*/
+testnetwork.packetMap[gv.CMD.BROADCAST_REQUEST_DONATE] = fr.InPacket.extend({
     ctor: function () {
         this._super();
     },
     readData: function () {
-
-        this.serverTime = this.getLong();
-        gv.timeOffset.loadClanChatDonate = this.serverTime - new Date().getTime();
-        this.chatQuantity = this.getByte();
-        this.detail = [];
-        for (var i = 0; i < this.chatQuantity; i++) {
-            this.detail.push(new Object());
-            this.detail[i].userName = this.getString();
-            this.detail[i].userLevel = this.getInt();
-            this.detail[i].msg = this.getString();
-            this.detail[i].timeCreated = this.getLong() - gv.timeOffset.loadClanChatDonate;
-            this.detail[i].currentHousingSpace = this.getByte();
-            this.detail[i].maxHousingSpace = this.getByte();
-            this.detail[i].troopDonated = {};
-            this.detail[i].troopDonated.troop_0 = this.getByte();
-            this.detail[i].troopDonated.troop_1 = this.getByte();
-            this.detail[i].troopDonated.troop_2 = this.getByte();
-            this.detail[i].troopDonated.troop_3 = this.getByte();
-        }
-        ;
-        gv.clanChat.jsonLoadDonate = this;
+        this.userName = this.getString();
+        this.userLevel = this.getShort();
+        this.msg = this.getString();
+        this.housingSpaceDonated = this.getByte() // Houssing space các user đã donate
+        this.maxHousingSpace = this.getByte() // Housing space tối đa
+        gv.clanChat.jsonChatDonate = this;
         cc.log(JSON.stringify(this));
-
-        gvGUI.layerClanChat.loadChatDonateFromServer();
-        //setTimeout(function(){
-        //
-        //}, 1);
     }
 });
-testnetwork.packetMap[gv.CMD.RECEIVE_BROADCAST_EVENT] = fr.InPacket.extend
+/* BroadCast 1 lượt sự kiện clan*/
+testnetwork.packetMap[gv.CMD.BROADCAST_CLAN_EVENT] = fr.InPacket.extend
 ({
     ctor: function () {
         this._super();
@@ -1246,31 +1172,31 @@ testnetwork.packetMap[gv.CMD.RECEIVE_BROADCAST_EVENT] = fr.InPacket.extend
         this.text = null;
         switch (this.eventType) {
             case 0:
-                this.text = "Thành viên " + this.userName + " trở thành bang chủ";
+                this.text = this.userName + " trở thành bang chủ";
                 break;
             case 1:
-                this.text = "Thành viên " + this.userName + " trở thành làm phó bang chủ";
+                this.text = this.userName + " trở thành làm phó bang chủ";
                 break;
             case 2:
-                this.text = "Thành viên " + this.target + " được bổ nhiệm làm bang chủ bởi " + this.userName;
+                this.text = this.target + " được bổ nhiệm làm bang chủ bởi " + this.userName;
                 break;
             case 3:
-                this.text = "Thành viên " + this.target + " được bổ nhiệm làm phó bang chủ bởi " + this.userName;
+                this.text = this.target + " được bổ nhiệm làm phó bang chủ bởi " + this.userName;
                 break;
             case 4:
-                this.text = "Thành viên " + this.target + " được bổ nhiệm làm thành viên bởi " + this.userName;
+                this.text = this.target + " được bổ nhiệm làm thành viên bởi " + this.userName;
                 break;
             case 5:
-                this.text = "Thành viên " + this.userName + " đã gia nhập bang";
+                this.text = this.userName + " đã gia nhập bang";
                 break;
             case 6:
-                this.text = "Thành viên " + this.userName + " đã rời bang";
+                this.text = this.userName + " đã rời bang";
                 break;
             case 7:
-                this.text = "Thành viên " + this.target + " được mời ra khỏi bang bởi " + this.userName;
+                this.text = this.target + " được mời ra khỏi bang bởi " + this.userName;
                 break;
             case 8:
-                this.text = "Thành viên " + this.userName + " đã thay đổi thông tin bang hội";
+                this.text = this.userName + " đã thay đổi thông tin bang hội";
                 break;
         }
         gv.clanChat.jsonChatEvent = this;
@@ -1278,6 +1204,101 @@ testnetwork.packetMap[gv.CMD.RECEIVE_BROADCAST_EVENT] = fr.InPacket.extend
     }
 
 });
+/* BroadCast 1 lượt cho quân*/
+testnetwork.packetMap[gv.CMD.BROADCAST_DONATE] = fr.InPacket.extend({
+    ctor: function () {
+        this._super();
+    },
+    readData: function () {
+        this.userName = this.getString();
+        this.userDonate = this.getString();
+        this.troopOrder = this.getByte();
+        this.troopLevel = this.getByte();
+        gv.clanChat.jsonDonate = this;
+        cc.log(JSON.stringify(this));
+    }
+});
+/* BroadCast 1 lượt thành viên Online(Offline)*/
+testnetwork.packetMap[gv.CMD.BROADCAST_USER_ONLINE_CHANGE] = fr.InPacket.extend({
+    ctor: function()
+    {
+        this._super();
+    },
+    readData: function()
+    {
+        this.userName = this.getString();
+        this.status = this.getByte();
+
+        gv.clanChat.jsonUserOnlineChange = this;
+        cc.log(JSON.stringify(this));
+    }
+});
+
+// Nhận lịch sử Chat
+//testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT_TEXT] = fr.InPacket.extend({
+//    ctor: function () {
+//        this._super();
+//    },
+//    readData: function () {
+//
+//        this.serverTime = this.getLong();
+//        gv.timeOffset.loadClanChatText = this.serverTime - new Date().getTime();
+//        this.chatQuantity = this.getByte();
+//        this.detail = [];
+//        for (var i = 0; i < this.chatQuantity; i++) {
+//            this.detail.push(new Object());
+//            this.detail[i].userName = this.getString();
+//            this.detail[i].userLevel = this.getInt();
+//            this.detail[i].msg = this.getString();
+//            this.detail[i].timeCreated = this.getLong() - gv.timeOffset.loadClanChatText;
+//        }
+//        ;
+//        gv.clanChat.jsonLoadText = this;
+//        cc.log(JSON.stringify(this));
+//
+//        gvGUI.layerClanChat.loadChatTextFromServer();
+//        //setTimeout(function(){
+//        //
+//        //}, 1);
+//    }
+//});
+//testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT_DONATE] = fr.InPacket.extend({
+//    ctor: function () {
+//        this._super();
+//    },
+//    readData: function () {
+//
+//        this.serverTime = this.getLong();
+//        gv.timeOffset.loadClanChatDonate = this.serverTime - new Date().getTime();
+//        this.chatQuantity = this.getByte();
+//        this.detail = [];
+//        for (var i = 0; i < this.chatQuantity; i++) {
+//            this.detail.push(new Object());
+//            this.detail[i].userName = this.getString();
+//            this.detail[i].userLevel = this.getInt();
+//            this.detail[i].msg = this.getString();
+//            this.detail[i].timeCreated = this.getLong() - gv.timeOffset.loadClanChatDonate;
+//            this.detail[i].currentHousingSpace = this.getByte();
+//            this.detail[i].maxHousingSpace = this.getByte();
+//            this.detail[i].troopDonated = {};
+//            this.detail[i].troopDonated.troop_0 = this.getByte();
+//            this.detail[i].troopDonated.troop_1 = this.getByte();
+//            this.detail[i].troopDonated.troop_2 = this.getByte();
+//            this.detail[i].troopDonated.troop_3 = this.getByte();
+//        }
+//        ;
+//        gv.clanChat.jsonLoadDonate = this;
+//        cc.log(JSON.stringify(this));
+//
+//        gvGUI.layerClanChat.loadChatDonateFromServer();
+//        //setTimeout(function(){
+//        //
+//        //}, 1);
+//    }
+//});
+
+
+// ========================= Clan GUI
 
 testnetwork.packetMap[gv.CMD.RECEIVE_CLAN_DATA] = fr.InPacket.extend
 ({

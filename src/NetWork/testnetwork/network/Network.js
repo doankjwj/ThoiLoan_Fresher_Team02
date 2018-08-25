@@ -32,15 +32,17 @@ testnetwork.Connector = cc.Class.extend({
                 cc.log("MOVE:", packet.x, packet.y);
                 fr.getCurrentScreen().updateMove(packet.x, packet.y);
                 break;
-            case gv.CMD.USER_ERROR:
-                break;
-            case gv.CMD.RECEIVE_CLAN_CHAT_TEXT:
+
+            case gv.CMD.BROADCAST_CHAT_TEXT:
                 gvGUI.layerClanChat.onReceiveChatText();
                 break;
-            case gv.CMD.RECEIVE_CLAN_CHAT_DONATE:
+            case gv.CMD.BROADCAST_REQUEST_DONATE:
                 gvGUI.layerClanChat.onReceiveChatDonate();
                 break;
-            case gv.CMD.RECEIVE_DONATE:
+            case gv.CMD.BROADCAST_CLAN_EVENT:
+                gvGUI.layerClanChat.onReceiveEvent();
+                break;
+            case gv.CMD.BROADCAST_DONATE:
                 gvGUI.layerClanChat.onReceiveDonate();
                 cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].addTroop();
                 break;
@@ -50,8 +52,14 @@ testnetwork.Connector = cc.Class.extend({
                 cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].updateNameAndFlag(true);
                 cf.user._clanId = gv.clanChat.jsonLoad["clanId"];
                 break;
-            case gv.CMD.RECEIVE_USER_ONLINE:
+
+            case gv.CMD.RECEIVE_LOAD_USER_ONLINE:
                 gvGUI.layerClanChat.loadUserOnlineFromServer();
+                break;
+            case gv.CMD.BROADCAST_USER_ONLINE_CHANGE:
+                gvGUI.layerClanChat.updateStatusUserOnlineChange();
+                break;
+            case gv.CMD.USER_ERROR:
                 break;
             case gv.CMD.CLAN_ERROR:
                 break;
