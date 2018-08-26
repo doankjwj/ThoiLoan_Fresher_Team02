@@ -20,6 +20,9 @@ gv.CMD.SEND_RESEARCH = 2031;
 gv.CMD.SEND_RESEARCH_FINISH_IMMIDIATELY = 2033;
 gv.CMD.RESET_USER = 2101;
 
+gv.CMD.REQUEST_TRAIN_TROOP = 2041;
+gv.CMD.REQUEST_TRAIN_G = 2042;
+
 gv.CMD.SEND_CREATE_CLAN = 3001;
 gv.CMD.SEND_JOIN_CLAN = 3011;
 
@@ -150,6 +153,22 @@ CmdSendLogin = fr.OutPacket.extend(
     }
 );
 
+CmdSendTrainTroop = fr.OutPacket.extend(
+    {
+        ctor: function () {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.REQUEST_TRAIN_TROOP);
+        },
+        pack: function (type, slot, troopType) {
+            this.packHeader();
+            this.putByte(type);
+            this.putByte(slot);
+            this.putByte(troopType);
+            this.updateSize();
+        }
+    }
+);
 
 CmdSendSearchByName = fr.OutPacket.extend(
     {

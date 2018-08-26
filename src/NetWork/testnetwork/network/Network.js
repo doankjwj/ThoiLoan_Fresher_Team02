@@ -270,7 +270,23 @@ testnetwork.Connector = cc.Class.extend({
         var pk = this.gameClient.getOutPacket(CmdSendKickUser);
         pk.pack(name);
         this.gameClient.sendPacket(pk);
-    }
+    },
+
+    sendTrainTroop: function(id, troopType) {
+
+        cc.log("TRAIN TROOP : " + troopType  + " FROM BAR: " + id);
+
+        var pk = this.gameClient.getOutPacket(CmdSendTrainTroop);
+
+        var group = Math.floor(id/100) - 1;
+        var slot = id % 100;
+
+        cc.log(group + " " + slot + " " + troopType);
+
+        pk.pack(group, slot, troopType - 1);
+        this.gameClient.sendPacket(pk);
+
+    },
 
 });
 

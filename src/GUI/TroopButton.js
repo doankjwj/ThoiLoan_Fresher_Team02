@@ -80,6 +80,7 @@ var TroopButton = ccui.Button.extend({
                     sender.getParent().addTroopToQueue(sender._id);
                     cf.user._currentCapacityElixir -= sender._cost;
                     cf.user.distributeResource(false, true, false);
+                    // testnetwork.connector.sendTrainTroop(sender.getParent()._barrackID, sender._id);
                     sender.updateButton();
                 } else {
                     sender.getParent().getParent().popUpMessage("Không đủ tài nguyên");
