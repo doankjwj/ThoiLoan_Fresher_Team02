@@ -47,7 +47,6 @@
         "src/Buildings/Canon.js",
         "src/Buildings/Laboratory.js",
         "src/Buildings/ClanCastle.js",
-        "src/Buildings/Wall.js",
 
         "src/GUI/ResourceBar.js",
         "src/GUI/IconActionBuilding.js",
