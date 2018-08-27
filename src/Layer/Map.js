@@ -21,6 +21,7 @@ var Map = cc.Node.extend({
         this._height = (this._bgBotLeft.height + this._bgTopLeft.height)*cf.bgSCALE;
         this.initTileLocation();
         this.addBuildingFromServer();
+        this.addWall();
         //this.add_building();
     },
 
@@ -60,6 +61,94 @@ var Map = cc.Node.extend({
                 }
     },
 
+    addWall: function()
+    {
+        var wallCount = 10;
+        var r = 1;
+        var c = 40;
+
+        for (var i=0; i<wallCount; i++)
+            gv._listWall.push(0);
+        //for (var i=0; i<wallCount; i++)
+        //{
+        //    var row = Math.floor(Math.random() * 40) + 1;
+        //    var col = Math.floor(Math.random() * 40) + 1;
+        //    r ++;
+        //    if (this.none_space(row, col, 1))
+        //    {
+        //        var wall = new Wall(0, 1, r, c, 0);
+        //        this.addChild(wall);
+        //        gv._listWall[i] = (wall);
+        //        wall.locate_map_array();
+        //
+        //        //wall.retain();
+        //    }
+        //};
+        //
+        //var seq = cc.Sequence.create(cc.delayTime(2),
+        //cc.callFunc(function(){
+        //    for (var i=0; i<wallCount-2; i++)
+        //    {
+        //        if (gv._listWall[i] != 0)
+        //            gv._listWall[i].updateImage();
+        //    }
+        //}.bind(this))
+        //);
+        //this.runAction(seq);
+        //
+        //setTimeout(function(){
+        //    for (var i=0; i<wallCount-2; i++)
+        //    {
+        //        gv._listWall[i].updateImage();
+        //    }
+        //}, 2);
+
+
+        var self = this;
+
+        function sayHello(name, callback) {
+            for (var i=0; i<wallCount; i++)
+            {
+                var row = Math.floor(Math.random() * 40) + 1;
+                var col = Math.floor(Math.random() * 40) + 1;
+                r ++;
+                if (self.none_space(row, col, 1))
+                {
+                    var wall = new Wall(0, 1, r, c, 0);
+                    wall.retain();
+                    self.addChild(wall);
+                    gv._listWall[i] = (wall);
+                    wall.locate_map_array();
+
+
+                }
+            };
+            var myName = name.toUpperCase() + ", Hello";
+            return callback(myName);
+        }
+
+        var result = sayHello("khanh", function (arg) {
+            self.logMapArray();
+            for (var i=0; i<wallCount; i++)
+            {
+                if (gv._listWall[i] != 0)
+                    gv._listWall[i].updateImage();
+            }
+            return arg;
+        });
+
+        cc.log(result);
+    },
+
+    none_space: function(row, col, size, id) {
+        for (var r = row; r < row + size; r++)
+            for (var c = col; c < col + size; c++ )
+                if (cf.map_array[r][c] !== 0 && cf.map_array[r][c] !== id)
+                {
+                    return false;
+                }
+        return true;
+    },
     // Thêm building vào danh sách công trình của user
     addBuildingToUserBuildingList: function(b)
     {
@@ -68,8 +157,8 @@ var Map = cc.Node.extend({
     },
 
     initTileLocation: function(){
-        cf.map_array.push(0);
-        for (var i = 1; i < 41; i++)
+        cf.map_array.push([]);
+        for (var i = 0; i < 41; i++)
         {
             var tmp_arr = [];
             for (var j = 0; j < 41; j++) tmp_arr.push(0)

@@ -109,3 +109,5 @@ gv.searchResult = {
     byID: null,
     byName: null,
 };
+
+gv._listWall = [];

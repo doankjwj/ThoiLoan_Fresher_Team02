@@ -168,6 +168,7 @@ gv.buildingSTR = {
     obstacle: "OBS",
     defence_1: "DEF_1",
     clanCastle: "CLC_1",
+    wall: "WAL_1",
 };
 gv.buildOnMoveGUI =
 {
@@ -191,7 +192,8 @@ gv.buildingName =
     builderHut: "Nhà thợ xây",
     obstacle: "Vật cản",
     defence_1: "Pháo thần công",
-    clanCastle: "Nhà Bang Hội"
+    clanCastle: "Nhà Bang Hội",
+    wall: "Tường"
 };
 gv.orderInUserBuildingList =
 {
@@ -210,6 +212,7 @@ gv.orderInUserBuildingList =
     obstacle: 13,
     defence_1: 12,
     clanCastle: 26,
+    wall: 25,
 };
 gv.buildingMaxLevel = {
     townHall: 11,

@@ -355,3 +355,9 @@ fn.sumArr = function(arr, length)
         sum += arr[i];
     return sum;
 }
+
+/*Từ Id công trình tính ra loại công trình*/
+fn.getBuildingOrderById = function(id)
+{
+    return (Math.floor(id/100) - 1);
+}
