@@ -288,6 +288,36 @@ testnetwork.Connector = cc.Class.extend({
 
     },
 
+    sendRequestAddCoLeader: function(name) {
+
+        cc.log("SET COLEADER : " + name);
+
+
+        var pk = this.gameClient.getOutPacket(CmdSendRequestAddCoLeader);
+
+        pk.pack(name);
+        this.gameClient.sendPacket(pk);
+
+    },
+
+    sendRemoveCoLeader: function(name) {
+
+        cc.log("REMOVE COLEADER : " + name);
+        var pk = this.gameClient.getOutPacket(CmdSendRequestRemoveCoLeader);
+        pk.pack(name);
+        this.gameClient.sendPacket(pk);
+
+    },
+
+    sendRequestChangeLeader: function(name){
+
+        cc.log("Change LEADER : " + name);
+        var pk = this.gameClient.getOutPacket(CmdSendRequestChangeLeader);
+        pk.pack(name);
+        this.gameClient.sendPacket(pk);
+
+    }
+
 });
 
 

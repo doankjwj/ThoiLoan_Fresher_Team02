@@ -54,6 +54,10 @@ gv.CMD.RECEIVE_CLAN_MEMBER_DATA = gv.CMD.REQUEST_CLAN_MEMBER_DATA;
 gv.CMD.REQUEST_QUIT_CLAN = 3012;
 gv.CMD.REQUEST_JOIN_CLAN = 3011;
 
+gv.CMD.REQUEST_CHANGE_LEADER = 3031;
+gv.CMD.REQUEST_ADD_CO_LEADER = 3032;
+gv.CMD.REQUEST_REMOVE_CO_LEADER = 3033;
+
 gv.CMD.REQUEST_USER_CLAN = 3101;
 gv.CMD.RECEIVE_USER_CLAN = 3101;
 
@@ -75,6 +79,51 @@ testnetwork = testnetwork || {};
 testnetwork.packetMap = {};
 
 /** Outpacket */
+
+CmdSendRequestAddCoLeader = fr.OutPacket.extend(
+    {
+        ctor: function () {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.REQUEST_ADD_CO_LEADER);
+        },
+        pack: function (name) {
+            this.packHeader();
+            this.putString(name);
+            this.updateSize();
+        }
+    }
+);
+
+CmdSendRequestRemoveCoLeader = fr.OutPacket.extend(
+    {
+        ctor: function () {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.REQUEST_REMOVE_CO_LEADER);
+        },
+        pack: function (name) {
+            this.packHeader();
+            this.putString(name);
+            this.updateSize();
+        }
+    }
+);
+
+CmdSendRequestChangeLeader = fr.OutPacket.extend(
+    {
+        ctor: function () {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.REQUEST_CHANGE_LEADER);
+        },
+        pack: function (name) {
+            this.packHeader();
+            this.putString(name);
+            this.updateSize();
+        }
+    }
+);
 
 //Handshake
 CmdSendHandshake = fr.OutPacket.extend(
