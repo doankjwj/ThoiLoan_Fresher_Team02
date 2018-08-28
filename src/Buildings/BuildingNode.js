@@ -206,6 +206,8 @@ var BuildingNode = cc.Node.extend({
                 }
                 else
                 {
+                    //self._center_building.stopAllActions();
+                    //self._center_building.runAction(cc.TintTo(0, 255, 255, 255));
                     self.onEndClick();
                     self.hideBuildingButton();
                     gv.building_selected = 0;
@@ -261,7 +263,12 @@ var BuildingNode = cc.Node.extend({
         /*Ngoại trừ army Camp*/
         if (this._effectAnim && this._buildingSTR != gv.buildingSTR.armyCamp_1)
             this._effectAnim.runAction(cc.Sequence.create(popIn.clone(), popOut.clone()));
+
+        var tintLight = cc.TintTo(0.5, 255, 255, 255);
+        var tintDark = cc.TintTo(0.5, 150, 150, 150);
+        this._center_building.runAction(cc.Sequence.create(tintDark, tintLight).repeatForever());
     },
+
 
     get_event_listener: function(b) {
         var self = this;
@@ -281,6 +288,7 @@ var BuildingNode = cc.Node.extend({
 
                 if (fn.pointInsidePolygon([ x, y], polygon) )
                 {
+                    self.onUnBlur();
                     gv.building_selected = self._id;
                     var loc = fn.getRowColFromPos(cc.p(touch.getLocation().x - self.getParent().x, touch.getLocation().y - self.getParent().y));
                     gv.buildingMove.currentRow = loc.x;
@@ -346,6 +354,9 @@ var BuildingNode = cc.Node.extend({
                 self._col = col;
                 self.setLocalZOrder(200);
                 self.updateLocaltionByCoor(size);
+
+                if (self._grass.visible)
+                    self.onBlur();
                 if (!self.none_space(self._row, self._col, size, self._id))
                 {
                     self._red.visible = true;
@@ -361,10 +372,24 @@ var BuildingNode = cc.Node.extend({
             },
             onTouchEnded: function(touch, event)
             {
+                self.onUnBlur();
             }
         });
 
         return listener1;
+    },
+
+    onBlur: function()
+    {
+        this._green.setOpacity(150);
+        this._red.setOpacity(150);
+        this._grass.visible = false;
+    },
+    onUnBlur: function()
+    {
+        this._green.setOpacity(255);
+        this._red.setOpacity(255);
+        this._grass.visible = true;
     },
 
     updateLocaltionByCoor: function(size)
@@ -707,6 +732,8 @@ var BuildingNode = cc.Node.extend({
     },
 
     onEndClick: function() {
+        this._center_building.stopAllActions();
+        this._center_building.runAction(cc.TintTo(0, 255, 255, 255));
         this.getParent().getParent().hideListBotButton();
         var scale_in = cc.scaleTo(0.25, 0);
         this._arrow.runAction(scale_in);
