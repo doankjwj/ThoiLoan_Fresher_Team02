@@ -977,78 +977,32 @@
         this.onPopUpButton(boo);
     },
 
-    _showListBotButton: function(buildingID)
-    {
-        /* Infor(0) --- Upgrade(1) --- Cancel(2) --- Instance Finish(3) --- Collect(4) -- Research(5) -- Train(6) -- Request Donate(7)*/
-        var buildingOrder = Math.floor(buildingID/100) - 1;
-        var buildingNum = buildingID % 100;
-        var building = cf.user._buildingList[buildingOrder][buildingNum];
-
-
-
-        var bool_0 = true ; var bool_1 = true ; var bool_2 = true ; var bool_3 = true;
-        var bool_4 = false; var bool_5 = false; var bool_6 = false; var bool_7 = false;
-        if (building._level == building._maxLevel || !building._isActive || buildingOrder == gv.orderInUserBuildingList.builderHut) bool_1 = false;
-        if (building._isActive) bool_2 = false;
-        if (building._isActive) bool_3 = false;
-        switch (buildingOrder)
-        {
-            case gv.orderInUserBuildingList.townHall:
-                break;
-            case gv.orderInUserBuildingList.resource_1:
-                if (building._isActive)
-                    bool_4 = true;
-                break;
-            case gv.orderInUserBuildingList.resource_2:
-                if (building._isActive)
-                    bool_4 = true;
-                break;
-            case gv.orderInUserBuildingList.resource_3:
-                if (building._isActive)
-                    bool_4 = true;
-                break;
-            case gv.orderInUserBuildingList.storage_1:
-                break;
-            case gv.orderInUserBuildingList.storage_2:
-                break;
-            case gv.orderInUserBuildingList.storage_3:
-                break;
-            case gv.orderInUserBuildingList.lab:
-                if (building._isActive) bool_5 = true;
-                break;
-            case gv.orderInUserBuildingList.barrack_1:
-                if (building._isActive) bool_6 = true;
-                break;
-            case gv.orderInUserBuildingList.clanCastle:
-                if (building._isActive && building._level > 0) bool_7 = true;
-                break;
-        }
-
-        this.onPopUpButton(bool_0, bool_1, bool_2, bool_3, bool_4, bool_5, bool_6, bool_7);
-    },
-
     onPopUpButton: function(boo)
     {
         /* Infor --- Upgrade --- Cancel --- Instance Finish --- Collect -- Research -- Train */
         var popUpButtonCount = fn.getItemOccurenceInArray(boo, true);
         var y = this._guiButtonBuildingInfo.height;
-        // var x = cc.winSize.width * 1/3;
         var x = cc.winSize.width/2 - popUpButtonCount/2 * this._guiButtonBuildingInfo.width;
+        var hidingY = -60;
+
         var offSet = this._guiButtonBuildingInfo.width * 2 - 40;
         if (boo[0])
         {
+            this._guiButtonBuildingInfo.setPosition(x, hidingY);
             var act = cc.MoveTo(0.1, cc.p(x, y));
             this._guiButtonBuildingInfo.runAction(act);
             x += offSet;
         };
         if (boo[1])
         {
+            this._guiButtonBuildingUpgrade.setPosition(x, hidingY);
             var act = cc.MoveTo(0.1, cc.p(x, y));
             this._guiButtonBuildingUpgrade.runAction(act);
             x += offSet;
         };
         if (boo[2])
         {
+            this._guiCancelBuildButton.setPosition(x, hidingY);
             var act = cc.MoveTo(0.1, cc.p(x, y));
             this._guiCancelBuildButton.runAction(act);
             x += offSet;
@@ -1056,41 +1010,46 @@
 
         if (boo[3])
         {
+            this._guiInstantlyDone.setPosition(x, hidingY);
             var act = cc.MoveTo(0.1, cc.p(x, y));
             this._guiInstantlyDone.updateContent();
             this._guiInstantlyDone.runAction(act);
             x += offSet;
         }if (boo[4])
         {
-            this.popUpButtonHarvest(x, y);
+            this.popUpButtonHarvest(x, y, hidingY);
             x += offSet;
         }
         if (boo[5])
         {
+            this._guiButtonResearch.setPosition(x, hidingY);
             var act = cc.MoveTo(0.1, cc.p(x, y));
             this._guiButtonResearch.runAction(act);
             x += offSet;
         }
         if (boo[6])
         {
+            this._guiTraningArmyButton.setPosition(x, hidingY);
             var act = cc.MoveTo(0.1, cc.p(x, y));
             this._guiTraningArmyButton.runAction(act);
             x += offSet;
         }
         if (boo[7])
         {
+            this._guiButtonRequestDonate.setPosition(x, hidingY);
             var act = cc.MoveTo(0.1, cc.p(x, y));
             this._guiButtonRequestDonate.runAction(act);
             x += offSet;
         }
         if (boo[8])
         {
+            this._guiButtonClan.setPosition(x, hidingY);
             var act = cc.MoveTo(0.1, cc.p(x, y));
             this._guiButtonClan.runAction(act);
             x += offSet;
         }
     },
-    popUpButtonHarvest: function(x, y)
+    popUpButtonHarvest: function(x, y, hidingY)
     {
         var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
         var orderResource = building._orderInUserBuildingList;
@@ -1106,12 +1065,7 @@
                 fn.replaceButtonImage(this._guiButtonHarvest, buildingGUI.iconHarvest_3)
                 break;
         };
-        this._guiButtonHarvest.attr({
-            anchorX: 0.5,
-            anchorY: 0.5,
-            x: cc.winSize.width/2,
-            y: -cc.winSize.height/2
-        });
+        this._guiButtonHarvest.setPosition(x, hidingY);
 
         var harvestAble = building._currentCapacity > 0;
         this._guiButtonHarvest.setBright(harvestAble);
