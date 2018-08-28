@@ -266,7 +266,7 @@ var BuildingNode = cc.Node.extend({
     get_event_listener: function(b) {
         var self = this;
         var size = b._size;
-
+        var root = fr.getCurrentScreen();
         var listener1 = cc.EventListener.create({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             swallowTouches: true,
@@ -313,9 +313,12 @@ var BuildingNode = cc.Node.extend({
                     }
                     else
                     {
-                        self.unlocate_map_array(cf.current_r, cf.current_c, size);
-                        self.locate_map_array(self);
-                        testnetwork.connector.sendMove(self._id, self._row, self._col);
+                        if (cf.current_r != self._row || cf.current_c != self._col)
+                        {
+                            self.unlocate_map_array(cf.current_r, cf.current_c, size);
+                            self.locate_map_array(self);
+                            testnetwork.connector.sendMove(self._id, self._row, self._col);
+                        }
                     }
                     return false;
                 }
@@ -325,10 +328,11 @@ var BuildingNode = cc.Node.extend({
             },
             onTouchMoved: function(touch, event)
             {
+                if (root._listBotButtonIsShown)
+                   root.hideListBotButton();
                 if (self._buildingSTR == gv.buildingSTR.clanCastle && self._level == 0) return true;
                 if (self._id !== gv.building_selected) return;
                 var location_touch = touch.getLocation();
-                var tile_location = null;
                 var loc = fn.getRowColFromPos(cc.p(location_touch.x - self.getParent().x, location_touch.y - self.getParent().y));
                 var r = loc.x;
                 var c = loc.y;
@@ -342,7 +346,6 @@ var BuildingNode = cc.Node.extend({
                 self._col = col;
                 self.setLocalZOrder(200);
                 self.updateLocaltionByCoor(size);
-
                 if (!self.none_space(self._row, self._col, size, self._id))
                 {
                     self._red.visible = true;

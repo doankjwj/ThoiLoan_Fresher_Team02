@@ -50,6 +50,10 @@ var IconActionBuilding = ccui.Button.extend({
                 this._super(buildingGUI.iconClan);
                 this._txt = cc.LabelBMFont("BANG HỘI", font.soji20);
                 break;
+            case cf.CODE_BUILDING_REMOVE:
+                this._super(buildingGUI.iconRemove);
+                this._txt = cc.LabelBMFont("THU DỌN" ,font.soji20);
+                break;
             default:
                 break;
         }

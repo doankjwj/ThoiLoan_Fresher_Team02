@@ -23,6 +23,7 @@
     _guiButtonResearch: null,
     _guiButtonRequestDonate: null,
     _guiButtonClan: null,
+    _guibuttonRemove: null,
 
     _popUp: null,
     _popUpResearchTroop: null,
@@ -46,8 +47,8 @@
     _mapXOnZoom: null,
     _mapHeightOnZoom: null,
 
-    // GUI Clan Chat
-    //_guiButtonClanChat: null,
+    // Trạng thái Các nút phía dưới
+    _listBotButtonIsShown: false,
 
     // Tag
     _TAG_BG: 242342,
@@ -60,6 +61,7 @@
     _TAG_LAYER_CLAN_CHAT: 32231,
     _TAG_BUTTON_REQUEST_DONATE: 42342,
     _TAG_BUTTON_CLAN: 434312,
+    _TAG_BUTTON_REMOVE: 342342,
 
     ctor:function () {
 
@@ -148,7 +150,7 @@
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
         gv.passwordSendToServer = this._passwordField.string;
 
         gv.gameClient.connect();
@@ -575,6 +577,99 @@
             y: -200
         });
         this.addChild(this._guiButtonBuildingUpgrade, 2);
+        this._guiButtonBuildingUpgrade.addClickEventListener(function()
+        {
+            self.hideListBotButton();
+            if (gv.building_selected === undefined) return;
+            var building = cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)];
+            var order = (building._orderInUserBuildingList);
+            var orderBuilderHut = (gv.orderInUserBuildingList.builderHut);
+            if (order === orderBuilderHut) return;
+            if (building._isActive === false) return;
+
+            var townHall = cf.user._buildingList[gv.orderInUserBuildingList.townHall][0];
+            var townHallLevel = townHall._level;
+            if(building._buildingSTR !== gv.buildingSTR.townHall) {
+                if (townHallLevel >= building._jsonConfig[building._buildingSTR][Math.min(building._level + 1, building._maxLevel)]["townHallLevelRequired"]) {
+                    self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
+                    self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
+                    self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
+                    self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
+                }
+                else if (building._level === building._maxLevel) {
+                    self.popUpMessage("Đã đạt cấp tối đa");
+                } else if (townHallLevel < building._jsonConfig[building._buildingSTR][Math.min(building._level + 1, building._maxLevel)]["townHallLevelRequired"]) {
+                    self.popUpMessage("Yêu cầu nhà chính cấp " + building._jsonConfig[building._buildingSTR][Math.min(building._level + 1, building._maxLevel)]["townHallLevelRequired"]);
+                }
+            } else if (building._level === building._maxLevel) {
+                self.popUpMessage("Đã đạt cấp tối đa");
+            } else {
+                self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
+                self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
+                self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
+                self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
+            }
+        }.bind(this));
+
+        /* Button Cancel Build*/
+        this._guiCancelBuildButton = new IconActionBuilding(cf.CODE_BUILDING_CANCEL);
+        this._guiCancelBuildButton.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: this._guiButtonBuildingUpgrade.x,
+            y: this._guiButtonBuildingUpgrade.y
+        });
+        this.addChild(this._guiCancelBuildButton, 2);
+        this._guiCancelBuildButton.addClickEventListener(function(){
+            self.hideListBotButton();
+            if(gv.building_selected === undefined) return;
+            var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
+            var order = building._orderInUserBuildingList;
+            var orderBuilderHut = gv.orderInUserBuildingList.builderHut;
+            if(order === orderBuilderHut) return;
+            if(building._isActive) return;
+            var price = fn.getPrice(building._buildingSTR, building._level+1);
+            cf.user._currentCapacityCoin += price.coin/2;
+            cf.user._currentCapacityGold += price.gold/2;
+            cf.user._currentCapacityElixir += price.elixir/2;
+            cf.user._currentCapacityDarkElixir += price.darkElixir/2;
+            self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+            self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+            self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+            self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+            testnetwork.connector.sendCancel(Math.floor(gv.building_selected/100) - 1, gv.building_selected%100);
+            building.onCancelBuild();
+        }.bind(this));
+
+        /* Button Instancely done*/
+        this._guiInstantlyDone = new IconActionBuilding(cf.CODE_BUILDING_INSTANT);
+        this._guiInstantlyDone.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: this._guiCancelBuildButton.x + this._guiInstantlyDone.width/2*this._guiInstantlyDone.scale + 20,
+            y: this._guiCancelBuildButton.y
+        });
+        this.addChild(this._guiInstantlyDone, 2);
+        this._guiInstantlyDone.addClickEventListener(function () {
+            self.hideListBotButton();
+            if(gv.building_selected === undefined) return;
+            var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
+            var order = building._orderInUserBuildingList;
+            var orderBuilderHut = gv.orderInUserBuildingList.builderHut;
+            if(order === orderBuilderHut) return;
+            if(building._isActive) return;
+            var price = Math.ceil(building._time_remaining / 60);
+            if(cf.user._currentCapacityCoin < price) {
+                self.popUpMessage("Chưa đủ tài nguyên");
+            }
+            else {
+                cf.user._currentCapacityCoin -= price;
+                self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+                building._time_remaining = 0;
+                building.onCompleteBuild();
+                testnetwork.connector.sendInstantlyDone(Math.floor(gv.building_selected/100) - 1, gv.building_selected%100);
+            }
+        }.bind(this));
 
         /* Button Harvest */
         this._guiButtonHarvest = new IconActionBuilding(cf.CODE_BUILDING_HARVEST_1);
@@ -602,6 +697,35 @@
         this._guiButtonResearch.addClickEventListener(function(){
             self.onPopUpResearchTroop();
             self.hideListBotButton();
+        }.bind(this));
+
+        /* Button Training Army*/
+        this._guiTraningArmyButton = new IconActionBuilding(cf.CODE_TRAINING);
+        this._guiTraningArmyButton.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: this._guiButtonBuildingUpgrade.x + this._guiTraningArmyButton.width/2*this._guiTraningArmyButton.scale + 20,
+            y: this._guiButtonBuildingUpgrade.y
+        });
+        this.addChild(this._guiTraningArmyButton, 2);
+        this._guiTraningArmyButton.addClickEventListener(function(){
+            self.hideListBotButton();
+            if (gv.building_selected === undefined) return;
+            var building = cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)];
+            var order = (building._orderInUserBuildingList);
+            var orderBuilderHut = (gv.orderInUserBuildingList.builderHut);
+            if (order === orderBuilderHut) return;
+            if (building._isActive === false) return;
+
+            if(this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING) === null) {
+                var popupTraining = new PopupTraining(gv.building_selected);
+                this.addChild(popupTraining, 1, gv.tag.TAG_POPUP_TRAINING*(gv.building_selected%100));
+                popupTraining.onAppear();
+            }
+            else {
+                var popup = this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING);
+                popup.onAppear();
+            }
         }.bind(this));
 
         /*Button Request Donate */
@@ -666,160 +790,19 @@
 
         }.bind(this));
 
-        /* Eventtttttttttttttt */
-        this._guiButtonBuildingUpgrade.addClickEventListener(function()
-        {
-            self.hideListBotButton();
-            if (gv.building_selected === undefined) return;
-            var building = cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)];
-            var order = (building._orderInUserBuildingList);
-            var orderBuilderHut = (gv.orderInUserBuildingList.builderHut);
-            if (order === orderBuilderHut) return;
-            if (building._isActive === false) return;
-            // if (cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)]._orderInUserBuildingList = gv.orderInUserBuildingList.builderHut)
-            //     return;
-
-            var townHall = cf.user._buildingList[gv.orderInUserBuildingList.townHall][0];
-            var townHallLevel = townHall._level;
-            //if(townHall._isActive) townHallLevel = townHall._level;
-            //else townHallLevel = townHall._level - 1;
-            if(building._buildingSTR !== gv.buildingSTR.townHall) {
-                if (townHallLevel >= building._jsonConfig[building._buildingSTR][Math.min(building._level + 1, building._maxLevel)]["townHallLevelRequired"]) {
-                    self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
-                    self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
-                    self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
-                    self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
-                }
-                else if (building._level === building._maxLevel) {
-                    self.popUpMessage("Đã đạt cấp tối đa");
-                } else if (townHallLevel < building._jsonConfig[building._buildingSTR][Math.min(building._level + 1, building._maxLevel)]["townHallLevelRequired"]) {
-                    self.popUpMessage("Yêu cầu nhà chính cấp " + building._jsonConfig[building._buildingSTR][Math.min(building._level + 1, building._maxLevel)]["townHallLevelRequired"]);
-                }
-            } else if (building._level === building._maxLevel) {
-                self.popUpMessage("Đã đạt cấp tối đa");
-            } else {
-                self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
-                self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
-                self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
-                self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
-            }
-        }.bind(this));
-
-        this._guiCancelBuildButton = new IconActionBuilding(cf.CODE_BUILDING_CANCEL);
-        this._guiCancelBuildButton.attr({
+        /* Button Remove Obstacle*/
+        this._guibuttonRemove = new IconActionBuilding(cf.CODE_BUILDING_REMOVE);
+        this._guibuttonRemove.attr({
             anchorX: 0.5,
             anchorY: 0.5,
-            x: this._guiButtonBuildingUpgrade.x,
-            y: this._guiButtonBuildingUpgrade.y
+            x: cc.winSize.width/2,
+            y: -cc.winSize.height/2
         });
-
-
-
-        this.addChild(this._guiCancelBuildButton, 2);
-
-        this._guiCancelBuildButton.addClickEventListener(function(){
-
+        this.addChild(this._guibuttonRemove, 2, this._TAG_BUTTON_REMOVE);
+        this._guibuttonRemove.addClickEventListener(function(){
             self.hideListBotButton();
-            if(gv.building_selected === undefined) return;
-            var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
-            var order = building._orderInUserBuildingList;
-            var orderBuilderHut = gv.orderInUserBuildingList.builderHut;
-            if(order === orderBuilderHut) return;
-
-            if(building._isActive) return;
-
-            var price = fn.getPrice(building._buildingSTR, building._level+1);
-
-            cc.log(price.gold + " " + price.elixir + " " + price.darkElixir + " " + price.coin + " Price");
-            cf.user._currentCapacityCoin += price.coin/2;
-            cf.user._currentCapacityGold += price.gold/2;
-            cf.user._currentCapacityElixir += price.elixir/2;
-            cf.user._currentCapacityDarkElixir += price.darkElixir/2;
-
-            cc.log(cf.user._currentCapacityGold + " " + cf.user._currentCapacityElixir + " " + cf.user._currentCapacityDarkElixir + " " + cf.user._currentCapacityGold +  " current");
-
-            self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
-            self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
-            self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
-            self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
-
-            testnetwork.connector.sendCancel(Math.floor(gv.building_selected/100) - 1, gv.building_selected%100);
-
-            building.onCancelBuild();
-
+            cc.log("Remove !");
         }.bind(this));
-
-
-
-        this._guiInstantlyDone = new IconActionBuilding(cf.CODE_BUILDING_INSTANT);
-        this._guiInstantlyDone.attr({
-            anchorX: 0.5,
-            anchorY: 0.5,
-            x: this._guiCancelBuildButton.x + this._guiInstantlyDone.width/2*this._guiInstantlyDone.scale + 20,
-            y: this._guiCancelBuildButton.y
-        });
-
-        this.addChild(this._guiInstantlyDone, 2);
-
-
-        this._guiInstantlyDone.addClickEventListener(function () {
-
-            self.hideListBotButton();
-            if(gv.building_selected === undefined) return;
-            var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
-            var order = building._orderInUserBuildingList;
-            var orderBuilderHut = gv.orderInUserBuildingList.builderHut;
-            if(order === orderBuilderHut) return;
-
-            if(building._isActive) return;
-
-            var price = Math.ceil(building._time_remaining / 60);
-            if(cf.user._currentCapacityCoin < price) {
-                self.popUpMessage("Chưa đủ tài nguyên");
-            }
-            else {
-                cf.user._currentCapacityCoin -= price;
-                self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
-                building._time_remaining = 0;
-                building.onCompleteBuild();
-                testnetwork.connector.sendInstantlyDone(Math.floor(gv.building_selected/100) - 1, gv.building_selected%100);
-            }
-        }.bind(this));
-
-        this._guiTraningArmyButton = new IconActionBuilding(cf.CODE_TRAINING);
-
-
-        this._guiTraningArmyButton.attr({
-            anchorX: 0.5,
-            anchorY: 0.5,
-            x: this._guiButtonBuildingUpgrade.x + this._guiTraningArmyButton.width/2*this._guiTraningArmyButton.scale + 20,
-            y: this._guiButtonBuildingUpgrade.y
-        });
-
-        this.addChild(this._guiTraningArmyButton, 2);
-
-        this._guiTraningArmyButton.addClickEventListener(function(){
-            self.hideListBotButton();
-            if (gv.building_selected === undefined) return;
-            var building = cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)];
-            var order = (building._orderInUserBuildingList);
-            var orderBuilderHut = (gv.orderInUserBuildingList.builderHut);
-            if (order === orderBuilderHut) return;
-            if (building._isActive === false) return;
-
-            if(this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING) === null) {
-                var popupTraining = new PopupTraining(gv.building_selected);
-                this.addChild(popupTraining, 1, gv.tag.TAG_POPUP_TRAINING*(gv.building_selected%100));
-                popupTraining.onAppear();
-            }
-            else {
-                var popup = this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING);
-                popup.onAppear();
-            }
-
-        }.bind(this));
-
-
     },
 
     onPopUpResearchTroop: function()
@@ -914,27 +897,30 @@
 
     hideListBotButton: function()
     {
-        this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - 2 * cf.offSetGuiResourceBar, -200));
-        this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2 + this._guiButtonBuildingUpgrade.width/2 + 2 * cf.offSetGuiResourceBar, -200));
-        this._guiInstantlyDone.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
-        this._guiCancelBuildButton.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
-        this._guiTraningArmyButton.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
-        this._guiButtonRequestDonate.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
-        this._guiButtonClan.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
+        this._listBotButtonIsShown = false;
+        this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2, -200));
+        this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2, -200));
+        this._guiInstantlyDone.setPosition(cc.p(cc.winSize.width/2, -200));
+        this._guiCancelBuildButton.setPosition(cc.p(cc.winSize.width/2, -200));
+        this._guiTraningArmyButton.setPosition(cc.p(cc.winSize.width/2, -200));
+        this._guiButtonRequestDonate.setPosition(cc.p(cc.winSize.width/2, -200));
+        this._guiButtonClan.setPosition(cc.p(cc.winSize.width/2, -200));
+        this._guibuttonRemove.setPosition(cc.p(cc.winSize.width/2, - 200));
         if (this._guiButtonHarvest != undefined) this._guiButtonHarvest.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
         if (this._guiButtonResearch != undefined) this._guiButtonResearch.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
     },
 
     showListBotButton: function(buildingID)
     {
-        /* Infor(0) --- Upgrade(1) --- Cancel(2) --- Instance Finish(3) --- Collect(4) -- Research(5) -- Train(6) -- Request Donate(7)*/
+        this._listBotButtonIsShown = true;
+        /* Infor(0) --- Upgrade(1) --- Cancel(2) --- Instance Finish(3) --- Collect(4) -- Research(5) -- Train(6) -- Request Donate(7) -- Clan GUI(8) -- Remove Obstacle (9) */
         var buildingOrder = Math.floor(buildingID/100) - 1;
         var buildingNum = buildingID % 100;
         var building = cf.user._buildingList[buildingOrder][buildingNum];
 
         var boo = [];
-        boo[0] = true;  boo[1] = true;  boo[2] = true;  boo[3] = true; boo[4] = false;
-        boo[5] = false; boo[6] = false; boo[7] = false; boo[8] = false;
+        boo[0] = true;  boo[1] = true;  boo[2] = true;  boo[3] = true;  boo[4] = false;
+        boo[5] = false; boo[6] = false; boo[7] = false; boo[8] = false; boo[9] = false;
 
         if (building._level == building._maxLevel || !building._isActive || buildingOrder == gv.orderInUserBuildingList.builderHut) boo[1] = false;
         if (buildingOrder == gv.orderInUserBuildingList.clanCastle && building._level == 0) boo[0] = false;
@@ -972,6 +958,10 @@
                 if (building._isActive && building._level > 0 && cf.user._clanId != -1) boo[7] = true;
                 if (building._isActive && building._level > 0) boo[8] = true;
                 break;
+            case gv.orderInUserBuildingList.obstacle:
+                boo[9] = true;
+                break;
+
         }
 
         this.onPopUpButton(boo);
@@ -1046,6 +1036,13 @@
             this._guiButtonClan.setPosition(x, hidingY);
             var act = cc.MoveTo(0.1, cc.p(x, y));
             this._guiButtonClan.runAction(act);
+            x += offSet;
+        };
+        if (boo[9])
+        {
+            this._guibuttonRemove.setPosition(x, hidingY);
+            var act = cc.MoveTo(0.1, cc.p(x, y));
+            this._guibuttonRemove.runAction(act);
             x += offSet;
         }
     },

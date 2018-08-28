@@ -8,7 +8,6 @@ var researchTroopFolder = "res/Art/GUIs/research_troop/";
 var researchTroopFolderTroopIcon = "res/Art/GUIs/upgrade_troop/icon/";
 var researchTroopFolderTroopIconSmall = "res/Art/GUIs/upgrade_troop/small_icon/";
 var logInFolder = "res/Art/LoginGui/";
-var folderBuildingActionicon = "res/Art/GUIs/Action_Building_Icon/";
 var folderUpgradeBuildingGUI = guiFolder + "upgrade_building_gui/";
 var troopIconFolder = guiFolder + "train_troop_gui/icon/";
 var soundFolder = "res/Sounds/";
@@ -211,19 +210,19 @@ var mainGUI = {
     trophyBgBar:        guiFolder + "Main_Gui/trophy_bg_bar.png"
 };
 var buildingGUI = {
-    iconInfo : folderBuildingActionicon + "info_icon.png",
-    iconUpgrade: folderBuildingActionicon + "upgrade_icon.png",
-    iconHarvest_1: folderBuildingActionicon + "harvest_gold.png",
-    iconHarvest_2: folderBuildingActionicon + "harvest_elixir.png",
-    iconHarvest_3: folderBuildingActionicon + "harvest_dark_elixir.png",
+    iconInfo : res.folder_gui_action_building + "info_icon.png",
+    iconUpgrade: res.folder_gui_action_building + "upgrade_icon.png",
+    iconHarvest_1: res.folder_gui_action_building + "harvest_gold.png",
+    iconHarvest_2: res.folder_gui_action_building + "harvest_elixir.png",
+    iconHarvest_3: res.folder_gui_action_building + "harvest_dark_elixir.png",
     instant: res.folder_gui_action_building + "quick_finish.png",
     iconResearch: res.folder_gui_action_building + "research_icon.png",
     iconRequestDonate: res.folder_gui_action_building + "request_troop_button.png",
     iconClan: "res/Art/Bang hoi/icon bang hoi.png",
+    iconRemove: res.folder_gui_action_building + "remove_icon.png",
+    bg: res.folder_gui_action_building + "bg_button.png",
 
-    bg: folderBuildingActionicon + "bg_button.png",
-
-    trainIcon: folderBuildingActionicon + "train_icon.png",
+    trainIcon: res.folder_gui_action_building + "train_icon.png",
 
     buildCommit: res.folder_gui_action_building + "accept.png",
     buildCancel: res.folder_gui_action_building + "cancel.png",
