@@ -585,6 +585,10 @@
             y: -cc.winSize.height/2
         });
         this.addChild(this._guiButtonHarvest, 2, this._TAG_BUTTON_HARVEST);
+        this._guiButtonHarvest.addClickEventListener(function(){
+            var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
+            building.onHarvest();
+        });
 
         /*Button Research */
         this._guiButtonResearch = new IconActionBuilding(cf.CODE_BUILDING_RESEARCH);
@@ -1090,18 +1094,16 @@
     {
         var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
         var orderResource = building._orderInUserBuildingList;
-        if (this._guiButtonHarvest)
-            this.removeChildByTag(this._TAG_BUTTON_HARVEST);
         switch(orderResource)
         {
             case gv.orderInUserBuildingList.resource_1:
-                this._guiButtonHarvest = new IconActionBuilding(cf.CODE_BUILDING_HARVEST_1);
+                fn.replaceButtonImage(this._guiButtonHarvest, buildingGUI.iconHarvest_1)
                 break;
             case gv.orderInUserBuildingList.resource_2:
-                this._guiButtonHarvest = new IconActionBuilding(cf.CODE_BUILDING_HARVEST_2);
+                fn.replaceButtonImage(this._guiButtonHarvest, buildingGUI.iconHarvest_2)
                 break;
             case gv.orderInUserBuildingList.resource_3:
-                this._guiButtonHarvest = new IconActionBuilding(cf.CODE_BUILDING_HARVEST_3);
+                fn.replaceButtonImage(this._guiButtonHarvest, buildingGUI.iconHarvest_3)
                 break;
         };
         this._guiButtonHarvest.attr({
@@ -1110,12 +1112,13 @@
             x: cc.winSize.width/2,
             y: -cc.winSize.height/2
         });
-        this.addChild(this._guiButtonHarvest, 2, this._TAG_BUTTON_HARVEST);
+
+        var harvestAble = building._currentCapacity > 0;
+        this._guiButtonHarvest.setBright(harvestAble);
+        this._guiButtonHarvest.setEnabled(harvestAble);
         var actMoveUp = cc.MoveTo(0.1, cc.p(x, y));
         this._guiButtonHarvest.runAction(actMoveUp);
-        this._guiButtonHarvest.addClickEventListener(function(){
-        building.onHarvest();
-        }.bind(this));
+
     },
 
     //Exp, Trophy, Username, UserInfo

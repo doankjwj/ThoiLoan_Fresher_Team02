@@ -224,6 +224,7 @@ var Resource = BuildingNode.extend({
 
         testnetwork.connector.sendHarvest(this._id);
     },
+
     onPlaySoundEffect: function()
     {
         audioPlayer.play(this._buildingSTR == gv.buildingSTR.resource_1 ? res.sound.collectGold : res.sound.collectElixir);

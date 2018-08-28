@@ -345,6 +345,10 @@ fn.convertSecondToHour = function (sec)
 fn.replaceSpriteImage= function(sprite, url){
     var textture = cc.textureCache.addImage(url);
     sprite.setTexture(textture);
+};
+/* Replace button Image*/
+fn.replaceButtonImage= function(button, url){
+    button.loadTextures(url, url);
 }
 
 /* Tính tổng 1 mảng */
