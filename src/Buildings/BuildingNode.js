@@ -377,7 +377,7 @@ var BuildingNode = cc.Node.extend({
             anchorY: 0,
             x: 0,
             y: 0,
-            scale: cf.SCALE,
+            scale: cf.SCALE*2,
             visible: false
         });
         this.addChild(this._effect_level_up, this._defence.getLocalZOrder() + 1);

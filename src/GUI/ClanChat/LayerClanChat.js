@@ -180,6 +180,7 @@ var LayerClanChat = cc.Node.extend({
         this._guiButtonClanChat.setPosition(this._bg.width + this._layerUserOnline.width - 6, this._bg.height/2);
         this.addChild(this._guiButtonClanChat, 2);
         this._guiButtonClanChat.addClickEventListener(function(){
+            if (cf.user._clanId == -1) return;
             var actAppearLayer = cc.MoveBy(0.35, cc.p(self.scale*(self._bg.width + self._layerUserOnline.width) - 5, 0));
             if (!isExpanded){
                 if (self._listItemUserOnline.length == 0) // lần đầu khởi tạo
