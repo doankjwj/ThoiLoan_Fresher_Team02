@@ -26,7 +26,7 @@ gv.buildingDescription =
     defence_1: "Pháo là công trình phòng thủ cơ bản của bạn, giá trị của mỗi phát đạn  khiến \n pháo là công trình không thể thiếu của vương quốc",
     resource_1: "Vàng là tài nguyên không thể thiếu để xây dựng các công trình phòng thủ,\n mỏ vàng sục sâu ào lòng đất mang lại nhưng thỏi kim loại óng ánh",
     resource_2: "Những dòng chảy tự nhiên bên dưới vương quốc, mỏ dầu giúp đem chúng lên \nxây dựng quân đội",
-    storage_1: "Kho vàng là nơi cất trữ toàn bộ vàng của vương quốc, hãy cất giữ nơi này nghiêm ngặt\n nếu không muốn trắng tay sau 1 đêm thức dậy",
+    storage_1: "Kho vàng là nơi cất trữ toàn bộ vàng của vương quốc, hãy cất giữ\nnơi này nghiêm ngặt nếu không muốn trắng tay sau 1 đêm thức dậy",
     storage_2: "Cùng với kho vàng, kho dầu là nơi lưu trữ tài nguyên quan trọng của vương quốc, \nhãy nâng cấp kho dầu liên tục đẻ lưu trữ nhiều hơn những dòng dầu óng ánh",
     laboratory: "Nhà nâng cấp lính",
     clanCastle: "Nhà bang hội là nơi giữ lính phòng thủ quan trọng",

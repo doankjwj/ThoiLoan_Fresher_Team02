@@ -228,6 +228,7 @@ var User = cc.Class.extend({
                 building = this._buildingList[gv.orderInUserBuildingList.townHall][0];
                 building._currentCapacityGold = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacityGold"]);
                 resCapacity -= building._jsonConfig[building._buildingSTR][building._level]["capacityGold"];
+                cc.log(resCapacity + " /// tài nguyên còn lại" );
                 if (resCapacity <= 0) break;
                 for (var i = 0; i < this._buildingListCount[gv.orderInUserBuildingList.storage_1]; i++)
                 {
@@ -244,10 +245,10 @@ var User = cc.Class.extend({
                 building._currentCapacityElixir = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacityElixir"]);
                 resCapacity -= building._jsonConfig[building._buildingSTR][building._level]["capacityElixir"];
                 if (resCapacity <= 0) break;
-                for (var i = 0; i < this._buildingListCount[gv.orderInUserBuildingList.storage_1]; i++)
+                for (var i = 0; i < this._buildingListCount[gv.orderInUserBuildingList.storage_2]; i++)
                 {
                     if (resCapacity <= 0) break;
-                    building = this._buildingList[gv.orderInUserBuildingList.storage_1][i];
+                    building = this._buildingList[gv.orderInUserBuildingList.storage_2][i];
                     if (building._level <= 0) continue;
                     building._currentCapacity = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacity"]);
                     resCapacity -= building._jsonConfig[building._buildingSTR][building._level]["capacity"];
@@ -259,10 +260,10 @@ var User = cc.Class.extend({
                 building._currentCapacityDarkElixir = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacityDarkElixir"]);
                 resCapacity -= building._jsonConfig[building._buildingSTR][building._level]["capacityDarkElixir"];
                 if (resCapacity <= 0) break;
-                for (var i = 0; i < this._buildingListCount[gv.orderInUserBuildingList.storage_1]; i++)
+                for (var i = 0; i < this._buildingListCount[gv.orderInUserBuildingList.storage_3]; i++)
                 {
                     if (resCapacity <= 0) break;
-                    building = this._buildingList[gv.orderInUserBuildingList.storage_1][i];
+                    building = this._buildingList[gv.orderInUserBuildingList.storage_3][i];
                     if (building._level <= 0) continue;
                     building._currentCapacity = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacity"]);
                     resCapacity -= building._jsonConfig[building._buildingSTR][building._level]["capacity"];

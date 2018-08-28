@@ -152,7 +152,6 @@ var PopUpConstruct = cc.Node.extend({
                      {
                         var coinRequire = 0;
                         coinRequire += Math.ceil(self._require.gold/1000) + Math.ceil(self._require.elixir/1000) + Math.ceil(self._require.darkElixir/50) + self._require.coin;
-                         cc.log(coinRequire);
                         gv.upgradeAble.etcToCoin = coinRequire;
 
                         self.getParent().onPopUpToCoin(coinRequire, cf.constructType.upgrade);
@@ -539,6 +538,8 @@ var PopUpConstruct = cc.Node.extend({
 
     updateBar: function(str, level, size, name, status, constructType)
     {
+
+
         var buildingId = gv.building_selected;
         var b = cf.user._buildingList[Math.floor(buildingId/100) - 1][Math.floor(buildingId%100)];
 
@@ -706,7 +707,7 @@ var PopUpConstruct = cc.Node.extend({
                     bar2MaxLength = gv.json.storage[str][gv.buildingMaxLevel.storage_2]["capacity"];
                 }
                 this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
-                this.replaceIconBar(this._orderBar.bar3, res.upgradeBuildingGUI.iconCapacityElixir);
+                this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconCapacityElixir);
                 preText1 = "Máu: ";
                 preText2 = "Sức chứa: ";
                 break;
@@ -904,14 +905,10 @@ var PopUpConstruct = cc.Node.extend({
         this._require.darkElixir = Math.max(0, this._cost.darkElixir - cf.user._currentCapacityDarkElixir);
         this._require.coin = Math.max(0, this._cost.coin - cf.user._currentCapacityCoin);
 
-        cc.log("Require: " + this._require.gold + " / " +this._require.elixir + " / " + this._require.darkElixir + " / " + this._require.coin );
-
         this._cost.gold -= this._require.gold;
         this._cost.elixir -= this._require.elixir;
         this._cost.darkElixir -= this._require.darkElixir;
         this._cost.coin -= this._require.coin;
-
-        cc.log("COST: " + this._cost.gold + " / " +this._cost.elixir + " / " + this._cost.darkElixir + " / " + this._cost.coin );
 
         /* Time Require */
         if (this._constructType == gv.constructType.upgrade)
