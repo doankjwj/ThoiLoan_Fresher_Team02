@@ -19,6 +19,7 @@ gv.CMD.SEND_HARVEST = 2021;
 gv.CMD.SEND_RESEARCH = 2031;
 gv.CMD.SEND_RESEARCH_FINISH_IMMIDIATELY = 2033;
 gv.CMD.RESET_USER = 2101;
+gv.CMD.SEND_REMOVE_OBSTACLE = 2051;
 
 gv.CMD.REQUEST_TRAIN_TROOP = 2041;
 gv.CMD.REQUEST_TRAIN_G = 2042;
@@ -322,6 +323,22 @@ CmdSendBuild = fr.OutPacket.extend(
             this.putByte(_id);
             this.putByte(row);
             this.putByte(col);
+            this.updateSize();
+        }
+    }
+);
+
+CmdSendRemoveObstacle = fr.OutPacket.extend(
+    {
+        ctor: function () {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.SEND_REMOVE_OBSTACLE);
+        },
+        pack: function (id) {
+            var order = id%100;
+            this.packHeader();
+            this.putByte(order);
             this.updateSize();
         }
     }

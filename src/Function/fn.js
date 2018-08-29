@@ -360,10 +360,21 @@ fn.sumArr = function(arr, length)
     return sum;
 }
 
+/* Lấy ra công trình đang được chọn*/
 fn.getCurrentBuilding = function()
 {
     var id = gv.building_selected;
     var type  = Math.floor(id/100) - 1;
     var order = id%100;
     return cf.user._buildingList[type][order];
+};
+
+/* Common Label*/
+fn.commonLabel = function(str, fontName, sizeX, sizeY)
+{
+    var label = cc.LabelBMFont(str, fontName);
+    label.setScaleX(sizeX);
+    label.setScaleY(sizeY);
+    //label.setAnchorPoint(0.5, 0.5);
+    return label;
 }

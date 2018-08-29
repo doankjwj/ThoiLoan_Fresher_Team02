@@ -37,7 +37,6 @@ var Map = cc.Node.extend({
                     if (building != null)
                     {
                         self.addChild(building);
-
                         cf.user._buildingList[building._orderInUserBuildingList][cf.user._buildingListCount[building._orderInUserBuildingList]] = (building);
                         cf.user._buildingListCount[building._orderInUserBuildingList] ++;
                         if(building._buildingSTR === gv.buildingSTR.barrack_1) {
@@ -57,6 +56,11 @@ var Map = cc.Node.extend({
                     cf.user._buildingList[obstacle._orderInUserBuildingList][cf.user._buildingListCount[obstacle._orderInUserBuildingList]] = (obstacle);
                     cf.user._buildingListCount[obstacle._orderInUserBuildingList] ++;
                     this.addChild(obstacle);
+                    if (obs = gv.jsonInfo["map"]["OBS"][i]["finishCleaningTime"] > 0)
+                    {
+                        obstacle._timeFinish = obs = gv.jsonInfo["map"]["OBS"][i]["finishCleaningTime"];
+                        obstacle.onStartRemove(gv.startConstructType.loadConstruct);
+                    }
                 }
     },
 

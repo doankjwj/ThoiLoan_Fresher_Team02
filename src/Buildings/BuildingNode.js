@@ -322,7 +322,7 @@ var BuildingNode = cc.Node.extend({
                     }
                     else
                     {
-                        if (cf.current_r != self._row || cf.current_c != self._col)
+                        if ((cf.current_r != self._row || cf.current_c != self._col) && (self._buildingSTR != gv.buildingSTR.obstacle))
                         {
                             self.unlocate_map_array(cf.current_r, cf.current_c, size);
                             self.locate_map_array(self);
@@ -438,7 +438,7 @@ var BuildingNode = cc.Node.extend({
         }
 
         /* Time Bar */
-        this._info_bar = cc.Sprite(res.upgradeBuildingGUI.infoBar, cc.rect(0,0, this._BAR_WIDTH, this._BAR_HEIGHT));
+        this._info_bar = cc.Sprite(res.upgradeBuildingGUI.infoBar, cc.rect(0,0, 0, this._BAR_HEIGHT));
         this._info_bar.scale = 0.5 * cf.SCALE;
         this._info_bar.attr({
             anchorX: 0,

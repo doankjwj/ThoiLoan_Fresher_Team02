@@ -4,6 +4,12 @@ var IconActionBuilding = ccui.Button.extend({
     _price: null,
     _priceTxt: null,
 
+    _cost:
+    {
+        gold: 0,
+        elixir: 0,
+    },
+
     ctor: function(type)
     {
         switch(type)
@@ -109,5 +115,28 @@ var IconActionBuilding = ccui.Button.extend({
                 sender.setScale(sender.scale/1.02);
                 break;
         }
+    },
+
+    /* Thay đổi content (Label tài nguyên yêu cầu, icon tài nguyên cho nút remove vật cản*/
+    updateForObstcle: function()
+    {
+        var building = fn.getCurrentBuilding();
+        this._cost.gold = 0;
+        this._cost.elixir = 0;
+        this._cost.gold = gv.json.obstacle[building._level]["1"]["gold"];
+        this._cost.elixir = gv.json.obstacle[building._level]["1"]["elixir"];
+        this._labelCost.setString((this._cost.gold != 0) ? this._cost.gold : this._cost.elixir);
+        fn.replaceSpriteImage(this._iconCost, res.folder_gui_collect_res + ((this._cost.gold != 0) ? "RES_1.png" : "RES_2.png"));
+
+        if (this._cost.gold > cf.user.getCurrentGold() || this._cost.elixir > cf.user.getCurrentElixir())
+            this._labelCost.setColor(cc.color(255, 0, 0, 255));
+        else
+            this._labelCost.setColor(cc.color(255, 255, 255, 255));
+    },
+
+    checkResourceRequierEnough: function()
+    {
+        var building = fn.getCurrentBuilding();
+        return (gv.json.obstacle[building._level]["1"]["gold"] <= cf.user.getCurrentGold() && gv.json.obstacle[building._level]["1"]["elixir"] <= cf.user.getCurrentElixir());
     }
 });

@@ -793,6 +793,7 @@
         }.bind(this));
 
         /* Button Remove Obstacle*/
+
         this._guibuttonRemove = new IconActionBuilding(cf.CODE_BUILDING_REMOVE);
         this._guibuttonRemove.attr({
             anchorX: 0.5,
@@ -801,9 +802,30 @@
             y: -cc.winSize.height/2
         });
         this.addChild(this._guibuttonRemove, 2, this._TAG_BUTTON_REMOVE);
+        this._guibuttonRemove._labelCost = fn.commonLabel("20000" , font.soji20, 0.65, 0.75);
+        this._guibuttonRemove._labelCost.setAnchorPoint(1, 0.5);
+        this._guibuttonRemove._labelCost.setPosition(this._guibuttonRemove.width*2.5/4, 100);
+        this._guibuttonRemove.addChild(this._guibuttonRemove._labelCost, 1);
+        this._guibuttonRemove._iconCost = cc.Sprite(res.folder_gui_collect_res + "RES_1.png");
+        this._guibuttonRemove._iconCost.scale = 0.35;
+        this._guibuttonRemove._iconCost.setAnchorPoint(0, 0.5);
+        this._guibuttonRemove._iconCost.setPosition(this._guibuttonRemove.width*2.5/4, 100);
+        this._guibuttonRemove.addChild(this._guibuttonRemove._iconCost, 1);
+
         this._guibuttonRemove.addClickEventListener(function(){
             self.hideListBotButton();
-            fn.getCurrentBuilding().onStartRemove();
+            if (!self._guibuttonRemove.checkResourceRequierEnough())
+            {
+                fr.getCurrentScreen().popUpMessage("Chưa đủ tài nguyên");
+                return;
+            }
+            if (cf.user.getBuilderFree() <= 0)
+            {
+                fr.getCurrentScreen().popUpMessage("Tất cả thợ đang bận");
+                return;
+            }
+            fn.getCurrentBuilding().onStartRemove(gv.startConstructType.newConstruct);
+
         }.bind(this));
     },
 
@@ -817,14 +839,7 @@
         this.addChild(this._popUpResearchTroop, 1, gv.tag.TAG_POPUP_RESEARCH_TROOP);
         this._popUpResearchTroop.onAppear();
     },
-    onPopUpClan: function()
-    {
-        //this.removeChild(this._popUpClan);
-        //this._popUpClan = new PopUpClan();
-        //this._popUpClan.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
-        //this.addChild(this._popUpClan, 1);
-        //this._popUpClan.onAppear();
-    },
+
     onPopUpRequestDonate: function()
     {
         if (!this._popUpRequestDonate)
@@ -1050,6 +1065,8 @@
             this._guibuttonRemove.setPosition(x, hidingY);
             var act = cc.MoveTo(0.1, cc.p(x, y));
             this._guibuttonRemove.runAction(act);
+            /* Cập nhật lượng tài nguyên cho nút remove*/
+            this._guibuttonRemove.updateForObstcle();
             x += offSet;
         }
     },

@@ -185,7 +185,10 @@ var User = cc.Class.extend({
                 if (this._buildingList[i][j]._isActive === false)
                 {
                     builderBusy ++;
-                }
+                };
+
+                if (this._buildingList[i][j]._buildingSTR == gv.buildingSTR.obstacle && this._buildingList[i][j]._isCleaning)
+                    builderBusy ++;
             }
         }
 
@@ -211,6 +214,7 @@ var User = cc.Class.extend({
         if (resType_3)
             this.distributeResourceType(gv.buildingSTR.resource_3);
 
+        cc.log(this._currentCapacityGold + " // "  +this._currentCapacityElixir);
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
@@ -297,5 +301,33 @@ var User = cc.Class.extend({
         this._currentCapacityCoin += res_4;
         this.distributeResource(res_1 != 0, res_2 != 0, res_3 != 0);
     },
+
+    /*Lấy tài nguyên*/
+    getCurrentGold: function()
+    {
+        return this._currentCapacityGold;
+    },
+    getCurrentElixir: function()
+    {
+        return this._currentCapacityElixir;
+    },
+    getCurrentDarkElixir: function()
+    {
+        return this._currentCapacityDarkElixir;
+    },
+    getCurrentCoin: function()
+    {
+        return this._currentCapacityCoin;
+    },
+
+    /*Lấy số thợ*/
+    getBuilderFree: function()
+    {
+        return this._builderFree;
+    },
+    getBuilderTotal: function()
+    {
+        return this._builderTotal;
+    }
 
 });
