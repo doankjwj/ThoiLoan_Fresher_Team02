@@ -174,7 +174,7 @@ var LayerClanChat = cc.Node.extend({
 
     addButtonExpand: function(){
         var self = this;
-        var isExpanded = false;
+        this._isExpanded = false;
         this._guiButtonClanChat = ccui.Button(res.clanChatGUI.buttonBG);
         this._guiButtonClanChat.setAnchorPoint(0, 0.5);
         this._guiButtonClanChat.setPosition(this._bg.width + this._layerUserOnline.width - 6, this._bg.height/2);
@@ -182,7 +182,7 @@ var LayerClanChat = cc.Node.extend({
         this._guiButtonClanChat.addClickEventListener(function(){
             if (cf.user._clanId == -1) return;
             var actAppearLayer = cc.MoveBy(0.35, cc.p(self.scale*(self._bg.width + self._layerUserOnline.width) - 5, 0));
-            if (!isExpanded){
+            if (!this._isExpanded){
                 if (self._listItemUserOnline.length == 0) // lần đầu khởi tạo
                     self.initContent();
                 // if (!gv.clanChatEventManager.chatStatusUpdated)
@@ -194,32 +194,72 @@ var LayerClanChat = cc.Node.extend({
                 self.updateTimeScrollChat();
 
                 // Thay hình ảnh cho button và chạy Action
-                fn.replaceSpriteImage(iconButton, res.clanChatGUI.buttonCollapse);
+                fn.replaceSpriteImage(this._iconButton, res.clanChatGUI.buttonCollapse);
                 self.runAction(actAppearLayer.clone());
                 self.onAppear();
             }
             else {
                 // Thay hính ảnh cho button và chạy Action
-                fn.replaceSpriteImage(iconButton, res.clanChatGUI.buttonExpand);
+                fn.replaceSpriteImage(this._iconButton, res.clanChatGUI.buttonExpand);
                 self.runAction(actAppearLayer.clone().reverse());
                 self.onDisappear();
             }
-            isExpanded = !isExpanded;
+            this._isExpanded = !this._isExpanded;
         }.bind(this));
 
-        var iconButton = null;
-        if (isExpanded)
-            iconButton = cc.Sprite(res.clanChatGUI.buttonCollapse);
+        this._iconButton = null;
+        if (this._isExpanded)
+            this._iconButton = cc.Sprite(res.clanChatGUI.buttonCollapse);
         else
-            iconButton = cc.Sprite(res.clanChatGUI.buttonExpand);
-        iconButton.setAnchorPoint(0, 0.5);
-        iconButton.setPosition(this._bg.width + this._layerUserOnline.width - 6, this._bg.height/2);
-        this.addChild(iconButton, 2);
+            this._iconButton = cc.Sprite(res.clanChatGUI.buttonExpand);
+        this._iconButton.setAnchorPoint(0, 0.5);
+        this._iconButton.setPosition(this._bg.width + this._layerUserOnline.width - 6, this._bg.height/2);
+        this.addChild(this._iconButton, 2);
     },
 
     onShowClanInfo: function()
     {
         cc.log("Show Clan Info");
+        //self.hideListBotButton();
+
+        //if (gv.building_selected === undefined) return;
+        var building = cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0];
+        if (building._isActive === false) return;
+
+        var root = fr.getCurrentScreen();
+        if(cf.user._clanId === -1) {
+            if(root.getChildByTag(gv.tag.TAG_CLAN_JOIN) === null) {
+
+                var popupClan = new JoinClan();
+                popupClan.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
+                root.addChild(popupClan, 1, gv.tag.TAG_CLAN_JOIN);
+                popupClan.onAppear();
+
+            }
+            else root.getChildByTag(gv.tag.TAG_CLAN_JOIN).onAppear();
+        }
+        else {
+
+            testnetwork.connector.sendGetUserClan();
+
+            if(gv.clanMemberList === null) testnetwork.connector.sendGetMemberList(gv.userClan.id);
+            var clanDetail;
+            if(root.getChildByTag(gv.tag.TAG_CLAN_DETAIL) === null) {
+                clanDetail = new ClanDetail();
+                clanDetail.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
+                root.addChild(clanDetail, 1, gv.tag.TAG_CLAN_DETAIL);
+            } else clanDetail = root.getChildByTag(gv.tag.TAG_CLAN_DETAIL);
+
+            clanDetail.onAppear(gv.userClan);
+        };
+
+        var actAppearLayer = cc.MoveBy(0.35, cc.p(this.scale*(this._bg.width + this._layerUserOnline.width) - 5, 0));
+            // Thay hính ảnh cho button và chạy Action
+            fn.replaceSpriteImage(this._iconButton, res.clanChatGUI.buttonExpand);
+            this.runAction(actAppearLayer.clone().reverse());
+            this.onDisappear();
+
+        this._isExpanded = !this._isExpanded;
     },
     initContent: function(){
         this.initClanInfo();

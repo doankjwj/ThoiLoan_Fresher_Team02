@@ -190,6 +190,7 @@ var Laboratory = BuildingNode.extend({
     {
         var tmpLevel = this.getTempLevel();
         if (tmpLevel < 2) return;
+        tmpLevel = Math.min(tmpLevel, 5); // 5 = Level Effect cao nhất của nhà lab
         if (cf.animationLab[tmpLevel] == undefined)
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_lab_1_" + tmpLevel +".plist", res.folder_effect + "effect_lab_1_" + tmpLevel +".png");

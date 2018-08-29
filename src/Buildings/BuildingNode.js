@@ -919,7 +919,7 @@ var BuildingNode = cc.Node.extend({
             case gv.buildingSTR.lab:
                 gold = 0;
                 elixir = gv.json.laboratory[str][nextLevel]["elixir"];
-                darkElixir = gv.json.defence[str][nextLevel]["darkElixir"];
+                darkElixir = gv.json.laboratory[str][nextLevel]["darkElixir"];
                 coin = 0;
                 break;
             case gv.buildingSTR.obstacle:
@@ -1078,6 +1078,6 @@ var BuildingNode = cc.Node.extend({
     },
 
     updateZOrder: function() {
-        this.setLocalZOrder(this._row + this._col);
+        this.setLocalZOrder(this._row + this._col + Math.floor(this._size/2));
     }
 });

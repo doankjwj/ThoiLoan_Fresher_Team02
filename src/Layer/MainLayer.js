@@ -150,7 +150,7 @@
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
         gv.passwordSendToServer = this._passwordField.string;
 
         gv.gameClient.connect();
@@ -557,6 +557,8 @@
             var id = gv.building_selected;
             var buiding = cf.user._buildingList[Math.floor(id/100) - 1][id%100];
             if (gv.building_selected === undefined || (buiding._buildingSTR == gv.buildingSTR.clanCastle && buiding._level == 0)) return;
+            if (buiding._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && buiding._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
+                buiding.onHardUpdateCapacity();
             if (!self.getChildByTag(gv.tag.TAG_POPUP))
             {
                 var popUp = PopUpConstruct.getOrCreate();
@@ -923,6 +925,7 @@
         boo[5] = false; boo[6] = false; boo[7] = false; boo[8] = false; boo[9] = false;
 
         if (building._level == building._maxLevel || !building._isActive || buildingOrder == gv.orderInUserBuildingList.builderHut) boo[1] = false;
+        if (buildingOrder == gv.orderInUserBuildingList.lab && building._researching) boo[1] = false;
         if (buildingOrder == gv.orderInUserBuildingList.clanCastle && building._level == 0) boo[0] = false;
         if (building._isActive) boo[2] = false;
         if (building._isActive) boo[3] = false;

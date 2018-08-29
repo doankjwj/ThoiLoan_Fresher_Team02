@@ -1016,7 +1016,7 @@ var PopUpConstruct = cc.Node.extend({
         /* Effect */
         //if ((str == gv.buildingSTR.barrack_1 && level <4) || str == gv.buildingSTR.builderHut || str == gv.buildingSTR.storage_1 || str == gv.buildingSTR.storage_2) return;
         var arrNoEffect = [gv.buildingSTR.builderHut, gv.buildingSTR.storage_1, gv.buildingSTR.storage_2, gv.buildingSTR.storage_3, gv.buildingSTR.defence_1];
-        if ((str == gv.buildingSTR.barrack_1 && level <4) || arrNoEffect.indexOf(str) >= 0 || (str == gv.buildingSTR.lab && level <2)) return;
+        if ((str == gv.buildingSTR.barrack_1 && (level <4 || level >8)) || arrNoEffect.indexOf(str) >= 0 || (str == gv.buildingSTR.lab && level <2)) return;
         if (str == gv.buildingSTR.clanCastle) return;
 
         if (str != gv.buildingSTR.armyCamp_1 && str != gv.buildingSTR.townHall)

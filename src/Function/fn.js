@@ -63,7 +63,7 @@ fn.loadJson = function ()
     gv.json.troopAnimation = {};
 
     for (var i = 1; i < 5; i += 1)
-        for (var j = 1; j < 4; j += 1)
+        for (var j = 1; j < 5; j += 1)
             try
             {
                 cc.loader.loadJson(res.folder_troop_animation + "ARM_" + i + "_" + j + "/ARM_" + i + "_" + j + "_info.json",
