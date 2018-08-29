@@ -112,3 +112,16 @@ gv.searchResult = {
     byID: null,
     byName: null,
 };
+
+/* Hướng lính*/
+gv.direction =
+{
+    down_right: 0,
+    down: 1,
+    down_left: 2,
+    left: 3,
+    up_left: 4,
+    up: 5,
+    up_right: 6,
+    right: 7,
+};

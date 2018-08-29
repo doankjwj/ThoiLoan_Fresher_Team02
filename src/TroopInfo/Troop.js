@@ -203,7 +203,7 @@ var Troop = cc.Node.extend
         },
         stepToLogicPointStep: function ()
         {
-            this.setLocalZOrder(this.position.logicRow + this.position.logicColumn);
+            this.setLocalZOrder(this.position.logicRow + this.position.logicColumn + 2);
             var moveDirection = this.position.getDirectionTo(this.targetLogicPointStep);
             if (this.facingDirection.differenceFrom(moveDirection) !== 0 || !this.isMoving)
             {
@@ -302,7 +302,7 @@ var Troop = cc.Node.extend
         },
         visualizeOnIdle: function ()
         {
-            this.setLocalZOrder(this.position.logicRow + this.position.logicColumn);
+            this.setLocalZOrder(this.position.logicRow + this.position.logicColumn + 2);
             this.stopAllActions();
             this.unit.stopAllActions();
             var directionType = this.facingDirection.getDirectionType();
