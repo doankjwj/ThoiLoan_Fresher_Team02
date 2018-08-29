@@ -318,10 +318,11 @@ res.sound = {
     collectElixir: soundFolder + "sfx/collect_elixir.mp3",
 }
 var g_preload= [
-    res.tilemap_tmx,
-    res.bgBotLeft,
-    res.bgBotRight,
-    res.bgTopLeft,
-    res.bgTopRight,
-    res.builderHut,
+    //res.tilemap_tmx,
+    //res.bgBotLeft,
+    //res.bgBotRight,
+    //res.bgTopLeft,
+    //res.bgTopRight,
+    //res.builderHut,
+    res
 ];

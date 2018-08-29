@@ -359,3 +359,11 @@ fn.sumArr = function(arr, length)
         sum += arr[i];
     return sum;
 }
+
+fn.getCurrentBuilding = function()
+{
+    var id = gv.building_selected;
+    var type  = Math.floor(id/100) - 1;
+    var order = id%100;
+    return cf.user._buildingList[type][order];
+}

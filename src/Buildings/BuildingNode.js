@@ -221,8 +221,9 @@ var BuildingNode = cc.Node.extend({
 
             onTouchEnded: function(touch, event) {
                 if(!cf.isMapMoving) {
-                    if (self._buildingSTR != gv.buildingSTR.clanCastle || self._level != 0)
+                    if (!(self._buildingSTR == gv.buildingSTR.clanCastle && self._level == 0) && !(self._buildingSTR == gv.buildingSTR.obstacle))
                         self.onClick();
+
                     gv.building_selected = self._id;
                     self.getParent().getParent().showListBotButton(self._id);
                     cf.current_r = self._row;
@@ -338,7 +339,9 @@ var BuildingNode = cc.Node.extend({
             {
                 if (root._listBotButtonIsShown)
                    root.hideListBotButton();
-                if (self._buildingSTR == gv.buildingSTR.clanCastle && self._level == 0) return true;
+                var moveAble = !(self._buildingSTR == gv.buildingSTR.clanCastle && self._level == 0);
+                moveAble = moveAble && !(self._buildingSTR == gv.buildingSTR.obstacle);
+                if (!moveAble) return true;
                 if (self._id !== gv.building_selected) return;
                 var location_touch = touch.getLocation();
                 var loc = fn.getRowColFromPos(cc.p(location_touch.x - self.getParent().x, location_touch.y - self.getParent().y));
@@ -668,7 +671,7 @@ var BuildingNode = cc.Node.extend({
     },
 
     addCenterBuilding: function() {
-        if (this._buildingSTR !== gv.buildingSTR.obstacle)
+        //if (this._buildingSTR !== gv.buildingSTR.obstacle)
         {
             cc.eventManager.addListener(this._listener, this);
         }

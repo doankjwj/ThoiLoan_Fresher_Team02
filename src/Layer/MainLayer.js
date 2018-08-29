@@ -803,7 +803,7 @@
         this.addChild(this._guibuttonRemove, 2, this._TAG_BUTTON_REMOVE);
         this._guibuttonRemove.addClickEventListener(function(){
             self.hideListBotButton();
-            cc.log("Remove !");
+            fn.getCurrentBuilding().onStartRemove();
         }.bind(this));
     },
 
@@ -900,16 +900,18 @@
     hideListBotButton: function()
     {
         this._listBotButtonIsShown = false;
-        this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2, -200));
-        this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2, -200));
-        this._guiInstantlyDone.setPosition(cc.p(cc.winSize.width/2, -200));
-        this._guiCancelBuildButton.setPosition(cc.p(cc.winSize.width/2, -200));
-        this._guiTraningArmyButton.setPosition(cc.p(cc.winSize.width/2, -200));
-        this._guiButtonRequestDonate.setPosition(cc.p(cc.winSize.width/2, -200));
-        this._guiButtonClan.setPosition(cc.p(cc.winSize.width/2, -200));
-        this._guibuttonRemove.setPosition(cc.p(cc.winSize.width/2, - 200));
-        if (this._guiButtonHarvest != undefined) this._guiButtonHarvest.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
-        if (this._guiButtonResearch != undefined) this._guiButtonResearch.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -200));
+        var hidingY = 200;
+
+        this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2, -hidingY));
+        this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2, -hidingY));
+        this._guiInstantlyDone.setPosition(cc.p(cc.winSize.width/2, -hidingY));
+        this._guiCancelBuildButton.setPosition(cc.p(cc.winSize.width/2, -hidingY));
+        this._guiTraningArmyButton.setPosition(cc.p(cc.winSize.width/2, -hidingY));
+        this._guiButtonRequestDonate.setPosition(cc.p(cc.winSize.width/2, -hidingY));
+        this._guiButtonClan.setPosition(cc.p(cc.winSize.width/2, -hidingY));
+        this._guibuttonRemove.setPosition(cc.p(cc.winSize.width/2, - hidingY));
+        if (this._guiButtonHarvest != undefined) this._guiButtonHarvest.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -hidingY));
+        if (this._guiButtonResearch != undefined) this._guiButtonResearch.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -hidingY));
     },
 
     showListBotButton: function(buildingID)
@@ -962,7 +964,9 @@
                 if (building._isActive && building._level > 0) boo[8] = true;
                 break;
             case gv.orderInUserBuildingList.obstacle:
-                boo[9] = true;
+                boo[0] = false;
+                boo[1] = false;
+                boo[9] = !building._isCleaning;
                 break;
 
         }

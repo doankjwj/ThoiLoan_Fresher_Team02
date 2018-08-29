@@ -2,6 +2,7 @@
  * Created by CPU02326_Local on 7/23/2018.
  */
 var Obstacle = BuildingNode.extend({
+    _isCleaning: false,
     ctor: function(id, type, row, col, existed, isActive)
     {
         this._buildingSTR = gv.buildingSTR.obstacle;
@@ -14,5 +15,11 @@ var Obstacle = BuildingNode.extend({
         this._grassShadow.visible = false;
         this._txtName.visible = false;
         this.addCenterBuilding();
-    }
+    },
+
+    onStartRemove: function()
+    {
+        this._isCleaning = true;
+        cc.log("Remove: " + this._id);
+    },
 });
