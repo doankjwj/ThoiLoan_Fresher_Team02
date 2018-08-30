@@ -72,7 +72,9 @@ var BuildingNode = cc.Node.extend({
         this._row = row;
         this._col = col;
         this._level = level;
-        this._isActive = isActive
+        this._isActive = isActive;
+
+        cc.log(this._existed);
 
         this._txtName = cc.LabelBMFont(this._name, font.soji20);
         this._txtName.setColor(cc.color(189,183,107, 255));
@@ -406,13 +408,16 @@ var BuildingNode = cc.Node.extend({
             onTouchEnded: function(touch, event)
             {
                 self.onUnBlur();
-                if (!self._red.visible /*&& (self._level>0)*/)
+                //cc.log(self._existed + " red: " + self._red.visible);
+                if (!self._red.visible && self._existed /*&& (self._level>0)*/)
                 {
                     self.unlocate_map_array(cf.current_r, cf.current_c, self._size);
                     self.locate_map_array(self);
                     cf.current_r = self._row;
                     cf.current_c = self._col;
-                    testnetwork.connector.sendMove(self._id, self._row, self._col);
+                    //if (!(self._finishing_time == null && self._level ==0))
+                    //(!(self._finishing_time == null && self._level ==0))
+                        testnetwork.connector.sendMove(self._id, self._row, self._col);
 
                     self.onEndClick();
                     this.setEnabled(false);
@@ -830,6 +835,7 @@ var BuildingNode = cc.Node.extend({
                     return;
                 }
                 ;
+                self._existed = true;
                 self.onBuild();
             }
         }.bind(this));

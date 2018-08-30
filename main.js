@@ -25,6 +25,7 @@ cc.game.onStart = function(){
         testnetwork.connector = new testnetwork.Connector(gv.gameClient);
         fn.loadJson();
         // fn.loadPlist();
+        fn.initLocalized();
         fr.view(MainLayer);
     }, this);
 

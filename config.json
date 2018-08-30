@@ -2,7 +2,7 @@
     "init_cfg":{
        "isLandscape": true,
        "isWindowTop": false,
-       "name": "Team02",
+       "name": "Th?i Lo?n",
        "width": 1280,
        "height": 720,
        "entry": "main.js",
