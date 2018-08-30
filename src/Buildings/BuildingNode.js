@@ -91,12 +91,12 @@ var BuildingNode = cc.Node.extend({
         this._id = tag;
 
         //grass
-        this._grass = new grass(this._size);
+        this._grass = new grass(this._size, this._orderInUserBuildingList);
         this.addChild(this._grass, 0);
 
 
         //building shadow
-        this._grassShadow = new GrassShadow(this._size);
+        this._grassShadow = new GrassShadow(this._size, this._orderInUserBuildingList);
         this.addChild(this._grassShadow, this._grass.getLocalZOrder() + 1);
         this._grassShadow.scale = this._grass.scale;
 
@@ -198,7 +198,8 @@ var BuildingNode = cc.Node.extend({
 
                 if (fn.pointInsidePolygon([x, y], polygon) && (gv.building_selected !== self._id))
                 {
-                    self._txtName.setString(self._name + " level " + self.getTempLevel());
+                    var tmpPreLevel = (self._buildingSTR == gv.buildingSTR.obstacle) ? " " : " level "
+                    self._txtName.setString(self._name + tmpPreLevel + self.getTempLevel());
                     self._txtName.visible = true;
                     self.popBuildingScale();
                     self.setLocalZOrder(200);
@@ -230,6 +231,8 @@ var BuildingNode = cc.Node.extend({
                     cf.current_c = self._col;
                     self._listenerMove.setEnabled(true);
                     this.setEnabled(false);
+                    cc.log("++++ Id: " + self._id);
+                    self.getParent().logMapArray();
                 }
             }
         });
@@ -299,6 +302,7 @@ var BuildingNode = cc.Node.extend({
                     if (self._row < 1) self._row = 1;
                     if (self._col < 1) self._col = 1;
                     self.unlocate_map_array(cf.current_r, cf.current_c, size);
+
                     return true;
                 }
                 else
@@ -376,6 +380,15 @@ var BuildingNode = cc.Node.extend({
             onTouchEnded: function(touch, event)
             {
                 self.onUnBlur();
+                if (!self._red.visible)
+                {
+                    self.unlocate_map_array(cf.current_r, cf.current_c, self._size);
+                    self.locate_map_array(self);
+                    cf.current_r = self._row;
+                    cf.current_c = self._col;
+                    testnetwork.connector.sendMove(self._id, self._row, self._col);
+                }
+                self.getParent().logMapArray();
             }
         });
 
@@ -438,7 +451,7 @@ var BuildingNode = cc.Node.extend({
         }
 
         /* Time Bar */
-        this._info_bar = cc.Sprite(res.upgradeBuildingGUI.infoBar, cc.rect(0,0, 0, this._BAR_HEIGHT));
+        this._info_bar = cc.Sprite(res.upgradeBuildingGUI.infoBar, cc.rect(0,0, this._BAR_WIDTH, this._BAR_HEIGHT));
         this._info_bar.scale = 0.5 * cf.SCALE;
         this._info_bar.attr({
             anchorX: 0,

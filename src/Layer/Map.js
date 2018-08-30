@@ -163,16 +163,18 @@ var Map = cc.Node.extend({
     },
 
     logMapArray: function() {
-        cc.log("Map Aray");
+        cc.log("Map Aray ======");
         for (var r = 1; r < 41; r ++)
         {
             var s = "";
             for (var c = 1; c < 41; c++) {
-                var tmp = cf.map_array[r][c] >= 10 ? cf.map_array[r][c].toString() : ("0" + cf.map_array[r][c].toString());
+                var tmp = Math.floor(cf.map_array[c][r] /100) + 0;
+                tmp = tmp >= 10 ? tmp : ("0" + tmp);
                 s = s + " " + tmp;
             }
             cc.log(s)
         }
+        cc.log(" ==========================");
     },
 
     get_avaiable_position: function(size) {

@@ -60,7 +60,7 @@ var PopupTraining = cc.Layer.extend({
         this._queueTraining = {};
         this._queueTrainingButtonList = [];
         this._currentQueueLength = 0;
-        this._queueLengthMax = gv.json.barrack[gv.buildingSTR.barrack_1][this._barrack._level]["queueLength"];
+        this._queueLengthMax = gv.json.barrack[gv.buildingSTR.barrack_1][this._barrack.getTempLevel()]["queueLength"];
 
         this.jsonTroopBase = gv.json.troopBase;
         this.jsonTroop = gv.json.troop;
@@ -77,7 +77,7 @@ var PopupTraining = cc.Layer.extend({
 
     updateContent: function () {
         this._txtTitle.setString("Nhà lính số " + (this._barrackID % 100 + 1));
-        this._queueLengthMax = gv.json.barrack[gv.buildingSTR.barrack_1][this._barrack._level]["queueLength"];
+        this._queueLengthMax = gv.json.barrack[gv.buildingSTR.barrack_1][this._barrack.getTempLevel()]["queueLength"];
         this._queueLengthText.setString("(" + this._currentQueueLength + "/" + this._queueLengthMax + ")");
 
         var maxSlot = this.getTotalSlot();
@@ -90,7 +90,7 @@ var PopupTraining = cc.Layer.extend({
         for (var i = 1; i <= 17; i++) {
             if (i > 10 && i < 16) continue;
             var button = this.getChildByTag(gv.tag.TAG_BUTTON_TROOP * i);
-            if (button._barrackLevelReq > this._barrack._level || this._currentQueueLength + button._space > this._queueLengthMax) {
+            if (button._barrackLevelReq > this._barrack.getTempLevel() || this._currentQueueLength + button._space > this._queueLengthMax) {
                 button.setTouchEnabled(false);
                 button.setEnabled(false);
                 button.setBright(false);
@@ -490,7 +490,7 @@ var PopupTraining = cc.Layer.extend({
                 button.x = -this._bg.width * this._bgScale / 2 + j * button.width * button.scale + 5;
                 button.y = this._trainingQueueBackground.y - button.height * button.scale / 2 - 20 - button.height * button.scale;
             }
-            if (button._barrackLevelReq > this._barrack._level) {
+            if (button._barrackLevelReq > this._barrack.getTempLevel()) {
 
                 button.setTouchEnabled(false);
                 button.setEnabled(false);

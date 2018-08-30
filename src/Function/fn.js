@@ -81,11 +81,36 @@ fn.loadJson = function ()
                                    });
             }
 };
+
+/* Load file plist*/
 fn.loadPlist = function (troopNameWithLevel)
 {
     cc.spriteFrameCache.addSpriteFrames("res/Art/Troops/" + troopNameWithLevel + "/" + troopNameWithLevel + ".plist");
     gv.plist[troopNameWithLevel] = true;
 };
+
+/* Init Localized*/
+fn.initLocalized= function()
+{
+    gv.buildingDescription.townHall_1 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_townHall_1"));
+    gv.buildingDescription.armyCamp_1 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_armyCamp_1"));
+    gv.buildingDescription.barrack_1 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_barrack_1"));
+    gv.buildingDescription.builderHut = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_builderHut"));
+    gv.buildingDescription.defence_1 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_defence_1"));
+    gv.buildingDescription.resource_1 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_resource_1"));
+    gv.buildingDescription.resource_2 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_resource_2"));
+    gv.buildingDescription.storage_1 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_storage_1"));
+    gv.buildingDescription.storage_2 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_storage_2"));
+    gv.buildingDescription.laboratory = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_laboratory"));
+    gv.buildingDescription.clanCastle = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_clanCastle"));
+},
+/* Ngắt xuống dòng cho String*/
+fn.singleToMultiLineStr = function(str)
+{
+    return str.replace("\\n", "\n");
+}
+
+
 /* Map */
 fn.getRowColFromPos = function (pos) // Lấy ra Tọa độ dòng, cột của building từ pos
 {

@@ -70,18 +70,25 @@
         this.init();
 
     },
-
-    initClan: function(){
-           // cc.log(cf.user._clanId);
-           // testnetwork.connector.sendCreateClan("Clan 02 Fresher GSN", 26, "Bá chủ Thiên Hà", 0);
-           // testnetwork.connector.sendQuitClan();
-           // cf.user._clanId = -1;
-    },
-
     init: function() {
         this.addLoginGUI();
+        //this.initLocalize();
     },
-
+    test: function()
+    {
+    //    Test something
+        gv.buildingDescription.townHall_1 = fr.Localization.getInstance().getText("description_townHall_1");
+        gv.buildingDescription.armyCamp_1 = fr.Localization.getInstance().getText("description_armyCamp_1");
+        gv.buildingDescription.barrack_1 = fr.Localization.getInstance().getText("description_barrack_1");
+        gv.buildingDescription.builderHut = fr.Localization.getInstance().getText("description_builderHut");
+        gv.buildingDescription.defence_1 = fr.Localization.getInstance().getText("description_defence_1");
+        gv.buildingDescription.resource_1 = fr.Localization.getInstance().getText("description_resource_1");
+        gv.buildingDescription.resource_2 = fr.Localization.getInstance().getText("description_resource_2");
+        gv.buildingDescription.storage_1 = fr.Localization.getInstance().getText("description_storage_1");
+        gv.buildingDescription.storage_2 = fr.Localization.getInstance().getText("description_storage_2");
+        gv.buildingDescription.laboratory = fr.Localization.getInstance().getText("description_laboratory");
+        gv.buildingDescription.clanCastle = fr.Localization.getInstance().getText("description_clanCastle");
+    },
     addLoginGUI: function()
     {
         var bg = cc.Sprite(logInGUI.bg);
@@ -150,7 +157,7 @@
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
         gv.passwordSendToServer = this._passwordField.string;
 
         gv.gameClient.connect();
@@ -189,8 +196,6 @@
         cf.user.distributeResource(true, true, true);
         this.initTroops();
 
-        this.initClan();
-        // ======================
     },
     initTroops: function ()
     {
