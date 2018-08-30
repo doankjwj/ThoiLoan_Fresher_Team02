@@ -74,8 +74,6 @@ var BuildingNode = cc.Node.extend({
         this._level = level;
         this._isActive = isActive;
 
-        cc.log(this._existed);
-
         this._txtName = cc.LabelBMFont(this._name, font.soji20);
         this._txtName.setColor(cc.color(189,183,107, 255));
         this.addChild(this._txtName, 50);
@@ -148,7 +146,7 @@ var BuildingNode = cc.Node.extend({
             anchorX: 0.5,
             anchorY: 0.5,
             y: cf.tileSize.height * cf.SCALE * 2,
-            x: - cf.tileSize.width * cf.SCALE,
+            x: cf.tileSize.width * cf.SCALE,
             visible: false
         });
         this.addChild(this._gui_commit_build, this._defence.getLocalZOrder() + 1);
@@ -159,7 +157,7 @@ var BuildingNode = cc.Node.extend({
             anchorX: 0.5,
             anchorY: 0.5,
             y: cf.tileSize.height * cf.SCALE * 2,
-            x: cf.tileSize.width * cf.SCALE,
+            x: - cf.tileSize.width * cf.SCALE,
             visible: false
         });
         this.addChild(this._gui_cancel_build, this._defence.getLocalZOrder() + 1);
@@ -220,9 +218,9 @@ var BuildingNode = cc.Node.extend({
                     //self.updateZOrder();
                     return false;
                 }
-                cf.r_old = self._row;
-                cf.c_old = self._col;
-                return true;
+                //cf.r_old = self._row;
+                //cf.c_old = self._col;
+                //return true;
             },
 
             onTouchEnded: function(touch, event) {
@@ -330,7 +328,6 @@ var BuildingNode = cc.Node.extend({
                         self._red.visible = false;
                         self._green.visible = true;
                     }
-
                     return true;
                 }
                 else
@@ -363,9 +360,9 @@ var BuildingNode = cc.Node.extend({
                     }
                     return false;
                 }
-                cf.r_old = self._row;
-                cf.c_old = self._col;
-                return false;
+                //cf.r_old = self._row;
+                //cf.c_old = self._col;
+                //return false;
             },
             onTouchMoved: function(touch, event)
             {
@@ -403,21 +400,18 @@ var BuildingNode = cc.Node.extend({
                     self._green.visible = true;
                 }
 
-                return true;
+                //return true;
             },
             onTouchEnded: function(touch, event)
             {
                 self.onUnBlur();
-                //cc.log(self._existed + " red: " + self._red.visible);
                 if (!self._red.visible && self._existed /*&& (self._level>0)*/)
                 {
                     self.unlocate_map_array(cf.current_r, cf.current_c, self._size);
                     self.locate_map_array(self);
                     cf.current_r = self._row;
                     cf.current_c = self._col;
-                    //if (!(self._finishing_time == null && self._level ==0))
-                    //(!(self._finishing_time == null && self._level ==0))
-                        testnetwork.connector.sendMove(self._id, self._row, self._col);
+                    testnetwork.connector.sendMove(self._id, self._row, self._col);
 
                     self.onEndClick();
                     this.setEnabled(false);
@@ -427,7 +421,7 @@ var BuildingNode = cc.Node.extend({
                     self._red.visible = false;
                     self.updateZOrder();
                 };
-
+                return true;
             }
         });
 
@@ -531,8 +525,11 @@ var BuildingNode = cc.Node.extend({
         this._defence.visible = true;
 
         /* Update Builder */
-        cf.user._builderFree --;
-        cf.user.updateSingleBuilder();
+        if (this._buildingSTR != gv.buildingSTR.builderHut)
+        {
+            cf.user._builderFree --;
+            cf.user.updateSingleBuilder();
+        }
 
         this._txtName.visible = false;
 
@@ -808,7 +805,7 @@ var BuildingNode = cc.Node.extend({
             self.getParent().removeChild(self);
         }.bind(this));
         this._gui_commit_build.addClickEventListener(function(){
-            if (cf.user._builderFree <= 0)
+            if (cf.user._builderFree <= 0 && (self._buildingSTR != gv.buildingSTR.builderHut))
             {
                 self.getParent().getParent().popUpMessage("Tất cả thợ đang bận");
                 self.hideBuildingButton();
@@ -873,14 +870,14 @@ var BuildingNode = cc.Node.extend({
             this.getParent().removeChild(this);
             return;
         };
-        if (cf.user.getBuilderFree() <= 0)
-        {
-            fr.getCurrentScreen().popUpMessage("Tất cả thợ đang bận");
-            cf.isDeciding = false;
-            this.hideBuildingButton();
-            this.getParent().removeChild(this);
-            return;
-        }
+        //if (cf.user.getBuilderFree() <= 0)
+        //{
+        //    fr.getCurrentScreen().popUpMessage("Tất cả thợ đang bận");
+        //    cf.isDeciding = false;
+        //    this.hideBuildingButton();
+        //    this.getParent().removeChild(this);
+        //    return;
+        //}
         this.locate_map_array(this);
         this.onStartBuild(gv.startConstructType.newConstruct);
 

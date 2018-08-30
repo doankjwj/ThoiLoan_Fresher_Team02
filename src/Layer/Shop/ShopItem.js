@@ -181,7 +181,7 @@ var ShopItem = ccui.Button.extend({
             default:
                 break;
         }
-        this._capacity = (this._configItem["key"].substring(0,3) !== "BDH") ? gv.json.townHall[gv.buildingSTR.townHall][cf.user._buildingList[gv.orderInUserBuildingList.townHall][0]._isActive ? cf.user._buildingList[gv.orderInUserBuildingList.townHall][0]._level : cf.user._buildingList[gv.orderInUserBuildingList.townHall][0]._level - 1][this._configItem["key"]] : "5";
+        this._capacity = (this._configItem["key"].substring(0,3) !== "BDH") ? gv.json.townHall[gv.buildingSTR.townHall][cf.user._buildingList[gv.orderInUserBuildingList.townHall][0]._level][this._configItem["key"]] : "5";
         var currentQuantityText = this._currentQuantity.toString() + "/" + this._capacity.toString();
         this._currentQuantityLabel.setString(currentQuantityText);
         if(this._currentQuantity >= this._capacity) {

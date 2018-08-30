@@ -1155,7 +1155,7 @@
         var dis = 0;
         this._listenerOnMoveMap = cc.EventListener.create({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
-            //swallowTouches: true,
+            swallowTouches: true,
             onTouchBegan: function(touch, event) {
                 dis = cc.p(0,0);
                 var target = event.getCurrentTarget();
@@ -1171,9 +1171,6 @@
             },
             onTouchMoved: function(touch, event) {
                 cf.isMapMoving = true;
-                // var self = event.getCurrentTarget()
-                if (gv.building_selected !== 0)
-                    return;
                 var delta = touch.getDelta();
                 dis = cc.pAdd(delta, dis);
                 if(self.distance(delta, cc.p(0,0)) <= 10 && self.distance(dis, cc.p(0, 0)) <= 10) cf.isMapMoving = false;
@@ -1186,6 +1183,7 @@
                 self.repositioning();
 
                 curPos = null;
+                return true;
             },
             onTouchEnded: function(touch, event) {
                 cf.isMapMoving = false;
