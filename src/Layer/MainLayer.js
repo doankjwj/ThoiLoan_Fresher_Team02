@@ -1155,7 +1155,7 @@
         var dis = 0;
         this._listenerOnMoveMap = cc.EventListener.create({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
-            swallowTouches: true,
+            //swallowTouches: true,
             onTouchBegan: function(touch, event) {
                 dis = cc.p(0,0);
                 var target = event.getCurrentTarget();
