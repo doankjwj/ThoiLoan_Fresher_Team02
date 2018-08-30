@@ -180,16 +180,19 @@ var BuildingNode = cc.Node.extend({
 
         /* Add event listener */
 
+        this.initListener();
+    },
+    initListener: function()
+    {
         this._listenerMove = this.get_event_listener(this);
         cc.eventManager.addListener(this._listenerMove, this);
         var self = this;
         this._listener = cc.EventListener.create({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
-            // swallowTouches: true,
+            swallowTouches: false,
             onTouchBegan: function(touch, event) {
                 if(cf.isDeciding) return false;
-                //if (self._buildingSTR == gv.buildingSTR.clanCastle) return false;
-                var locationNote = self.convertToNodeSpace(touch.getLocation());
+                var locationNote = event.getCurrentTarget().convertToNodeSpace(touch.getLocation());
                 var w = self._size * cf.tileSize.width / 2 ;
                 var h = self._size * cf.tileSize.height / 2 ;
                 var x = locationNote.x;
@@ -198,6 +201,7 @@ var BuildingNode = cc.Node.extend({
 
                 if (fn.pointInsidePolygon([x, y], polygon) && (gv.building_selected !== self._id))
                 {
+                    /* Hiển thị tên công trình*/
                     var tmpPreLevel = (self._buildingSTR == gv.buildingSTR.obstacle) ? " " : " level "
                     self._txtName.setString(self._name + tmpPreLevel + self.getTempLevel());
                     self._txtName.visible = true;
@@ -207,13 +211,12 @@ var BuildingNode = cc.Node.extend({
                 }
                 else
                 {
-                    //self._center_building.stopAllActions();
-                    //self._center_building.runAction(cc.TintTo(0, 255, 255, 255));
                     self.onEndClick();
                     self.hideBuildingButton();
                     gv.building_selected = 0;
                     self._listenerMove.setEnabled(false);
-                    return false
+                    //self.updateZOrder();
+                    return false;
                 }
                 cf.r_old = self._row;
                 cf.c_old = self._col;
@@ -231,8 +234,6 @@ var BuildingNode = cc.Node.extend({
                     cf.current_c = self._col;
                     self._listenerMove.setEnabled(true);
                     this.setEnabled(false);
-                    cc.log("++++ Id: " + self._id);
-                    self.getParent().logMapArray();
                 }
             }
         });
@@ -248,6 +249,16 @@ var BuildingNode = cc.Node.extend({
             this.showBuildingButton();
         }
     },
+
+    onRemoveClick: function()
+    {
+        this.onEndClick();
+        this.hideBuildingButton();
+        this._listenerMove.setEnabled(false);
+        this._listener.setEnabled(true);
+        this.updateZOrder();
+    },
+
     getTempLevel: function() //Level hiện tại hoặc 1 nếu là đang nâng cấp
     {
         if (this._isActive) return this._level;
@@ -283,7 +294,7 @@ var BuildingNode = cc.Node.extend({
             swallowTouches: true,
             onTouchBegan: function(touch, event)
             {
-                var locationNote = self.convertToNodeSpace(touch.getLocation());
+                var locationNote = event.getCurrentTarget().convertToNodeSpace(touch.getLocation());
                 var w = self._size * cf.tileSize.width / 2 ;
                 var h = self._size * cf.tileSize.height / 2 ;
                 var x = locationNote.x;
@@ -301,7 +312,22 @@ var BuildingNode = cc.Node.extend({
                     self._col = loc.y - self._size +1;
                     if (self._row < 1) self._row = 1;
                     if (self._col < 1) self._col = 1;
+                    self.updateLocaltionByCoor(self._size);
                     self.unlocate_map_array(cf.current_r, cf.current_c, size);
+                    self.setLocalZOrder(200);
+
+                    if (self._grass.visible)
+                        self.onBlur();
+                    if (!self.none_space(self._row, self._col, size, self._id))
+                    {
+                        self._red.visible = true;
+                        self._green.visible = false;
+                    }
+                    else
+                    {
+                        self._red.visible = false;
+                        self._green.visible = true;
+                    }
 
                     return true;
                 }
@@ -322,16 +348,16 @@ var BuildingNode = cc.Node.extend({
                         self.x = cf.tileLocation[self._row][self._col].x;
                         self.y = cf.tileLocation[self._row][self._col].y - (size / 2) * cf.tileSize.height;
                         self.locate_map_array(self);
-
+                        self.updateZOrder();
                     }
                     else
                     {
-                        if ((cf.current_r != self._row || cf.current_c != self._col) && (self._buildingSTR != gv.buildingSTR.obstacle))
-                        {
-                            self.unlocate_map_array(cf.current_r, cf.current_c, size);
-                            self.locate_map_array(self);
-                            testnetwork.connector.sendMove(self._id, self._row, self._col);
-                        }
+                        //if ((cf.current_r != self._row || cf.current_c != self._col) && (self._buildingSTR != gv.buildingSTR.obstacle))
+                        //{
+                        //    self.unlocate_map_array(cf.current_r, cf.current_c, size);
+                        //    self.locate_map_array(self);
+                        //    testnetwork.connector.sendMove(self._id, self._row, self._col);
+                        //}
                     }
                     return false;
                 }
@@ -380,15 +406,23 @@ var BuildingNode = cc.Node.extend({
             onTouchEnded: function(touch, event)
             {
                 self.onUnBlur();
-                if (!self._red.visible)
+                if (!self._red.visible /*&& (self._level>0)*/)
                 {
                     self.unlocate_map_array(cf.current_r, cf.current_c, self._size);
                     self.locate_map_array(self);
                     cf.current_r = self._row;
                     cf.current_c = self._col;
                     testnetwork.connector.sendMove(self._id, self._row, self._col);
-                }
-                self.getParent().logMapArray();
+
+                    self.onEndClick();
+                    this.setEnabled(false);
+                    self._listener.setEnabled(true);
+                    //self.hideBuildingButton();
+                    gv.building_selected = 0;
+                    self._red.visible = false;
+                    self.updateZOrder();
+                };
+
             }
         });
 
@@ -500,14 +534,12 @@ var BuildingNode = cc.Node.extend({
     },
 
     onUpdateBuildStatus: function() {
-        //cc.log(this._isActive)
         if (this._isActive)
             return;
         if (!this._existed)
             return ;
         if (this._time_remaining <= 0 && !this._isActive)
         {
-            cc.log(this._time_remaining + " ==== " + this._isActive);
             this.onCompleteBuild();
             return;
         }
@@ -784,26 +816,13 @@ var BuildingNode = cc.Node.extend({
                 self.onEndClick();
                 self.hideBuildingButton();
                 self.checkResource();
-                /**/
-                //if (!this._constructAble)
-                //{
-                //    self.getParent().getParent().popUpMessage("Chưa đủ tài nguyên");
-                //    self.hideBuildingButton();
-                //    self.getParent().removeChild(self);
-                //    gv.building_selected = 0;
-                //    cf.isDeciding = false;
-                //    return;
-                //};
-                /**/
 
-                cc.log(self._id);
                 gv.buildingNextBuild = self._id;
                 var constructEnough = (self._require.gold == 0 && self._require.elixir == 0 && self._require.darkElixir == 0 && self._require.coin == 0);
                 if (!constructEnough)
                 {
                     var coinRequire = 0;
                     coinRequire += Math.ceil(self._require.gold/1000) + Math.ceil(self._require.elixir/1000) + Math.ceil(self._require.darkElixir/50) + self._require.coin;
-                    cc.log(coinRequire);
                     gv.upgradeAble.etcToCoin = coinRequire;
 
                     var root = self.getParent().getParent();
@@ -811,9 +830,6 @@ var BuildingNode = cc.Node.extend({
                     return;
                 }
                 ;
-
-
-                
                 self.onBuild();
             }
         }.bind(this));
@@ -843,6 +859,22 @@ var BuildingNode = cc.Node.extend({
     },
     onBuildCoin: function(requireCoin)
     {
+        if (this._cost.coin + requireCoin > cf.user.getCurrentCoin())
+        {
+            fr.getCurrentScreen().popUpMessage("Chưa đủ tài nguyên");
+            cf.isDeciding = false;
+            this.hideBuildingButton();
+            this.getParent().removeChild(this);
+            return;
+        };
+        if (cf.user.getBuilderFree() <= 0)
+        {
+            fr.getCurrentScreen().popUpMessage("Tất cả thợ đang bận");
+            cf.isDeciding = false;
+            this.hideBuildingButton();
+            this.getParent().removeChild(this);
+            return;
+        }
         this.locate_map_array(this);
         this.onStartBuild(gv.startConstructType.newConstruct);
 
@@ -953,8 +985,6 @@ var BuildingNode = cc.Node.extend({
         this._require.darkElixir = Math.max(0, this._cost.darkElixir - cf.user._currentCapacityDarkElixir);
         this._require.coin = Math.max(0, this._cost.coin - cf.user._currentCapacityCoin);
 
-        cc.log("Require: " + this._require.gold + " / " +this._require.elixir + " / " + this._require.darkElixir + " / " + this._require.coin );
-
         this._cost.gold -= this._require.gold;
         this._cost.elixir -= this._require.elixir;
         this._cost.darkElixir -= this._require.darkElixir;
@@ -968,100 +998,12 @@ var BuildingNode = cc.Node.extend({
         if(cf.user._currentCapacityCoin < coin) this._constructAble = false;
     },
 
-    updateResource: function()
-    {
-        var str = this._buildingSTR;
-        var level = Math.min(this._level + 1, this._maxLevel);
-        var gold = 0;
-        var elixir = 0;
-        var darkElixir = 0;
-        var coin = 0;
-
-        switch(str)
-        {
-            case gv.buildingSTR.townHall:
-                gold = gv.json.townHall[str][level]["gold"];
-                elixir = 0;
-                darkElixir = 0;
-                coin = 0;
-                break;
-            case gv.buildingSTR.builderHut:
-                gold = 0;
-                elixir = 0;
-                darkElixir = 0;
-                coin = gv.json.builderHut[str][cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut]]["coin"];
-                break;
-            case gv.buildingSTR.armyCamp_1:
-                gold = 0;
-                elixir = gv.json.armyCamp[str][level]["elixir"];
-                darkElixir = gv.json.armyCamp[str][level]["darkElixir"];
-                coin = 0;
-                break;
-            case gv.buildingSTR.barrack_1:
-                gold = 0;
-                elixir = gv.json.barrack[str][level]["elixir"];
-                darkElixir = gv.json.barrack[str][level]["darkElixir"];
-                coin = 0;
-                break;
-            case gv.buildingSTR.resource_1:
-                gold = gv.json.resource[str][level]["gold"];
-                elixir = gv.json.resource[str][level]["elixir"];
-                darkElixir = gv.json.resource[str][level]["darkElixir"];
-                coin = 0;
-                break;
-            case gv.buildingSTR.resource_2:
-                gold = gv.json.resource[str][level]["gold"];
-                elixir = gv.json.resource[str][level]["elixir"];
-                darkElixir = gv.json.resource[str][level]["darkElixir"];
-                coin = 0;
-                break;
-            case gv.buildingSTR.storage_1:
-                gold = gv.json.storage[str][level]["gold"];
-                elixir = gv.json.storage[str][level]["elixir"];
-                darkElixir = gv.json.storage[str][level]["darkElixir"];
-                coin = 0;
-                break;
-            case gv.buildingSTR.storage_2:
-                gold = gv.json.storage[str][level]["gold"];
-                elixir = gv.json.storage[str][level]["elixir"];
-                darkElixir = gv.json.storage[str][level]["darkElixir"];
-                coin = 0;
-                break;
-            case gv.buildingSTR.defence_1:
-                gold = gv.json.defence[str][level]["gold"];
-                elixir = 0;
-                darkElixir = gv.json.defence[str][level]["darkElixir"];
-                coin = 0;
-                break;
-            case gv.buildingSTR.obstacle:
-                break;
-            default:
-                break;
-        };
-
-        //cf.user._currentCapacityGold -= this._cost.gold;
-        //cf.user._currentCapacityElixir -= this._cost.elixir;
-        //cf.user._currentCapacityDarkElixir -= this._cost.darkElixir;
-        //cf.user._currentCapacityCoin -= this._cost.coin;
-
-        cf.user.editCurrentResource(-this._cost.gold, -this._cost.elixir, -this._cost.darkElixir, -this._cost.coin);
-
-        this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
-        this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
-        this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
-        this.getParent().getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
-
-        //cf.user.distributeResource(gold > 0, elixir > 0, darkElixir > 0);
-    },
-
     hideBuildingButton: function() {
         this._gui_cancel_build.visible = false;
         this._gui_commit_build.visible = false;
         this._gui_cancel_build.addClickEventListener(function() {});
         this._gui_commit_build.addClickEventListener(function() {});
     },
-
-
 
     none_space: function(row, col, size, id) {
         for (var r = row; r < row + size; r++)

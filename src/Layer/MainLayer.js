@@ -157,7 +157,7 @@
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
         gv.passwordSendToServer = this._passwordField.string;
 
         gv.gameClient.connect();
@@ -559,6 +559,7 @@
         this._guiButtonBuildingInfo.addClickEventListener(function()
         {
             self.hideListBotButton();
+            fn.getCurrentBuilding().onRemoveClick();
             var id = gv.building_selected;
             var buiding = cf.user._buildingList[Math.floor(id/100) - 1][id%100];
             if (gv.building_selected === undefined || (buiding._buildingSTR == gv.buildingSTR.clanCastle && buiding._level == 0)) return;
@@ -587,6 +588,7 @@
         this._guiButtonBuildingUpgrade.addClickEventListener(function()
         {
             self.hideListBotButton();
+            fn.getCurrentBuilding().onRemoveClick();
             if (gv.building_selected === undefined) return;
             var building = cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)];
             var order = (building._orderInUserBuildingList);
@@ -629,6 +631,7 @@
         this.addChild(this._guiCancelBuildButton, 2);
         this._guiCancelBuildButton.addClickEventListener(function(){
             self.hideListBotButton();
+            fn.getCurrentBuilding().onRemoveClick();
             if(gv.building_selected === undefined) return;
             var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
             var order = building._orderInUserBuildingList;
@@ -659,6 +662,7 @@
         this.addChild(this._guiInstantlyDone, 2);
         this._guiInstantlyDone.addClickEventListener(function () {
             self.hideListBotButton();
+            fn.getCurrentBuilding().onRemoveClick();
             if(gv.building_selected === undefined) return;
             var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
             var order = building._orderInUserBuildingList;
@@ -688,6 +692,7 @@
         });
         this.addChild(this._guiButtonHarvest, 2, this._TAG_BUTTON_HARVEST);
         this._guiButtonHarvest.addClickEventListener(function(){
+            fn.getCurrentBuilding().onRemoveClick();
             var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
             building.onHarvest();
         });
@@ -702,6 +707,7 @@
         });
         this.addChild(this._guiButtonResearch, 2, this._TAG_BUTTON_RESEARCH);
         this._guiButtonResearch.addClickEventListener(function(){
+            fn.getCurrentBuilding().onRemoveClick();
             self.onPopUpResearchTroop();
             self.hideListBotButton();
         }.bind(this));
@@ -717,6 +723,7 @@
         this.addChild(this._guiTraningArmyButton, 2);
         this._guiTraningArmyButton.addClickEventListener(function(){
             self.hideListBotButton();
+            fn.getCurrentBuilding().onRemoveClick();
             if (gv.building_selected === undefined) return;
             var building = cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)];
             var order = (building._orderInUserBuildingList);
@@ -746,6 +753,7 @@
         this.addChild(this._guiButtonRequestDonate, 2, this._TAG_BUTTON_REQUEST_DONATE);
         this._guiButtonRequestDonate.addClickEventListener(function(){
             self.hideListBotButton();
+            fn.getCurrentBuilding().onRemoveClick();
             if (cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].isEnoughTroop())
             {
                 fr.getCurrentScreen().popUpMessage("Quân lính nhà Bang hội đang đầy");
@@ -764,6 +772,7 @@
         this.addChild(this._guiButtonClan, 2, this._TAG_BUTTON_CLAN);
         this._guiButtonClan.addClickEventListener(function(){
             self.hideListBotButton();
+            fn.getCurrentBuilding().onRemoveClick();
             if (gv.building_selected === undefined) return;
             var building = cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)];
             if (building._isActive === false) return;
