@@ -79,8 +79,8 @@ var font = {
     soji20: fontFolder + "soji_20.fnt",
     soji12: fontFolder + "soji_12.fnt",
     fista16: fontFolder + "fista_16_non.fnt",
-
-
+    fista20: fontFolder + "fista_20.fnt",
+    fista24: fontFolder + "fista_24.fnt",
 };
 
 res.buildingOnMoveGUI = function(type, size)

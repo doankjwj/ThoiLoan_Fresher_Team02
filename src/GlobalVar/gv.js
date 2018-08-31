@@ -7,7 +7,11 @@ gv.buildingMove =
 {
     currentRow : null,
     currentCol : null,
-}
+};
+/* Lưu điểm đầu và cuối của lần di chuyển map*/
+gv.touchBeganLocation = null;
+gv.touchEndedLocation = null;
+
 /* Building chuẩn bị xây */
 gv.buildingNextBuild = null;
 

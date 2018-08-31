@@ -26,7 +26,8 @@ cf.time_refresh = 0.1;
 cf.isDeciding = false;
 
 /* Move Building */
-gv.building_selected = null;
+gv.building_selected = 0;   // Công trình được chọn
+gv.building_is_moved = 0;    // Công trình di chuyển
 cf.move_able = false;
 cf.moved = false;
 //cf.r_old = null;
@@ -55,6 +56,7 @@ cf.CODE_BUILDING_REMOVE = 42344322;
 cf.user = null;
 
 cf.isMapMoving = false;
+cf.mapScalePre = null;      // Scale của map khi bắt đầu Touch, dùng để so sánh với kích thước lúc sau khi chạm
 
 /* Shop */
 cf.shopType = {

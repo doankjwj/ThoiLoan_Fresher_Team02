@@ -104,49 +104,49 @@
         var size = cc.winSize;
         this._bgField = cc.Sprite(logInGUI.textFieldBG);
         this._bgField.setScaleX(2.5);
-        this._bgField.setPosition(size.width/2, size.height/2 + 18);
+        this._bgField.setScaleY(2);
+        this._bgField.setAnchorPoint(0, 0.5);
+        this._bgField.setPosition(size.width/2 - 350, size.height/2);
         this.addChild(this._bgField, 0);
-
-        this._bgField2 = cc.Sprite(logInGUI.textFieldBG);
-        this._bgField2.setScaleX(2.5);
-        this._bgField2.setPosition(size.width/2, size.height/2 - 26);
-        this.addChild(this._bgField2, 0);
 
         this._usernameField = new ccui.TextField();
         this._usernameField .setTouchEnabled(true);
         this._usernameField.setMaxLength(10);
         this._usernameField.setMaxLengthEnabled(true);
-        //this._usernameField.setFontName(font.soji20);
+        //this._usernameField.setTitleFontName(font.soji20);
         this._usernameField .fontName = "Arial";
-        this._usernameField .setPlaceHolder("Username:");
+        this._usernameField .setPlaceHolder("__________");
         this._usernameField.setTextColor(cc.color(255, 255, 255, 255));
-        this._usernameField .fontSize = 30;
-        this._usernameField .x = size.width/2;
-        this._usernameField .y = size.height/2 + this._usernameField .height/2;
+        this._usernameField.setPlaceHolderColor(cc.color(255, 255, 255, 255));
+        this._usernameField .setFontSize(50);
+        this._usernameField.setAnchorPoint(0, 0.5);
+        this._usernameField .x = size.width/2 - 318;
+        this._usernameField .y = size.height/2;
         this.addChild(this._usernameField, 1, this._TAG_USERNAME_FIELD);
 
-        this._passwordField = new ccui.TextField();
-        this._passwordField.setTouchEnabled(true);
-        this._passwordField.setMaxLength(10);
-        this._passwordField.setMaxLengthEnabled(true);
-        this._passwordField.fontName = "Arial";
-        this._passwordField.setPlaceHolder("Password: Empty");
-        this._passwordField.fontSize = 30;
-        this._passwordField.x = size.width/2;
-        this._passwordField.y = this._usernameField.y - this._usernameField.height - 10;
-        this._passwordField.setPasswordEnabled(true);
-        this.addChild(this._passwordField, 1, this._TAG_PASSWORD_FIELD);
+        //this._passwordField = new ccui.TextField();
+        //this._passwordField.setTouchEnabled(true);
+        //this._passwordField.setMaxLength(10);
+        //this._passwordField.setMaxLengthEnabled(true);
+        //this._passwordField.fontName = "Arial";
+        //this._passwordField.setPlaceHolder("Password: Empty");
+        //this._passwordField.fontSize = 30;
+        //this._passwordField.x = size.width/2;
+        //this._passwordField.y = this._usernameField.y - this._usernameField.height - 10;
+        //this._passwordField.setPasswordEnabled(true);
+        //this.addChild(this._passwordField, 1, this._TAG_PASSWORD_FIELD);
 
         var login = ccui.Button(logInGUI.btnOk);
         login.attr({
-            anchorX: 0.5,
+            anchorX: 0,
             anchorY: 0.5,
-            x: cc.winSize.width/2,
-            y: cc.winSize.height/2 - 2 * login.height,
+            x: cc.winSize.width/2 + 10,
+            y: cc.winSize.height/2,
             scale: 1.5
         });
         login.setTitleText("Log In");
-        login.setTitleFontSize(24);
+        login.setTitleFontName(font.fista24);
+        login.setTitleFontSize(28);
         login.setTitleColor(cc.color(255, 255, 255, 255));
         login.addClickEventListener(this.onSelectLogin.bind(this));
         this.addChild(login, 1, this._TAG_LOGIN_BUTTON);
@@ -158,7 +158,7 @@
 
         gv.usernameSendToServer = this._usernameField.string;
         if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
-        gv.passwordSendToServer = this._passwordField.string;
+        gv.passwordSendToServer = "";
 
         gv.gameClient.connect();
     },
@@ -172,7 +172,6 @@
         this.removeChildByTag(this._TAG_BG);
         this.removeChildByTag(this._TAG_LOGO);
         this.removeChild(this._bgField);
-        this.removeChild(this._bgField2);
     },
 
     onConnectFail: function()
@@ -1155,7 +1154,7 @@
         var dis = 0;
         this._listenerOnMoveMap = cc.EventListener.create({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
-            //swallowTouches: true,
+            swallowTouches: false,
             onTouchBegan: function(touch, event) {
                 dis = cc.p(0,0);
                 var target = event.getCurrentTarget();
@@ -1164,6 +1163,7 @@
                 var rect = cc.rect(0, 0, self._map._width, self._map._height);
 
                 if (cc.rectContainsPoint(rect, locationInNode)) {
+                    gv.touchBeganLocation = touch.getLocation();
                     return true;
                 }
 
@@ -1187,6 +1187,48 @@
             },
             onTouchEnded: function(touch, event) {
                 cf.isMapMoving = false;
+
+                var building = fn.getCurrentBuilding();
+                if (building == null) return;
+
+                var locationNote = building.convertToNodeSpace(touch.getLocation());
+                var w = building._size * cf.tileSize.width / 2 ;
+                var h = building._size * cf.tileSize.height / 2 ;
+                var x = locationNote.x;
+                var y = locationNote.y;
+                var polygon = [ [ -w, 0 ], [ 0, h ], [ w, 0 ], [ 0, -h ] ];
+
+                if (!fn.pointInsidePolygon([x, y], polygon)/* && (gv.building_is_moved !== building._id)*/)
+                {
+                    gv.touchEndedLocation = touch.getLocation();
+                    if (self.distance(gv.touchBeganLocation, gv.touchEndedLocation) <= 10 && !fn.getCurrentBuilding()._listener.isEnabled())
+                    {
+                        fn.getCurrentBuilding().onRemoveClick();
+                    }
+                    return;
+                }
+                //else
+                //{
+                //    self.onEndClick();
+                //    self.hideBuildingButton();
+                //    gv.building_is_moved = 0;
+                //    self._listenerMove.setEnabled(false);
+                //    //self.updateZOrder();
+                //    return false;
+                //}
+                //
+                //
+                //
+                //gv.touchEndedLocation = touch.getLocation();
+                //if (fn.getCurrentBuilding() != null)
+                //{
+                //    if (self.distance(gv.touchBeganLocation, gv.touchEndedLocation) <= 10 && !fn.getCurrentBuilding()._listener.isEnabled())
+                //    {
+                //        fn.getCurrentBuilding().onRemoveClick();
+                //    }
+                //}
+                //
+
                 return true;
             }
         })
@@ -1214,6 +1256,7 @@
                     if (!self._listenerOnMoveMap.isEnabled()) self._listenerOnMoveMap.setEnabled(true);
                     return;
                 }
+                cf.isMapMoving = true;
                 if (self._listenerOnMoveMap.isEnabled()) self._listenerOnMoveMap.setEnabled(false);
                 touchCount = touches.length;
                 var touch0 = touches[0].getLocation();

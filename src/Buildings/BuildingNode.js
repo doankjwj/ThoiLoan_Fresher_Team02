@@ -184,13 +184,19 @@ var BuildingNode = cc.Node.extend({
     },
     initListener: function()
     {
+        /*Listener cho di chuyển công trình*/
         this._listenerMove = this.get_event_listener(this);
         cc.eventManager.addListener(this._listenerMove, this);
         var self = this;
+
+        /*Listener cho chọn công trình*/
         this._listener = cc.EventListener.create({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             swallowTouches: false,
             onTouchBegan: function(touch, event) {
+                //if (cf.isMapMoving) return false;
+                cf.mapScalePre = cf.BIG_MAP_SCALE;
+                if (gv.building_is_moved != 0) return false;
                 if(cf.isDeciding) return false;
                 var locationNote = event.getCurrentTarget().convertToNodeSpace(touch.getLocation());
                 var w = self._size * cf.tileSize.width / 2 ;
@@ -199,10 +205,10 @@ var BuildingNode = cc.Node.extend({
                 var y = locationNote.y;
                 var polygon = [ [ -w, 0 ], [ 0, h ], [ w, 0 ], [ 0, -h ] ];
 
-                if (fn.pointInsidePolygon([x, y], polygon) && (gv.building_selected !== self._id))
+                if (fn.pointInsidePolygon([x, y], polygon) && (gv.building_is_moved !== self._id))
                 {
                     /* Hiển thị tên công trình*/
-                    var tmpPreLevel = (self._buildingSTR == gv.buildingSTR.obstacle) ? " " : " level "
+                    var tmpPreLevel = (self._buildingSTR == gv.buildingSTR.obstacle) ? " " : " level ";
                     self._txtName.setString(self._name + tmpPreLevel + self.getTempLevel());
                     self._txtName.visible = true;
                     self.popBuildingScale();
@@ -213,27 +219,32 @@ var BuildingNode = cc.Node.extend({
                 {
                     self.onEndClick();
                     self.hideBuildingButton();
-                    gv.building_selected = 0;
+                    gv.building_is_moved = 0;
                     self._listenerMove.setEnabled(false);
                     //self.updateZOrder();
                     return false;
                 }
-                //cf.r_old = self._row;
-                //cf.c_old = self._col;
-                //return true;
             },
 
             onTouchEnded: function(touch, event) {
-                if(!cf.isMapMoving) {
+                if(!cf.isMapMoving && (cf.mapScalePre == cf.BIG_MAP_SCALE)) {
                     if (!(self._buildingSTR == gv.buildingSTR.clanCastle && self._level == 0) && !(self._buildingSTR == gv.buildingSTR.obstacle))
-                        self.onClick();
+                    {
 
-                    gv.building_selected = self._id;
-                    self.getParent().getParent().showListBotButton(self._id);
+                        //var move
+                        self._listenerMove.setEnabled(true);
+                        self._listener.setEnabled(false);
+                        //this.setEnabled(false);
+                        self.onClick();
+                    };
+                    self._listener.setEnabled(false);
                     cf.current_r = self._row;
                     cf.current_c = self._col;
-                    self._listenerMove.setEnabled(true);
-                    this.setEnabled(false);
+                    gv.building_selected = self._id;
+                    gv.building_is_moved = self._id;
+                    self.getParent().getParent().showListBotButton(self._id);
+
+
                 }
             }
         });
@@ -252,38 +263,31 @@ var BuildingNode = cc.Node.extend({
 
     onRemoveClick: function()
     {
-        this.onEndClick();
-        this.hideBuildingButton();
-        this._listenerMove.setEnabled(false);
-        this._listener.setEnabled(true);
-        this.updateZOrder();
-    },
+        this.onUnBlur();
+        //if (!res.visible)
+        {
+            this.onEndClick();
+            this._listener.setEnabled(true);
+            this._listenerMove.setEnabled(false);
+            //this.hideBuildingButton();
+            gv.building_is_moved = 0;
 
-    getTempLevel: function() //Level hiện tại hoặc 1 nếu là đang nâng cấp
-    {
-        if (this._isActive) return this._level;
-        return (this._level == 0) ? 1 : this._level;
-    },
-    getNextLevel: function() //Level tiếp theo
-    {
-        return Math.min(this._level + 1, this._maxLevel);
-    },
-    /* Nâng và hạ công trình khi Click */
-    popBuildingScale: function()
-    {
-        var popIn = cc.ScaleTo(0.1, 1.1);
-        var popOut = cc.ScaleTo(0.1, 1);
-        this._center_building.runAction(cc.Sequence.create(popIn.clone(), popOut.clone()));
+            this.updateZOrder();
+        };
 
-        /*Ngoại trừ army Camp*/
-        if (this._effectAnim && this._buildingSTR != gv.buildingSTR.armyCamp_1)
-            this._effectAnim.runAction(cc.Sequence.create(popIn.clone(), popOut.clone()));
+        if (this._red.visible)
+        {
 
-        var tintLight = cc.TintTo(0.5, 255, 255, 255);
-        var tintDark = cc.TintTo(0.5, 150, 150, 150);
-        this._center_building.runAction(cc.Sequence.create(tintDark, tintLight).repeatForever());
+            this._row = cf.current_r;
+            this._col = cf.current_c;
+            this.updateLocaltionByCoor();
+            this.updateZOrder();
+
+        };
+        this.locate_map_array(this);
+        this._red.visible = false;
+
     },
-
 
     get_event_listener: function(b) {
         var self = this;
@@ -305,6 +309,7 @@ var BuildingNode = cc.Node.extend({
                 {
                     self.onUnBlur();
                     gv.building_selected = self._id;
+                    gv.building_is_moved = self._id;
                     var loc = fn.getRowColFromPos(cc.p(touch.getLocation().x - self.getParent().x, touch.getLocation().y - self.getParent().y));
                     gv.buildingMove.currentRow = loc.x;
                     gv.buildingMove.currentCol = loc.y;
@@ -332,12 +337,12 @@ var BuildingNode = cc.Node.extend({
                 }
                 else
                 {
-                    if(!self._existed) return false;
+                    /*if(!self._existed) */ return false;
                     self.onEndClick();
                     this.setEnabled(false);
                     self._listener.setEnabled(true);
                     self.hideBuildingButton();
-                    gv.building_selected = 0;
+                    gv.building_is_moved = 0;
                     self.updateZOrder();
                     self._red.visible = false;
                     if (!self.none_space(self._row, self._col, size, self._id))
@@ -349,20 +354,8 @@ var BuildingNode = cc.Node.extend({
                         self.locate_map_array(self);
                         self.updateZOrder();
                     }
-                    else
-                    {
-                        //if ((cf.current_r != self._row || cf.current_c != self._col) && (self._buildingSTR != gv.buildingSTR.obstacle))
-                        //{
-                        //    self.unlocate_map_array(cf.current_r, cf.current_c, size);
-                        //    self.locate_map_array(self);
-                        //    testnetwork.connector.sendMove(self._id, self._row, self._col);
-                        //}
-                    }
-                    return false;
+                    return true;
                 }
-                //cf.r_old = self._row;
-                //cf.c_old = self._col;
-                //return false;
             },
             onTouchMoved: function(touch, event)
             {
@@ -371,7 +364,7 @@ var BuildingNode = cc.Node.extend({
                 var moveAble = !(self._buildingSTR == gv.buildingSTR.clanCastle && self._level == 0);
                 moveAble = moveAble && !(self._buildingSTR == gv.buildingSTR.obstacle);
                 if (!moveAble) return true;
-                if (self._id !== gv.building_selected) return;
+                if (self._id !== gv.building_is_moved) return;
                 var location_touch = touch.getLocation();
                 var loc = fn.getRowColFromPos(cc.p(location_touch.x - self.getParent().x, location_touch.y - self.getParent().y));
                 var r = loc.x;
@@ -400,7 +393,7 @@ var BuildingNode = cc.Node.extend({
                     self._green.visible = true;
                 }
 
-                //return true;
+                return true;
             },
             onTouchEnded: function(touch, event)
             {
@@ -409,15 +402,16 @@ var BuildingNode = cc.Node.extend({
                 {
                     self.unlocate_map_array(cf.current_r, cf.current_c, self._size);
                     self.locate_map_array(self);
-                    cf.current_r = self._row;
-                    cf.current_c = self._col;
-                    testnetwork.connector.sendMove(self._id, self._row, self._col);
 
+                    if (cf.current_r != self._row || cf.current_c != self._col)
+                        testnetwork.connector.sendMove(self._id, self._row, self._col);
+                    //cf.current_r = self._row;
+                    //cf.current_c = self._col;
                     self.onEndClick();
-                    this.setEnabled(false);
+                    self._listenerMove.setEnabled(false);
                     self._listener.setEnabled(true);
                     //self.hideBuildingButton();
-                    gv.building_selected = 0;
+                    gv.building_is_moved = 0;
                     self._red.visible = false;
                     self.updateZOrder();
                 };
@@ -428,6 +422,30 @@ var BuildingNode = cc.Node.extend({
         return listener1;
     },
 
+    getTempLevel: function() //Level hiện tại hoặc 1 nếu là đang nâng cấp
+    {
+        if (this._isActive) return this._level;
+        return (this._level == 0) ? 1 : this._level;
+    },
+    getNextLevel: function() //Level tiếp theo
+    {
+        return Math.min(this._level + 1, this._maxLevel);
+    },
+    /* Nâng và hạ công trình khi Click */
+    popBuildingScale: function()
+    {
+        var popIn = cc.ScaleTo(0.1, 1.1);
+        var popOut = cc.ScaleTo(0.1, 1);
+        this._center_building.runAction(cc.Sequence.create(popIn.clone(), popOut.clone()));
+
+        /*Ngoại trừ army Camp*/
+        if (this._effectAnim && this._buildingSTR != gv.buildingSTR.armyCamp_1)
+            this._effectAnim.runAction(cc.Sequence.create(popIn.clone(), popOut.clone()));
+
+        var tintLight = cc.TintTo(0.5, 255, 255, 255);
+        var tintDark = cc.TintTo(0.5, 150, 150, 150);
+        this._center_building.runAction(cc.Sequence.create(tintDark, tintLight).repeatForever());
+    },
     onBlur: function()
     {
         this._green.setOpacity(150);
@@ -443,6 +461,7 @@ var BuildingNode = cc.Node.extend({
 
     updateLocaltionByCoor: function(size)
     {
+        size = this._size;
         this.x = cf.tileLocation[this._row][this._col].x;
         this.y = cf.tileLocation[this._row][this._col].y - (size / 2) * cf.tileSize.height;
     },
@@ -463,9 +482,11 @@ var BuildingNode = cc.Node.extend({
     onStartBuild: function(startConstructType) {
         //if (this._existed)
         //    this._level ++;
+
         this._existed = true;
         this._isActive = false;
         if (startConstructType == gv.startConstructType.newConstruct) { // click xây mới/ nâng cấp mới
+
             this._time_remaining = this.getTimeRequire();
             this._time_total = this._time_remaining;
             // Thu hoạch nếu nhà là nhà tài nguyên
@@ -801,6 +822,7 @@ var BuildingNode = cc.Node.extend({
         }
         this._gui_cancel_build.addClickEventListener(function(){
             cf.isDeciding = false;
+            gv.building_is_moved = 0;
             self.hideBuildingButton();
             self.getParent().removeChild(self);
         }.bind(this));
@@ -810,7 +832,7 @@ var BuildingNode = cc.Node.extend({
                 self.getParent().getParent().popUpMessage("Tất cả thợ đang bận");
                 self.hideBuildingButton();
                 self.getParent().removeChild(self);
-                gv.building_selected = 0;
+                gv.building_is_moved = 0;
                 cf.isDeciding = false;
                 return;
             }
@@ -832,6 +854,7 @@ var BuildingNode = cc.Node.extend({
                     return;
                 }
                 ;
+                gv.building_is_moved = 0;
                 self._existed = true;
                 self.onBuild();
             }
@@ -845,7 +868,7 @@ var BuildingNode = cc.Node.extend({
         this.getParent().addBuildingToUserBuildingList(this);
 
         this.updateZOrder();
-        gv.building_selected = 0;
+        gv.building_is_moved = 0;
         cf.isDeciding = false;
         //this.updateResource();
         testnetwork.connector.sendBuild(this._id, this._row, this._col);
@@ -883,8 +906,10 @@ var BuildingNode = cc.Node.extend({
 
         this.getParent().addBuildingToUserBuildingList(this);
 
+        //fr.getCurrentScreen().showListBotButton(this._id);
+
         this.updateZOrder();
-        gv.building_selected = 0;
+        gv.building_is_moved = 0;
         cf.isDeciding = false;
         //this.updateResource();
         testnetwork.connector.sendBuildCoin(this._id, this._row, this._col);
