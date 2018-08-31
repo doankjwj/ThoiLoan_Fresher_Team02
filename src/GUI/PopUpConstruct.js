@@ -115,6 +115,7 @@ var PopUpConstruct = cc.Node.extend({
 
         /* Text Title */
         this._txtTitle = cc.LabelBMFont("Building Title", font.soji20);
+        this._txtTitle.setScale(1.2);
         this._txtTitle.setAnchorPoint(cc.p(0.5, 1));
         this._txtTitle.setPosition(cc.p(0, this._bg.height / 2 - this._txtTitle.height / 2));
         this.addChild(this._txtTitle, 1, this._TAG_TITLE);
@@ -205,10 +206,11 @@ var PopUpConstruct = cc.Node.extend({
         this._bgTxtDescription.setPosition(cc.p(-this._bgTxtDescription.width / 2, -this._bg.height / 3));
         this.addChild(this._bgTxtDescription, 2);
         /* TXT Description */
-        this._txtDescreption = cc.LabelBMFont("Building Description", font.soji20);
+        this._txtDescreption = cc.LabelBMFont("Building Description", font.fista24);
+        this._txtDescreption.setScale(1.2);
         this._txtDescreption.setAnchorPoint(0.5, 1);
         this._txtDescreption.setPosition(0, this._bgTxtDescription.height + this._bgTxtDescription.y);
-        this._txtDescreption.setColor(cc.color(240, 200, 0, 255));
+        this._txtDescreption.setColor(cc.color(200, 100, 100, 255));
         this.addChild(this._txtDescreption, this._bgTxtDescription.getLocalZOrder() + 1, this._TAG_TXT_DESCRIPTION);
 
         /* Builing Effect */
@@ -941,8 +943,10 @@ var PopUpConstruct = cc.Node.extend({
             this.removeChildByTag(this._TAG_TROOP_AMOUNT);
         var buildingId = gv.building_selected;
         var b = cf.user._buildingList[Math.floor(buildingId/100) - 1][Math.floor(buildingId%100)];
-        if (this._constructType == gv.constructType.info && b._buildingSTR == gv.buildingSTR.clanCastle)
+        if (this._constructType == gv.constructType.info && b._buildingSTR == gv.buildingSTR.clanCastle
+         && fn.getCurrentBuilding(gv.orderInUserBuildingList.clanCastle, 0).getCurrentTroopTypeVsLevel() != 0)
         {
+
             var tmp = new PopUpConstruct.getNodeTroopAmount();
             tmp.attr({
                 anchorX: 0.5,
@@ -1053,6 +1057,7 @@ PopUpConstruct.getOrCreate = function()
     return gv.PopUpConstruct;
 }
 
+/* Dành cho popUp nâng cấp công trình*/
 PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
     txtGold: null,
     txtElixir: null,
@@ -1162,50 +1167,55 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
 
 
 })
+/* Dành cho popUp thông tin nhà bang hội*/
 PopUpConstruct.getNodeTroopAmount = cc.Node.extend({
     ctor: function()
     {
         this._super();
         var troopAmountArr = this.getTroopAmountFromClanCastle();
+        // số lượng loại lính với level khác nhau
+        var troopDef = fn.getUserBuilding(gv.orderInUserBuildingList.clanCastle, 0).getCurrentTroopTypeVsLevel();
+        var scrollView = ccui.ScrollView();
+        scrollView.setDirection(ccui.ScrollView.DIR_HORIZONTAL);
+        scrollView.setTouchEnabled(true);
+        scrollView.setBounceEnabled(true);
+        scrollView.setPosition(0, 0);
+        scrollView.width = 500;
+        scrollView.height = 120;
+        scrollView.setInnerContainerSize(cc.size(120 * troopDef, 120));
+        scrollView.setAnchorPoint(0.5, 0.5);
+        this.addChild(scrollView);
 
-        var iconTroop0 = cc.Sprite(trainingQueueGUI.ARM_1);
-        iconTroop0.scale = 1.5;
-        iconTroop0.setPosition(-160, 0);
-        this.addChild(iconTroop0);
-        var label0 = cc.LabelBMFont("x" + troopAmountArr[0], font.soji20);
-        label0.setPosition(iconTroop0.x - 30, iconTroop0.y - 30);
-        this.addChild(label0);
-
-        var iconTroop1 = cc.Sprite(trainingQueueGUI.ARM_2);
-        iconTroop1.scale = 1.5;
-        iconTroop1.setPosition(-60, 0);
-        this.addChild(iconTroop1);
-        var label1 = cc.LabelBMFont("x" + troopAmountArr[1], font.soji20);
-        label1.setPosition(iconTroop1.x - 30, iconTroop1.y - 30);
-        this.addChild(label1);
-
-        var iconTroop2 = cc.Sprite(trainingQueueGUI.ARM_3);
-        iconTroop2.scale = 1.5;
-        iconTroop2.setPosition(60, 0);
-        this.addChild(iconTroop2);
-        var label2 = cc.LabelBMFont("x" + troopAmountArr[2], font.soji20);
-        label2.setPosition(iconTroop2.x - 30, iconTroop2.y - 30);
-        this.addChild(label2);
-
-        var iconTroop3 = cc.Sprite(trainingQueueGUI.ARM_4);
-        iconTroop3.scale = 1.5;
-        iconTroop3.setPosition(160, 0);
-        this.addChild(iconTroop3);
-        var label3 = cc.LabelBMFont("x" + troopAmountArr[3], font.soji20);
-        label3.setPosition(iconTroop3.x - 30, iconTroop3.y - 30);
-        this.addChild(label3);
-
+        var xStart = 30;
+        for (var i = 0; i < cf.clanChat.troopDonateLength; i++)
+            for (var j = 1; j <= cf.clanChat.troopDonateLevel; j++)
+            {
+                var troopAmount = troopAmountArr[i][j];
+                if (troopAmount != 0)
+                {
+                    var iconTroop = cc.Sprite(res.donateTroopIconArr[i]);
+                    iconTroop.scale = 1.5;
+                    iconTroop.setPosition(xStart + iconTroop.width/2 + 5, 60);
+                    scrollView.addChild(iconTroop);
+                    var labelAmount = cc.LabelBMFont("x" + troopAmount, font.fista24);
+                    labelAmount.setColor(cc.color(0, 0, 0, 255));
+                    labelAmount.setScale(1.2);
+                    labelAmount.setPosition(xStart, iconTroop.y - 30);
+                    scrollView.addChild(labelAmount);
+                    var labelLevel = cc.LabelBMFont("Lv " + j, font.soji20);
+                    labelLevel.setColor(cc.color(255, 0, 255, 255));
+                    labelLevel.setPosition(xStart + 50, iconTroop.y + 30);
+                    scrollView.addChild(labelLevel);
+                    xStart += 120;
+                }
+            }
     },
 
     getTroopAmountFromClanCastle: function()
     {
         var arr = [];
-        var clanCastle = cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0];
+        var clanCastle = fn.getUserBuilding(gv.orderInUserBuildingList.clanCastle, 0);
+        return clanCastle._troopReceive;
         for (var i=0; i<cf.clanChat.troopDonateLength; i++)
         {
             var s = 0;

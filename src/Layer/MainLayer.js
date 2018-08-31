@@ -145,7 +145,7 @@
             scale: 1.5
         });
         login.setTitleText("Log In");
-        login.setTitleFontName(font.fista24);
+        //login.setTitleFontName(font.fista24);
         login.setTitleFontSize(28);
         login.setTitleColor(cc.color(255, 255, 255, 255));
         login.addClickEventListener(this.onSelectLogin.bind(this));
@@ -438,7 +438,7 @@
         };
         gvGUI.layerClanChat.initContent();
         gvGUI.layerClanChat.updateTimeScrollChat();
-
+        gvGUI.layerClanChat.onVisibleOrInvisibleButtonExpand();
         if (!this.getChildByTag(this._TAG_LAYER_CLAN_CHAT))
             this.addChild(gvGUI.layerClanChat, 2, this._TAG_LAYER_CLAN_CHAT);
     },

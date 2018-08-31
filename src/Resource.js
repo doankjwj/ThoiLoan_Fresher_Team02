@@ -79,8 +79,8 @@ var font = {
     soji20: fontFolder + "soji_20.fnt",
     soji12: fontFolder + "soji_12.fnt",
     fista16: fontFolder + "fista_16_non.fnt",
-    fista20: fontFolder + "fista_20.fnt",
-    fista24: fontFolder + "fista_24.fnt",
+    fista20: fontFolder + "fista_20_non.fnt",
+    fista24: fontFolder + "fista_24_non.fnt",
 };
 
 res.buildingOnMoveGUI = function(type, size)
@@ -262,6 +262,14 @@ var trainingQueueGUI = {
     ARM_17: guiFolder + "train_troop_gui/small_icon/ARM_17.png",
     slot: guiFolder + "train_troop_gui/small_icon/slot.png",
 };
+
+res.donateTroopIconArr =
+[
+    guiFolder + "train_troop_gui/small_icon/ARM_1.png",
+    guiFolder + "train_troop_gui/small_icon/ARM_2.png",
+    guiFolder + "train_troop_gui/small_icon/ARM_3.png",
+    guiFolder + "train_troop_gui/small_icon/ARM_4.png",
+]
 
 var troopIcon = {
     ARM_1: troopIconFolder + "ARM_1.png",

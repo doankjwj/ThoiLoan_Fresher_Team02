@@ -135,6 +135,13 @@ var LayerClanChat = cc.Node.extend({
         //this.onUpdateClanInfo();
     },
 
+    /*Hiển thị hoặc ẩn nút Expand*/
+    onVisibleOrInvisibleButtonExpand: function()
+    {
+        var vis = (cf.user._clanId != -1);
+        this._guiButtonClanChat.setVisible(vis);
+        this._iconButton.setVisible(vis);
+    },
     /*Cập nhật ảnh và Tên Clan*/
     onUpdateClanInfo: function(boo)
     {

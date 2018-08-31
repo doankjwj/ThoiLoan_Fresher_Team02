@@ -33,7 +33,13 @@ var PopUPMessage = cc.Node.extend({
         this._swallowTouch.setEnabled(false);
         cc.eventManager.addListener(this._swallowTouch, this._colorBG);
 
-        /* Message */
+        /* Title */
+        this._txtTitle = cc.LabelBMFont("Thông Báo", font.fista24);
+        this._txtTitle.setAnchorPoint(cc.p(0.5, 0.5));
+        this._txtTitle.setPosition(cc.p(0, this._bg.height/2-20));
+        this.addChild(this._txtTitle);
+
+        /*Message*/
         this._txtMessage = cc.LabelBMFont("Message", font.soji20);
         this._txtMessage.setAnchorPoint(cc.p(0.5, 0.5));
         this._txtMessage.setPosition(cc.p(0, 0));

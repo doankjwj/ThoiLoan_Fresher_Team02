@@ -45,7 +45,7 @@ var Barrack = BuildingNode.extend({
     {
         this.initAnimation();
 
-        if (this.getTempLevel() >= 4) {
+        if (this.getTempLevel() >= 4 && this.getTempLevel() <= 8) {
             this._effectAnim.stopAllActions();
             this._effectAnim.runAction(cf.animationBarrack[this.getTempLevel()].clone().repeatForever());
         };

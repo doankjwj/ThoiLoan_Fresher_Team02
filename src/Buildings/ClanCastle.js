@@ -55,7 +55,7 @@ var ClanCastle = BuildingNode.extend({
     {
         for (var i =0; i<cf.clanChat.troopDonateLength; i++)
         {
-            this._troopReceive[i] = ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            this._troopReceive[i] = ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
         }
     },
     getCurrentHousingSpace: function()
@@ -69,6 +69,14 @@ var ClanCastle = BuildingNode.extend({
             housingSpace += troopTypeCount * gv.json.troopBase["ARM_" + (i+1)]["housingSpace"];
         }
         return housingSpace;
+    },
+    getCurrentTroopTypeVsLevel: function()
+    {
+        var troopDif = 0;
+        for (var i=0; i < cf.clanChat.troopDonateLength; i++)
+            for (var j=0; j < cf.clanChat.troopDonateLevel; j++)
+                if (this._troopReceive[i][j] != 0) troopDif ++;
+        return troopDif;
     },
     addTroop: function()
     {
@@ -85,7 +93,7 @@ var ClanCastle = BuildingNode.extend({
         for (var i=0; i<cf.clanChat.troopDonateLength; i++)
         {
             var s = "";
-            for (var j=0; j<cf.clanChat.troopDonateLevel-1; j++)
+            for (var j=0; j<=cf.clanChat.troopDonateLevel; j++)
                 s += this._troopReceive[i][j] + ", ";
             s += this._troopReceive[i][cf.clanChat.troopDonateLevel-1];
             cc.log(s);

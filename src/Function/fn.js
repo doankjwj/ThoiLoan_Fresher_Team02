@@ -395,6 +395,11 @@ fn.getCurrentBuilding = function()
     var order = id%100;
     return cf.user._buildingList[type][order];
 };
+/*Lấy ra công trình từ danh sách công trình*/
+fn.getUserBuilding = function(buildingType, buildingOrderInType)
+{
+    return cf.user._buildingList[buildingType][buildingOrderInType];
+},
 
 /* Common Label*/
 fn.commonLabel = function(str, fontName, sizeX, sizeY)

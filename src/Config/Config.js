@@ -495,6 +495,7 @@ cf.clanChat = {
     troopDonateLength: 4,   // 4 loại troop Donate
     troopDonateLevel: 10,   // Cấp cao nhất của troop
 };
+
 /* thông tin sửa nhà clan lv 0->1*/
 cf.clan =
 {

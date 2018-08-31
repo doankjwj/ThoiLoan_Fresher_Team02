@@ -73,6 +73,8 @@ var User = cc.Class.extend({
         }
     },
 
+
+
     initTroopLevelList: function()
     {
         for (var i = 0; i < gv.jsonInfo["player"]["troopLevel"].length; i++)

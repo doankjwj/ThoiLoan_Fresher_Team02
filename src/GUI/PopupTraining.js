@@ -1,4 +1,4 @@
-var PopupTraining = cc.Layer.extend({
+var PopupTraining = cc.Node.extend({
     _barrack: null,
     _barrackID: null,
     _bg: null,
@@ -260,10 +260,13 @@ var PopupTraining = cc.Layer.extend({
 
     initContent: function () {
 
-        this._bg = cc.Sprite(res.popUp.bg);
+        this._bg = cc.Scale9Sprite(res.popUp.bg);
+        this._bg.setCapInsets(cc.rect(this._bg.width/10, this._bg.height/8 , this._bg.width/10*8, this._bg.height/8*6));
+        this._bg.width = cc.winSize.width / 5 * 3.6;
+        this._bg.height = cc.winSize.height /5 * 4;
         this._bg.setAnchorPoint(cc.p(0.5, 0.5));
         this._bg.setPosition(cc.p(0, 0));
-        this._bg.scale = this._bgScale;
+        this._bg.scale = 1;
         this.addChild(this._bg, 0);
 
         this._colorBG = cc.LayerColor(cc.color(127.5, 127.5, 127.5, 0));
@@ -293,20 +296,21 @@ var PopupTraining = cc.Layer.extend({
         // this._queueArrow.visible = false;
 
         this._txtTitle = cc.LabelBMFont("Nhà lính số " + this._barrackID % 100, font.soji20);
+        this._txtTitle.setScale(1.2);
         this._txtTitle.setAnchorPoint(cc.p(0.5, 0.5));
-        this._txtTitle.setPosition(cc.p(0, this._bg.height / 2 * this._bgScale - this._txtTitle.height));
+        this._txtTitle.setPosition(cc.p(0, this._bg.height / 2 /** this._bgScale */ - this._txtTitle.height/2));
         this.addChild(this._txtTitle, 1);
 
         this._queueLengthText = cc.LabelBMFont("", font.soji20);
         this._queueLengthText.setAnchorPoint(cc.p(0.5, 0.5));
-        this._queueLengthText.setPosition(this._txtTitle.x, this._txtTitle.y - this._txtTitle.height);
+        this._queueLengthText.setPosition(this._txtTitle.x, this._txtTitle.y - this._txtTitle.height/1.2);
         this.addChild(this._queueLengthText, 1);
 
         /* Button Close */
         this._btnClose = ccui.Button(res.popUp.btnClose, res.popUp.btnClose);
         this._btnClose.setAnchorPoint(cc.p(0.5, 0.5));
-        this._btnClose.scale = this._bgScale * 0.75;
-        this._btnClose.setPosition(cc.p(this._bg.width * this._bgScale / 2 - this._btnClose.width * this._btnClose.scale / 1.5, this._bg.height * this._bgScale / 2 - this._btnClose.height * this._btnClose.scale / 1.5));
+        this._btnClose.scale = 1;
+        this._btnClose.setPosition(cc.p(420, 260));
         this.addChild(this._btnClose, 1);
         this._btnClose.addTouchEventListener(function (sender, type) {
 
@@ -479,7 +483,7 @@ var PopupTraining = cc.Layer.extend({
             button.scale = 1.2;
             this.addChild(button, 2, gv.tag.TAG_BUTTON_TROOP * i);
             if (i <= 6) {
-                button.x = -this._bg.width * this._bgScale / 2 + i * button.width * button.scale + 5;
+                button.x = -this._bg.width / 2 + i * button.width * button.scale + 5;
                 button.y = this._trainingQueueBackground.y - button.height * button.scale / 2 - 20;
             }
             else {
@@ -487,7 +491,7 @@ var PopupTraining = cc.Layer.extend({
                 if (j === 16) j = 5;
                 else if (j === 17) j = 6;
                 else j -= 6;
-                button.x = -this._bg.width * this._bgScale / 2 + j * button.width * button.scale + 5;
+                button.x = -this._bg.width / 2 + j * button.width * button.scale + 5;
                 button.y = this._trainingQueueBackground.y - button.height * button.scale / 2 - 20 - button.height * button.scale;
             }
             if (button._barrackLevelReq > this._barrack.getTempLevel()) {
