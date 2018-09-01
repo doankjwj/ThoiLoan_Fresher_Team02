@@ -31,10 +31,7 @@ var PopUpDonateTroop = cc.Sprite.extend({
         //        t = i;
         //    }
         //}
-        cc.log(s);
-        cc.log(" -> find: " + t);
         var currentItemchat = parent._listItemChat[parent._currentChatItemIndex];
-        cc.log("BUGGGGGG : " + parent._currentChatItemIndex);
         var troopHousingSpaceDonated = currentItemchat._currentDonatedTroopSpace;
         var housingSpaceAvaiable = currentItemchat._maxTroopQuantity - troopHousingSpaceDonated;
 

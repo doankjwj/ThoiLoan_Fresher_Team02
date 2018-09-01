@@ -35,7 +35,6 @@ var Obstacle = BuildingNode.extend({
 
         cf.user.updateBuilder();
 
-        cc.log(cf.user._builderFree + " Builder Free ++++");
         //cf.user.updateSingleBuilder();
         this.updateResource();
 

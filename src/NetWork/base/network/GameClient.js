@@ -77,7 +77,10 @@ var GameClient = cc.Class.extend(
             cc.log("_onReceived:", cmd);
             if (cmd == 37 || cmd == 1999)try
             {
-                fr.view(MainLayer);
+                setTimeout(function() {
+                    fr.view(MainLayer);
+                }
+                , 0.5);
             }
             catch(e)
             {

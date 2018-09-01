@@ -91,8 +91,8 @@ var IconActionBuilding = ccui.Button.extend({
 
     },
 
-    updateContent: function(){
-        var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
+    updateContent: function(buildingID){
+        var building = cf.user._buildingList[Math.floor(buildingID/100) - 1][buildingID%100];
         var price = Math.ceil(building._time_remaining / 60);
         this._priceTxt.setString(price.toString());
         if(cf.user._currentCapacityCoin < price) {

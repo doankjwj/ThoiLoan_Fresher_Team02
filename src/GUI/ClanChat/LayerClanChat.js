@@ -226,9 +226,6 @@ var LayerClanChat = cc.Node.extend({
 
     onShowClanInfo: function()
     {
-        cc.log("Show Clan Info");
-        //self.hideListBotButton();
-
         //if (gv.building_selected === undefined) return;
         var building = cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0];
         if (building._isActive === false) return;

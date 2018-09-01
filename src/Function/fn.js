@@ -188,7 +188,6 @@ fn.getAnimation = function (str, n1, n2)
 /* Shop */
 fn.getPrice = function (str, level)
 {
-    cc.log(str + " " + level + " +++++");
     var price = {
         gold: 0,
         elixir: 0,
@@ -389,7 +388,6 @@ fn.sumArr = function(arr, length)
 fn.getCurrentBuilding = function()
 {
     var id = gv.building_selected;
-    cc.log(id);
     if (id == 0) return null;
     var type  = Math.floor(id/100) - 1;
     var order = id%100;

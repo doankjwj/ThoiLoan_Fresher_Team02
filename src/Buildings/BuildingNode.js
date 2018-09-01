@@ -182,6 +182,16 @@ var BuildingNode = cc.Node.extend({
 
         this.initListener();
     },
+    /* Trả về thứ tự của loại nhà trong danh sách công trình*/
+    getBuildingType: function()
+    {
+        return (Math.floor(this._id/100)) - 1;
+    },
+    /* Trả về thứ tự của nhà trong số các nhà cùng loại*/
+    getBuildingOrder: function()
+    {
+        return (this._id%100);
+    },
     initListener: function()
     {
         /*Listener cho di chuyển công trình*/
@@ -436,11 +446,11 @@ var BuildingNode = cc.Node.extend({
     {
         var popIn = cc.ScaleTo(0.1, 1.1);
         var popOut = cc.ScaleTo(0.1, 1);
-        this._center_building.runAction(cc.Sequence.create(popIn.clone(), popOut.clone()));
+        this.runAction(cc.Sequence.create(popIn.clone(), popOut.clone()));
 
         /*Ngoại trừ army Camp*/
-        if (this._effectAnim && this._buildingSTR != gv.buildingSTR.armyCamp_1)
-            this._effectAnim.runAction(cc.Sequence.create(popIn.clone(), popOut.clone()));
+        //if (this._effectAnim && this._buildingSTR != gv.buildingSTR.armyCamp_1)
+        //    this._effectAnim.runAction(cc.Sequence.create(popIn.clone(), popOut.clone()));
 
         var tintLight = cc.TintTo(0.5, 255, 255, 255);
         var tintDark = cc.TintTo(0.5, 150, 150, 150);
@@ -482,6 +492,9 @@ var BuildingNode = cc.Node.extend({
     onStartBuild: function(startConstructType) {
         //if (this._existed)
         //    this._level ++;
+
+        /* Hiển thị*/
+        //this.getParent().getParent().showListBotButton(this._id);
 
         this._existed = true;
         this._isActive = false;
@@ -855,6 +868,9 @@ var BuildingNode = cc.Node.extend({
                 }
                 ;
                 gv.building_is_moved = 0;
+                gv.building_selected = self._id;
+                this._listener.setEnabled(true);
+                this._listenerMove.setEnabled(false);
                 self._existed = true;
                 self.onBuild();
             }
@@ -864,6 +880,7 @@ var BuildingNode = cc.Node.extend({
     {
         this.locate_map_array(this);
         this.onStartBuild(gv.startConstructType.newConstruct);
+
 
         this.getParent().addBuildingToUserBuildingList(this);
 
@@ -882,6 +899,10 @@ var BuildingNode = cc.Node.extend({
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+
+        /* Hiển thị*/
+        if (this._time_remaining > 0)
+            this.getParent().getParent().showListBotButton(this._id);
     },
     onBuildCoin: function(requireCoin)
     {
@@ -924,6 +945,9 @@ var BuildingNode = cc.Node.extend({
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+
+        /* Hiển thị*/
+        this.getParent().getParent().showListBotButton(this._id);
     },
 
     checkResource: function()

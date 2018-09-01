@@ -231,6 +231,8 @@ var PopUpConstruct = cc.Node.extend({
 
 
         cf.user._buildingList[Math.floor(gv.building_selected / 100) - 1][Math.floor(gv.building_selected % 100)].onStartBuild(gv.startConstructType.newConstruct);
+        /* Hiển thị*/
+        //this.getParent().getParent().showListBotButton(this._id);
         /* Request */
         testnetwork.connector.sendUpgradeBuilding(gv.building_selected);
 

@@ -430,7 +430,6 @@ cf.stringToItemInit = function(str, index) {
             building = new Resource(cf.user._buildingListCount[gv.orderInUserBuildingList.resource_1], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, isActive, gv.buildingSTR.resource_1);
             building._finishing_time = finishTime;
             building._lastHarvestTime = gv.jsonInfo["map"][str][index]["lastHarvestTime"];
-            cc.log(new Date(building._lastHarvestTime));
             break;
         case "RES_2":
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];

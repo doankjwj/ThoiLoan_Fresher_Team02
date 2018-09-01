@@ -46,7 +46,6 @@ var ClanCastle = BuildingNode.extend({
         var jsonItem = gv.jsonInfo["map"]["CLC_1"][0]["troopArr"];
         for (var i=0; i < Object.keys(jsonItem).length; i++)
         {
-            cc.log(i + " ++++");
             var obj = gv.jsonInfo["map"]["CLC_1"][0]["troopArr"][i];
             this._troopReceive[obj["troopOrder"]][obj["troopLevel"]] = obj["troopQuantity"];
         }
@@ -101,7 +100,6 @@ var ClanCastle = BuildingNode.extend({
     },
     isEnoughTroop: function()
     {
-        cc.log(this.getCurrentHousingSpace() + " ++++");
         return (this.getCurrentHousingSpace() >= gv.json.clanCastle["CLC_1"][this._level]["troopCapacity"]);
     },
     updateAnim: function()

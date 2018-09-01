@@ -98,9 +98,10 @@ var Laboratory = BuildingNode.extend({
     initResearchContent: function(){
         if (this._iconTroopResearch)
             this.removeChild(this._iconTroopResearch);
-        this._iconTroopResearch = cc.Sprite(researchTroopFolderTroopIconSmall + "ARM_" + this._currentTroop + "_" + (this._currentTroopLevel+1) + ".png", cc.rect(30, 20, 50, 40));
-        this._iconTroopResearch.setPosition(-120, 80);
-        this._iconTroopResearch.scale = 1.5;
+        //this._iconTroopResearch = cc.Sprite(researchTroopFolderTroopIconSmall + "ARM_" + this._currentTroop + "_" + (this._currentTroopLevel+1) + ".png", cc.rect(30, 20, 50, 40));
+        this._iconTroopResearch = cc.Sprite(guiFolder + "train_troop_gui/small_icon/ARM_" + (this._currentTroop) + ".png");
+        this._iconTroopResearch.setPosition(-120, 100);
+        this._iconTroopResearch.scale = 1.25;
         this.addChild(this._iconTroopResearch, this._center_building.getLocalZOrder()+1);
 
         if (this._barResearch)

@@ -157,7 +157,7 @@
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
         gv.passwordSendToServer = "";
 
         gv.gameClient.connect();
@@ -299,7 +299,7 @@
                 cc.log(e)
             };
         }.bind(this));
-
+        this._restartGameButton.setVisible(false);
         this.addChild(this._restartGameButton, 1);
 
         /* Button Gold */
@@ -999,10 +999,10 @@
 
         }
 
-        this.onPopUpButton(boo);
+        this.onPopUpButton(boo, buildingID);
     },
 
-    onPopUpButton: function(boo)
+    onPopUpButton: function(boo, buildingID)
     {
         /* Infor --- Upgrade --- Cancel --- Instance Finish --- Collect -- Research -- Train */
         var popUpButtonCount = fn.getItemOccurenceInArray(boo, true);
@@ -1037,7 +1037,7 @@
         {
             this._guiInstantlyDone.setPosition(x, hidingY);
             var act = cc.MoveTo(0.1, cc.p(x, y));
-            this._guiInstantlyDone.updateContent();
+            this._guiInstantlyDone.updateContent(buildingID);
             this._guiInstantlyDone.runAction(act);
             x += offSet;
         }if (boo[4])

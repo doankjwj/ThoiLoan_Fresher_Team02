@@ -110,7 +110,6 @@ var ItemChat = cc.Node.extend({
 
                 this._buttonDonate.addClickEventListener(function(){
                     var root = this.getParent().getParent().getParent();
-                    cc.log(root._listItemChat.length);
                     root._currentChatItemIndex = root._listItemChat.indexOf(self);      // Lưu Item chat hiện tại
                     self.onPopUpTroopDonate();
                     gv.clanChat.itemDonateTag = self._userName;
@@ -347,8 +346,6 @@ var ItemChat = cc.Node.extend({
     //Release Request khi donate đủ Housing Space
     onRelease: function()
     {
-        cc.log("Donate enough !");
-
         var act = cc.FadeOut(1.5);
         var root = this.getParent().getParent().getParent();    // Layer Chat
         var index = root.getItemChatByUserName(1, this._userName);

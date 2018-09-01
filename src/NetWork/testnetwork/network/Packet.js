@@ -1097,10 +1097,12 @@ testnetwork.packetMap[gv.CMD.USER_ERROR] = fr.InPacket.extend({
         readData: function () {
             var errorCode = this.getByte();
             cc.log(" /*********/ USER Error: " + errorCode);
-            fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode + "\nRestart");
+            fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode);
             try {
                 cc.log("Error: " + errorCode);
-                fr.view(MainLayer);
+                setTimeout(function() {
+                    fr.view(MainLayer);
+                }, 2000)
             } catch (e) {
                 cc.log(e)
             }
@@ -1115,10 +1117,12 @@ testnetwork.packetMap[gv.CMD.CLAN_ERROR] = fr.InPacket.extend({
         readData: function () {
             var errorCode = this.getByte();
             cc.log(" /*********/ CLAN Error: " + errorCode);
-            fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode + "\nRestart");
+            fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode);
             try {
                 cc.log("Error: " + errorCode);
-                fr.view(MainLayer);
+                setTimeout(function(){
+                    fr.view(MainLayer);
+                }, 2000);
             } catch (e) {
                 cc.log(e)
             }
@@ -1347,72 +1351,7 @@ testnetwork.packetMap[gv.CMD.BROADCAST_USER_ONLINE_CHANGE] = fr.InPacket.extend(
     }
 });
 
-// Nhận lịch sử Chat
-//testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT_TEXT] = fr.InPacket.extend({
-//    ctor: function () {
-//        this._super();
-//    },
-//    readData: function () {
-//
-//        this.serverTime = this.getLong();
-//        gv.timeOffset.loadClanChatText = this.serverTime - new Date().getTime();
-//        this.chatQuantity = this.getByte();
-//        this.detail = [];
-//        for (var i = 0; i < this.chatQuantity; i++) {
-//            this.detail.push(new Object());
-//            this.detail[i].userName = this.getString();
-//            this.detail[i].userLevel = this.getInt();
-//            this.detail[i].msg = this.getString();
-//            this.detail[i].timeCreated = this.getLong() - gv.timeOffset.loadClanChatText;
-//        }
-//        ;
-//        gv.clanChat.jsonLoadText = this;
-//        cc.log(JSON.stringify(this));
-//
-//        gvGUI.layerClanChat.loadChatTextFromServer();
-//        //setTimeout(function(){
-//        //
-//        //}, 1);
-//    }
-//});
-//testnetwork.packetMap[gv.CMD.RECEIVE_LOAD_CLAN_CHAT_DONATE] = fr.InPacket.extend({
-//    ctor: function () {
-//        this._super();
-//    },
-//    readData: function () {
-//
-//        this.serverTime = this.getLong();
-//        gv.timeOffset.loadClanChatDonate = this.serverTime - new Date().getTime();
-//        this.chatQuantity = this.getByte();
-//        this.detail = [];
-//        for (var i = 0; i < this.chatQuantity; i++) {
-//            this.detail.push(new Object());
-//            this.detail[i].userName = this.getString();
-//            this.detail[i].userLevel = this.getInt();
-//            this.detail[i].msg = this.getString();
-//            this.detail[i].timeCreated = this.getLong() - gv.timeOffset.loadClanChatDonate;
-//            this.detail[i].currentHousingSpace = this.getByte();
-//            this.detail[i].maxHousingSpace = this.getByte();
-//            this.detail[i].troopDonated = {};
-//            this.detail[i].troopDonated.troop_0 = this.getByte();
-//            this.detail[i].troopDonated.troop_1 = this.getByte();
-//            this.detail[i].troopDonated.troop_2 = this.getByte();
-//            this.detail[i].troopDonated.troop_3 = this.getByte();
-//        }
-//        ;
-//        gv.clanChat.jsonLoadDonate = this;
-//        cc.log(JSON.stringify(this));
-//
-//        gvGUI.layerClanChat.loadChatDonateFromServer();
-//        //setTimeout(function(){
-//        //
-//        //}, 1);
-//    }
-//});
-
-
 // ========================= Clan GUI
-
 testnetwork.packetMap[gv.CMD.RECEIVE_CLAN_DATA] = fr.InPacket.extend
 ({
     ctor: function () {
