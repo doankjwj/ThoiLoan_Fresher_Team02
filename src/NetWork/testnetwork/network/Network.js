@@ -288,11 +288,33 @@ testnetwork.Connector = cc.Class.extend({
         var group = Math.floor(id/100) - 1;
         var slot = id % 100;
 
-        cc.log(group + " " + slot + " " + troopType);
-
         pk.pack(group, slot, troopType - 1);
         this.gameClient.sendPacket(pk);
 
+    },
+
+    sendRemoveTrainTroop: function(id, troopType)
+    {
+        cc.log("REMOVE TRAIN TROOP: " + troopType + " FROM BAR: " + id);
+        var pk = this.gameClient.getOutPacket(CmdSendRemoveTrainTroop);
+
+        var group = Math.floor(id/100) - 1;
+        var slot = id%100;
+
+        pk.pack(group, slot, troopType - 1);
+        this.gameClient.sendPacket(pk);
+    },
+
+    sendQuickFinishTrain: function(id)
+    {
+        cc.log("QUICK FINISH TRAIN: " + id);
+        var pk = this.gameClient.getOutPacket(CmdSendFinishTrainTroop);
+
+        var group = Math.floor(id/100) - 1;
+        var slot = id%100;
+
+        pk.pack(group, slot);
+        this.gameClient.sendPacket(pk);
     },
 
     sendRequestAddCoLeader: function(name) {

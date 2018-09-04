@@ -360,6 +360,24 @@ fn.getTroopString = function (id)
             break;
     }
 };
+fn.getArmyCamp = function () {
+
+    var firstArmyCamp = cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][0];
+    var maxSpacePercent = firstArmyCamp.getAvailableSpace() * 100 / firstArmyCamp.getMaxSpace();
+    var output = 0;
+    for (var i = 1; i < cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1]; i += 1) {
+        var thisArmyCamp = cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][i];
+        if (thisArmyCamp.getMaxSpace() > 0) {
+            var thisArmyCampAvailableSpacePercent = thisArmyCamp.getAvailableSpace() * 100 / thisArmyCamp.getMaxSpace();
+            if (thisArmyCampAvailableSpacePercent > maxSpacePercent) {
+                maxSpacePercent = thisArmyCampAvailableSpacePercent;
+                output = i;
+            }
+        }
+    }
+    return cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][output];
+};
+
 fn.convertSecondToHour = function (sec)
 {
     return sec / 60 / 60;

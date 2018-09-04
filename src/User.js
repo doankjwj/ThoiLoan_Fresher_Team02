@@ -216,7 +216,6 @@ var User = cc.Class.extend({
         if (resType_3)
             this.distributeResourceType(gv.buildingSTR.resource_3);
 
-        cc.log(this._currentCapacityGold + " // "  +this._currentCapacityElixir);
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();

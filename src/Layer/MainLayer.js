@@ -157,7 +157,7 @@
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
         gv.passwordSendToServer = "";
 
         gv.gameClient.connect();
@@ -177,6 +177,7 @@
     onConnectFail: function()
     {
         cc.log("================= " + "Connect Fail");
+        this.popUpMessage("Kết nối không thành công");
     },
 
     onFinishLogin:function()
@@ -191,6 +192,7 @@
         this.initMainGUI();
         this.initMap();
         this.initRetainBuilding();
+        //this.initRetainTraining();
         this.updateGUIandUserInfo();
         cf.user.distributeResource(true, true, true);
         this.initTroops();
@@ -477,6 +479,23 @@
 
     },
 
+    initRetainTraining: function()
+    {
+        /*Khởi tạo content cho popup khi vào game*/
+        for (var i=0; i < cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1]; i++)
+        {
+            var barrrack = fn.getUserBuilding(gv.orderInUserBuildingList.armyCamp_1, i);
+            if (barrrack._isActive)
+            {
+                var popupTraining = new PopupTraining(barrrack._id);
+                popupTraining.setPosition(0, -cc.winSize.height);
+                this.addChild(popupTraining, 1, gv.tag.TAG_POPUP_TRAINING*(barrrack._id%100));
+                popupTraining.onResumeTrainingFromServer();
+            }
+        }
+
+    },
+
     updateGUIandUserInfo: function()
     {
         cf.user.updateMaxStorage();
@@ -734,11 +753,13 @@
                 var popupTraining = new PopupTraining(gv.building_selected);
                 this.addChild(popupTraining, 1, gv.tag.TAG_POPUP_TRAINING*(gv.building_selected%100));
                 popupTraining.onAppear();
+
             }
             else {
                 var popup = this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING);
                 popup.onAppear();
             }
+            this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING).onResumeTrainingFromServer();
         }.bind(this));
 
         /*Button Request Donate */
@@ -986,6 +1007,7 @@
                 break;
             case gv.orderInUserBuildingList.barrack_1:
                 if (building._isActive) boo[6] = true;
+                if (building._isTraining) boo[1] = false;
                 break;
             case gv.orderInUserBuildingList.clanCastle:
                 if (building._isActive && building._level > 0 && cf.user._clanId != -1) boo[7] = true;

@@ -22,6 +22,8 @@ gv.CMD.RESET_USER = 2101;
 gv.CMD.SEND_REMOVE_OBSTACLE = 2051;
 
 gv.CMD.REQUEST_TRAIN_TROOP = 2041;
+gv.CMD.REQUEST_TRAIN_TROOP_REMOVE = 2044;
+gv.CMD.REQUEST_FINISH_TRAIN_TROOP = 2043;
 gv.CMD.REQUEST_TRAIN_G = 2042;
 
 gv.CMD.SEND_CREATE_CLAN = 3001;
@@ -43,9 +45,7 @@ gv.CMD.BROADCAST_CLAN_EVENT = 3201;//Trần Hoàn thêm
 
 gv.CMD.SEND_LOAD_CLAN_CHAT = 3103;
 gv.CMD.RECEIVE_LOAD_CLAN_CHAT = gv.CMD.SEND_LOAD_CLAN_CHAT;
-//gv.CMD.RECEIVE_LOAD_CLAN_CHAT_TEXT = 2257;//Server chua lam
-//gv.CMD.RECEIVE_LOAD_CLAN_CHAT_DONATE = 2258;//Server chua lam
-//gv.CMD.RECEIVE_LOAD_CLAN_CHAT_EVENT = 2259;//Server chua lam
+gv.CMD.SEND_DELETE_CLAN_TROOP = 2013;
 
 gv.CMD.REQUEST_CLAN_DATA = 3101;
 gv.CMD.RECEIVE_CLAN_DATA = gv.CMD.REQUEST_CLAN_DATA;
@@ -215,6 +215,43 @@ CmdSendTrainTroop = fr.OutPacket.extend(
             this.putByte(type);
             this.putByte(slot);
             this.putByte(troopType);
+            this.updateSize();
+        }
+    }
+);
+
+CmdSendRemoveTrainTroop = fr.OutPacket.extend(
+    {
+        ctor: function()
+        {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.REQUEST_TRAIN_TROOP_REMOVE);
+        },
+        pack: function(group, slot, troopType)
+        {
+            this.packHeader();
+            this.putByte(group);
+            this.putByte(slot);
+            this.putByte(troopType);
+            this.updateSize();
+        }
+    }
+);
+
+CmdSendFinishTrainTroop = fr.OutPacket.extend(
+    {
+        ctor: function()
+        {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.REQUEST_FINISH_TRAIN_TROOP);
+        },
+        pack: function(group, slot)
+        {
+            this.packHeader();
+            this.putByte(group);
+            this.putByte(slot);
             this.updateSize();
         }
     }

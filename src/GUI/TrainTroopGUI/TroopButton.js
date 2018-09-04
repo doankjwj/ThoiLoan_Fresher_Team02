@@ -151,6 +151,7 @@ var queueTroopButton = ccui.Button.extend({
             case ccui.Widget.TOUCH_MOVED:
                 break;
             case ccui.Widget.TOUCH_ENDED:
+                testnetwork.connector.sendRemoveTrainTroop(sender.getParent().getParent()._barrackID, sender._id);
                 sender.getParent().getParent().deleteTroopFromQueue(sender._id);
                 sender.scale /= 1.05;
                 break;

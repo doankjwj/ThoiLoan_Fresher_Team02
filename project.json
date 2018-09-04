@@ -1,7 +1,7 @@
 {
     "project_type": "javascript",
     "debugMode": 1,
-    "showFPS": false,
+    "showFPS": true,
     "frameRate": 60,
     "id": "gameCanvas",
     "renderMode": 0,
@@ -48,19 +48,18 @@
         "src/Buildings/Laboratory.js",
         "src/Buildings/ClanCastle.js",
 
-        "src/GUI/ResourceBar.js",
+        "src/GUI/MainGUI/ResourceBar.js",
+        "src/GUI/MainGUI/BuilderBar.js",
         "src/GUI/IconActionBuilding.js",
-        "src/GUI/BuilderBar.js",
-        "src/GUI/PopupTraining.js",
-        "src/GUI/TroopButton.js",
+        "src/GUI/TrainTroopGUI/PopupTraining.js",
+        "src/GUI/TrainTroopGUI/TroopButton.js",
 
         "src/GUI/PopUpConstruct.js",
         "src/GUI/PopUpMessage.js",
-        "src/GUI/PopUpResearchTroop.js",
-        "src/GUI/ItemResearchTroop.js",
-        "src/GUI/PopUpTroopInfo.js",
-        "src/GUI/PopUpRequestDonate.js",
-        "src/GUI/PopUpClan.js",
+        "src/GUI/ResearchTroopGUI/PopUpResearchTroop.js",
+        "src/GUI/ResearchTroopGUI/ItemResearchTroop.js",
+        "src/GUI/ResearchTroopGUI/PopUpTroopInfo.js",
+
         "src/GUI/PopUpToCoin.js",
 
         "src/GUI/PopupClan/RadioButton.js",
@@ -82,8 +81,7 @@
         "src/GUI/ClanChat/ItemChat.js",
         "src/GUI/ClanChat/ButtonTroopDonate.js",
         "src/GUI/ClanChat/PopUpdonateTroop.js",
-
-        "src/GUI/Clan/NodeCreateClan.js",
+        "src/GUI/ClanChat/PopUpRequestDonate.js",
 
         "src/NetWork/framework/Utility/ClientConfig.js",
         "src/NetWork/framework/Utility/Localization.js",

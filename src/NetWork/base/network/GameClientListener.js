@@ -28,6 +28,7 @@ var GameClientListener = cc.Class.extend(
         onDisconnected:function()
         {
             cc.log("onDisconnected");
+            fr.getCurrentScreen().popUpMessage("Đã ngắt kết nối");
         },
         onReceived:function(cmd, pkg)
         {

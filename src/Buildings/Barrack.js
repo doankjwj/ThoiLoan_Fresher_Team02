@@ -1,8 +1,7 @@
 var Barrack = BuildingNode.extend({
-    _troopTrainingTypeArr: null,
-    _troopTrainingAmountArr: null,
-
-    //_currentTrainingTroop: null,
+    _troopTrainingTypeArr: [],
+    _troopTrainingAmountArr: [],
+    _currentTrainingTroop: null,
 
     /* Train Info*/
     _startTrainingTime: null,
@@ -14,6 +13,7 @@ var Barrack = BuildingNode.extend({
     _barTraining: null,
     _barTrainingBG: null,
     _labelTrainingTime: null,
+    _popUpFull: null,
 
     /*  new Train: người dùng luyện quân
         loadTrain: luyện quân dở khi mở game*/
@@ -22,6 +22,9 @@ var Barrack = BuildingNode.extend({
         newTrain: 0,
         loadTrain: 1
     },
+
+    /* Trạng thái luyện quân*/
+    _isTraining: null,
 
     ctor: function(id, level, row, col, existed, isActive)
     {
@@ -39,37 +42,40 @@ var Barrack = BuildingNode.extend({
         /* Add Center Building */
         this.addCenterBuilding();
 
-        /* Init Animation If Not Exist*/
-        // this.initAnimation();
-
-
         /* Add Effect */
-        this._effectAnim = cc.Sprite(res.tmp_effect);
-        this._effectAnim.anchorX = 0.5;
-        this._effectAnim.anchorY = 0.5;
-        this._effectAnim.scale = cf.SCALE;
-        this._effectAnim.visible = false;
-        this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
-        if (this.getTempLevel() >= 4 && this.getTempLevel() <=8) {
-            this._effectAnim.stopAllActions();
-            this.initAnimation();
-            this._effectAnim.visible = true;
-            this._effectAnim.runAction(cf.animationBarrack[this.getTempLevel()].clone().repeatForever());
-        };
+        this.updateAnim();
 
-        this.initTrainingFromServer();
+        if (this._isActive)
+            this.initTrainingFromServer();
     },
-
     updateAnim: function()
     {
         this.initAnimation();
-        cc.log(this.getTempLevel());
+
+        if (!this._effectAnim)
+        {
+            this._effectAnim = cc.Sprite(res.tmp_effect);
+            this._effectAnim.anchorX = 0.5;
+            this._effectAnim.anchorY = 0.5;
+            this._effectAnim.scale = cf.SCALE;
+            this._effectAnim.visible = false;
+            this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
+            //if (this.getTempLevel() >= 4 && this.getTempLevel() <=8) {
+            //    this._effectAnim.stopAllActions();
+            //    this.initAnimation();
+            //    this._effectAnim.visible = true;
+            //    this._effectAnim.runAction(cf.animationBarrack[this.getTempLevel()].clone().repeatForever());
+            //};
+        }
+
+
         if (this.getTempLevel() >= 4 && this.getTempLevel() <= 8) {
             this._effectAnim.stopAllActions();
             this._effectAnim.setVisible(true);
             this._effectAnim.runAction(cf.animationBarrack[this.getTempLevel()].clone().repeatForever());
         };
     },
+    /* Hiệu ứng lá cờ lúc bình thường*/
     initAnimation: function()
     {
         var tmpLevel = this.getTempLevel();
@@ -81,6 +87,7 @@ var Barrack = BuildingNode.extend({
             cf.animationBarrack[tmpLevel].retain();
         }
     },
+
     getTrainingLayer: function(){
 
         var layer = new PopupTraining(this._id);
@@ -89,6 +96,7 @@ var Barrack = BuildingNode.extend({
 
     },
 
+    //===========    LUYỆN LÍNH
     /* Load thông tin huấn luyện đang dở từ server*/
     initTrainingFromServer: function()
     {
@@ -98,19 +106,12 @@ var Barrack = BuildingNode.extend({
             return;
 
         this.initTrainingQueue(this._trainType.loadTrain);
-
-        this.onStartTraining(this._trainType.loadTrain);
-
         this.initEffectTraining();
-        this.onRunEffectTraining();
-
-        this.initTrainingGUI();
-        this.onRunTrainingGUI();
-
-
+        this.loadNewTrain(this._trainType.loadTrain);
+        this.onVisibleEffectTrainTroop(true);
+        this.onStartTraining(this._trainType.loadTrain);
     },
-
-    /* Khởi tạo danh sách lính đang luyện và thời gian bắt đầu luyện*/
+    /* Khởi tạo danh sách lính đang luyện*/
     initTrainingQueue: function(trainType)
     {
         this._troopTrainingTypeArr = [];
@@ -132,15 +133,11 @@ var Barrack = BuildingNode.extend({
         else
         {
 
-        }
-    },
-    getCurrentTroop: function()
-    {
-        if (this._troopTrainingAmountArr[0] == 0) return null;
-        return (this._troopTrainingTypeArr[0]);
-    },
+        };
 
-    /* Hiển thị phần vòng sáng xoay xoay trước của nhà barrach*/
+        this._currentTrainingTroop = this._troopTrainingTypeArr[0];
+    },
+    /* Hiệu ứng vòng sáng xoay xoay và ảnh lính, thanh thời gian lúc luyện lính*/
     initEffectTraining: function()
     {
         if (this._effectTraining) return;
@@ -155,53 +152,39 @@ var Barrack = BuildingNode.extend({
             cf.animationBarrackWorking = fn.getAnimation("effect_barrack_working ", 1, 5);
             cf.animationBarrackWorking.retain();
         };
-    },
-    onRunEffectTraining: function()
-    {
-        this._effectTraining.runAction(cf.animationBarrackWorking.clone().repeatForever());
-        this._effectTraining.setVisible(true);
-    },
-    onStopEffectTraining: function()
-    {
-        this._effectTraining.setVisible(false);
-        this._effectTraining.stopAllActions();
-    },
 
-    /* Hiển thị hình ảnh lính và thanh thời gian*/
-    initTrainingGUI: function()
-    {
         if (this._iconTroop) return;
 
         this._iconTroop = cc.Sprite(guiFolder + "train_troop_gui/small_icon/ARM_" + (this._troopTrainingTypeArr[0]+ 1) + ".png");
         this._iconTroop.setScale(0.9);
         this._iconTroop.setPosition(-70, 80);
+        this._iconTroop.setVisible(false);
         this.addChild(this._iconTroop, this._center_building.getLocalZOrder()+ 1);
 
         this._barTrainingBG = cc.Sprite(trainingGUI.bgTrainBar);
         this._barTrainingBG.setAnchorPoint(0, 0.5);
         this._barTrainingBG.setPosition(-40, 80);
+        this._barTrainingBG.setVisible(false);
         this.addChild(this._barTrainingBG, this._iconTroop.getLocalZOrder());
 
         this._barTraining = cc.Sprite(trainingGUI.trainBar);
         this._barTraining.setAnchorPoint(0, 0.5);
         this._barTraining.setPosition(-40, 80);
+        this._barTraining.setVisible(false);
         this.addChild(this._barTraining, this._iconTroop.getLocalZOrder());
 
         this._labelTrainingTime = cc.LabelBMFont("Time remain", font.fista24);
         this._labelTrainingTime.setScale(1.25);
         this._labelTrainingTime.setPosition(0, 110);
+        this._labelTrainingTime.setVisible(false);
         this.addChild(this._labelTrainingTime, this._iconTroop.getLocalZOrder());
     },
-    onRunTrainingGUI: function()
+    getCurrentTroop: function()
     {
-
+        if (this._troopTrainingTypeArr.length == 0) return null;
+        return (this._troopTrainingTypeArr[0]);
     },
-    onStopTrainingDetail: function()
-    {
-
-    },
-
-    /* Cập nhật trạng thái luyệ quân*/
+    /* lấy ra 1 đơn vị lính mới trong hàng đợi*/
     loadNewTrain: function(trainType)
     {
         if (trainType == this._trainType.loadTrain)
@@ -210,11 +193,13 @@ var Barrack = BuildingNode.extend({
             this._startTrainingTime = new Date().getTime();
         this._requireTrainingTime = gv.json.troopBase["ARM_" + (this.getCurrentTroop()+1)]["trainingTime"]*1000;
         this._finishTrainingTime = this._startTrainingTime + this._requireTrainingTime;
+        this._labelTrainingTime.setString(cf.secondsToLongTime(Math.floor((this._finishTrainingTime - this._startTrainingTime)/1000)));
+        fn.replaceSpriteImage(this._iconTroop, guiFolder + "train_troop_gui/small_icon/ARM_" + (this.getCurrentTroop() + 1) + ".png")
     },
     onStartTraining: function(trainType)
     {
-        this.loadNewTrain(trainType);
-        this.schedule(this.updateTraining, 1);
+        this._isTraining = true;
+        this.schedule(this.updateTraining, 0.5);
     },
     updateTraining: function()
     {
@@ -223,38 +208,114 @@ var Barrack = BuildingNode.extend({
         {
             this.releaseTroop();
             if (this.getCurrentTroop() == null)
-            {
                 this.onStopTraining();
-            }
             else
             {
-
-
+                this.loadNewTrain(this._trainType.newTrain);
+                if (this._currentTrainingTroop != this.getCurrentTroop())
+                    fn.replaceSpriteImage(this._iconTroop, guiFolder + "train_troop_gui/small_icon/ARM_" + (this.getCurrentTroop()+1) + ".png");
+                this._currentTrainingTroop = this.getCurrentTroop();
             }
-        };
-
-        cc.log(this._remainTrainingTime + " : " + this._requireTrainingTime);
-        this._labelTrainingTime.setString(cf.secondsToLongTime(Math.floor(this._remainTrainingTime/1000)));
-        cc.log((this._requireTrainingTime - this._remainTrainingTime)/this._requireTrainingTime);
-        this._barTraining.setTextureRect(cc.rect(0, 0, (this._requireTrainingTime - this._remainTrainingTime)/this._requireTrainingTime*69, 18));
+            this._barTraining.setTextureRect(cc.rect(0, 0, 0, 18));
+        }
+        else
+        {
+            this._labelTrainingTime.setString(cf.secondsToLongTime(Math.floor(this._remainTrainingTime / 1000)));
+            this._barTraining.setTextureRect(cc.rect(0, 0, (this._requireTrainingTime - this._remainTrainingTime) / this._requireTrainingTime * 69, 18));
+        }
     },
     releaseTroop: function()
     {
+        var troopType = this.getCurrentTroop()+1;
         this._troopTrainingAmountArr[0] --;
         if (this._troopTrainingAmountArr[0] == 0)
         {
-            this._troopTrainingAmountArr.remove(0);
-            this._troopTrainingTypeArr.remove(0);
+            this._troopTrainingAmountArr.splice(0, 1);
+            this._troopTrainingTypeArr.splice(0, 1);
         };
 
         // Release Troop Here
+
+        if (this._troopList == null)
+            this._troopList = new Array();
+        var amc = fn.getArmyCamp();
+        var troop = new Troop(troopType - 1, this._row + 2, this._col + 2, amc._id);
+        this.getParent().addChild(troop);
+        this._troopList.push(troop);
+        this._troopQuantity += gv.json.troopBase["ARM_" + troopType]["housingSpace"];
+
     },
-    onStopTraining: function()
+    onStopTraining: function(boo)
     {
-        this.unschedule(this.updateTraining());
+        if (!boo) boo = false;
+        this._isTraining = false;
+        this.unschedule(this.updateTraining);
+        this.onVisibleEffectTrainTroop(boo);
+        this._troopTrainingAmountArr = [];
+        this._troopTrainingTypeArr = [];
+    //    Cập nhật nút rảnh ở đây
+    },
+    onPauseTraining: function(boo)
+    {
+        this._isTraining = false;
+        this.onVisibleEffectTrainTroop(boo)
+        this.unschedule(this.updateTraining);
+    },
+    onResumTraining: function()
+    {
+
+    },
+    onPopUpFull: function()
+    {
+        this._iconStatus._str.setString("Đầy !!");
+        this._iconStatus.setVisible(true);
+    },
+    onVisibleEffectTrainTroop: function(boo)
+    {
         this._effectTraining.stopAllActions();
-        this._iconTroop.setVisible(false);
-        this._barTraining.setVisible(false);
-        this._barTrainingBG.setVisible(false);
+        if (boo)
+            this._effectTraining.runAction(cf.animationBarrackWorking.clone().repeatForever());
+        this._effectTraining.setVisible(boo);
+        this._iconTroop.setVisible(boo);
+        this._barTraining.setVisible(boo);
+        this._barTrainingBG.setVisible(boo);
+        this._labelTrainingTime.setVisible(boo);
+    },
+    /* Thêm lính vào hàng chờ*/
+    onAddTroop: function(troopType)
+    {
+        if (!this._isTraining)
+            this.initTrainingQueue(this._trainType.newTrain);
+
+        var index = this._troopTrainingTypeArr.indexOf(troopType);
+        if (index != -1)
+            this._troopTrainingAmountArr[index] ++;
+        else
+        {
+            this._troopTrainingTypeArr.push(troopType);
+            this._troopTrainingAmountArr.push(1);
+        };
+
+        if (!this._isTraining)
+        {
+            this.initEffectTraining();
+            this.onVisibleEffectTrainTroop(true);
+            this.loadNewTrain(this._trainType.newTrain);
+            this.onStartTraining(this._trainType.newTrain);
+        }
+    },
+    /* Xóa lính khỏi hàng chờ*/
+    onRemoveTroop: function(troopType)
+    {
+        var index = this._troopTrainingTypeArr.indexOf(troopType);
+        if (index == -1) return;
+        cc.log(troopType + " index: " + index);
+        var newTroopAmount = this._troopTrainingAmountArr[index] - 1;
+        if (newTroopAmount < 0) newTroopAmount = 0;
+        this._troopTrainingAmountArr[index] = newTroopAmount;
+
+        if (!this.getCurrentTroop())
+            this.onStopTraining();
     }
+
 })

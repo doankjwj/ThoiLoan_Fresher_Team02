@@ -183,7 +183,7 @@ var PopUpResearchTroop = cc.Node.extend({
     {
         for (var i = 0; i < 17; i++)
         {
-            if ( 10<= i && i< 15) continue;
+            if (gv.troopAvaiable[i] == 0) continue;
             if (this.getChildByTag(i))
                 this.removeChildByTag(i);
             var item = new ItemResearchTroop(i, cf.user._listTroopLevel[i], this._isResearching);

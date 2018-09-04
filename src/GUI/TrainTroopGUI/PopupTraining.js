@@ -33,7 +33,7 @@ var PopupTraining = cc.Node.extend({
     _currentTrainingTimeRequired: null,
 
     _queueLengthMax: null,
-    _currentQueueLength: null,
+    _currentQueueLength: 0,
     _queueLengthText: null,
 
     _queueTraining: null,
@@ -47,6 +47,7 @@ var PopupTraining = cc.Node.extend({
     ctor: function (barID) {
         this._barrackID = barID;
         this._barrack = cf.user._buildingList[Math.floor(barID / 100) - 1][barID % 100];
+        cc.log("BAR Id: " + this._barrack._id);
         this._super();
         this.x = cc.winSize.width / 2;
         this.y = cc.winSize.height / 2;
@@ -73,6 +74,57 @@ var PopupTraining = cc.Node.extend({
         this.initTroopListButton();
         this.init();
         this.onDisappear();
+
+        //this.onResumeTrainingFromServer();
+    },
+
+    /* Tiếp tục luyện quân khi bật game*/
+    onResumeTrainingFromServer: function()
+    {
+        cc.log("++++");
+        cc.log(this._barrackID + " ++++")
+        var barrackOrder = this._barrackID%100;
+        cc.log(barrackOrder + " ++++")
+        if (!(gv.jsonInfo["map"]["BAR_1"][barrackOrder]))
+            return;
+        if (gv.jsonInfo["map"]["BAR_1"][barrackOrder]["startTrainingTime"] == 0)
+            return;
+
+        cc.log("Resume Train");
+        this.initTrainingQueue(barrackOrder);
+        //this.updateContent();
+        //this.initEffectTraining();
+        //this.loadNewTrain(this._trainType.loadTrain);
+        //this.onVisibleEffectTrainTroop(true);
+        //this.onStartTraining(this._trainType.loadTrain);
+    },
+    initTrainingQueue: function(barrackOrder)
+    {
+        var jsonCurrentBarrack = gv.jsonInfo["map"]["BAR_1"][barrackOrder];
+        var jsonTroopQueueType = jsonCurrentBarrack["trainingTroopTypes"];
+        var jsonTroopQueueAmout = jsonCurrentBarrack["trainingQueue"];
+
+
+        for (var i=0; i< jsonTroopQueueType.length; i++)
+        {
+            var id = (jsonTroopQueueType[i]+1);
+            var key = "ARM_" + id;
+            if (!this._queueTraining[key]) {
+                var size = this.getQueueSize();
+                this._queueTraining[key] = jsonTroopQueueAmout[i];
+                var button = new queueTroopButton(id);
+                button.scale = 1.5;
+                button.setTag(id);
+                this._trainingQueueBackground.addChild(button, 2);
+                button.updateButton();
+                this._queueTrainingButtonList.push(button);
+                this.updateQueueButton();
+                if (size === 0) this._currentTrainingTime = this._currentTrainingTimeRequired;
+                this._currentQueueLength += this.jsonTroopBase[key]["housingSpace"]*jsonTroopQueueAmout[i];
+                this._timeTraining += this.jsonTroopBase[fn.getTroopString(id)]["trainingTime"]*jsonTroopQueueAmout[i];
+            };
+
+        };
     },
 
     updateContent: function () {
@@ -149,20 +201,28 @@ var PopupTraining = cc.Node.extend({
 
     updateStatus: function () {
         if (!this._barrack._isActive) return;
-        if (!this._isReleasable) return;
+        if (!this._isReleasable)
+        {
+            cc.log(this._barrack._id);
+            this._barrack.onPauseTraining(false);
+            this._barrack.onPopUpFull();
+            return;
+        };
         if (this._timeTraining > 0) this._timeTraining -= 1;
         if (this._currentTrainingTime > 0) {
             this._currentTrainingTime -= 1;
-            this._trainBar.setScaleX((this._currentTrainingTimeRequired - this._currentTrainingTime) / this._currentTrainingTimeRequired);
+            this._trainBar.setTextureRect(cc.rect(0, 0, (this._currentTrainingTimeRequired - this._currentTrainingTime) / this._currentTrainingTimeRequired * 69, 18));
             if (this._currentTrainingTime === 0 && this._queueTrainingButtonList.length !== 0) {
                 this.finishingTroop(this._queueTrainingButtonList[0]._id);
                 if (!this._isReleasable) return;
-                this._trainBar.setScaleX(0);
+                this._trainBar.setTextureRect(cc.rect(0, 0, 0, 18));
             }
         }
 
         this._textTimeLabel.setString(cf.secondsToLongTime(this._timeTraining));
         this._currentTrainingTimeText.setString(cf.secondsToLongTime(this._currentTrainingTime));
+        this._priceG = Math.ceil(this._timeTraining / 60);
+        this._textPriceG.setString(this._priceG.toString());
     },
 
     finishingTroop: function (id) {
@@ -170,14 +230,15 @@ var PopupTraining = cc.Node.extend({
         var key = fn.getTroopString(id);
 
         if (this.getAvailableSlot() >= this.jsonTroopBase[key]["housingSpace"]) {
-            var amc = this.getArmyCamp();
-            if (amc._troopList == null)
-                amc._troopList = new Array();
-            var troop = new Troop(id - 1, this._barrack._row + 2, this._barrack._col + 2, amc._id);
-            this.getParent()._map.addChild(troop);
-            amc._troopList.push(troop);
-            amc._troopQuantity += gv.json.troopBase["ARM_" + id]["housingSpace"];
+            //var amc = this.getArmyCamp();
+            //if (amc._troopList == null)
+            //    amc._troopList = new Array();
+            //var troop = new Troop(id - 1, this._barrack._row + 2, this._barrack._col + 2, amc._id);
+            //this.getParent()._map.addChild(troop);
+            //amc._troopList.push(troop);
+            //amc._troopQuantity += gv.json.troopBase["ARM_" + id]["housingSpace"];
 
+            /* Chuyển sang cho nhà barack thực hiện*/
         }
         else {
             this._isReleasable = false;
@@ -539,6 +600,10 @@ var PopupTraining = cc.Node.extend({
     addTroopToQueue: function (id) {
 
         var key = fn.getTroopString(id);
+        var troopType = key.substr(4, key.length - 4);
+
+        /* thêm lính đang luyện ra nhà barrack*/
+        this._barrack.onAddTroop(troopType-1);
 
         if (!this._queueTraining[key]) {
             var size = this.getQueueSize();
@@ -587,6 +652,13 @@ var PopupTraining = cc.Node.extend({
     deleteTroopFromQueue: function (id) {
         var key = fn.getTroopString(id);
         if (!this._queueTraining[key]) return;
+
+        /* Xóa lính đang luyện khỏi nhà barrack*/
+        var troopType = key.substr(4, key.length - 4);
+
+        /* thêm lính đang luyện ra nhà barrack*/
+        this._barrack.onRemoveTroop(troopType-1);
+
         if (this._queueTraining[key] > 1) {
             this._queueTraining[key] -= 1;
             this._queueTrainingButtonList[this.getPosInQueue(id)].updateButton();
@@ -640,6 +712,11 @@ var PopupTraining = cc.Node.extend({
         this._currentQueueLength = 0;
 
         this.updateContent();
+
+        /* Hủy luyện quân ở nhà barrack*/
+        this._barrack.onStopTraining();
+
+        testnetwork.connector.sendQuickFinishTrain(this._barrackID);
     },
 
     addTouchListener: function () {

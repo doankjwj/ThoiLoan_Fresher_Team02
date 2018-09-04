@@ -94,7 +94,6 @@ var BuildingNode = cc.Node.extend({
         this._grass = new grass(this._size, this._orderInUserBuildingList);
         this.addChild(this._grass, 0);
 
-
         //building shadow
         this._grassShadow = new GrassShadow(this._size, this._orderInUserBuildingList);
         this.addChild(this._grassShadow, this._grass.getLocalZOrder() + 1);
@@ -139,6 +138,19 @@ var BuildingNode = cc.Node.extend({
             visible: false
         });
         this.addChild(this._defence, 20);
+
+        // Building Status
+        if (this._orderInUserBuildingList != gv.orderInUserBuildingList.obstacle)
+        {
+            this._iconStatus = cc.Sprite(guiFolder + "icons/status_building.png");
+            this._iconStatus._str = gv.commonText("..." , 1, 1);
+            this._iconStatus._str.setColor(cc.color(0, 0, 0, 255));
+            this._iconStatus._str.setPosition(this._iconStatus.width/2, this._iconStatus.height/2);
+            this._iconStatus.addChild(this._iconStatus._str);
+            this._iconStatus.setVisible(false);
+            this._iconStatus.setPosition(0, 70);
+            this.addChild(this._iconStatus, this._defence.getLocalZOrder()+1);
+        }
 
         //Button commit build
         this._gui_commit_build = ccui.Button(buildingGUI.buildCommit);

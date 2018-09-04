@@ -51,10 +51,8 @@ gv.troopStr = {
     ARM_17: "ARM_17"
 };
 gv.troopName = ["Đấu Sĩ", "Pháp Sư", "Ăn Trộm", "Khổng Lồ"];
-
-
 gv.troopMaxLevel = [4, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4];
-
+gv.troopAvaiable = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 ,0 , 1 ,1]
 gv.clanChatEventManager = {
     chatStatusUpdated: false,
     userOnlineUpdated: false
