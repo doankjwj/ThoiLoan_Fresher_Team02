@@ -34,6 +34,7 @@ var PopupMenuButton = ccui.Button.extend({
         this._buttonKick.setZoomScale(0.01);
         this.addChild(this._buttonKick, 1);
         this._buttonKick.setPosition(cc.p(this.width / 2 + 10, this.height - this._buttonKick.height/2 - 25));
+        this._buttonKick.visible = false;
         var text = cc.LabelBMFont("RỜI BANG", font.soji12);
         this._buttonKick.addChild(text);
         text.setPosition(cc.p(this._buttonKick.width / 2, this._buttonKick.height / 2));
@@ -56,6 +57,7 @@ var PopupMenuButton = ccui.Button.extend({
         this._buttonSetMod = ccui.Button(folderClan + "POPUP_0000_Group-3.png");
         this._buttonSetMod.setZoomScale(0.01);
         this.addChild(this._buttonSetMod, 1);
+        this._buttonSetMod.visible = false;
         this._buttonSetMod.setPosition(cc.p(this.width / 2 + 10, this._buttonKick.y - this._buttonKick.height - 5));
         var text2 = cc.LabelBMFont("BỔ NHIỆM LÀM BANG PHÓ", font.soji12, this.width - 10 ,cc.TEXT_ALIGNMENT_CENTER);
         this._buttonSetMod.addChild(text2);
@@ -83,6 +85,7 @@ var PopupMenuButton = ccui.Button.extend({
         this._buttonRemoveMod.setPosition(cc.p(this.width / 2 + 10, this._buttonKick.y - this._buttonKick.height - 5));
         var text3 = cc.LabelBMFont("XÓA CHỨC BANG PHÓ", font.soji12, this.width - 10 ,cc.TEXT_ALIGNMENT_CENTER);
         this._buttonRemoveMod.addChild(text3);
+        this._buttonRemoveMod.visible = false;
         text3.setPosition(cc.p(this._buttonRemoveMod.width / 2, this._buttonRemoveMod.height / 2));
 
         this._buttonRemoveMod.addTouchEventListener(function (sender, type) {
@@ -106,6 +109,7 @@ var PopupMenuButton = ccui.Button.extend({
         this._buttonSetAdmin.setPosition(cc.p(this.width / 2 + 10, this._buttonSetMod.y - this._buttonSetMod.height - 5));
         var text4 = cc.LabelBMFont("BỔ NHIỆM LÀM BANG CHỦ", font.soji12, this.width - 10 ,cc.TEXT_ALIGNMENT_CENTER);
         this._buttonSetAdmin.addChild(text4);
+        this._buttonSetAdmin.visible = false;
         text4.setPosition(cc.p(this._buttonSetAdmin.width / 2, this._buttonSetAdmin.height / 2));
 
         this._buttonSetAdmin.addTouchEventListener(function (sender, type) {
@@ -128,17 +132,9 @@ var PopupMenuButton = ccui.Button.extend({
 
     updateInfo: function(user, clan) {
         this._clan = clan;
-        // var t;
-        // if(this._clan.id === cf.user._clanId) {
-        //     if(gv.userClanInfo.myAuthority === 0) t = "I'm member";
-        //     else if (gv.userClanInfo.myAuthority === 1) t = "I'm a mod";
-        //     else if (gv.userClanInfo.myAuthority === 2) t = "I'm admin";
-        // }
-        // else t = "Not my clan"
-        // this._text.setString(t);
         this._user = user;
 
-        cc.log(this._user._position);
+        cc.log("POS : " + this._user._position);
 
         if(this._clan.id === cf.user._clanId) {
             var myAuthority = gv.userClanInfo.myAuthority;

@@ -64,6 +64,8 @@ var BuildingNode = cc.Node.extend({
         coin: null,
     },
 
+    _nextPos: null,
+
     ctor: function(id, level, row, col, existed, isActive) {
         this._super();
         this.scale = cf.SCALE;
@@ -73,6 +75,8 @@ var BuildingNode = cc.Node.extend({
         this._col = col;
         this._level = level;
         this._isActive = isActive;
+
+        this._nextPos = cc.p(0, 1);
 
         this._txtName = cc.LabelBMFont(this._name, font.soji20);
         this._txtName.setColor(cc.color(189,183,107, 255));
@@ -666,7 +670,7 @@ var BuildingNode = cc.Node.extend({
     onUpdateSpriteFrame: function()
     {
         this.updateAnim();
-        this.removeChildByTag(gv.tag.TAG_CENTER_BUILDING)
+        this.removeChildByTag(gv.tag.TAG_CENTER_BUILDING);
         var str = this._buildingSTR;
         switch(str)
         {
@@ -705,6 +709,9 @@ var BuildingNode = cc.Node.extend({
                 break;
             case gv.buildingSTR.clanCastle:
                 this._center_building = cc.Sprite(res.folder_clan_castle + "CLC_1_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
+            case gv.buildingSTR.wall:
+                this._center_building = cc.Sprite(res.folder_wall + "WAL_1_" + this._level + "/" + "WAL_1_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             default:
                 break;
@@ -757,6 +764,9 @@ var BuildingNode = cc.Node.extend({
             case gv.buildingSTR.clanCastle:
                 json = gv.json.clanCastle;
                 break;
+            case gv.buildingSTR.wall:
+                json = gv.json.wall;
+                break;
             default:
                 break;
         }
@@ -807,6 +817,9 @@ var BuildingNode = cc.Node.extend({
             case gv.buildingSTR.clanCastle:
                 this._center_building = cc.Sprite(res.folder_clan_castle + "CLC_1_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
+            case gv.buildingSTR.wall:
+                this._center_building = cc.Sprite(res.folder_wall + "WAL_1_" + this.getTempLevel() + "/" + "WAL_1_" + this.getTempLevel() + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
             default:
                 break;
         }
@@ -852,7 +865,7 @@ var BuildingNode = cc.Node.extend({
             self.getParent().removeChild(self);
         }.bind(this));
         this._gui_commit_build.addClickEventListener(function(){
-            if (cf.user._builderFree <= 0 && (self._buildingSTR != gv.buildingSTR.builderHut))
+            if (cf.user._builderFree <= 0 && (self._buildingSTR !== gv.buildingSTR.builderHut))
             {
                 self.getParent().getParent().popUpMessage("Tất cả thợ đang bận");
                 self.hideBuildingButton();
@@ -878,7 +891,6 @@ var BuildingNode = cc.Node.extend({
                     root.onPopUpToCoin(coinRequire, cf.constructType.build, self);
                     return;
                 }
-                ;
                 gv.building_is_moved = 0;
                 gv.building_selected = self._id;
                 this._listener.setEnabled(true);
@@ -893,11 +905,10 @@ var BuildingNode = cc.Node.extend({
         this.locate_map_array(this);
         this.onStartBuild(gv.startConstructType.newConstruct);
 
-
         this.getParent().addBuildingToUserBuildingList(this);
 
         this.updateZOrder();
-        gv.building_is_moved = 0;
+            gv.building_is_moved = 0;
         cf.isDeciding = false;
         //this.updateResource();
         testnetwork.connector.sendBuild(this._id, this._row, this._col);
@@ -912,10 +923,50 @@ var BuildingNode = cc.Node.extend({
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
 
-        /* Hiển thị*/
-        if (this._time_remaining > 0)
-            this.getParent().getParent().showListBotButton(this._id);
+        // /* Hiển thị*/
+        // if (this._time_remaining > 0)
+        //     this.getParent().getParent().showListBotButton(this._id);
+
+
+
+        if(this._orderInUserBuildingList === gv.orderInUserBuildingList.wall ) {
+
+            var wallCapacity = gv.json.townHall[gv.buildingSTR.townHall][cf.user._buildingList[gv.orderInUserBuildingList.townHall][0]._level]["WAL_1"];
+            if(cf.user._buildingListCount[gv.orderInUserBuildingList.wall] >= wallCapacity) return;
+
+            this.getNextPos();
+            var wall = cf.tagToItem(2500, cf.defaultLevel, this._nextPos.x, this._nextPos.y, false);
+            this.getParent().addChild(wall);
+
+        }
+
     },
+
+    getNextPos: function(){
+        if(cf.map_array[this._nextPos.x][this._nextPos.y] === 0) return;
+
+        var pos = cc.p(this._row, this._col);
+
+        var vector = [
+            cc.p(0, 1),
+            cc.p(1, 0),
+            cc.p(0, -1),
+            cc.p(-1, 0)
+        ];
+
+        for(var i=0; i<4; i++) {
+
+            var posTmp = cc.p(pos.x + vector[i].x, pos.y + vector[i].y);
+            if(posTmp.x > 40 || posTmp.y > 40) continue;
+
+            if(cf.map_array[posTmp.x][posTmp.y] === 0) {
+                this._nextPos = posTmp;
+                return;
+            }
+
+        }
+    },
+
     onBuildCoin: function(requireCoin)
     {
         if (this._cost.coin + requireCoin > cf.user.getCurrentCoin())

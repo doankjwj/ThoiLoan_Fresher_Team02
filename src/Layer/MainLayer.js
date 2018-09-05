@@ -261,6 +261,14 @@
         this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
         this.addCheatButton();
         this.addClanChatGUI();
+
+        // var str = gv.buildingSTR.wall + "_1";
+        //
+        // var wall = cc.Sprite(folderWall + str + "/" + str + "/idle/image0000.png");
+        // wall.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
+        //
+        // this.addChild(wall, 100);
+
     },
 
     updateResourceBar: function() {
@@ -578,20 +586,23 @@
         {
             self.hideListBotButton();
             fn.getCurrentBuilding().onRemoveClick();
+
             var id = gv.building_selected;
-            var buiding = cf.user._buildingList[Math.floor(id/100) - 1][id%100];
-            if (gv.building_selected === undefined || (buiding._buildingSTR == gv.buildingSTR.clanCastle && buiding._level == 0)) return;
-            if (buiding._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && buiding._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
-                buiding.onHardUpdateCapacity();
+            var building = cf.user._buildingList[Math.floor(id/100) - 1][id%100];
+            if (gv.building_selected === undefined || (building._buildingSTR == gv.buildingSTR.clanCastle && building._level == 0)) return;
+            if (building._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && building._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
+                building.onHardUpdateCapacity();
             if (!self.getChildByTag(gv.tag.TAG_POPUP))
             {
                 var popUp = PopUpConstruct.getOrCreate();
                 self.addChild(popUp, 1, gv.tag.TAG_POPUP);
             }
+
             self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width/2, cc.winSize.height/2);
             self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
             self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.info);
             self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
+
         }. bind(this));
 
         /* Button Upgrade */

@@ -82,12 +82,12 @@ var PopupTraining = cc.Node.extend({
     onResumeTrainingFromServer: function()
     {
         cc.log("++++");
-        cc.log(this._barrackID + " ++++")
+        cc.log(this._barrackID + " ++++");
         var barrackOrder = this._barrackID%100;
-        cc.log(barrackOrder + " ++++")
+        cc.log(barrackOrder + " ++++");
         if (!(gv.jsonInfo["map"]["BAR_1"][barrackOrder]))
             return;
-        if (gv.jsonInfo["map"]["BAR_1"][barrackOrder]["startTrainingTime"] == 0)
+        if (gv.jsonInfo["map"]["BAR_1"][barrackOrder]["startTrainingTime"] === 0)
             return;
 
         cc.log("Resume Train");

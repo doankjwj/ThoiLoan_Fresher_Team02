@@ -24,6 +24,7 @@ var Map = cc.Node.extend({
         //this.add_building();
     },
 
+
     addBuildingFromServer: function()
     {
         var self = this;
@@ -49,20 +50,28 @@ var Map = cc.Node.extend({
         }
 
 
-         for (var i = 0; i < Object.keys(gv.jsonInfo["map"]["OBS"]).length; i++)
-                {
-                    var obs = gv.jsonInfo["map"]["OBS"][i];
-                    var obstacle = new Obstacle((gv.orderInUserBuildingList.obstacle * 100 + 1 + i), obs["type"], obs["X"], obs["Y"], true, true);
-                    cf.user._buildingList[obstacle._orderInUserBuildingList][cf.user._buildingListCount[obstacle._orderInUserBuildingList]] = (obstacle);
-                    cf.user._buildingListCount[obstacle._orderInUserBuildingList] ++;
-                    this.addChild(obstacle);
-                    if (obs = gv.jsonInfo["map"]["OBS"][i]["finishCleaningTime"] > 0)
-                    {
-                        obstacle._timeFinish = obs = gv.jsonInfo["map"]["OBS"][i]["finishCleaningTime"];
-                        obstacle.onStartRemove(gv.startConstructType.loadConstruct);
-                    }
-                }
-    },
+        for (var i = 0; i < Object.keys(gv.jsonInfo["map"]["OBS"]).length; i++)
+        {
+            var obs = gv.jsonInfo["map"]["OBS"][i];
+            var obstacle = new Obstacle((gv.orderInUserBuildingList.obstacle * 100 + 1 + i), obs["type"], obs["X"], obs["Y"], true, true);
+            cf.user._buildingList[obstacle._orderInUserBuildingList][cf.user._buildingListCount[obstacle._orderInUserBuildingList]] = (obstacle);
+            cf.user._buildingListCount[obstacle._orderInUserBuildingList] ++;
+            this.addChild(obstacle);
+            if (obs = gv.jsonInfo["map"]["OBS"][i]["finishCleaningTime"] > 0)
+            {
+                obstacle._timeFinish = obs = gv.jsonInfo["map"]["OBS"][i]["finishCleaningTime"];
+                obstacle.onStartRemove(gv.startConstructType.loadConstruct);
+            }
+        }
+        //
+        // var wall = cf.stringToItemInit("WAL_1", 0);
+        // cf.user._buildingList[wall._orderInUserBuildingList][cf.user._buildingListCount[wall._orderInUserBuildingList]] = wall;
+        // cf.user._buildingListCount[wall._orderInUserBuildingList] ++;
+        //
+        // this.addChild(wall);
+
+
+},
 
     // Thêm building vào danh sách công trình của user
     addBuildingToUserBuildingList: function(b)

@@ -34,6 +34,7 @@ gv.buildingDescription =
     storage_2: null,
     laboratory: null,
     clanCastle: null,
+    wall: null,
 };
 
 gv.troopStr = {

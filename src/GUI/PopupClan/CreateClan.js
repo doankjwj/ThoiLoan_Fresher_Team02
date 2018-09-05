@@ -80,7 +80,7 @@ var CreateClan = PopupClan.extend({
         this._fieldName = new ccui.TextField();
         this._fieldName.setTouchEnabled(true);
         this._fieldName.fontName = "Arial";
-        this._fieldName.setPlaceHolder("                             ");
+        this._fieldName.setPlaceHolder("          Tên bang hội             ");
         this._fieldName.setTextColor(cc.color(0, 0, 0, 255));
         this._fieldName.fontSize = 17;
         this._fieldName.setMaxLength(this._maxLength);
@@ -126,7 +126,16 @@ var CreateClan = PopupClan.extend({
         this._fieldDetailBackground.addChild(this._fieldDetail, 1);
         this._fieldDetail.setTouchEnabled(true);
         this._fieldDetail.fontName = "Arial";
-        this._fieldDetail.setPlaceHolder("Thông tin");
+
+        var string = "";
+
+        for(var i=0; i<5; i++) {
+            for(var j=0; j<57; j++) string += " ";
+            string += "\n";
+        }
+
+        this._fieldDetail.setPlaceHolder(string);
+
         this._fieldDetail.setTextColor(cc.color(0, 0, 0, 255));
         this._fieldDetail.fontSize = 17;
         this._fieldDetail.setMaxLengthEnabled(true);
@@ -348,6 +357,14 @@ var CreateClan = PopupClan.extend({
     updateFieldName: function(){
 
         this._fieldName.x = this._fieldName.width/2 + 5;
+
+        var boo = !(this._fieldName.string.length === 0);
+
+
+        this._createButton.setBright(boo);
+        this._createButton.setEnabled(boo);
+        this._createButton.setTouchEnabled(boo);
+
 
     },
 

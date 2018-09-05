@@ -75,7 +75,7 @@ var SearchClan = PopupClan.extend({
         this._fieldSearch = new ccui.TextField();
         this._fieldSearch.setTouchEnabled(true);
         this._fieldSearch.fontName = "Arial";
-        this._fieldSearch.setPlaceHolder("Tên bang/mã bang");
+        this._fieldSearch.setPlaceHolder("Tên bang/mã bang                                        ");
         this._fieldSearch.setTextColor(cc.color(0, 0, 0, 255));
         this._fieldSearch.fontSize = 17;
         this._fieldSearch.setMaxLength(this._maxLength);
@@ -251,8 +251,10 @@ var SearchClan = PopupClan.extend({
         this._bg.getChildByTag(gv.tag.TAG_BUTTON_SEARCH_BY_ID).changeStatus();
         this._statusText.visible = !this._byId._status;
         if(this._byId._status) {
-            this.setEnabledSearchButton(true)
-        } else {
+            if(this._fieldSearch.string.length !== 0)this.setEnabledSearchButton(true);
+            else this.setEnabledSearchButton(false);
+        }
+        else {
             this.updateSearchText();
         }
     },
@@ -284,7 +286,7 @@ var SearchClan = PopupClan.extend({
         // cc.log(this._fieldSearch.string.length);
         if(this._fieldSearch.string.length === 0) {
             this._statusText.visible = false;
-            this.setEnabledSearchButton(this._byId._status);
+            this.setEnabledSearchButton(false);
         } else {
             if (this._fieldSearch.string.length < 2) {
                 this._statusText.setString("Ít nhất 2 kí tự");

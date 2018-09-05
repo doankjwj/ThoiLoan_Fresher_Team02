@@ -39,6 +39,7 @@ var res = {
     shopItemList: jsonFolder + "ShopList.json",
     defenceJson: jsonFolder + "Defence.json",
     clanCastleJson: jsonFolder + "ClanCastle.json",
+    wallJson: jsonFolder + "Wall.json",
 
     folder_builder_hut: buildingsFolder + "builderHut/",
     folder_army_camp: buildingsFolder + "armyCamp/",
@@ -53,6 +54,7 @@ var res = {
     folder_obs: buildingsFolder + "obstacle/",
     folder_laboratory: buildingsFolder + "labratory/",
     folder_clan_castle: buildingsFolder + "clan_castle/",
+    folder_wall: buildingsFolder + "wall/",
 
     folder_gui_action_building: guiFolder + "Action_Building_Icon/",
     folder_gui_build: guiFolder + "/upgrade_building_gui/",

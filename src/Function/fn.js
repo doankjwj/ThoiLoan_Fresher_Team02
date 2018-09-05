@@ -60,6 +60,10 @@ fn.loadJson = function ()
     {
         gv.json.obstacle = data;
     });
+    cc.loader.loadJson(res.wallJson, function (error, data)
+    {
+        gv.json.wall = data;
+    });
     gv.json.troopAnimation = {};
 
     for (var i = 1; i < 5; i += 1)
@@ -103,6 +107,7 @@ fn.initLocalized= function()
     gv.buildingDescription.storage_2 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_storage_2"));
     gv.buildingDescription.laboratory = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_laboratory"));
     gv.buildingDescription.clanCastle = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_clanCastle"));
+    gv.buildingDescription.wall = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_wall"));
 },
 /* Ngắt xuống dòng cho String*/
 fn.singleToMultiLineStr = function(str)

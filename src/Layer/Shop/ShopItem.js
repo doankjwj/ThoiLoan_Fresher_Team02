@@ -96,6 +96,9 @@ var ShopItem = ccui.Button.extend({
             case gv.buildingSTR.lab:
                 this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.lab];
                 break;
+            case gv.buildingSTR.wall:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.wall];
+                break;
             default:
                 break;
         }

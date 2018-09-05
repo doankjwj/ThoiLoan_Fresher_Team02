@@ -9,7 +9,6 @@ var PopUpConstruct = cc.Node.extend({
     _btnClose: null,
     _btnOk: null,
 
-    _btnDeleteTroop: null,
 
     /* Text Description */
     _bgTxtDescription: null,
@@ -138,7 +137,6 @@ var PopUpConstruct = cc.Node.extend({
         this._btnOk.setPosition(cc.p(0, -this._bg.height / 2 + this._btnOk.height * this._btnOk.scale / 2));
         this.addChild(this._btnOk, 1);
         this._btnOk.addTouchEventListener(function (sender, type) {
-            var cheatNumber = 5000;
             switch (type) {
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
@@ -169,16 +167,6 @@ var PopUpConstruct = cc.Node.extend({
                     break;
             }
         }, this._btnOk);
-
-        /* Button Delete Troop // Tùy chọn nhà Clan */
-        this._btnDeleteTroop = ccui.Button(logInGUI.btnOk);
-        this._btnDeleteTroop.setTitleText("XÓA TOÀN BỘ");
-        this._btnDeleteTroop.setPosition(0, -this._bg.height / 2 + this._btnOk.height * this._btnOk.scale / 2);
-        this._btnDeleteTroop.scale = 1.5;
-        this.addChild(this._btnDeleteTroop);
-        this._btnDeleteTroop.addClickEventListener(function(){
-            self.onDeleteTroop();
-        }.bind(this));
         /* Building Icon */
         this._icon = cc.Sprite(res.tmp_effect);
         this._icon.setAnchorPoint(cc.p(0.5, 0.5));
@@ -449,7 +437,6 @@ var PopUpConstruct = cc.Node.extend({
 
     updateContent: function(id, constructType)
     {
-
         this._buildingId = id;
         this._constructType = constructType;
         gv.upgradeAble = true;
@@ -466,11 +453,6 @@ var PopUpConstruct = cc.Node.extend({
         this.updateIcon(b._buildingSTR, level, b._size, b._name, b._isActive, constructType);
         this.updateBar(b._buildingSTR, b.getTempLevel(), b._size, b._name, b._isActive, constructType);
         this.updateDescription((b._description));
-
-        if (constructType == gv.constructType.info && b._buildingSTR == gv.buildingSTR.clanCastle)
-            this._btnDeleteTroop.visible = false;
-        else
-            this._btnDeleteTroop.visible = false;
     },
 
     visibleBar: function(bool1, bool2, bool3)
@@ -759,6 +741,13 @@ var PopUpConstruct = cc.Node.extend({
                 this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
                 this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconTroopCapacity);
                 break;
+            case gv.buildingSTR.wall:
+                this.visibleBar(true, false, false);
+                bar1Length = (level==0) ? 0:gv.json.wall[str][level]["hitpoints"];
+                bar1Length2 = gv.json.wall[str][Math.min(level + 1, gv.buildingMaxLevel.wall)]["hitpoints"];
+                bar1MaxLength = gv.json.wall[str][gv.buildingMaxLevel.wall]["hitpoints"];
+                this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
+                break;
             default:
                 break;
         }
@@ -895,9 +884,16 @@ var PopUpConstruct = cc.Node.extend({
                 darkElixir = gv.json.clanCastle[str][level]["darkElixir"];
                 coin = 0;
                 break;
+            case gv.buildingSTR.wall:
+                time = gv.json.wall[str][level]["buildTime"];
+                gold = gv.json.wall[str][level]["gold"];
+                elixir = 0;
+                darkElixir = gv.json.wall[str][level]["darkElixir"];
+                coin = 0;
+                break;
             default:
                 break;
-        };
+        }
 
         this._cost.gold = gold;
         this._cost.elixir = elixir;
@@ -1043,11 +1039,7 @@ var PopUpConstruct = cc.Node.extend({
     {
         this._txtDescreption.visible = true;
         this._txtDescreption.setString(description)
-    },
-    onDeleteTroop: function()
-    {
-        cc.log("Delete Troop");
-    },
+    }
 })
 
 PopUpConstruct.getOrCreate = function()

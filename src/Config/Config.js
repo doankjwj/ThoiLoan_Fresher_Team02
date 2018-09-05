@@ -110,6 +110,7 @@ gv.json =
     defence: null,
     troopAnimation: null,
     clanCastle: null,
+    wall: null,
 };
 gv.plist =
     {
@@ -171,6 +172,7 @@ gv.buildingSTR = {
     obstacle: "OBS",
     defence_1: "DEF_1",
     clanCastle: "CLC_1",
+    wall:  "WAL_1"
 };
 gv.buildOnMoveGUI =
 {
@@ -194,7 +196,8 @@ gv.buildingName =
     builderHut: "Nhà thợ xây",
     obstacle: "Vật cản",
     defence_1: "Pháo thần công",
-    clanCastle: "Nhà Bang Hội"
+    clanCastle: "Nhà Bang Hội",
+    wall: "Tường"
 };
 gv.orderInUserBuildingList =
 {
@@ -213,6 +216,7 @@ gv.orderInUserBuildingList =
     obstacle: 13,
     defence_1: 12,
     clanCastle: 26,
+    wall: 25
 };
 gv.buildingMaxLevel = {
     townHall: 10,
@@ -361,6 +365,8 @@ cf.getJsonConfigFile = function (str) {
             return gv.json.defence;
         case "BAR":
             return gv.json.barrack;
+        case "WAL":
+            return gv.json.wall;
     }
 
 };
@@ -385,6 +391,8 @@ cf.tagToItem = function(tag, lvl, posX, posY, existed){
             return new Defence(27, lvl, posX, posY, existed, false, gv.buildingSTR.defence_1);
         case 700:
             return new Laboratory(28, lvl, posX, posY, existed, false);
+        case 2500:
+            return new Wall(29, lvl, posX, posY, existed, false);
     }
 };
 
@@ -470,6 +478,12 @@ cf.stringToItemInit = function(str, index) {
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
             isActive = finishTime <= currentTime;
             building = new ClanCastle(cf.user._buildingListCount[gv.orderInUserBuildingList.clanCastle], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, isActive);
+            building._finishing_time = finishTime;
+            break;
+        case "WAL_1":
+            finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
+            isActive = finishTime <= currentTime;
+            building = new Wall(cf.user._buildingListCount[gv.orderInUserBuildingList.wall], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, isActive);
             building._finishing_time = finishTime;
             break;
     }
