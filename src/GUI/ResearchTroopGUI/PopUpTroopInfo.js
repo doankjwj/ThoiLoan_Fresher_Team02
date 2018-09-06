@@ -46,6 +46,12 @@ var PopUpTroopInfo = cc.Node.extend({
 
     _offSetBar : 50,
 
+    _labelFavoriteTarget: null,
+    _labelAttackType: null,
+    _labelAttackArea: null,
+    _labelMoveSpeed: null,
+    _labelTimeTraining: null,
+    _labelHousingSpace: null,
 
     ctor: function(troopOrder)
     {
@@ -53,6 +59,7 @@ var PopUpTroopInfo = cc.Node.extend({
         this._troopOrder = troopOrder;
         this._level = cf.user._listTroopLevel[troopOrder-1];
         this.init();
+        this.loadSummary();
         this.loadBar();
         this.loadResourceRequire();
     },
@@ -76,7 +83,7 @@ var PopUpTroopInfo = cc.Node.extend({
 
 
         /* Text Title */
-        this._txtTitle = cc.LabelBMFont("Nâng cấp lên " + (cf.user._listTroopLevel[this._troopOrder-1] + 1), font.soji20);
+        this._txtTitle = cc.LabelBMFont(fr.Localization.getInstance().getText("troopInfo_" + (this._troopOrder-1) + "_name") + " cấp "+ (cf.user._listTroopLevel[this._troopOrder-1] + 1), font.soji20);
         this._txtTitle.setAnchorPoint(cc.p(0.5, 1));
         this._txtTitle.setPosition(cc.p(0, this._bg.height / 2 - this._txtTitle.height/2));
         this.addChild(this._txtTitle, 1);
@@ -99,8 +106,9 @@ var PopUpTroopInfo = cc.Node.extend({
         this.addChild(this._grass, 2);
 
         this._bgWhite = cc.Sprite(res.researchTroopGUI.spanWhite);
-        this._bgWhite.setPosition(cc.p(0, - this._bgWhite.height * 1.5 - 10));
-        this._bgWhite.scale = 1.3;
+        this._bgWhite.setPosition(cc.p(0, - this._bgWhite.height * 1.5 - 30));
+        this._bgWhite.setScaleX(1.3);
+        this._bgWhite.setScaleY(1.1);
         this.addChild(this._bgWhite, 0);
 
         this._icon = cc.Sprite(researchTroopFolderTroopIcon + "ARM_" + this._troopOrder + "_" + (this._level + 1) + ".png");
@@ -109,11 +117,17 @@ var PopUpTroopInfo = cc.Node.extend({
         this._icon.setPosition(cc.p(this._grass.x, this._grass.y));
         this.addChild(this._icon, 3);
 
-        this._labelTime = cc.LabelBMFont("Thời gian nâng cấp: \n" + cf.secondsToLongTime(gv.json.troop["ARM_" + this._troopOrder][this._level + 1]["researchTime"]), font.soji20);
+        this._labelTime = cc.LabelBMFont("Thời gian nâng cấp", font.soji20);
         this._labelTime.setPosition(this._grass.x, this._grass.y - 20);
         this._labelTime.setAnchorPoint(0.5, 0.5);
         this._labelTime.scale = 1;
         this.addChild(this._labelTime, 4);
+
+        this._labelTimeNum = cc.LabelBMFont(cf.secondsToLongTime(gv.json.troop["ARM_" + this._troopOrder][this._level + 1]["researchTime"]), font.soji20);
+        this._labelTimeNum.setPosition(this._grass.x, this._labelTime.y - 30);
+        this._labelTimeNum.setAnchorPoint(0.5, 0.5);
+        this._labelTimeNum.scale = 1;
+        this.addChild(this._labelTimeNum, 4);
 
         this._btnOk = ccui.Button(logInGUI.btnOk);
         this._btnOk.setPosition(0, - this._bg.height/2 + 80);
@@ -137,6 +151,45 @@ var PopUpTroopInfo = cc.Node.extend({
             }
         }.bind(this));
     },
+
+    /*Thông tin troop base: mục tiêu ưa thích, tốc độ, ..*/
+    loadSummary: function()
+    {
+        var xPos = 170;
+        var yPos = 0;
+        var yDis = 22;
+
+        var troopOrder = this._troopOrder-1;
+        this._labelFavoriteTarget = fn.commonLabel("Mục tiêu ưa thích: " + gv.troopInfo.favoriteTarget[troopOrder], font.fista24, 1, 1, cc.color(96, 32, 32, 255));
+        this._labelFavoriteTarget.setPosition(xPos, yPos);
+        this.addChild(this._labelFavoriteTarget, 2);
+        yPos -= yDis;
+
+        this._labelAttackType = fn.commonLabel("Hình thức tấn công: " + gv.troopInfo.attackType[troopOrder], font.fista24, 1, 1, cc.color(96, 32, 32, 255));
+        this._labelAttackType.setPosition(xPos, yPos);
+        this.addChild(this._labelAttackType, 2);
+        yPos -= yDis;
+
+        this._labelAttackArea = fn.commonLabel("Mục tiêu: " + gv.troopInfo.attackArea[troopOrder], font.fista24, 1, 1, cc.color(96, 32, 32, 255));
+        this._labelAttackArea.setPosition(xPos, yPos);
+        this.addChild(this._labelAttackArea, 2);
+        yPos -= yDis;
+
+        this._labelMoveSpeed = fn.commonLabel("Tốc độ di chuyển: " + gv.troopInfo.moveSpeed[troopOrder], font.fista24, 1, 1, cc.color(96, 32, 32, 255));
+        this._labelMoveSpeed.setPosition(xPos, yPos);
+        this.addChild(this._labelMoveSpeed, 2);
+        yPos -= yDis;
+
+        this._labelTimeTraining = fn.commonLabel("Thời gian luyện: " + gv.troopInfo.timeTraining[troopOrder] + " giây", font.fista24, 1, 1, cc.color(96, 32, 32, 255));
+        this._labelTimeTraining.setPosition(xPos, yPos);
+        this.addChild(this._labelTimeTraining, 2);
+        yPos -= yDis;
+
+        this._labelHousingSpace = fn.commonLabel("Chỗ ở: " + gv.troopInfo.housingSpace[troopOrder], font.fista24, 1, 1, cc.color(96, 32, 32, 255));
+        this._labelHousingSpace.setPosition(xPos, yPos);
+        this.addChild(this._labelHousingSpace, 2);
+    },
+
     onStartResearch: function()
     {
 
@@ -203,7 +256,7 @@ var PopUpTroopInfo = cc.Node.extend({
             anchorY: 0.5,
             x: 0.5 * this._bg.height / 10,
             y: 0.5 * this._bg.height  / 2,
-            visible: false,
+            visible: true,
         });
         this.addChild(this._bar1Icon, 2);
 
@@ -228,9 +281,6 @@ var PopUpTroopInfo = cc.Node.extend({
             scale: 0.75,
         });
         this.addChild(this._bar1TXT2, 2);
-
-
-
 
         // +++++ BAR 2 =============================================
         /* HP Bar BG */
@@ -272,7 +322,7 @@ var PopUpTroopInfo = cc.Node.extend({
             anchorY: 0.5,
             x: 0.5 * this._bg.height  / 10,
             y: this._bar1BG.y - this._offSetBar,
-            visible: false,
+            visible: true,
         });
         this.addChild(this._bar2Icon, 2);
 
@@ -336,7 +386,7 @@ var PopUpTroopInfo = cc.Node.extend({
             anchorY: 0.5,
             x: 0.5 * this._bg.height / 10,
             y: this._bar1BG.y - this._offSetBar * 2,
-            visible: false,
+            visible: true,
         });
         this.addChild(this._bar3Icon, 2);
 
@@ -409,5 +459,5 @@ var PopUpTroopInfo = cc.Node.extend({
             this._upgradeAble = false;
             this._labelRrequire.setColor(cc.color(255, 0, 0, 255));
         }
-    }
+    },
 })

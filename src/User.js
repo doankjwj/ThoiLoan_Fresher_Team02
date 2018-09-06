@@ -234,14 +234,15 @@ var User = cc.Class.extend({
                 building = this._buildingList[gv.orderInUserBuildingList.townHall][0];
                 building._currentCapacityGold = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacityGold"]);
                 resCapacity -= building._jsonConfig[building._buildingSTR][building._level]["capacityGold"];
-                if (resCapacity <= 0) break;
+                resCapacity = Math.max(resCapacity, 0);
                 for (var i = 0; i < this._buildingListCount[gv.orderInUserBuildingList.storage_1]; i++)
                 {
-                    if (resCapacity <= 0) break;
                     building = this._buildingList[gv.orderInUserBuildingList.storage_1][i];
                     if (building._level <= 0) continue;
                     building._currentCapacity = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacity"]);
+                    building.updateImageCapacity();
                     resCapacity -= building._jsonConfig[building._buildingSTR][building._level]["capacity"];
+                    resCapacity = Math.max(resCapacity, 0);
                 };
                 break;
             case gv.buildingSTR.resource_2:
@@ -249,14 +250,15 @@ var User = cc.Class.extend({
                 building = this._buildingList[gv.orderInUserBuildingList.townHall][0];
                 building._currentCapacityElixir = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacityElixir"]);
                 resCapacity -= building._jsonConfig[building._buildingSTR][building._level]["capacityElixir"];
-                if (resCapacity <= 0) break;
+                resCapacity = Math.max(resCapacity, 0);
                 for (var i = 0; i < this._buildingListCount[gv.orderInUserBuildingList.storage_2]; i++)
                 {
-                    if (resCapacity <= 0) break;
                     building = this._buildingList[gv.orderInUserBuildingList.storage_2][i];
                     if (building._level <= 0) continue;
                     building._currentCapacity = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacity"]);
+                    building.updateImageCapacity();
                     resCapacity -= building._jsonConfig[building._buildingSTR][building._level]["capacity"];
+                    resCapacity = Math.max(resCapacity, 0);
                 };
                 break;
             case gv.buildingSTR.resource_3:
@@ -264,14 +266,15 @@ var User = cc.Class.extend({
                 building = this._buildingList[gv.orderInUserBuildingList.townHall][0];
                 building._currentCapacityDarkElixir = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacityDarkElixir"]);
                 resCapacity -= building._jsonConfig[building._buildingSTR][building._level]["capacityDarkElixir"];
-                if (resCapacity <= 0) break;
+                resCapacity = Math.max(resCapacity, 0);
                 for (var i = 0; i < this._buildingListCount[gv.orderInUserBuildingList.storage_3]; i++)
                 {
-                    if (resCapacity <= 0) break;
                     building = this._buildingList[gv.orderInUserBuildingList.storage_3][i];
                     if (building._level <= 0) continue;
                     building._currentCapacity = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacity"]);
+                    building.updateImageCapacity();
                     resCapacity -= building._jsonConfig[building._buildingSTR][building._level]["capacity"];
+                    resCapacity = Math.max(resCapacity, 0);
                 };
                 break;
         }
@@ -293,15 +296,6 @@ var User = cc.Class.extend({
             default:
                 break;
         }
-    },
-
-    editCurrentResource: function(res_1, res_2, res_3, res_4)
-    {
-        this._currentCapacityGold += res_1;
-        this._currentCapacityElixir += res_2;
-        this._currentCapacityDarkElixir += res_3;
-        this._currentCapacityCoin += res_4;
-        this.distributeResource(res_1 != 0, res_2 != 0, res_3 != 0);
     },
 
     /*Lấy tài nguyên*/
@@ -332,6 +326,7 @@ var User = cc.Class.extend({
         };
     },
 
+    /* Gán res hiện bằng giá trị*/
     setCurrentResource: function(resType, resAmount)
     {
         switch (resType)
@@ -355,6 +350,30 @@ var User = cc.Class.extend({
         };
     },
 
+    /* Thêm res hiện tại 1 giá trị*/
+    editCurrentResource: function(resType, resAmount)
+    {
+        switch (resType)
+        {
+            case cf.resType.resource_1:
+                this._currentCapacityGold += resAmount;
+                this.distributeResource(true, false, false);
+                break;
+            case cf.resType.resource_2:
+                this._currentCapacityElixir += resAmount;
+                this.distributeResource(false, true, false);
+                break;
+            case cf.resType.resource_3:
+                this._currentCapacityDarkElixir += resAmount;
+                this.distributeResource(false, true, true);
+                break;
+            case cf.resType.resource_4:
+                this._currentCapacityCoin += resAmount;
+                this.distributeResource(false, false, false, true);
+                break;
+        };
+    },
+
     /*Lấy số thợ*/
     getBuilderFree: function()
     {
@@ -365,13 +384,26 @@ var User = cc.Class.extend({
         return this._builderTotal;
     },
 
-    /* Xóa bỏ thông tin bang hội*/
+    /* Xóa bỏ thông tin bang hội dành cho trường hợp rời hoặc bị kick*/
     onClanLeaveOrKicked: function()
     {
         this._clanId = -1;
         this._buildingList[gv.orderInUserBuildingList.clanCastle][0].updateNameAndFlag(false);
         gvGUI.layerClanChat.onVisibleOrInvisibleButtonExpand();
         gvGUI.layerClanChat.resetAll();
-    }
+    },
 
+    /* Chỉnh sửa quân đội*/
+    editTroop: function(troopType, amount)
+    {
+        this._listTroop[troopType] += amount;
+    },
+    getTroopAmount: function()
+    {
+        var troopAmount = 0;
+        for (var i=0; i < this._listTroop.length; i++)
+        {
+            troopAmount += this._listTroop[i]
+        }
+    }
 });

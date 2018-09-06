@@ -49,6 +49,8 @@ var res = {
     folder_gold_storage: buildingsFolder + "goldStorage/",
     folder_elixir_collector: buildingsFolder + "elixirCollector/",
     folder_elixir_storage: buildingsFolder + "elixirStorage/",
+    folder_dark_elixir_collector: buildingsFolder + "darkElixirCollector/",
+    folder_dark_elixir_storage: buildingsFolder + "darkElixirStorage/",
     folder_canon: buildingsFolder + "cannon/canon_",
     folder_defense_base: buildingsFolder + "defense_base/",
     folder_obs: buildingsFolder + "obstacle/",
@@ -407,4 +409,9 @@ var g_preload= [
     res.bgTopRight,
     res.builderHut,
     res.plist,
+    "res/Localize/en",
+    "res/Localize/en.txt",
+    "res/Localize/vi",
+    "res/Localize/vi.txt",
+
 ];

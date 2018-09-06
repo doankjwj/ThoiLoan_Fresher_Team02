@@ -4,6 +4,10 @@
 var Storage = BuildingNode.extend({
     _currentCapacity: 0,
 
+    _state: null, // phần trăm trạng thái: cạn, ít, vơi, đầy
+
+    _folder: null,
+
     ctor: function(id, level, row, col, existed, isActive, buildingSTR)
     {
         this._buildingSTR = buildingSTR;
@@ -11,11 +15,14 @@ var Storage = BuildingNode.extend({
         this._jsonConfig = gv.json.storage;
         if(this._buildingSTR === gv.buildingSTR.storage_1) {
             this._maxLevel = gv.buildingMaxLevel.storage_1;
+            this._folder = res.folder_gold_storage;
         } else if(this._buildingSTR === gv.buildingSTR.storage_2) {
             this._maxLevel = gv.buildingMaxLevel.storage_2;
+            this._folder = res.folder_elixir_storage;
         } else if(this._buildingSTR === gv.buildingSTR.storage_3) {
             this._maxLevel = gv.buildingMaxLevel.storage_3;
-        }
+            this._folder = res.folder_dark_elixir_storage;
+        };
         this._orderInUserBuildingList = (buildingSTR === gv.buildingSTR.storage_1) ? gv.orderInUserBuildingList.storage_1 : gv.orderInUserBuildingList.storage_2;
         this._name = (buildingSTR === gv.buildingSTR.storage_1) ? gv.buildingName.storage_1 : gv.buildingName.storage_2;
         this._description = (buildingSTR === gv.buildingSTR.storage_1) ? gv.buildingDescription.storage_1 : gv.buildingDescription.storage_2;
@@ -56,5 +63,26 @@ var Storage = BuildingNode.extend({
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_res_2_" + tmpLevel + ".plist", res.folder_effect + "effect_res_2_" + tmpLevel + ".png");
             cf.animationRes2[tmpLevel] = fn.getAnimation("effect_res_2_" + tmpLevel + " ", 1, 10);
         }
+    },
+
+    updateImageCapacity: function()
+    {
+        var maxCapacity = this.getMaxCapacity();
+        var currentCapacity = this.getCurrentCapacity();
+        cc.log(this._buildingSTR + " / " + currentCapacity + " : " + maxCapacity);
+        var state = fn.percentage(currentCapacity, maxCapacity);
+        if (state != this._state)
+        {
+            this._state = state;
+            fn.replaceSpriteImage(this._center_building, this._folder + this._buildingSTR + "_" + this.getTempLevel() + "/" + res.image_postfix_1 + state + res.image_postfix_2);
+        }
+    },
+    getMaxCapacity: function()
+    {
+        return (this._jsonConfig[this._buildingSTR][this.getTempLevel()]["capacity"]);
+    },
+    getCurrentCapacity: function()
+    {
+        return this._currentCapacity;
     }
 })

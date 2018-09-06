@@ -37,6 +37,16 @@ gv.buildingDescription =
     wall: null,
 };
 
+
+gv.troopInfo =
+{
+    favoriteTarget: null,
+    attackType: null,
+    attackArea: null,
+    moveSpeed: null,
+    timeTraining: null,
+    housingSpace: null,
+}
 gv.troopStr = {
     ARM_1: "ARM_1",
     ARM_2: "ARM_2",

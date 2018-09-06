@@ -32,7 +32,7 @@ gv.commonButton = function(w, h, x, y, text){
     return btn;
 };
 
-gv.commonText = function(text, x, y){
+gv.commonText = function(text, x, y, scale){
         var _lb = new ccui.Text(text,'', 30);
         if(x === undefined)
             x = 0;

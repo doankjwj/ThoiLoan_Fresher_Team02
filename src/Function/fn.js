@@ -108,6 +108,50 @@ fn.initLocalized= function()
     gv.buildingDescription.laboratory = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_laboratory"));
     gv.buildingDescription.clanCastle = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_clanCastle"));
     gv.buildingDescription.wall = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_wall"));
+
+    gv.troopInfo.favoriteTarget =
+        [
+            troop0 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_0_favoriteTarget")),
+            troop1 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_1_favoriteTarget")),
+            troop2 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_2_favoriteTarget")),
+            troop3 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_3_favoriteTarget")),
+        ];
+    gv.troopInfo.attackType =
+        [
+            troop0 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_0_attackType")),
+            troop1 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_1_attackType")),
+            troop2 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_2_attackType")),
+            troop3 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_3_attackType")),
+        ];
+    gv.troopInfo.attackArea =
+        [
+            troop0 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_0_attackArea")),
+            troop1 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_1_attackArea")),
+            troop2 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_2_attackArea")),
+            troop3 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_3_attackArea")),
+        ];
+    gv.troopInfo.moveSpeed =
+        [
+            troop0 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_0_moveSpeed")),
+            troop1 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_1_moveSpeed")),
+            troop2 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_2_moveSpeed")),
+            troop3 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_3_moveSpeed")),
+        ];
+    gv.troopInfo.timeTraining =
+        [
+            troop0 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_0_timeTraining")),
+            troop1 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_1_timeTraining")),
+            troop2 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_2_timeTraining")),
+            troop3 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_3_timeTraining")),
+        ];
+    gv.troopInfo.housingSpace =
+        [
+            troop0 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_0_housingSpace")),
+            troop1 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_1_housingSpace")),
+            troop2 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_2_housingSpace")),
+            troop3 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("troopInfo_3_housingSpace")),
+        ];
+
 },
 /* Ngắt xuống dòng cho String*/
 fn.singleToMultiLineStr = function(str)
@@ -423,11 +467,22 @@ fn.getUserBuilding = function(buildingType, buildingOrderInType)
 },
 
 /* Common Label*/
-fn.commonLabel = function(str, fontName, sizeX, sizeY)
+fn.commonLabel = function(str, fontName, sizeX, sizeY, color)
 {
     var label = cc.LabelBMFont(str, fontName);
     label.setScaleX(sizeX);
     label.setScaleY(sizeY);
-    //label.setAnchorPoint(0.5, 0.5);
+    if (!color) label.setColor(cc.color(255, 255, 255, 255));
+        else
+    label.setColor(color);
     return label;
+};
+
+/*Phần trăm của sức chứa hiện tại so với sức chứa max*/
+fn.percentage = function(current, max)
+{
+    if (current/max < 0.25) return 0;
+    if (current/max < 0.5)  return 1;
+    if (current/max < 0.75) return 2;
+    return 3;
 }

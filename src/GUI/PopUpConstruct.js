@@ -224,11 +224,13 @@ var PopUpConstruct = cc.Node.extend({
         /* Request */
         testnetwork.connector.sendUpgradeBuilding(gv.building_selected);
 
+        cc.log(this._cost.gold + " GOLD +++++");
+
         /* Update User Infor + Resource Bar */
-        cf.user._currentCapacityGold -= this._cost.gold;
-        cf.user._currentCapacityElixir -= this._cost.elixir;
-        cf.user._currentCapacityDarkElixir -= this._cost.darkElixir;
-        cf.user._currentCapacityCoin -= this._cost.coin;
+        cf.user.editCurrentResource(cf.resType.resource_1, -this._cost.gold);
+        cf.user.editCurrentResource(cf.resType.resource_2, -this._cost.elixir);
+        cf.user.editCurrentResource(cf.resType.resource_3, -this._cost.darkElixir);
+        cf.user.editCurrentResource(cf.resType.resource_4, -this._cost.coin);
 
         this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
         this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
@@ -251,10 +253,12 @@ var PopUpConstruct = cc.Node.extend({
         };
 
         /*Cập nhật cho user*/
-        cf.user._currentCapacityGold -= this._cost.gold;
-        cf.user._currentCapacityElixir -= this._cost.elixir;
-        cf.user._currentCapacityDarkElixir -= this._cost.darkElixir;
-        cf.user._currentCapacityCoin -= this._cost.coin + requireCoin;
+
+        cc.log(this._cost.gold + " GOLD +++++");
+        cf.user.editCurrentResource(cf.resType.resource_1, -this._cost.gold);
+        cf.user.editCurrentResource(cf.resType.resource_2, -this._cost.elixir);
+        cf.user.editCurrentResource(cf.resType.resource_3, -this._cost.darkElixir);
+        cf.user.editCurrentResource(cf.resType.resource_4, -this._cost.coin);
 
 
         this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
@@ -945,7 +949,7 @@ var PopUpConstruct = cc.Node.extend({
          && fn.getCurrentBuilding(gv.orderInUserBuildingList.clanCastle, 0).getCurrentTroopTypeVsLevel() != 0)
         {
 
-            var tmp = new PopUpConstruct.getNodeTroopAmount();
+            var tmp = new PopUpConstruct.getNodeTroopAmountClanCastle();
             tmp.attr({
                 anchorX: 0.5,
                 anchorY: 0.5,
@@ -1042,14 +1046,14 @@ var PopUpConstruct = cc.Node.extend({
     }
 })
 
-PopUpConstruct.getOrCreate = function()
-{
-    if (!gv.PopUpConstruct)
-    {
-        gv.PopUpConstruct = new PopUpConstruct();
-    }
-    return gv.PopUpConstruct;
-}
+//PopUpConstruct.getOrCreate = function()
+//{
+//    if (!gv.PopUpConstruct)
+//    {
+//        gv.PopUpConstruct = new PopUpConstruct();
+//    }
+//    return gv.PopUpConstruct;
+//}
 
 /* Dành cho popUp nâng cấp công trình*/
 PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
@@ -1162,7 +1166,7 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
 
 })
 /* Dành cho popUp thông tin nhà bang hội*/
-PopUpConstruct.getNodeTroopAmount = cc.Node.extend({
+PopUpConstruct.getNodeTroopAmountClanCastle = cc.Node.extend({
     ctor: function()
     {
         this._super();
@@ -1221,3 +1225,62 @@ PopUpConstruct.getNodeTroopAmount = cc.Node.extend({
     }
 
 });
+/* Danh cho thông tin trại lính*/
+PopUpConstruct.getNodeTroopAmountArmyCamp = cc.Node.extend({
+    ctor: function()
+    {
+        this._super();
+        var troopAmountArr = this.getTroopAmountFromClanCastle();
+        // số lượng loại lính với level khác nhau
+        var troopDef = fn.getUserBuilding(gv.orderInUserBuildingList.clanCastle, 0).getCurrentTroopTypeVsLevel();
+        var scrollView = ccui.ScrollView();
+        scrollView.setDirection(ccui.ScrollView.DIR_HORIZONTAL);
+        scrollView.setTouchEnabled(true);
+        scrollView.setBounceEnabled(true);
+        scrollView.setPosition(0, 0);
+        scrollView.width = 500;
+        scrollView.height = 120;
+        scrollView.setInnerContainerSize(cc.size(120 * troopDef, 120));
+        scrollView.setAnchorPoint(0.5, 0.5);
+        this.addChild(scrollView);
+
+        var xStart = 30;
+        for (var i = 0; i < cf.clanChat.troopDonateLength; i++)
+            for (var j = 1; j <= cf.clanChat.troopDonateLevel; j++)
+            {
+                var troopAmount = troopAmountArr[i][j];
+                if (troopAmount != 0)
+                {
+                    var iconTroop = cc.Sprite(res.donateTroopIconArr[i]);
+                    iconTroop.scale = 1.5;
+                    iconTroop.setPosition(xStart + iconTroop.width/2 + 5, 60);
+                    scrollView.addChild(iconTroop);
+                    var labelAmount = cc.LabelBMFont("x" + troopAmount, font.fista24);
+                    labelAmount.setColor(cc.color(0, 0, 0, 255));
+                    labelAmount.setScale(1.2);
+                    labelAmount.setPosition(xStart, iconTroop.y - 30);
+                    scrollView.addChild(labelAmount);
+                    var labelLevel = cc.LabelBMFont("Lv " + j, font.soji20);
+                    labelLevel.setColor(cc.color(255, 0, 255, 255));
+                    labelLevel.setPosition(xStart + 50, iconTroop.y + 30);
+                    scrollView.addChild(labelLevel);
+                    xStart += 120;
+                }
+            }
+    },
+
+    getTroopAmountFromClanCastle: function()
+    {
+        var arr = [];
+        var clanCastle = fn.getUserBuilding(gv.orderInUserBuildingList.clanCastle, 0);
+        return clanCastle._troopReceive;
+        for (var i=0; i<cf.clanChat.troopDonateLength; i++)
+        {
+            var s = 0;
+            for (var j=0; j<cf.clanChat.troopDonateLevel-1; j++)
+                s += clanCastle._troopReceive[i][j];
+            arr[i] = s;
+        }
+        return arr;
+    }
+})

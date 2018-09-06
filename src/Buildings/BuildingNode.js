@@ -649,10 +649,8 @@ var BuildingNode = cc.Node.extend({
             fn.getAnimation("effect_construct_levelup ", 1, 7),
             cc.CallFunc(function(){this._effect_level_up.visible = false}, this)));
 
-        /* Update Max capacity if Building is Storage or Town Hall */
-        var order = this._orderInUserBuildingList;
-        if (order == gv.orderInUserBuildingList.townHall || order == gv.orderInUserBuildingList.storage_1 || order == gv.orderInUserBuildingList.storage_2 || order == gv.orderInUserBuildingList.storage_3)
-            cf.user.updateMaxStorageSingle(this._id);
+
+
         /* Update user infor && GUI */
         cf.user._builderFree ++;
         cf.user.updateBuilder();
@@ -665,6 +663,14 @@ var BuildingNode = cc.Node.extend({
         this.updateLabelName();
         if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
             this._lastHarvestTime = new Date().getTime();
+
+        /* Cập nhật sức chứa nếu công trình là kho chứ */
+        var order = this._orderInUserBuildingList;
+        if (order == gv.orderInUserBuildingList.townHall || order == gv.orderInUserBuildingList.storage_1 || order == gv.orderInUserBuildingList.storage_2 || order == gv.orderInUserBuildingList.storage_3)
+        {
+            cf.user.updateMaxStorageSingle(this._id);
+            cf.user.distributeResource(true, true, true, true);
+        };
     },
 
     onUpdateSpriteFrame: function()
@@ -914,17 +920,17 @@ var BuildingNode = cc.Node.extend({
         //this.updateResource();
         testnetwork.connector.sendBuild(this._id, this._row, this._col);
 
-        cf.user._currentCapacityGold -= this._cost.gold;
-        cf.user._currentCapacityElixir -= this._cost.elixir;
-        cf.user._currentCapacityDarkElixir -= this._cost.darkElixir;
-        cf.user._currentCapacityCoin -= this._cost.coin;
+        cf.user.editCurrentResource(cf.resType.resource_1, -this._cost.gold);
+        cf.user.editCurrentResource(cf.resType.resource_2, -this._cost.elixir);
+        cf.user.editCurrentResource(cf.resType.resource_3, -this._cost.darkElixir);
+        cf.user.editCurrentResource(cf.resType.resource_4, -this._cost.coin);
 
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
 
-        // /* Hiển thị*/
+        /* Hiển thị nút xây nhanh, ..*/
          if (this._time_remaining > 0 && this._buildingSTR != gv.buildingSTR.wall)
              this.getParent().getParent().showListBotButton(this._id);
 
@@ -938,8 +944,6 @@ var BuildingNode = cc.Node.extend({
             this.getParent().addChild(wall);
             wall.onClick();
             wall.showBuildingButton();
-
-            cc.log(cf.user._currentCapacityGold);
 
         }
 
@@ -991,10 +995,10 @@ var BuildingNode = cc.Node.extend({
         //this.updateResource();
         testnetwork.connector.sendBuildCoin(this._id, this._row, this._col);
 
-        cf.user._currentCapacityGold -= this._cost.gold;
-        cf.user._currentCapacityElixir -= this._cost.elixir;
-        cf.user._currentCapacityDarkElixir -= this._cost.darkElixir;
-        cf.user._currentCapacityCoin -= this._cost.coin + requireCoin;
+        cf.user.editCurrentResource(cf.resType.resource_1, -this._cost.gold);
+        cf.user.editCurrentResource(cf.resType.resource_2, -this._cost.elixir);
+        cf.user.editCurrentResource(cf.resType.resource_3, -this._cost.darkElixir);
+        cf.user.editCurrentResource(cf.resType.resource_4, -this._cost.coin);
 
 
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
@@ -1002,7 +1006,7 @@ var BuildingNode = cc.Node.extend({
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
 
-        /* Hiển thị*/
+        /* Hiển thị nút xây nhanh, ..*/
         if (this._time_remaining > 0 && this._buildingSTR != gv.buildingSTR.wall)
             this.getParent().getParent().showListBotButton(this._id);
     },

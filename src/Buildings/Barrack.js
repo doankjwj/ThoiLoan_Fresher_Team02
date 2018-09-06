@@ -236,6 +236,7 @@ var Barrack = BuildingNode.extend({
 
         // Release Troop Here
 
+        /* Đưa lính vào trại*/
         if (this._troopList == null)
             this._troopList = new Array();
         var amc = fn.getArmyCamp();
@@ -244,6 +245,9 @@ var Barrack = BuildingNode.extend({
         amc._troopList.push(troop);
         amc._troopQuantity += gv.json.troopBase["ARM_" + troopType]["housingSpace"];
 
+        /* Tăng số lượng lính của người chơi*/
+        cf.user.editTroop(troopType-1, 1);
+        cc.log(cf.user.getTroopAmount());
     },
     onStopTraining: function(boo)
     {
