@@ -966,7 +966,6 @@ var BuildingNode = cc.Node.extend({
                 this._nextPos = posTmp;
                 return;
             }
-
         }
     },
 
@@ -980,20 +979,11 @@ var BuildingNode = cc.Node.extend({
             this.getParent().removeChild(this);
             return;
         };
-        //if (cf.user.getBuilderFree() <= 0)
-        //{
-        //    fr.getCurrentScreen().popUpMessage("Tất cả thợ đang bận");
-        //    cf.isDeciding = false;
-        //    this.hideBuildingButton();
-        //    this.getParent().removeChild(this);
-        //    return;
-        //}
+
         this.locate_map_array(this);
         this.onStartBuild(gv.startConstructType.newConstruct);
 
         this.getParent().addBuildingToUserBuildingList(this);
-
-        //fr.getCurrentScreen().showListBotButton(this._id);
 
         this.updateZOrder();
         gv.building_is_moved = 0;

@@ -139,6 +139,14 @@ var LayerClanChat = cc.Node.extend({
     onVisibleOrInvisibleButtonExpand: function()
     {
         var vis = (cf.user._clanId != -1);
+        if (!vis && this._isExpanded)
+        {
+            actAppearLayer = cc.MoveBy(0.35, cc.p(this.scale*(this._bg.width + this._layerUserOnline.width) - 5, 0));
+            fn.replaceSpriteImage(this._iconButton, res.clanChatGUI.buttonExpand);
+            this.runAction(actAppearLayer.clone().reverse());
+            this.onDisappear();
+        };
+
         this._guiButtonClanChat.setVisible(vis);
         this._iconButton.setVisible(vis);
     },
@@ -192,10 +200,6 @@ var LayerClanChat = cc.Node.extend({
             if (!this._isExpanded){
                 if (self._listItemUserOnline.length == 0) // lần đầu khởi tạo
                     self.initContent();
-                // if (!gv.clanChatEventManager.chatStatusUpdated)
-                //     self.updateChatEvent();
-                // if (!gv.clanChatEventManager.userOnlineUpdated)
-                //     self.updateUserOnlineEvent();
 
                 // Cập nhật lại thời gian cho thanh chat
                 self.updateTimeScrollChat();
@@ -316,9 +320,12 @@ var LayerClanChat = cc.Node.extend({
     },
     resetScrollViewChat: function()
     {
+        for (var i=0; i<this._listItemChat.length; i++)
+            this._scrollviewChat.removeChild(this._listItemChat[i]);
         this.removeChild(this._scrollviewChat);
-        this._listItemChat.length = 0;
-        this._listItemChatY = 0;
+        this._scrollviewChat = null;
+        this._listItemChat = [];
+        this._listItemChatY = [];
         this.initScrollviewChat();
     },
 
@@ -332,7 +339,7 @@ var LayerClanChat = cc.Node.extend({
         var jsonItem = null;
         for (var i=0; i<allChat.length; i++){
             jsonItem = allChat[i];
-            var itemClanChat = new ItemChat(i, gv.clanChat.type.chatText, jsonItem["userName"], jsonItem["level"], jsonItem["message"], jsonItem["timeCreated"]);
+            var itemClanChat = new ItemChat(i, gv.clanChat.type.chatText, jsonItem["userName"], jsonItem["level"], jsonItem["message"], jsonItem["timeCreated"], null, null, null, gv.clanChat.colorType.chat);
             itemClanChat.retain();
             this._listItemChat.push(itemClanChat);
         }
@@ -353,7 +360,7 @@ var LayerClanChat = cc.Node.extend({
             var troopDonated = [0,0,0,0];
             for (var j = 0; j < jsonTroopDonated.length; j += 1)
                 troopDonated[jsonTroopDonated[j]["troopOrder"]] += 1;
-            var itemClanChat = new ItemChat(i, gv.clanChat.type.donate, userName, userLevel, msg, timeCreated, curentHousingSpace, troopDonated, maxHousingSpace);
+            var itemClanChat = new ItemChat(i, gv.clanChat.type.donate, userName, userLevel, msg, timeCreated, curentHousingSpace, troopDonated, maxHousingSpace, gv.clanChat.colorType.requestDonate);
             itemClanChat.retain();
             this._listItemChat.push(itemClanChat);
         }
@@ -415,7 +422,7 @@ var LayerClanChat = cc.Node.extend({
             var y = (i== length-1)? this._scrollviewChat.getInnerContainerSize().height - this._listItemChat[length-1]._height : this._listItemChatY[i+1] - this._listItemChat[i]._height;
             this._listItemChatY[i] = y;
             this._listItemChat[i].y = y;
-        }
+        };
     },
     //Đẩy Item chat mới vào mảng và Add vào ScrollView
     addItemChat: function(index){
@@ -442,7 +449,6 @@ var LayerClanChat = cc.Node.extend({
         if (this._textFieldChat.string.length == 0) return;
         testnetwork.connector.sendChat(this._textFieldChat.string);
         this._textFieldChat.string = "";
-        // this.updateListChatItemY()
     },
     //Cập nhật mảng tọa độ y cho Item mới nhất
     updateListChatItemY: function()
@@ -456,7 +462,7 @@ var LayerClanChat = cc.Node.extend({
         var userName = gv.clanChat.jsonChatText["userName"];
         var userLevel = gv.clanChat.jsonChatText["userLevel"];
         var msg = gv.clanChat.jsonChatText["msg"];
-        var newItemChat = new ItemChat(0, 0, userName, userLevel, msg, new Date().getTime());
+        var newItemChat = new ItemChat(0, 0, userName, userLevel, msg, new Date().getTime(), null, null, null, gv.clanChat.colorType.chat);
         this._listItemChat.push(newItemChat);
         var index = this._listItemChat.length-1;
         var newHeight = (index == 0)? this._scrollviewChat.height : this._scrollviewChat.getInnerContainerSize().height + this._listItemChat[index]._height;
@@ -472,7 +478,7 @@ var LayerClanChat = cc.Node.extend({
         var msg = gv.clanChat.jsonChatDonate["msg"];
         var currentHousingSpace = gv.clanChat.jsonChatDonate["housingSpaceDonated"];
         var maxHousingSpace = gv.clanChat.jsonChatDonate["maxHousingSpace"];
-        var newItemChat = new ItemChat(0, gv.clanChat.type.donate, userName, userLevel, msg, new Date().getTime(), currentHousingSpace, [0, 0, 0, 0], maxHousingSpace);
+        var newItemChat = new ItemChat(0, gv.clanChat.type.donate, userName, userLevel, msg, new Date().getTime(), currentHousingSpace, [0, 0, 0, 0], maxHousingSpace, gv.clanChat.colorType.requestDonate);
 
         var indexExisted = this.getItemChatByUserName(1, userName);
         if (indexExisted != null)        // Item Request đang tồn tại thì đưa lên trên
@@ -517,14 +523,21 @@ var LayerClanChat = cc.Node.extend({
     /* Nhận 1 event từ server*/
     onReceiveEvent: function()
     {
-        var eventType = gv.clanChat.jsonChatEvent["eventType"]
+        var eventType = gv.clanChat.jsonChatEvent["eventType"];
+        /* Người chơi bị kick khỏi bang*/
+        if (eventType == gv.clanChat.eventType.kicked) {
+            if (gv.clanChat.jsonChatEvent["target"] == cf.user._name) {
+                cf.user.onClanLeaveOrKicked();
+                return;
+            }
+        }
+
+        /* Hiển thị lên layer chat */
         var color = gv.clanChat.jsonChatEvent["isRed"];
         var msg = gv.clanChat.jsonChatEvent["text"];
-        var itemChat = new ItemChat(0, gv.clanChat.type.clanEvent, null, null, msg, new Date().getTime(), null, null, null, (color ? 1 : 0));
+        var itemChat = new ItemChat(0, gv.clanChat.type.clanEvent, null, null, msg, new Date().getTime(), null, null, null, gv.clanChat.colorArr[eventType]);
         itemChat.retain();
         this._listItemChat.push(itemChat);
-
-        //this._listItemChat.push(newItemChat);
         var index = this._listItemChat.length-1;
         var newHeight = (index == 0)? this._scrollviewChat.height : this._scrollviewChat.getInnerContainerSize().height + this._listItemChat[index]._height;
         this._scrollviewChat.setInnerContainerSize(cc.size(this._scrollviewChat.width, newHeight));
@@ -533,9 +546,8 @@ var LayerClanChat = cc.Node.extend({
         this._scrollviewChat.scrollToTop(1, 0);
 
         /* Nếu là sự kiện ra vào bang thì cập nhật lại layer user online*/
-        if (eventType == gv.clanChat.eventType.joinClan || eventType == gv.clanChat.eventType.leaveClan)
+        if (eventType == gv.clanChat.eventType.joinClan || eventType == gv.clanChat.eventType.leaveClan || eventType == gv.clanChat.eventType.kicked)
             this.onChangeOnlineWhenMemberChange(eventType);
-
     },
 
     // Lấy ra 1 Item chat qua loại, user name __ nếu = null: user chưa có lượt donate và ngược lại
@@ -566,19 +578,6 @@ var LayerClanChat = cc.Node.extend({
             this._listItemChatY[i+1] = this._listItemChatY[i] + h;
             this._listItemChat[i+1].y = this._listItemChatY[i+1];
         }
-        //for (var i=index; i<length-1; i++)
-        //{
-        //    var h = this._listItemChat[i+1]._height;
-        //    var y = this._listItemChatY[i];
-        //    var tmpItem = this._listItemChat[i];
-        //    this._listItemChat[i] = this._listItemChat[i+1];
-        //    this._listItemChat[i+1] = tmpItem;
-        //
-        //    this._listItemChatY[i] = y;
-        //    this._listItemChat[i].y = this._listItemChatY[i];
-        //    this._listItemChatY[i+1] = this._listItemChatY[i] + h;
-        //    this._listItemChat[i+1].y = this._listItemChatY[i+1];
-        //}
     },
     // Xóa 1 Item
     onRemoveItem: function(index)
@@ -650,38 +649,42 @@ var LayerClanChat = cc.Node.extend({
 
         this._scrollviewUserOnline.setInnerContainerSize(this.getScrollviewInnerContainerSize(this._typeDefine.userOnlineScrollView));
 
-        // Lấy vị trí cho Item them order
+        // Lấy vị trí cho Item theo order
         for (var i = 0; i < this._memberQuantity; i++) {
             var pos = cc.p(this._scrollviewUserOnline.width / 2 - 6, this._scrollviewUserOnline.getInnerContainerSize().height - 10 - i * 20);
             this._listItemUserOnline[i].setPosition(pos);
+            this._listItemUserOnline[i].updateOrder(i);
             this._scrollviewUserOnline.addChild(this._listItemUserOnline[i], 2);
         }
         ;
     },
 
+    /* Một người chơi online, offline và ngược lại*/
     updateStatusUserOnlineChange: function()
     {
         var userName = gv.clanChat.jsonUserOnlineChange["userName"];
         var status = gv.clanChat.jsonUserOnlineChange["status"];
 
         for (var i=0; i<this._listItemUserOnline.length; i++)
-
         {
             if (userName == (this._listItemUserOnline[i]._name))
             {
                 this._listItemUserOnline[i].updateStatus(status);
-                return;
+                break;
             }
         }
-        this.resetViewcrollUserOnline();
+        for (var i=0; i<this._listItemUserOnline.length; i++)
+            this._scrollviewUserOnline.removeChild(this._listItemUserOnline[i]);
         this.loadItemUserOnlineToScrollView();
     },
 
-    /*Cập nhật scroll view chat nếu event là join/leave*/
+    /*Cập nhật scroll view chat và user online nếu event là join/leave/kick*/
     onChangeOnlineWhenMemberChange: function(eventType)
     {
         var userName = gv.clanChat.jsonChatEvent["userName"];
-        var memberQuantity = this._listItemUserOnline.length;
+
+        for (var i=0; i<this._listItemUserOnline.length; i++)
+            this._scrollviewUserOnline.removeChild(this._listItemUserOnline[i]);
 
         /* Thành viên mới vào bang*/
         if (eventType == gv.clanChat.eventType.joinClan)
@@ -691,48 +694,51 @@ var LayerClanChat = cc.Node.extend({
             this._listItemUserOnline.push(itemUserOnline);
             this._memberOnlineQuantity ++;
             this._memberQuantity ++;
-            //this.addNewItemToScrollViewUserOnline(this._memberQuantity-1);
-            this.resetViewcrollUserOnline();
             this.loadItemUserOnlineToScrollView();
         };
 
         /* Thành viên ra khỏi bang*/
         if (eventType == gv.clanChat.eventType.leaveClan)
         {
-
+            for (var i=0; i <this._listItemUserOnline.length; i++)
+                if (this._listItemUserOnline[i]._name == userName)
+                {
+                    this._listItemUserOnline.splice(i, 1);
+                    break;
+                };
+            this.loadItemUserOnlineToScrollView();
         }
-    },
-    //addNewItemToScrollViewUserOnline: function(index)
-    //{
-    //    //this._scrollviewUserOnline.setInnerContainerSize(this.getScrollviewInnerContainerSize(this._typeDefine.userOnlineScrollView));
-    //    //
-    //    //    this._listItemUserOnline[index].setPosition(this._scrollviewUserOnline.width / 2 - 6, this._scrollviewUserOnline.getInnerContainerSize().height - 10 - index * 20);
-    //    //    this._scrollviewUserOnline.addChild(this._listItemUserOnline[index], 2);
-    //    //this._scrollviewChat.scrollToTop(1, true);
-    //
-    //    for (var i=0; i<this._memberQuantity; i++)
-    //        this._scrollviewUserOnline.getInnerContainer().removeChild(this._listItemUserOnline[i]);
-    //
-    //    this._listItemUserOnline.sort(function (a, b) {
-    //        return (a._status ? 0 : 1) - (b._status ? 0 : 1);
-    //    });
-    //
-    //    this._scrollviewUserOnline.setInnerContainerSize(this.getScrollviewInnerContainerSize(this._typeDefine.userOnlineScrollView));
-    //
-    //    // Lấy vị trí cho Item them order
-    //    for (var i = 0; i < this._memberQuantity; i++) {
-    //        this._listItemUserOnline[i].setPosition(this._scrollviewUserOnline.width / 2 - 6, this._scrollviewUserOnline.getInnerContainerSize().height - 10 - i * 20);
-    //        this._scrollviewUserOnline.addChild(this._listItemUserOnline[i], 2);
-    //    }
-    //    ;
-    //    this._scrollviewChat.scrollToTop(1, true);
-    //
-    //},
-    /* Xóa scroll user online mà không xóa danh sách lưu các Item*/
-    resetViewcrollUserOnline: function()
-    {
-        this.removeChild(this._scrollviewUserOnline);
-        this.initScrollviewUserOnline();
-    }
 
+        /* Thành viên bị kick*/
+        if (eventType == gv.clanChat.eventType.kicked)
+        {
+            var target = gv.clanChat.jsonChatEvent["target"]
+            for (var i=0; i <this._listItemUserOnline.length; i++)
+                if (this._listItemUserOnline[i]._name == target)
+                {
+                    this._listItemUserOnline.splice(i, 1);
+                    break;
+                };
+        };
+
+
+    },
+
+    /* Xóa scroll user online mà không xóa danh sách lưu các Item*/
+    resetScrollViewUserOnline: function()
+    {
+        for (var i=0; i<this._listItemUserOnline.length; i++)
+            this._scrollviewUserOnline.removeChild(this._listItemUserOnline[i]);
+        this.removeChild(this._scrollviewUserOnline);
+        this._scrollviewUserOnline = null;
+        this._listItemUserOnline = [];
+        this._listItemUserOnlineY = [];
+        this.initScrollviewUserOnline();
+    },
+
+    resetAll: function()
+    {
+        this.resetScrollViewChat();
+        this.resetScrollViewUserOnline();
+    }
 })

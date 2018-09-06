@@ -363,6 +363,15 @@ var User = cc.Class.extend({
     getBuilderTotal: function()
     {
         return this._builderTotal;
+    },
+
+    /* Xóa bỏ thông tin bang hội*/
+    onClanLeaveOrKicked: function()
+    {
+        this._clanId = -1;
+        this._buildingList[gv.orderInUserBuildingList.clanCastle][0].updateNameAndFlag(false);
+        gvGUI.layerClanChat.onVisibleOrInvisibleButtonExpand();
+        gvGUI.layerClanChat.resetAll();
     }
 
 });

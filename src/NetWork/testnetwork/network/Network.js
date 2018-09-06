@@ -51,6 +51,7 @@ testnetwork.Connector = cc.Class.extend({
                 gvGUI.layerClanChat.onUpdateClanInfo(true);
                 cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].updateNameAndFlag(true);
                 cf.user._clanId = gv.clanChat.jsonLoad["clanId"];
+                gvGUI.layerClanChat.onVisibleOrInvisibleButtonExpand();
                 break;
             case gv.CMD.RECEIVE_LOAD_USER_ONLINE:                                               /*Nhận danh sách user online*/
                 gvGUI.layerClanChat.loadUserOnlineFromServer();

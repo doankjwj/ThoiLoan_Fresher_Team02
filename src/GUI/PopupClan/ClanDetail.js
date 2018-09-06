@@ -213,6 +213,7 @@ var ClanDetail = PopupClan.extend({
                 case ccui.Widget.TOUCH_MOVED:
                     break;
                 case ccui.Widget.TOUCH_ENDED:
+                    gvGUI.layerClanChat.resetAll();
                     testnetwork.connector.sendJoinClan(this._clan.id);
                     cf.user._clanId = this._clan.id;
                     // testnetwork.connector.sendGetMemberList(this._clan.id);
@@ -239,9 +240,8 @@ var ClanDetail = PopupClan.extend({
                 case ccui.Widget.TOUCH_MOVED:
                     break;
                 case ccui.Widget.TOUCH_ENDED:
-                    cf.user._clanId = -1;
+                    cf.user.onClanLeaveOrKicked();
                     testnetwork.connector.sendQuitClan();
-                    cf.user._buildingList[gv.orderInUserBuildingList.clanCastle][0].updateNameAndFlag(false);
                     var date = new Date();
                     date.setHours(date.getHours() + 2);
                     cf.user._timeFinishClanPenalty = date;
@@ -313,6 +313,9 @@ var ClanDetail = PopupClan.extend({
         if(cf.user._timeFinishClanPenalty !== null) {
              boo = now.getTime() < cf.user._timeFinishClanPenalty.getTime();
         }
+
+        /* Để luôn gia nhập và thoát bang được không chờ 2h*/
+        boo = false;
 
         if(this._clan.status === 1 || cf.user._clanId !== -1 || boo) {
             this._buttonJoinClan.setBright(false);

@@ -109,6 +109,7 @@ var ClanCastle = BuildingNode.extend({
 
     updateNameAndFlag: function(boo)
     {
+        cc.log("Thay doi co va nha clan ++++");
         var clanFlag = gv.clanChat.jsonLoad["clanFlag"] + 1;
         if (!this._iconFlag)
         {
@@ -131,5 +132,6 @@ var ClanCastle = BuildingNode.extend({
 
         fn.replaceSpriteImage(this._iconFlag, "res/Art/Bang hoi/icon bieu tuong/" + (clanFlag) + ".png")
         this._labelName.setString(clanName);
+        cc.log("Thay doi co va nha clan 2222");
     }
 })

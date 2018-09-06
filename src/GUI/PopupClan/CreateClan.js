@@ -235,6 +235,7 @@ var CreateClan = PopupClan.extend({
                     var status = 0;
                     if (this._clanStatus) status = 0;
                     else status = 1;
+                    gvGUI.layerClanChat.resetAll();
                     testnetwork.connector.sendCreateClan(this._fieldName.string, this._iconId - 1, this._fieldDetail.string, status);
                     this.onDisappear();
                     break;

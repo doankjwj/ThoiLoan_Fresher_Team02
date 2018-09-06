@@ -20,7 +20,7 @@ var ItemChat = cc.Node.extend({
         eventClan: 2,
     },
 
-    ctor: function(id, type, userName, userLevel, text, time, currentHousingSpace /*Array*/, troopDonatedArr, maxHousingSpace){
+    ctor: function(id, type, userName, userLevel, text, time, currentHousingSpace /*Array*/, troopDonatedArr, maxHousingSpace, color){
         this._super();
         this._id = id;
         this._type = type;
@@ -28,6 +28,7 @@ var ItemChat = cc.Node.extend({
         this._userLevel = userLevel;
         this._text = text;
         this._time = time;
+        this._color = color ? color : 0;
 
         // Chat Xin quân
         if (this._type == this.typeDefine.requestDonate) {
@@ -40,6 +41,26 @@ var ItemChat = cc.Node.extend({
     },
 
     init: function(){
+        var cl = null;
+        switch (this._color)
+        {
+            case 0:
+                cl = cc.color(255, 153, 0, 255);        // Màu vàng: sự kiên clan event thông thường
+                break;
+            case 1:
+                cl = cc.color(0, 204, 255, 255);        // Màu xanh dương: vào bang, trở thành bang chủ
+                break;
+            case 2:
+                cl = cc.color(255, 112, 77, 255);          // Màu đỏ: sự kiện bang tiêu cực: thoát bang, bị kick
+                break;
+            case 3:
+                cl = cc.color(255, 255, 255, 255);      // Màu trắng: chat bang hoặc xin quân
+                break;
+            case 4:
+                cl = cc.color(255, 255, 255, 255);      // Màu trắng: xin quân
+                break;
+        }
+
         var self = this;
 
         var iconStar = cc.Sprite(res.clanGUI.iconStarSmall);
@@ -65,7 +86,7 @@ var ItemChat = cc.Node.extend({
 
         this._labelMessage = cc.LabelBMFont(this._text, font.soji20);
         this._labelMessage.scale = 0.5;
-        this._labelMessage.setColor(cc.color(255, 153, 0, 255));
+        this._labelMessage.setColor(cl);
         this._labelMessage.setAnchorPoint(0, 0.5);
         this._labelMessage.setPosition(-320/2, 45);
         this.addChild(this._labelMessage);
@@ -140,6 +161,12 @@ var ItemChat = cc.Node.extend({
 
             /* Cập nhật Label và Bar Troop */
             this.onUpdateBarAndLabelTroop();
+        }
+
+        if (this._type == this.typeDefine.eventClan)
+        {
+            iconStar.setVisible(false);
+            this._labelMessage.setPosition(this._labelMessage.x, this._labelMessage.y + 20);
         }
 
         /*Sự kiện Event: vào bang, ra bang*/
