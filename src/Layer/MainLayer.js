@@ -124,18 +124,6 @@
         this._usernameField .y = size.height/2;
         this.addChild(this._usernameField, 1, this._TAG_USERNAME_FIELD);
 
-        //this._passwordField = new ccui.TextField();
-        //this._passwordField.setTouchEnabled(true);
-        //this._passwordField.setMaxLength(10);
-        //this._passwordField.setMaxLengthEnabled(true);
-        //this._passwordField.fontName = "Arial";
-        //this._passwordField.setPlaceHolder("Password: Empty");
-        //this._passwordField.fontSize = 30;
-        //this._passwordField.x = size.width/2;
-        //this._passwordField.y = this._usernameField.y - this._usernameField.height - 10;
-        //this._passwordField.setPasswordEnabled(true);
-        //this.addChild(this._passwordField, 1, this._TAG_PASSWORD_FIELD);
-
         var login = ccui.Button(logInGUI.btnOk);
         login.attr({
             anchorX: 0,
@@ -770,7 +758,7 @@
                 var popup = this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING);
                 popup.onAppear();
             }
-            this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING).onResumeTrainingFromServer();
+            this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING).onGetTrainingFromBarrack();
         }.bind(this));
 
         /*Button Request Donate */

@@ -934,10 +934,8 @@ var BuildingNode = cc.Node.extend({
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
 
         // /* Hiển thị*/
-        // if (this._time_remaining > 0)
-        //     this.getParent().getParent().showListBotButton(this._id);
-
-
+         if (this._time_remaining > 0 && this._buildingSTR != gv.buildingSTR.wall)
+             this.getParent().getParent().showListBotButton(this._id);
 
         if(this._orderInUserBuildingList === gv.orderInUserBuildingList.wall ) {
 
@@ -1022,7 +1020,8 @@ var BuildingNode = cc.Node.extend({
         fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
 
         /* Hiển thị*/
-        this.getParent().getParent().showListBotButton(this._id);
+        if (this._time_remaining > 0 && this._buildingSTR != gv.buildingSTR.wall)
+            this.getParent().getParent().showListBotButton(this._id);
     },
 
     checkResource: function()
