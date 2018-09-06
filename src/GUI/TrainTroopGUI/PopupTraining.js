@@ -79,39 +79,32 @@ var PopupTraining = cc.Node.extend({
     },
 
     /* Tiếp tục luyện quân khi bật game*/
-    onResumeTrainingFromServer: function()
-    {
+    onGetTrainingFromBarrack: function() {
         cc.log("++++");
-        cc.log(this._barrackID + " ++++");
-        var barrackOrder = this._barrackID%100;
-        cc.log(barrackOrder + " ++++");
+        cc.log(this._barrackID + " ++++")
+        var barrackOrder = this._barrackID % 100;
+        cc.log(barrackOrder + " ++++")
         if (!(gv.jsonInfo["map"]["BAR_1"][barrackOrder]))
             return;
-        if (gv.jsonInfo["map"]["BAR_1"][barrackOrder]["startTrainingTime"] === 0)
+        if (gv.jsonInfo["map"]["BAR_1"][barrackOrder]["startTrainingTime"] == 0)
             return;
 
         cc.log("Resume Train");
         this.initTrainingQueue(barrackOrder);
-        //this.updateContent();
-        //this.initEffectTraining();
-        //this.loadNewTrain(this._trainType.loadTrain);
-        //this.onVisibleEffectTrainTroop(true);
-        //this.onStartTraining(this._trainType.loadTrain);
     },
-    initTrainingQueue: function(barrackOrder)
+
+    initTrainingQueue: function()
     {
-        var jsonCurrentBarrack = gv.jsonInfo["map"]["BAR_1"][barrackOrder];
-        var jsonTroopQueueType = jsonCurrentBarrack["trainingTroopTypes"];
-        var jsonTroopQueueAmout = jsonCurrentBarrack["trainingQueue"];
-
-
-        for (var i=0; i< jsonTroopQueueType.length; i++)
+        if (this._barrack._troopTrainingTypeArr.length == 0) return;
+        var troopTypeArr = this._barrack._troopTrainingTypeArr;
+        var troopAmountArr = this._barrack._troopTrainingAmountArr;
+        for (var i=0; i< troopTypeArr.length; i++)
         {
-            var id = (jsonTroopQueueType[i]+1);
+            var id = (troopTypeArr[i]+1);
             var key = "ARM_" + id;
             if (!this._queueTraining[key]) {
                 var size = this.getQueueSize();
-                this._queueTraining[key] = jsonTroopQueueAmout[i];
+                this._queueTraining[key] = troopAmountArr[i];
                 var button = new queueTroopButton(id);
                 button.scale = 1.5;
                 button.setTag(id);
@@ -120,11 +113,14 @@ var PopupTraining = cc.Node.extend({
                 this._queueTrainingButtonList.push(button);
                 this.updateQueueButton();
                 if (size === 0) this._currentTrainingTime = this._currentTrainingTimeRequired;
-                this._currentQueueLength += this.jsonTroopBase[key]["housingSpace"]*jsonTroopQueueAmout[i];
-                this._timeTraining += this.jsonTroopBase[fn.getTroopString(id)]["trainingTime"]*jsonTroopQueueAmout[i];
+                this._currentQueueLength += this.jsonTroopBase[key]["housingSpace"]*troopAmountArr[i];
+                this._timeTraining += this.jsonTroopBase[fn.getTroopString(id)]["trainingTime"]*troopAmountArr[i];
             };
-
         };
+
+        var firstTroop = "ARM_" + (troopTypeArr[0]+1);
+        this._currentTrainingTime = this.jsonTroopBase[firstTroop]["trainingTime"] - Math.floor((new Date().getTime() - this._barrack._startTrainingTime)/1000);
+        this._timeTraining -= this.jsonTroopBase[firstTroop]["trainingTime"] + this._currentTrainingTime;
     },
 
     updateContent: function () {
