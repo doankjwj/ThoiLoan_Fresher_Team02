@@ -95,7 +95,7 @@ var PopupTraining = cc.Node.extend({
 
     initTrainingQueue: function()
     {
-        if (this._barrack._troopTrainingTypeArr.length == 0) return;
+        if (this._currentQueueLength != 0) return;
         var troopTypeArr = this._barrack._troopTrainingTypeArr;
         var troopAmountArr = this._barrack._troopTrainingAmountArr;
         for (var i=0; i< troopTypeArr.length; i++)

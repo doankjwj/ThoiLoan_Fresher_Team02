@@ -32,9 +32,6 @@ var GUI_ResourceBar = cc.Node.extend({
         this.setAnchorPoint(cc.p(1, 1));
         this.setPosition(cc.p(cc.winSize.width, cc.winSize.height - 50));
 
-        //this._currentCapacity = (type == 1) ? cf.user._currentCapacityGold : (type == 2)? cf.user._currentCapacityElixir : (type == 3) ? cf.user._currentCapacityDarkElixir : cf.user._currentCapacityCoin;
-        //this._maxCapacity = (type == 1) ? cf.user._maxCapacityGold : (type == 2) ? cf.user._maxCapacityElixir : (type == 3) ? cf.user._maxCapacityDarkElixir : 0;
-
         switch (type)
         {
             case 1:
@@ -110,8 +107,6 @@ var GUI_ResourceBar = cc.Node.extend({
             this._txtMax.visible = false;
             this._bar.visible = false;
         }
-
-        //this.updateStatus();
     },
 
     updateStatus: function()
@@ -137,15 +132,14 @@ var GUI_ResourceBar = cc.Node.extend({
             }
             this.addChild(this._bar, 0, this._TAG_BAR);
             this._bar.attr({
-                anchorX: 1,
+                anchorX: 0,
                 anchorY: 0.5,
-                x: this.width - this._icon.width - 9,
+                x: this.width - this._icon.width - 8,
                 y: 3
             });
             this._bar.setTextureRect(cc.rect(0, 0, this._bar.width * this._currentCapacity / this._maxCapacity, this._bar.height));
-            var disX = this._bar.width * (this._maxCapacity - this._currentCapacity)/ this._maxCapacity;
-            // this._bar.setPosition(-disX * 5 + 0, 3);
-            this._txtMax.setString("Max: " + this._maxCapacity);
+            this._bar.setScaleX(-1);
+            this._txtMax.setString("Tối đa: " + this._maxCapacity);
         }
         else
             this._txtMax.setString("");
