@@ -34,25 +34,25 @@ var GUI_ResourceBar = cc.Node.extend({
 
         switch (type)
         {
-            case 1:
+            case cf.resType.resource_1:
                 this._icon = cc.Sprite(mainGUI.goldIcon);
                 this._bar = cc.Sprite(mainGUI.goldBar);
                 this._txtCurrent = cc.LabelBMFont("", font.soji20);
                 this._txtMax = cc.LabelBMFont("", font.soji20);
                 break;
-            case 2:
+            case cf.resType.resource_2:
                 this._icon = cc.Sprite(mainGUI.elixirIcon);
                 this._bar = cc.Sprite(mainGUI.elixirBar);
                 this._txtCurrent = cc.LabelBMFont("", font.soji20);
                 this._txtMax = cc.LabelBMFont("", font.soji20);
                 break;
-            case 3:
+            case cf.resType.resource_3:
                 this._icon = cc.Sprite(mainGUI.darkElixirIcon);
                 this._bar = cc.Sprite(mainGUI.darkElixirBar);
                 this._txtCurrent = cc.LabelBMFont("", font.soji20);
                 this._txtMax = cc.LabelBMFont("", font.soji20);
                 break;
-            case 4:
+            case cf.resType.resource_4:
                 this._icon = cc.Sprite(mainGUI.gIcon);
                 this._bar = cc.Sprite(mainGUI.gBar);
                 this._txtCurrent = cc.LabelBMFont("", font.soji20);
@@ -114,19 +114,40 @@ var GUI_ResourceBar = cc.Node.extend({
         this._currentCapacity = (this._type == 1) ? cf.user._currentCapacityGold : (this._type == 2)? cf.user._currentCapacityElixir : (this._type == 3) ? cf.user._currentCapacityDarkElixir : cf.user._currentCapacityCoin;
         this._maxCapacity = (this._type == 1) ? cf.user._maxCapacityGold : (this._type == 2) ? cf.user._maxCapacityElixir : (this._type == 3) ? cf.user._maxCapacityDarkElixir : 0;
 
-        if(this._type != 4)
+        switch(this._type)
         {
-            if (this.getChildByTag(this._TAG_BAR))
-                this.removeChildByTag(this._TAG_BAR);
+            case cf.resType.resource_1:
+                this._currentCapacity = cf.user._currentCapacityGold;
+                this._maxCapacity = cf.user._maxCapacityGold;
+                break;
+            case cf.resType.resource_2:
+                this._currentCapacity = cf.user._currentCapacityElixir;
+                this._maxCapacity = cf.user._maxCapacityElixir;
+                break;
+            case cf.resType.resource_3:
+                this._currentCapacity = cf.user._currentCapacityDarkElixir;
+                this._maxCapacity = cf.user._maxCapacityDarkElixir;
+                break;
+            case cf.resType.resource_4:
+                this._currentCapacity = cf.user._currentCapacityCoin;
+                this._maxCapacity = 0;
+                break;
+
+        };
+
+        if (this.getChildByTag(this._TAG_BAR))
+            this.removeChildByTag(this._TAG_BAR);
+        if(this._type != (cf.resType.resource_4))
+        {
             switch (this._type)
             {
-                case 1:
+                case cf.resType.resource_1:
                     this._bar = cc.Sprite(mainGUI.goldBar);
                     break;
-                case 2:
+                case cf.resType.resource_2:
                     this._bar = cc.Sprite(mainGUI.elixirBar);
                     break;
-                case 3:
+                case cf.resType.resource_3:
                     this._bar = cc.Sprite(mainGUI.darkElixirBar);
                     break;
             }

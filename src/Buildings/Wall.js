@@ -19,57 +19,8 @@ var Wall = BuildingNode.extend({
         //    this.onStartBuild(gv.startConstructType.loadConstruct);
     },
 
-    updateWallIcon: function(number){
-
-        var level = this._existed ? this._level : this.getTempLevel();
-
-        this._center_building.setTexture(res.folder_wall + "WAL_1_" + level + "/" + "WAL_1_" + level + "/" + res.image_postfix_1 + number + res.image_postfix_2);
-        this._center_building.setTextureRect(this._center_building.getTextureRect());
+    updateAnim: function()
+    {
 
     },
-
-    getWallImage: function() {
-
-        var pos = cc.p(this._row, this._col);
-
-        var vector = [
-            cc.p(0, -1),
-            cc.p(-1, 0)
-        ];
-
-        var direction = 0;
-        var numberOfWallBeside = 0;
-
-        for(var i=0; i<2; i++) {
-
-            var posTmp = cc.p(pos.x + vector[i].x, pos.y + vector[i].y);
-            if(posTmp.x > 40 || posTmp.y > 40 || posTmp.x < 1 || posTmp.y < 1) continue;
-
-            // cc.log(cf.map_array[posTmp.x][posTmp.y] / 100);
-
-            if(Math.floor(cf.map_array[posTmp.x][posTmp.y] / 100) - 1 === gv.orderInUserBuildingList.wall) {
-                if(i === 0) direction = 1;
-                else direction = 2;
-                numberOfWallBeside += 1;
-            }
-        }
-
-        if(numberOfWallBeside === 2) direction = 3;
-
-
-        return direction;
-
-    },
-
-    locate_map_array: function (b) {
-
-        this._super(b);
-        cf.user.updateWallList();
-
-    },
-
-    updateAnim: function() {
-
-    }
-
 });

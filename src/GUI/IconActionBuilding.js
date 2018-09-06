@@ -128,7 +128,7 @@ var IconActionBuilding = ccui.Button.extend({
         this._labelCost.setString((this._cost.gold != 0) ? this._cost.gold : this._cost.elixir);
         fn.replaceSpriteImage(this._iconCost, res.folder_gui_collect_res + ((this._cost.gold != 0) ? "RES_1.png" : "RES_2.png"));
 
-        if (this._cost.gold > cf.user.getCurrentGold() || this._cost.elixir > cf.user.getCurrentElixir())
+        if (this._cost.gold > cf.user.getCurrentResource(cf.resType.resource_1) || this._cost.elixir > cf.user.getCurrentResource(cf.resType.resource_2))
             this._labelCost.setColor(cc.color(255, 0, 0, 255));
         else
             this._labelCost.setColor(cc.color(255, 255, 255, 255));
@@ -137,6 +137,6 @@ var IconActionBuilding = ccui.Button.extend({
     checkResourceRequierEnough: function()
     {
         var building = fn.getCurrentBuilding();
-        return (gv.json.obstacle[building._level]["1"]["gold"] <= cf.user.getCurrentGold() && gv.json.obstacle[building._level]["1"]["elixir"] <= cf.user.getCurrentElixir());
+        return (gv.json.obstacle[building._level]["1"]["gold"] <= cf.user.getCurrentResource(cf.resType.resource_1) && gv.json.obstacle[building._level]["1"]["elixir"] <= cf.user.getCurrentResource(cf.resType.resource_2));
     }
 });

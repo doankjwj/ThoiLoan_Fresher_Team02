@@ -145,7 +145,7 @@
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
         gv.passwordSendToServer = "";
 
         gv.gameClient.connect();
@@ -271,7 +271,7 @@
         var self = this;
 
         /* Button Restart & Reset */
-        this._resetUserButton = gv.commonButton(80, 64, 70, cc.winSize.height-100, "Reset");
+        this._resetUserButton = gv.commonButton(120, 64, 70, cc.winSize.height-100, "Reset");
         this._resetUserButton.addClickEventListener(function()
         {
             //this.releaseTroop();
@@ -301,37 +301,32 @@
         this.addChild(this._restartGameButton, 1);
 
         /* Button Gold */
-        this._addGoldButton = gv.commonButton(80, 64, 70, cc.winSize.height-200, "+Gold");
-        this._subGoldButton = gv.commonButton(80, 64, 70, this._addGoldButton.y - 70, "-Gold");
+        this._addGoldButton = gv.commonButton(120, 64, 70, cc.winSize.height-200, "F Gold");
+        this._subGoldButton = gv.commonButton(120, 64, 70, this._addGoldButton.y - 70, "E Gold");
 
         this._addGoldButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000000;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
                 case ccui.Widget.TOUCH_MOVED:
                     break;
                 case ccui.Widget.TOUCH_ENDED:
-                    cf.user._currentCapacityGold += cheatNumber;
-                    cf.user._maxCapacityGold = cf.user._maxCapacityGold + cheatNumber*2;
-                    self.updateResourceBar();
-                    testnetwork.connector.sendCheat(0, cheatNumber);
+                    cf.user.setCurrentResource(cf.resType.resource_1, cf.user.getMaxCapacityResource(cf.resType.resource_1));
+                    testnetwork.connector.sendCheat(cf.resType.resource_1, cf.cheatType.full);
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;
             }
         }, this._addGoldButton);
         this._subGoldButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000000;
             switch (type){
                 case ccui.Widget.TOUCH_BEGAN:
                     break;
                 case ccui.Widget.TOUCH_MOVED:
                     break;
                 case ccui.Widget.TOUCH_ENDED:
-                    cf.user._currentCapacityGold -= cheatNumber;
-                    testnetwork.connector.sendCheat(0, -cheatNumber);
-                    self.updateResourceBar();
+                    cf.user.setCurrentResource(cf.resType.resource_1, 0);
+                    testnetwork.connector.sendCheat(cf.resType.resource_1, cf.cheatType.empty);
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;
@@ -341,50 +336,9 @@
         this.addChild(this._addGoldButton, 1);
         this.addChild(this._subGoldButton, 1);
 
-        /* Button coin */
-        this._addCoinButton = gv.commonButton(80, 64, 70, this._subGoldButton.y - 70, "+Coin");
-        this._subCoinButton = gv.commonButton(80, 64, 70, this._addCoinButton.y - 70, "-Coin");
-
-        this._addCoinButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000000;
-            switch (type){
-                case ccui.Widget.TOUCH_BEGAN:
-                    break;
-                case ccui.Widget.TOUCH_MOVED:
-                    break;
-                case ccui.Widget.TOUCH_ENDED:
-                    cf.user._currentCapacityCoin += cheatNumber;
-                    //cf.user._maxCapacityCoin = cf.user._maxCapacityCoin + cheatNumber*2;
-                    testnetwork.connector.sendCheat(3, cheatNumber);
-                    self.updateResourceBar();
-                    break;
-                case ccui.Widget.TOUCH_CANCELED:
-                    break;
-            }
-        }, this._addCoinButton);
-        this._subCoinButton.addTouchEventListener(function(sender, type) {
-            var cheatNumber = 5000000;
-            switch (type){
-                case ccui.Widget.TOUCH_BEGAN:
-                    break;
-                case ccui.Widget.TOUCH_MOVED:
-                    break;
-                case ccui.Widget.TOUCH_ENDED:
-                    cf.user._currentCapacityCoin -= cheatNumber;
-                    testnetwork.connector.sendCheat(3, -cheatNumber);
-                    self.updateResourceBar();
-                    break;
-                case ccui.Widget.TOUCH_CANCELED:
-                    break;
-            }
-        }, this._subCoinButton);
-
-        this.addChild(this._addCoinButton, 1);
-        this.addChild(this._subCoinButton, 1);
-
-        /* Button elixir */
-        this._addElixirButton = gv.commonButton(80, 64, 70, this._subCoinButton.y - 70, "+Elix");
-        this._subElixirButton = gv.commonButton(80, 64, 70, this._addElixirButton.y - 70, "-Elix");
+        /* Button Elixir */
+        this._addElixirButton = gv.commonButton(120, 64, 70, this._subGoldButton.y - 90, "F Elixir");
+        this._subElixirButton = gv.commonButton(120, 64, 70, this._addElixirButton.y - 70, "E Elixir");
 
         this._addElixirButton.addTouchEventListener(function(sender, type) {
             var cheatNumber = 5000000;
@@ -394,10 +348,8 @@
                 case ccui.Widget.TOUCH_MOVED:
                     break;
                 case ccui.Widget.TOUCH_ENDED:
-                    cf.user._currentCapacityElixir += cheatNumber;
-                    cf.user._maxCapacityElixir = cf.user._maxCapacityElixir + cheatNumber*2;
-                    testnetwork.connector.sendCheat(1, cheatNumber);
-                    self.updateResourceBar();
+                    cf.user.setCurrentResource(cf.resType.resource_2, cf.user.getMaxCapacityResource(cf.resType.resource_2));
+                    testnetwork.connector.sendCheat(cf.resType.resource_2, cf.cheatType.full);
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;
@@ -411,9 +363,8 @@
                 case ccui.Widget.TOUCH_MOVED:
                     break;
                 case ccui.Widget.TOUCH_ENDED:
-                    cf.user._currentCapacityElixir -= cheatNumber;
-                    testnetwork.connector.sendCheat(1, -cheatNumber);
-                    self.updateResourceBar();
+                    cf.user.setCurrentResource(cf.resType.resource_2, 0);
+                    testnetwork.connector.sendCheat(cf.resType.resource_2, cf.cheatType.empty);
                     break;
                 case ccui.Widget.TOUCH_CANCELED:
                     break;
@@ -422,6 +373,44 @@
 
         this.addChild(this._addElixirButton, 1);
         this.addChild(this._subElixirButton, 1);
+
+        /* Button coin */
+        this._addCoinButton = gv.commonButton(120, 64, 70, this._subElixirButton.y - 90, "1M Coin");
+        this._subCoinButton = gv.commonButton(120, 64, 70, this._addCoinButton.y - 70, "E Coin");
+
+        this._addCoinButton.addTouchEventListener(function(sender, type) {
+            var cheatNumber = 5000000;
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    cf.user.setCurrentResource(cf.resType.resource_4, cf.resAddPerCheat.resource_4)
+                    testnetwork.connector.sendCheat(cf.resType.resource_4, cf.cheatType.full);
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+        }, this._addCoinButton);
+        this._subCoinButton.addTouchEventListener(function(sender, type) {
+            var cheatNumber = 5000000;
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    cf.user.setCurrentResource(cf.resType.resource_4, 0);
+                    testnetwork.connector.sendCheat(cf.resType.resource_4, cf.cheatType.empty);
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+        }, this._subCoinButton);
+
+        this.addChild(this._addCoinButton, 1);
+        this.addChild(this._subCoinButton, 1);
 
     },
 
@@ -499,28 +488,28 @@
     },
 
     addResourceBar: function() {
-        this._resBarGold = new GUI_ResourceBar(1);
+        this._resBarGold = new GUI_ResourceBar(cf.resType.resource_1);
         this._resBarGold.attr({
             x: cc.winSize.width - cf.offSetGuiResourceBar,
             y: cc.winSize.height - this._resBarGold.height - cf.offSetGuiResourceBar - 30,
         });
         this.addChild(this._resBarGold, 1, gv.tag.TAG_RESOURCE_BAR_GOLD);
 
-        this._resBarElixir = new GUI_ResourceBar(2);
+        this._resBarElixir = new GUI_ResourceBar(cf.resType.resource_2);
         this._resBarElixir.attr({
             x: cc.winSize.width - cf.offSetGuiResourceBar,
             y: cc.winSize.height - this._resBarGold.height - cf.offSetGuiResourceBar - 80,
         });
         this.addChild(this._resBarElixir, 1, gv.tag.TAG_RESOURCE_BAR_ELIXIR);
 
-        this._resBarDarkElixir = new GUI_ResourceBar(3);
+        this._resBarDarkElixir = new GUI_ResourceBar(cf.resType.resource_3);
         this._resBarDarkElixir.attr({
             x: cc.winSize.width - cf.offSetGuiResourceBar,
             y: cc.winSize.height - this._resBarGold.height - cf.offSetGuiResourceBar - 130,
         });
         this.addChild(this._resBarDarkElixir, 1, gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR);
 
-        this._resBarCoin = new GUI_ResourceBar(4);
+        this._resBarCoin = new GUI_ResourceBar(cf.resType.resource_4);
         this._resBarCoin.attr({
             x: cc.winSize.width - cf.offSetGuiResourceBar,
             y: cc.winSize.height - this._resBarGold.height - cf.offSetGuiResourceBar - 180,

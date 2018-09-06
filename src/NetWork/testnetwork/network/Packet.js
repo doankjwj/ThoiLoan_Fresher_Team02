@@ -497,7 +497,7 @@ CmdSendCheat = fr.OutPacket.extend(
         pack: function (type, num) {
             this.packHeader();
             this.putByte(type);
-            this.putInt(num);
+            this.putByte(num);
             this.updateSize();
         }
     }

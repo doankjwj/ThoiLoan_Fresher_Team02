@@ -521,3 +521,21 @@ cf.constructType =
     build: 0,
     upgrade: 1
 }
+
+/* thông tin cheat tài nguyên*/
+cf.cheatType =
+{
+    full: 1,
+    empty: 0
+};
+cf.resType =
+{
+    resource_1: 0,
+    resource_2: 1,
+    resource_3: 2,
+    resource_4: 3
+};
+cf.resAddPerCheat =
+{
+    resource_4: 1000000,
+}

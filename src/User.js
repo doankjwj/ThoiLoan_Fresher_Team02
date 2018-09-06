@@ -84,11 +84,6 @@ var User = cc.Class.extend({
         }
     },
 
-    initClanInfo: function(){
-        if (gv.jsonInfo["player"]["clanId"] != -1) {
-            testnetwork.connector.sendRequestLoadClanChat();
-        }
-    },
     /* Update Storage Capacity from User Buildings (Town Hall + Storage) */
     updateMaxStorage: function()
     {
@@ -207,8 +202,10 @@ var User = cc.Class.extend({
     },
 
     /* Phân phối tài nguyên cho các nhà chứa, quantity <= Max capacity*/
-    distributeResource: function(resType_1, resType_2, resType_3)
+    distributeResource: function(resType_1, resType_2, resType_3, resType_4)
     {
+        if (!resType_4) resType_4 = false;
+
         if (resType_1)
             this.distributeResourceType(gv.buildingSTR.resource_1);
         if (resType_2)
@@ -216,10 +213,14 @@ var User = cc.Class.extend({
         if (resType_3)
             this.distributeResourceType(gv.buildingSTR.resource_3);
 
-        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
-        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
-        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
-        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+        if (resType_1)
+            fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+        if (resType_2)
+            fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+        if (resType_3)
+            fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+        if (resType_4)
+            fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
     },
     distributeResourceType: function(resType)
     {
@@ -304,21 +305,54 @@ var User = cc.Class.extend({
     },
 
     /*Lấy tài nguyên*/
-    getCurrentGold: function()
+    getCurrentResource: function(resType)
     {
-        return this._currentCapacityGold;
+        switch (resType)
+        {
+            case cf.resType.resource_1:
+                return this._currentCapacityGold;
+            case cf.resType.resource_2:
+                return this._currentCapacityElixir;
+            case cf.resType.resource_3:
+                return this._currentCapacityDarkElixir;
+            case cf.resType.resource_4:
+                return this._currentCapacityCoin;
+        };
     },
-    getCurrentElixir: function()
+    getMaxCapacityResource: function(resType)
     {
-        return this._currentCapacityElixir;
+        switch (resType)
+        {
+            case cf.resType.resource_1:
+                return this._maxCapacityGold;
+            case cf.resType.resource_2:
+                return this._maxCapacityElixir;
+            case cf.resType.resource_3:
+                return this._maxCapacityDarkElixir;
+        };
     },
-    getCurrentDarkElixir: function()
+
+    setCurrentResource: function(resType, resAmount)
     {
-        return this._currentCapacityDarkElixir;
-    },
-    getCurrentCoin: function()
-    {
-        return this._currentCapacityCoin;
+        switch (resType)
+        {
+            case cf.resType.resource_1:
+                this._currentCapacityGold = resAmount;
+                this.distributeResource(true, false, false);
+                break;
+            case cf.resType.resource_2:
+                this._currentCapacityElixir = resAmount;
+                this.distributeResource(false, true, false);
+                break;
+            case cf.resType.resource_3:
+                this._currentCapacityDarkElixir = resAmount;
+                this.distributeResource(false, true, true);
+                break;
+            case cf.resType.resource_4:
+                this._currentCapacityCoin = resAmount;
+                this.distributeResource(false, false, false, true);
+                break;
+        };
     },
 
     /*Lấy số thợ*/
@@ -329,18 +363,6 @@ var User = cc.Class.extend({
     getBuilderTotal: function()
     {
         return this._builderTotal;
-    },
-
-    //Update Wall
-    updateWallList: function(){
-
-        for(var i=0; i<cf.user._buildingListCount[gv.orderInUserBuildingList.wall]; i++) {
-
-            var wall = fn.getUserBuilding(gv.orderInUserBuildingList.wall, i);
-            wall.updateWallIcon(wall.getWallImage());
-
-        }
-
     }
 
 });
