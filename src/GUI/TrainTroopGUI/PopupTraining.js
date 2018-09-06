@@ -230,6 +230,7 @@ var PopupTraining = cc.Node.extend({
             //if (amc._troopList == null)
             //    amc._troopList = new Array();
             //var troop = new Troop(id - 1, this._barrack._row + 2, this._barrack._col + 2, amc._id);
+            //var troop = new Troop(id - 1, this._barrack._row + 2, this._barrack._col + 2, amc._id);
             //this.getParent()._map.addChild(troop);
             //amc._troopList.push(troop);
             //amc._troopQuantity += gv.json.troopBase["ARM_" + id]["housingSpace"];
