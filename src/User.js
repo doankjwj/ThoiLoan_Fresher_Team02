@@ -329,6 +329,18 @@ var User = cc.Class.extend({
     getBuilderTotal: function()
     {
         return this._builderTotal;
+    },
+
+    //Update Wall
+    updateWallList: function(){
+
+        for(var i=0; i<cf.user._buildingListCount[gv.orderInUserBuildingList.wall]; i++) {
+
+            var wall = fn.getUserBuilding(gv.orderInUserBuildingList.wall, i);
+            wall.updateWallIcon(wall.getWallImage());
+
+        }
+
     }
 
 });

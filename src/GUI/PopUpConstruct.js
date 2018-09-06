@@ -994,6 +994,10 @@ var PopUpConstruct = cc.Node.extend({
             case gv.buildingSTR.clanCastle:
                 this._icon = cc.Sprite(res.folder_clan_castle + str + "_" + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
+            case gv.buildingSTR.wall:
+                // this._icon = cc.Sprite(res.folder_clan_castle + str + "_" + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._icon = cc.Sprite(res.folder_wall + str + "_" + level + "/" + str + "_" + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
             default:
                 break;
         }
@@ -1019,7 +1023,7 @@ var PopUpConstruct = cc.Node.extend({
         //if ((str == gv.buildingSTR.barrack_1 && level <4) || str == gv.buildingSTR.builderHut || str == gv.buildingSTR.storage_1 || str == gv.buildingSTR.storage_2) return;
         var arrNoEffect = [gv.buildingSTR.builderHut, gv.buildingSTR.storage_1, gv.buildingSTR.storage_2, gv.buildingSTR.storage_3, gv.buildingSTR.defence_1];
         if ((str == gv.buildingSTR.barrack_1 && (level <4 || level >8)) || arrNoEffect.indexOf(str) >= 0 || (str == gv.buildingSTR.lab && level <2)) return;
-        if (str == gv.buildingSTR.clanCastle) return;
+        if (str == gv.buildingSTR.clanCastle || str === gv.buildingSTR.wall) return;
 
         if (str != gv.buildingSTR.armyCamp_1 && str != gv.buildingSTR.townHall)
             this._effect = cc.Sprite("res/Art/Effects/" + str + "_" + level + "_effect/00.png");

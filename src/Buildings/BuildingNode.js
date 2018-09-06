@@ -391,6 +391,13 @@ var BuildingNode = cc.Node.extend({
                 moveAble = moveAble && !(self._buildingSTR == gv.buildingSTR.obstacle);
                 if (!moveAble) return true;
                 if (self._id !== gv.building_is_moved) return;
+
+                if(self._buildingSTR === gv.buildingSTR.wall) {
+
+                    self.updateWallIcon(0);
+
+                }
+
                 var location_touch = touch.getLocation();
                 var loc = fn.getRowColFromPos(cc.p(location_touch.x - self.getParent().x, location_touch.y - self.getParent().y));
                 var r = loc.x;
@@ -440,6 +447,7 @@ var BuildingNode = cc.Node.extend({
                     gv.building_is_moved = 0;
                     self._red.visible = false;
                     self.updateZOrder();
+
                 };
                 return true;
             }
@@ -665,6 +673,7 @@ var BuildingNode = cc.Node.extend({
         this.updateLabelName();
         if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
             this._lastHarvestTime = new Date().getTime();
+        cf.user.updateWallList();
     },
 
     onUpdateSpriteFrame: function()
@@ -941,8 +950,6 @@ var BuildingNode = cc.Node.extend({
             wall.onClick();
             wall.showBuildingButton();
 
-            cc.log(cf.user._currentCapacityGold);
-
         }
 
     },
@@ -962,7 +969,7 @@ var BuildingNode = cc.Node.extend({
         for(var i=0; i<4; i++) {
 
             var posTmp = cc.p(pos.x + vector[i].x, pos.y + vector[i].y);
-            if(posTmp.x > 40 || posTmp.y > 40) continue;
+            if(posTmp.x > 40 || posTmp.y > 40 || posTmp.x < 1 || posTmp.y < 1) continue;
 
             if(cf.map_array[posTmp.x][posTmp.y] === 0) {
                 this._nextPos = posTmp;
