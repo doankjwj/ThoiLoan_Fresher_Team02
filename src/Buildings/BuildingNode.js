@@ -575,7 +575,7 @@ var BuildingNode = cc.Node.extend({
         this._defence.visible = true;
 
         /* Update Builder */
-        if (this._buildingSTR != gv.buildingSTR.builderHut)
+        if (this._buildingSTR !== gv.buildingSTR.builderHut && this._buildingSTR !== gv.buildingSTR.wall)
         {
             cf.user._builderFree --;
             cf.user.updateSingleBuilder();
@@ -874,6 +874,7 @@ var BuildingNode = cc.Node.extend({
                 cf.isDeciding = false;
                 return;
             }
+
             if(!self._red.visible) {
                 self.onEndClick();
                 self.hideBuildingButton();
@@ -908,7 +909,7 @@ var BuildingNode = cc.Node.extend({
         this.getParent().addBuildingToUserBuildingList(this);
 
         this.updateZOrder();
-            gv.building_is_moved = 0;
+        gv.building_is_moved = 0;
         cf.isDeciding = false;
         //this.updateResource();
         testnetwork.connector.sendBuild(this._id, this._row, this._col);
@@ -937,6 +938,10 @@ var BuildingNode = cc.Node.extend({
             this.getNextPos();
             var wall = cf.tagToItem(2500, cf.defaultLevel, this._nextPos.x, this._nextPos.y, false);
             this.getParent().addChild(wall);
+            wall.onClick();
+            wall.showBuildingButton();
+
+            cc.log(cf.user._currentCapacityGold);
 
         }
 
@@ -1086,6 +1091,12 @@ var BuildingNode = cc.Node.extend({
                 coin = 0;
                 break;
             case gv.buildingSTR.obstacle:
+                break;
+            case gv.buildingSTR.wall:
+                gold = gv.json.wall[str][nextLevel]["gold"];
+                elixir = 0;
+                darkElixir = gv.json.wall[str][nextLevel]["darkElixir"];
+                coin = 0;
                 break;
             default:
                 break;

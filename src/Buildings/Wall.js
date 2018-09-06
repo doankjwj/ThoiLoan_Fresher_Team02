@@ -23,4 +23,4 @@ var Wall = BuildingNode.extend({
     {
 
     },
-})
+});
