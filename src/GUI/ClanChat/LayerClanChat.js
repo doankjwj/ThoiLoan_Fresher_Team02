@@ -145,6 +145,7 @@ var LayerClanChat = cc.Node.extend({
             fn.replaceSpriteImage(this._iconButton, res.clanChatGUI.buttonExpand);
             this.runAction(actAppearLayer.clone().reverse());
             this.onDisappear();
+            this._isExpanded = false;
         };
 
         this._guiButtonClanChat.setVisible(vis);
@@ -650,6 +651,7 @@ var LayerClanChat = cc.Node.extend({
         this._scrollviewUserOnline.setInnerContainerSize(this.getScrollviewInnerContainerSize(this._typeDefine.userOnlineScrollView));
 
         // Lấy vị trí cho Item theo order
+        cc.log(this._memberQuantity + " ____");
         for (var i = 0; i < this._memberQuantity; i++) {
             var pos = cc.p(this._scrollviewUserOnline.width / 2 - 6, this._scrollviewUserOnline.getInnerContainerSize().height - 10 - i * 20);
             this._listItemUserOnline[i].setPosition(pos);
@@ -706,6 +708,7 @@ var LayerClanChat = cc.Node.extend({
                     this._listItemUserOnline.splice(i, 1);
                     break;
                 };
+            this._memberQuantity --;
             this.loadItemUserOnlineToScrollView();
         }
 
@@ -719,6 +722,8 @@ var LayerClanChat = cc.Node.extend({
                     this._listItemUserOnline.splice(i, 1);
                     break;
                 };
+            this._memberQuantity --;
+            this.loadItemUserOnlineToScrollView();
         };
 
 
