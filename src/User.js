@@ -383,6 +383,14 @@ var User = cc.Class.extend({
         return this._builderTotal;
     },
 
+    //Update Wall
+    updateWallList: function(){
+        for(var i=0; i<cf.user._buildingListCount[gv.orderInUserBuildingList.wall]; i++) {
+            var wall = fn.getUserBuilding(gv.orderInUserBuildingList.wall, i);
+            wall.updateWallIcon(wall.getWallImage());
+        }
+    },
+
     /* Xóa bỏ thông tin bang hội dành cho trường hợp rời hoặc bị kick*/
     onClanLeaveOrKicked: function()
     {

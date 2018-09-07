@@ -251,6 +251,7 @@ var BuildingNode = cc.Node.extend({
             },
 
             onTouchEnded: function(touch, event) {
+
                 if(!cf.isMapMoving && (cf.mapScalePre == cf.BIG_MAP_SCALE)) {
                     if (!(self._buildingSTR == gv.buildingSTR.clanCastle && self._level == 0) && !(self._buildingSTR == gv.buildingSTR.obstacle))
                     {
@@ -393,6 +394,11 @@ var BuildingNode = cc.Node.extend({
                 moveAble = moveAble && !(self._buildingSTR == gv.buildingSTR.obstacle);
                 if (!moveAble) return true;
                 if (self._id !== gv.building_is_moved) return;
+
+                if(self._buildingSTR === gv.buildingSTR.wall) {
+                    self.updateWallIcon(0);
+                }
+
                 var location_touch = touch.getLocation();
                 var loc = fn.getRowColFromPos(cc.p(location_touch.x - self.getParent().x, location_touch.y - self.getParent().y));
                 var r = loc.x;
@@ -665,6 +671,8 @@ var BuildingNode = cc.Node.extend({
         this.updateLabelName();
         if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
             this._lastHarvestTime = new Date().getTime();
+
+        cf.user.updateWallList();
 
         /* Cập nhật sức chứa nếu công trình là kho chứ */
         var order = this._orderInUserBuildingList;
@@ -951,9 +959,11 @@ var BuildingNode = cc.Node.extend({
             var wallCapacity = gv.json.townHall[gv.buildingSTR.townHall][cf.user._buildingList[gv.orderInUserBuildingList.townHall][0]._level]["WAL_1"];
             if(cf.user._buildingListCount[gv.orderInUserBuildingList.wall] >= wallCapacity) return;
 
+            cf.isDeciding = true;
             this.getNextPos();
             var wall = cf.tagToItem(2500, cf.defaultLevel, this._nextPos.x, this._nextPos.y, false);
             this.getParent().addChild(wall);
+            cf.building_selected = wall._id;
             wall.onClick();
             wall.showBuildingButton();
 
@@ -975,7 +985,7 @@ var BuildingNode = cc.Node.extend({
         for(var i=0; i<4; i++) {
 
             var posTmp = cc.p(pos.x + vector[i].x, pos.y + vector[i].y);
-            if(posTmp.x > 40 || posTmp.y > 40) continue;
+            if(posTmp.x > 40 || posTmp.y > 40 || posTmp.x < 1 || posTmp.y < 1) continue;
 
             if(cf.map_array[posTmp.x][posTmp.y] === 0) {
                 this._nextPos = posTmp;
