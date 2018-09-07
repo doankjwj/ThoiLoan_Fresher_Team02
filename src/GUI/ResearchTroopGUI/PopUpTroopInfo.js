@@ -6,7 +6,7 @@ var PopUpTroopInfo = cc.Node.extend({
     _btnOk: null,
     _bgWhite: null,
 
-    _troopOrder: null,
+    _troopOrder: null,          // Tu 1..
     _level: null,
     _resourceRequire: null,
 
@@ -95,7 +95,6 @@ var PopUpTroopInfo = cc.Node.extend({
         this._btnClose.setPosition(cc.p(this._bg.width/2 - this._btnClose.width, this._bg.height/2 - this._btnClose.height / 1.5));
         this.addChild(this._btnClose, 1);
         this._btnClose.addClickEventListener(function(){
-            self.setPosition(cc.p(0, - cc.winSize.height));
             self.onDisappear();
         });
 
@@ -135,18 +134,22 @@ var PopUpTroopInfo = cc.Node.extend({
         this._btnOk.setScaleX(2);
         this.addChild(this._btnOk, 3);
         this._btnOk.addClickEventListener(function(){
+            if (self._troopOrder > cf.clanChat.troopDonateLength)
+            {
+                fr.getCurrentScreen().popUpMessage("Không cho phép nâng\n loại lính này 1");
+                self.onDisappear();
+                return;
+            };
             if (self._upgradeAble)
             {
                 cf.user._currentCapacityElixir -= this._resourceRequire;
                 cf.user.distributeResource(false, true, false);
                 self.getParent()._popUpResearchTroop.onResearchTroop(self._troopOrder);
-                self.setPosition(cc.p(0, - cc.winSize.height));
                 self.onDisappear();
             }
             else
             {
                 self.getParent().popUpMessage("Chưa đủ tài nguyên");
-                self.setPosition(cc.p(0, - cc.winSize.height));
                 self.onDisappear();
             }
         }.bind(this));
@@ -210,10 +213,29 @@ var PopUpTroopInfo = cc.Node.extend({
 
     onAppear: function() {
         this._swallowTouch.setEnabled(true);
+
+        var self = this;
+        var appear = cc.Sequence.create(
+            cc.CallFunc(function(){
+                self.setPosition(cc.winSize.width/2, cc.winSize.height/2);
+                self.setScaleX(0.25);
+            }),
+            cc.scaleTo(0.15, 1, 1)
+        );
+        this.runAction(appear);
     },
 
     onDisappear: function() {
         this._swallowTouch.setEnabled(false);
+
+        var self = this;
+        var disAppear = cc.Sequence.create(
+            cc.scaleTo(0.15, 0.25, 1),
+            cc.CallFunc(function(){
+                self.setPosition(cc.winSize.width/2, - cc.winSize.height/2);
+            })
+        );
+        this.runAction(disAppear);
     },
 
     loadBar: function()

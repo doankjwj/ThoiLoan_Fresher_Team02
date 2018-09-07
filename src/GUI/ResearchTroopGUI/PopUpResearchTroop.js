@@ -90,7 +90,6 @@ var PopUpResearchTroop = cc.Node.extend({
         this._btnClose.setPosition(cc.p(this._bg.width/2 - this._btnClose.width, this._bg.height/2 - this._btnClose.height / 1.5));
         this.addChild(this._btnClose, 1);
         this._btnClose.addClickEventListener(function(){
-            self.setPosition(cc.p(0, - cc.winSize.height));
             self.onDisappear();
         });
 
@@ -173,10 +172,35 @@ var PopUpResearchTroop = cc.Node.extend({
 
     onAppear: function() {
         this._swallowTouch.setEnabled(true);
+
+        var self = this;
+        var appear = cc.Sequence.create(
+            cc.CallFunc(function()
+            {
+                self.setPosition(cc.winSize.width/2, cc.winSize.height/2);
+                self.setScale(0.75);
+                self.setVisible(true);
+            }),
+            cc.ScaleTo(0.15, 1)
+        );
+        this.runAction(appear);
     },
 
     onDisappear: function() {
         this._swallowTouch.setEnabled(false);
+
+        var self = this;
+        var disAppear = cc.Sequence.create(
+            cc.Spawn.create(
+                cc.ScaleTo(0.1, 0.25),
+                cc.moveBy(0.1, 0, -cc.winSize.height/4)
+            ),
+            cc.CallFunc(function()
+            {
+                self.setVisible(false);
+            })
+        );
+        this.runAction(disAppear);
     },
 
     initContent: function()
@@ -281,7 +305,6 @@ var PopUpResearchTroop = cc.Node.extend({
         this.onVisibleContent(false);
         this.initContent();
         cf.user._buildingList[gv.orderInUserBuildingList.lab][0].onFinishResearch();
-        this.setPosition(cc.p(0, - cc.winSize.height));
         this.onDisappear();
     }
 })

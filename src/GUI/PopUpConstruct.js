@@ -144,6 +144,11 @@ var PopUpConstruct = cc.Node.extend({
                 case ccui.Widget.TOUCH_ENDED:
                     self.onDisappear();
                     //Thiếu tài nguyên
+                    if (cf.user._builderFree <= 0) {
+                        fr.getCurrentScreen().popUpMessage("Tất cả thợ đang bận");
+                        return;
+                    }
+
                     var constructEnough = (self._require.gold == 0 && self._require.elixir == 0 && self._require.darkElixir == 0 && self._require.coin == 0);
                     if (!constructEnough)
                     {
@@ -151,13 +156,11 @@ var PopUpConstruct = cc.Node.extend({
                         coinRequire += Math.ceil(self._require.gold/1000) + Math.ceil(self._require.elixir/1000) + Math.ceil(self._require.darkElixir/50) + self._require.coin;
                         gv.upgradeAble.etcToCoin = coinRequire;
 
-                        self.getParent().onPopUpToCoin(coinRequire, cf.constructType.upgrade);
+                        self.getParent().onPopUpToCoin([self._require.gold, self._require.elixir, self._require.darkElixir], cf.constructType.upgrade, fn.getCurrentBuilding());
                         return;
-                        // self.getParent().popUpMessage("Chưa đủ tài nguyên");
-                        // return;
                     }
                     ;
-                    self.onConstruct();
+                    self.onUpgrade();
 
 
                     break;
@@ -208,20 +211,14 @@ var PopUpConstruct = cc.Node.extend({
         this.addBars();
     },
 
-    onConstruct: function()
+    onUpgrade: function()
     {
-        if (cf.user._builderFree <= 0) {
-            this.getParent().popUpMessage("Tất cả thợ đang bận");
-            return;
-        }
+        fn.getCurrentBuilding().onStartBuild(gv.startConstructType.newConstruct);
 
-
-        cf.user._buildingList[Math.floor(gv.building_selected / 100) - 1][Math.floor(gv.building_selected % 100)].onStartBuild(gv.startConstructType.newConstruct);
-        /* Hiển thị*/
-        //this.getParent().getParent().showListBotButton(this._id);
         /* Request */
         testnetwork.connector.sendUpgradeBuilding(gv.building_selected);
 
+        cc.log(this._cost.gold + " : " + this._cost.elixir);
         /* Update User Infor + Resource Bar */
         cf.user.editCurrentResource(cf.resType.resource_1, -this._cost.gold);
         cf.user.editCurrentResource(cf.resType.resource_2, -this._cost.elixir);
@@ -232,37 +229,10 @@ var PopUpConstruct = cc.Node.extend({
         this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
         this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
         this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
-    },
 
-    onConstructByCoin: function(requireCoin)
-    {
-        if (cf.user._builderFree <= 0) {
-            this.getParent().popUpMessage("Tất cả thợ đang bận");
-            return;
-        }
-        cf.user._buildingList[Math.floor(gv.building_selected / 100) - 1][Math.floor(gv.building_selected % 100)].onStartBuild(gv.startConstructType.newConstruct);
-
-        if (cf.user._currentCapacityCoin < this._cost.coin + requireCoin)
-        {
-            fr.getCurrentScreen().popUpMessage("Chưa đủ tài nguyên");
-            return;
-        };
-
-        /*Cập nhật cho user*/
-
-        cf.user.editCurrentResource(cf.resType.resource_1, -this._cost.gold);
-        cf.user.editCurrentResource(cf.resType.resource_2, -this._cost.elixir);
-        cf.user.editCurrentResource(cf.resType.resource_3, -this._cost.darkElixir);
-        cf.user.editCurrentResource(cf.resType.resource_4, -this._cost.coin);
-
-
-        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
-        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
-        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
-        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
-
-        /*Gửi request*/
-        testnetwork.connector.sendUpgradeBuildingCoin(gv.building_selected);
+        /* Hiển thị nút xây nhanh, ..*/
+        if (fn.getCurrentBuilding()._time_remaining > 0 && this._buildingSTR != gv.buildingSTR.wall)
+            fr.getCurrentScreen().showListBotButton(gv.building_selected);
     },
 
     addBars: function()
@@ -436,7 +406,6 @@ var PopUpConstruct = cc.Node.extend({
                 self.setPosition(cc.winSize.width/2, cc.winSize.height/2);
                 self.setScale(0.75);
                 self.setVisible(true);
-                self.setOpacity(100);
             }),
             cc.ScaleTo(0.15, 1)
         );
@@ -449,8 +418,8 @@ var PopUpConstruct = cc.Node.extend({
         var self = this;
         var disAppear = cc.Sequence.create(
             cc.Spawn.create(
-                cc.ScaleTo(0.15, 0.25),
-                cc.moveBy(0.15, 0, -cc.winSize.height/4)
+                cc.ScaleTo(0.1, 0.25),
+                cc.moveBy(0.1, 0, -cc.winSize.height/4)
             ),
             cc.CallFunc(function()
             {
@@ -609,8 +578,8 @@ var PopUpConstruct = cc.Node.extend({
                 bar1Length2 = gv.json.armyCamp[str][Math.min(level+1, gv.buildingMaxLevel.armyCamp_1)]["hitpoints"];
                 bar1MaxLength = gv.json.armyCamp[str][gv.buildingMaxLevel.armyCamp_1]["hitpoints"];
                 if (constructType == gv.constructType.info){
-                    bar2Length = b._troopQuantity;
-                    bar2MaxLength = gv.json.armyCamp[str][level]["capacity"];
+                    bar2Length = cf.user.getCurrentTroopHousingSpace();
+                    bar2MaxLength = cf.user.getMaxTroopHousingSpace();
                 }
                 else {
                     bar2Length = gv.json.armyCamp[str][level]["capacity"];
@@ -930,11 +899,6 @@ var PopUpConstruct = cc.Node.extend({
         this._require.darkElixir = Math.max(0, this._cost.darkElixir - cf.user._currentCapacityDarkElixir);
         this._require.coin = Math.max(0, this._cost.coin - cf.user._currentCapacityCoin);
 
-        this._cost.gold -= this._require.gold;
-        this._cost.elixir -= this._require.elixir;
-        this._cost.darkElixir -= this._require.darkElixir;
-        this._cost.coin -= this._require.coin;
-
         /* Time Require */
         if (this._constructType == gv.constructType.upgrade)
         {
@@ -1140,7 +1104,7 @@ PopUpConstruct.getNodeResourceRequire_upgrade = cc.Node.extend({
             this.txtGold.setColor(cc.color(255, 255, 255, 255));
             this.txtGold.setAnchorPoint(1, 0.5);
             this.txtGold.setPosition(cc.p(0, sum / 2 * this.txtGold.height));
-            if (gold >= cf.user._currentCapacityGold)
+            if (gold > cf.user._currentCapacityGold)
             {
                 this.txtGold.setColor(cc.color(255, 0, 0, 255));
                 gv.upgradeAble = false;
@@ -1161,7 +1125,7 @@ PopUpConstruct.getNodeResourceRequire_upgrade = cc.Node.extend({
             this.txtElixir.setColor(cc.color(255, 255, 255, 255));
             this.txtElixir.setAnchorPoint(1, 0.5);
             this.txtElixir.setPosition(cc.p(0, (sum-1) / 2 * this.txtElixir.height));
-            if (elixir >= cf.user._currentCapacityElixir)
+            if (elixir > cf.user._currentCapacityElixir)
             {
                 this.txtElixir.setColor(cc.color(255, 0, 0, 255));
                 gv.upgradeAble = false;
@@ -1183,7 +1147,7 @@ PopUpConstruct.getNodeResourceRequire_upgrade = cc.Node.extend({
             this.txtDarkElixir.setColor(cc.color(255, 255, 255, 255));
             this.txtDarkElixir.setAnchorPoint(1, 0.5);
             this.txtDarkElixir.setPosition(cc.p(0, -(sum-1) / 2 * this.txtDarkElixir.height));
-            if (darkElixir >= cf.user._currentCapacityDarkElixir)
+            if (darkElixir > cf.user._currentCapacityDarkElixir)
             {
                 this.txtDarkElixir.setColor(cc.color(255, 0, 0, 255));
                 gv.upgradeAble = false;
@@ -1204,7 +1168,7 @@ PopUpConstruct.getNodeResourceRequire_upgrade = cc.Node.extend({
             this.txtCoin.setColor(cc.color(255, 255, 255, 255));
             this.txtCoin.setAnchorPoint(1, 0.5);
             this.txtCoin.setPosition(cc.p(0, -sum / 2 * this.txtCoin.height));
-            if (coin >= cf.user._currentCapacityCoin)
+            if (coin > cf.user._currentCapacityCoin)
             {
                 this.txtCoin.setColor(cc.color(255, 0, 0, 255));
                 gv.upgradeAble = false;

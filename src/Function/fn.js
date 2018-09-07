@@ -488,7 +488,7 @@ fn.percentage = function(current, max)
 };
 
 /* LẤy ra housing space của đơn vị lính*/
-fn.getTroopHousingSpace = function(troopType, troopLevel)
+fn.getTroopHousingSpace = function(troopType)           // từ 1
 {
-    return gv.json.troopBase["ARM_" + troopType][troopLevel]["housingSpace"];
+    return gv.json.troopBase["ARM_" + troopType]["housingSpace"];
 }

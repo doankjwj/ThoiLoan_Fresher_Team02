@@ -13,7 +13,7 @@ gv.touchBeganLocation = null;
 gv.touchEndedLocation = null;
 
 /* Building chuẩn bị xây */
-gv.buildingNextBuild = null;
+gv.buildingNextBuild  = null;
 
 /*Tài nguyên yêu cầu xây dựng*/
 gv.upgradeAble = gv.upgradeAble || {};
@@ -173,3 +173,10 @@ gv.direction =
     up_right: 6,
     right: 7,
 };
+
+/* Message Type*/
+gv.popUpMsgSTR =
+{
+    notEnoughResource: "KHÔNG ĐỦ TÀI NGUYÊN",
+    notEnoughBuilderFree: "TẤT CẢ THỢ ĐANG BẬN",
+}

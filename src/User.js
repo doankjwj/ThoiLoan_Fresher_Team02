@@ -424,6 +424,28 @@ var User = cc.Class.extend({
     {
         return this._listTroopLevel[troopType];
     },
+    /* Housing Space của lính hiện tại*/
+    getCurrentTroopHousingSpace: function(troopType)   // tính từ 0
+    {
+        if (troopType)
+            return (this._listTroop[troopType] * fn.getTroopHousingSpace(troopType+1));
+        var currentTroopHousingSpace = 0;
+        for (var i=0; i<this._listTroop.length; i++)
+            currentTroopHousingSpace += this._listTroop[i] * fn.getTroopHousingSpace(i+1);
+        return currentTroopHousingSpace;
+    },
+    /* Housing space tối đa ( sức chứa nhà trại lính)*/
+    getMaxTroopHousingSpace: function()
+    {
+        var maxTroopHousingSpace = 0;
+        for (var i=0; i<this._buildingListCount[gv.orderInUserBuildingList.armyCamp_1]; i++)
+        {
+            var amc = this._buildingList[gv.orderInUserBuildingList.armyCamp_1][i];
+            if (amc._level > 0)
+                maxTroopHousingSpace += amc._jsonConfig[amc._buildingSTR][amc._level]["capacity"];
+        };
+        return maxTroopHousingSpace;
+    },
 
     //===============================           CÔNG TRÌNH      ================
     getBuildingCount: function(buildingOrder)

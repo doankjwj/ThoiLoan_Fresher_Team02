@@ -85,6 +85,7 @@ var font = {
     fista16:    fontFolder + "fista_16_non.fnt",
     fista20:    fontFolder + "fista_20_non.fnt",
     fista24:    fontFolder + "fista_24_non.fnt",
+    arial:       fontFolder + "arial.ttf"
 };
 
 res.buildingOnMoveGUI = function(type, size)

@@ -83,7 +83,7 @@ var TroopButton = ccui.Button.extend({
                      testnetwork.connector.sendTrainTroop(sender.getParent()._barrackID, sender._id);
                     sender.updateButton();
                 } else {
-                    sender.getParent().getParent().popUpMessage("Không đủ tài nguyên");
+                    sender.getParent().getParent().popUpMessage(gv.popUpMsgSTR.notEnoughResource);
                 }
                 sender.scale /= 1.05;
                 break;

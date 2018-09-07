@@ -67,7 +67,10 @@ var GUI_ResourceBar = cc.Node.extend({
         });
         this.addChild(this._icon, 0);
 
-        this._barBG = cc.Sprite(mainGUI.bgBar2);
+        if (this._type != cf.resType.resource_4)
+            this._barBG = cc.Sprite(mainGUI.bgBar2);
+        else
+            this._barBG = cc.Sprite(mainGUI.bgBar3);
         this._barBG.attr({
             anchorX: 1,
             anchorY: 0.5,
@@ -87,7 +90,7 @@ var GUI_ResourceBar = cc.Node.extend({
         this._txtCurrent.attr({
             anchorX: 1,
             anchorY: 0.5,
-            x: this.width - this._icon.width - 20,
+            x: this.width - this._icon.width - 10,
             y: 0,
             scale: 0.8
         });

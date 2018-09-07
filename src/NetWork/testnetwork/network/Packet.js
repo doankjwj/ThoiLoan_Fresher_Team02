@@ -8,10 +8,15 @@ gv.CMD.USER_LOGIN = 1;
 
 gv.CMD.USER_INFO = 1001;
 gv.CMD.MOVE = 2011;
+
+// ===========================================================
 gv.CMD.BUILD = 2001;
 gv.CMD.BUILD_COIN = 2002;
 gv.CMD.UPGRADE_BUILDING = 2003;
 gv.CMD.UPGRADE_BUILDING_COIN = 2004;
+// ===========================================================
+gv.CMD.PAY_COIN_THEN_BUY_ETC = 2071;
+
 gv.CMD.CHEAT = 2102;
 gv.CMD.SEND_INSTANT = 2005;
 gv.CMD.SEND_CANCEL = 2006;
@@ -398,6 +403,24 @@ CmdSendBuildCoin = fr.OutPacket.extend(
         }
     }
 );
+
+CmdSendPayCoinToBuyETC = fr.OutPacket.extend(
+    {
+        ctor: function(){
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.PAY_COIN_THEN_BUY_ETC);
+        },
+        pack: function(res_1, res_2, res_3)
+        {
+            this.packHeader();
+            this.putInt(res_1);
+            this.putInt(res_2);
+            this.putInt(res_3);
+            this.updateSize();
+        }
+    }
+)
 
 CmdSendInstant = fr.OutPacket.extend({
     ctor: function () {
@@ -1137,9 +1160,7 @@ testnetwork.packetMap[gv.CMD.USER_ERROR] = fr.InPacket.extend({
             fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode);
             try {
                 cc.log("Error: " + errorCode);
-                setTimeout(function() {
-                    fr.view(MainLayer);
-                }, 2000)
+                fr.getCurrentScreen().onEndGame();
             } catch (e) {
                 cc.log(e)
             }
@@ -1157,9 +1178,7 @@ testnetwork.packetMap[gv.CMD.CLAN_ERROR] = fr.InPacket.extend({
             fr.getCurrentScreen().popUpMessage("Dữ liệu không hợp lệ, mã lỗi: " + errorCode);
             try {
                 cc.log("Error: " + errorCode);
-                setTimeout(function(){
-                    fr.view(MainLayer);
-                }, 2000);
+                fr.getCurrentScreen().onEndGame();
             } catch (e) {
                 cc.log(e)
             }

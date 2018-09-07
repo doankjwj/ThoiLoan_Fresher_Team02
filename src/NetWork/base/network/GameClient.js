@@ -78,7 +78,8 @@ var GameClient = cc.Class.extend(
             if (cmd == 37 || cmd == 1999)try
             {
                 setTimeout(function() {
-                    fr.view(MainLayer);
+                    fr.getCurrentScreen().popUpMessage("TÀI KHOẢN ĐƯỢC ĐĂNG NHẬP\n   Ở THIẾT BỊ KHÁC !");
+                    fr.getCurrentScreen().onEndGame();
                 }
                 , 0.5);
             }
@@ -90,7 +91,6 @@ var GameClient = cc.Class.extend(
             if(packet == null)
                 return;
             this.onReceivedPacket(cmd,packet);
-            //pool
             gv.poolObjects.push(packet);
         },
         onReceivedPacket:function(cmd, packet)

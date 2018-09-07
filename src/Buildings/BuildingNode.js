@@ -94,6 +94,8 @@ var BuildingNode = cc.Node.extend({
         this.setTag(tag);
         this._id = tag;
 
+        //gv.building_selected = this._id;
+
         //grass
         this._grass = new grass(this._size, this._orderInUserBuildingList);
         this.addChild(this._grass, 0);
@@ -234,11 +236,7 @@ var BuildingNode = cc.Node.extend({
                 if (fn.pointInsidePolygon([x, y], polygon) && (gv.building_is_moved !== self._id))
                 {
                     /* Hiển thị tên công trình*/
-                    var tmpPreLevel = (self._buildingSTR == gv.buildingSTR.obstacle) ? " " : " level ";
-                    self._txtName.setString(self._name + tmpPreLevel + self.getTempLevel());
-                    self._txtName.visible = true;
-                    self.popBuildingScale();
-                    self.setLocalZOrder(200);
+
                     return true;
                 }
                 else
@@ -256,13 +254,17 @@ var BuildingNode = cc.Node.extend({
                 if(!cf.isMapMoving && (cf.mapScalePre == cf.BIG_MAP_SCALE)) {
                     if (!(self._buildingSTR == gv.buildingSTR.clanCastle && self._level == 0) && !(self._buildingSTR == gv.buildingSTR.obstacle))
                     {
-
-                        //var move
                         self._listenerMove.setEnabled(true);
                         self._listener.setEnabled(false);
-                        //this.setEnabled(false);
                         self.onClick();
+                        self.setLocalZOrder(200);
                     };
+
+                    var tmpPreLevel = (self._buildingSTR == gv.buildingSTR.obstacle) ? " " : " level ";
+                    self._txtName.setString(self._name + tmpPreLevel + self.getTempLevel());
+                    self._txtName.visible = true;
+                    self.popBuildingScale();
+
                     self._listener.setEnabled(false);
                     cf.current_r = self._row;
                     cf.current_c = self._col;
@@ -865,50 +867,61 @@ var BuildingNode = cc.Node.extend({
             this._gui_commit_build.visible = true;
         }
         this._gui_cancel_build.addClickEventListener(function(){
-            cf.isDeciding = false;
-            gv.building_is_moved = 0;
-            self.hideBuildingButton();
-            self.getParent().removeChild(self);
+            self.onCancelButton();
         }.bind(this));
         this._gui_commit_build.addClickEventListener(function(){
-            if (cf.user._builderFree <= 0 && (self._buildingSTR !== gv.buildingSTR.builderHut))
+            self.onCommitButton();
+        }.bind(this));
+    },
+    onCancelButton: function()
+    {
+        cf.isDeciding = false;
+        gv.building_is_moved = 0;
+        this.hideBuildingButton();
+        this.getParent().removeChild(this);
+    },
+    onCommitButton: function()
+    {
+        if (cf.user._builderFree <= 0 && (this._buildingSTR !== gv.buildingSTR.builderHut))
+        {
+            this.getParent().getParent().popUpMessage("Tất cả thợ đang bận");
+            this.hideBuildingButton();
+            this.getParent().removeChild(this);
+            gv.building_is_moved = 0;
+            cf.isDeciding = false;
+            return;
+        }
+
+        if(!this._red.visible) {
+            this.onEndClick();
+            this.hideBuildingButton();
+            this.checkResource();
+
+            gv.buildingNextBuild = this._id;
+            var constructEnough = (this._require.gold == 0 && this._require.elixir == 0 && this._require.darkElixir == 0 && this._require.coin == 0);
+            if (!constructEnough)
             {
-                self.getParent().getParent().popUpMessage("Tất cả thợ đang bận");
-                self.hideBuildingButton();
-                self.getParent().removeChild(self);
-                gv.building_is_moved = 0;
-                cf.isDeciding = false;
+                var coinRequire = 0;
+                coinRequire += Math.ceil(this._require.gold/1000) + Math.ceil(this._require.elixir/1000) + Math.ceil(this._require.darkElixir/50) + this._require.coin;
+                gv.upgradeAble.etcToCoin = coinRequire;
+
+                var root = this.getParent().getParent();
+                root.onPopUpToCoin([this._require.gold, this._require.elixir, this._require.darkElixir], cf.constructType.build, this);
                 return;
             }
+            gv.building_is_moved = 0;
+            gv.building_selected = this._id;
 
-            if(!self._red.visible) {
-                self.onEndClick();
-                self.hideBuildingButton();
-                self.checkResource();
-
-                gv.buildingNextBuild = self._id;
-                var constructEnough = (self._require.gold == 0 && self._require.elixir == 0 && self._require.darkElixir == 0 && self._require.coin == 0);
-                if (!constructEnough)
-                {
-                    var coinRequire = 0;
-                    coinRequire += Math.ceil(self._require.gold/1000) + Math.ceil(self._require.elixir/1000) + Math.ceil(self._require.darkElixir/50) + self._require.coin;
-                    gv.upgradeAble.etcToCoin = coinRequire;
-
-                    var root = self.getParent().getParent();
-                    root.onPopUpToCoin(coinRequire, cf.constructType.build, self);
-                    return;
-                }
-                gv.building_is_moved = 0;
-                gv.building_selected = self._id;
-                this._listener.setEnabled(true);
-                this._listenerMove.setEnabled(false);
-                self._existed = true;
-                self.onBuild();
-            }
-        }.bind(this));
+            this._existed = true;
+            this.onBuild();
+        }
     },
     onBuild: function()
     {
+        gv.building_selected = this._id;
+        this._listener.setEnabled(true);
+        this._listenerMove.setEnabled(false);
+
         this.locate_map_array(this);
         this.onStartBuild(gv.startConstructType.newConstruct);
 
@@ -935,7 +948,6 @@ var BuildingNode = cc.Node.extend({
              this.getParent().getParent().showListBotButton(this._id);
 
         if(this._orderInUserBuildingList === gv.orderInUserBuildingList.wall ) {
-
             var wallCapacity = gv.json.townHall[gv.buildingSTR.townHall][cf.user._buildingList[gv.orderInUserBuildingList.townHall][0]._level]["WAL_1"];
             if(cf.user._buildingListCount[gv.orderInUserBuildingList.wall] >= wallCapacity) return;
 
@@ -946,7 +958,6 @@ var BuildingNode = cc.Node.extend({
             wall.showBuildingButton();
 
         }
-
     },
 
     getNextPos: function(){
@@ -971,44 +982,6 @@ var BuildingNode = cc.Node.extend({
                 return;
             }
         }
-    },
-
-    onBuildCoin: function(requireCoin)
-    {
-        if (this._cost.coin + requireCoin > cf.user.getCurrentResource(cf.resType.resource_4))
-        {
-            fr.getCurrentScreen().popUpMessage("Chưa đủ tài nguyên");
-            cf.isDeciding = false;
-            this.hideBuildingButton();
-            this.getParent().removeChild(this);
-            return;
-        };
-
-        this.locate_map_array(this);
-        this.onStartBuild(gv.startConstructType.newConstruct);
-
-        this.getParent().addBuildingToUserBuildingList(this);
-
-        this.updateZOrder();
-        gv.building_is_moved = 0;
-        cf.isDeciding = false;
-        //this.updateResource();
-        testnetwork.connector.sendBuildCoin(this._id, this._row, this._col);
-
-        cf.user.editCurrentResource(cf.resType.resource_1, -this._cost.gold);
-        cf.user.editCurrentResource(cf.resType.resource_2, -this._cost.elixir);
-        cf.user.editCurrentResource(cf.resType.resource_3, -this._cost.darkElixir);
-        cf.user.editCurrentResource(cf.resType.resource_4, -this._cost.coin);
-
-
-        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
-        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
-        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
-        fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
-
-        /* Hiển thị nút xây nhanh, ..*/
-        if (this._time_remaining > 0 && this._buildingSTR != gv.buildingSTR.wall)
-            this.getParent().getParent().showListBotButton(this._id);
     },
 
     checkResource: function()
@@ -1103,13 +1076,6 @@ var BuildingNode = cc.Node.extend({
         this._require.elixir = Math.max(0, this._cost.elixir - cf.user._currentCapacityElixir);
         this._require.darkElixir = Math.max(0, this._cost.darkElixir - cf.user._currentCapacityDarkElixir);
         this._require.coin = Math.max(0, this._cost.coin - cf.user._currentCapacityCoin);
-
-        this._cost.gold -= this._require.gold;
-        this._cost.elixir -= this._require.elixir;
-        this._cost.darkElixir -= this._require.darkElixir;
-        this._cost.coin -= this._require.coin;
-
-
 
         if(cf.user._currentCapacityGold < gold) this._constructAble = false;
         if(cf.user._currentCapacityElixir < elixir) this._constructAble = false;

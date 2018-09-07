@@ -124,20 +124,19 @@
         this._usernameField .y = size.height/2;
         this.addChild(this._usernameField, 1, this._TAG_USERNAME_FIELD);
 
-        var login = ccui.Button(logInGUI.btnOk);
-        login.attr({
+        this._btnLogin = ccui.Button(res.clanGUI.buttonXemLai);
+        this._btnLogin.setTitleText("Đăng Nhập");
+        this._btnLogin.setTitleFontName(font.soji12);
+        this._btnLogin.setTitleFontSize(14);
+        this._btnLogin.attr({
             anchorX: 0,
             anchorY: 0.5,
             x: cc.winSize.width/2 + 10,
             y: cc.winSize.height/2,
-            scale: 1.5
+            scale: 1.75
         });
-        login.setTitleText("Log In");
-        //login.setTitleFontName(font.fista24);
-        login.setTitleFontSize(28);
-        login.setTitleColor(cc.color(255, 255, 255, 255));
-        login.addClickEventListener(this.onSelectLogin.bind(this));
-        this.addChild(login, 1, this._TAG_LOGIN_BUTTON);
+        this._btnLogin.addClickEventListener(this.onSelectLogin.bind(this));
+        this.addChild(this._btnLogin, 1, this._TAG_LOGIN_BUTTON);
     },
 
     onSelectLogin: function()
@@ -185,6 +184,7 @@
         cf.user.distributeResource(true, true, true);
         this.initTroops();
 
+        //testnetwork.connector.sendPayCoinToBuyETC(200, 200, 0);
     },
     initTroops: function ()
     {
@@ -249,14 +249,6 @@
         this.addChild(this._popUp, 1, gv.tag.TAG_POPUP);
         this.addCheatButton();
         this.addClanChatGUI();
-
-        // var str = gv.buildingSTR.wall + "_1";
-        //
-        // var wall = cc.Sprite(folderWall + str + "/" + str + "/idle/image0000.png");
-        // wall.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
-        //
-        // this.addChild(wall, 100);
-
     },
 
     updateResourceBar: function() {
@@ -278,7 +270,8 @@
             testnetwork.connector.sendResetUser();
             audioPlayer.stopAll();
             try{
-                fr.view(MainLayer);
+                fr.getCurrentScreen().popUpMessage("XÓA THÔNG TIN TÀI KHOẢN !");
+                fr.getCurrentScreen().onEndGame();
             } catch(e)
             {
                 cc.log(e)
@@ -574,9 +567,6 @@
                 var popUp = PopUpConstruct.getOrCreate();
                 self.addChild(popUp, 1, gv.tag.TAG_POPUP);
             }
-
-            //self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width/2, cc.winSize.height/2);
-            //self.getChildByTag(gv.tag.TAG_POPUP).visible = false;
             self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.info);
             self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
 
@@ -606,8 +596,6 @@
             var townHallLevel = townHall._level;
             if(building._buildingSTR !== gv.buildingSTR.townHall) {
                 if (townHallLevel >= building._jsonConfig[building._buildingSTR][Math.min(building._level + 1, building._maxLevel)]["townHallLevelRequired"]) {
-                    //self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
-                    //self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
                     self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
                     self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
                 }
@@ -619,8 +607,6 @@
             } else if (building._level === building._maxLevel) {
                 self.popUpMessage("Đã đạt cấp tối đa");
             } else {
-                //self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
-                //self.getChildByTag(gv.tag.TAG_POPUP).visible = false;
                 self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
                 self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
             }
@@ -857,7 +843,6 @@
         var researching = cf.user._buildingList[gv.orderInUserBuildingList.lab][0]._researching;
         var troopOrder = cf.user._buildingList[gv.orderInUserBuildingList.lab][0]._currentTroop;
         this._popUpResearchTroop = new PopUpResearchTroop(researching, troopOrder);
-        this._popUpResearchTroop.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
         this.addChild(this._popUpResearchTroop, 1, gv.tag.TAG_POPUP_RESEARCH_TROOP);
         this._popUpResearchTroop.onAppear();
     },
@@ -881,7 +866,6 @@
         if (this._popUpTroopInfo)
             this.removeChild(this._popUpTroopInfo);
         this._popUpTroopInfo = new PopUpTroopInfo(troopOrder);
-        this._popUpTroopInfo.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
         this.addChild(this._popUpTroopInfo, 5);
         this._popUpTroopInfo.onAppear();
     },
@@ -903,7 +887,7 @@
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).onAppear();
     },
     /* Pop UP Bằng Coin*/
-    onPopUpToCoin: function(coinRequire, type, building) /*Type [0: xây dựng, 1: nâng cấp]*/
+    onPopUpToCoin: function(resLeak, type, building) /*Type [0: xây dựng, 1: nâng cấp]*/
     {
         var tag = 32423423;
           if (gvGUI.popUpToCoin == null)
@@ -915,7 +899,8 @@
           if (!this.getChildByTag(tag))
               this.addChild(gvGUI.popUpToCoin, 1, tag);
 
-        gvGUI.popUpToCoin.updateCoin(coinRequire, type, building);
+        cc.log(">>>>> " + building._buildingSTR);
+        gvGUI.popUpToCoin.updateCoin(resLeak, type, building);
         gvGUI.popUpToCoin.show();
     },
     /* Chạy dòng chữ khi nhận được quân*/
@@ -1262,11 +1247,11 @@
                 return true;
             },
             onTouchesMoved: function(touches, event) {
-                if(touches.length != 2) {
+                if (touches.length > 1) cf.isMapMoving = true;
+                if (touches.length != 2) {
                     if (!self._listenerOnMoveMap.isEnabled()) self._listenerOnMoveMap.setEnabled(true);
                     return;
                 }
-                cf.isMapMoving = true;
                 if (self._listenerOnMoveMap.isEnabled()) self._listenerOnMoveMap.setEnabled(false);
                 touchCount = touches.length;
                 var touch0 = touches[0].getLocation();
@@ -1379,6 +1364,17 @@
                 break;
         }
     },
+
+    onEndGame: function()
+    {
+        this.runAction(cc.Sequence.create(
+            cc.DelayTime(1.25),
+            cc.CallFunc(function(){
+                this.setVisible(false);
+            }.bind(this))
+        ));
+
+    }
 });
 
 MainLayer.scene = function(){

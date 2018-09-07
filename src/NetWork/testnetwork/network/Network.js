@@ -101,6 +101,13 @@ testnetwork.Connector = cc.Class.extend({
         pk.pack(id, row, col);
         this.gameClient.sendPacket(pk);
     },
+    sendPayCoinToBuyETC: function(res_1, res_2, res_3)
+    {
+        cc.log("Send Pay Coin To Buy ETC: " + res_1 + " : " + res_2 + " : " + res_3);
+        var pk = this.gameClient.getOutPacket(CmdSendPayCoinToBuyETC);
+        pk.pack(res_1, res_2, res_3);
+        this.gameClient.sendPacket(pk);
+    },
     sendUpgradeBuilding: function(id)
     {
         cc.log("Send Upgrade: " + id);
