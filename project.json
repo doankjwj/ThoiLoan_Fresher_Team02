@@ -51,7 +51,7 @@
 
         "src/GUI/MainGUI/ResourceBar.js",
         "src/GUI/MainGUI/BuilderBar.js",
-        "src/GUI/IconActionBuilding.js",
+        "src/GUI/MainGUI/IconActionBuilding.js",
         "src/GUI/TrainTroopGUI/PopupTraining.js",
         "src/GUI/TrainTroopGUI/TroopButton.js",
 
