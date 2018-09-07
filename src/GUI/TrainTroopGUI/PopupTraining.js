@@ -699,7 +699,7 @@ var PopupTraining = cc.Node.extend({
             }
 
             /* Thêm lính vào cho user*/
-            cf.user.editTroop(id, this._queueTrainingButtonList[i]._quantity);
+            cf.user.editTroop(id-1, this._queueTrainingButtonList[i]._quantity);
 
             this._trainingQueueBackground.removeChildByTag(id, false);
         }

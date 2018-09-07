@@ -69,6 +69,7 @@ var ClanCastle = BuildingNode.extend({
         }
         return housingSpace;
     },
+    /* Số quân với level phân biệt*/
     getCurrentTroopTypeVsLevel: function()
     {
         var troopDif = 0;

@@ -73,8 +73,6 @@ var User = cc.Class.extend({
         }
     },
 
-
-
     initTroopLevelList: function()
     {
         for (var i = 0; i < gv.jsonInfo["player"]["troopLevel"].length; i++)
@@ -84,6 +82,7 @@ var User = cc.Class.extend({
         }
     },
 
+    //============================          NHÀ THỢ, TÀI NGUYÊN             ===================================
     /* Update Storage Capacity from User Buildings (Town Hall + Storage) */
     updateMaxStorage: function()
     {
@@ -393,6 +392,7 @@ var User = cc.Class.extend({
         gvGUI.layerClanChat.resetAll();
     },
 
+    //===============================           QUÂN ĐỘI        ===============
     /* Chỉnh sửa quân đội*/
     editTroop: function(troopType, amount)
     {
@@ -412,8 +412,22 @@ var User = cc.Class.extend({
             troopAmount += this._listTroop[i]
         }
     },
+    /* Số loại quân khác nhau*/                 // tính từ 0
+    getTroopUnique: function()
+    {
+        var troopUnique = 0;
+        for (var i=0; i <this._listTroop.length; i++)
+            if (this._listTroop[i] != 0) troopUnique ++;
+        return troopUnique;
+    },
     getTroopLevel: function(troopType)          // tính từ 0
     {
         return this._listTroopLevel[troopType];
+    },
+
+    //===============================           CÔNG TRÌNH      ================
+    getBuildingCount: function(buildingOrder)
+    {
+        return this._buildingListCount[buildingOrder];
     }
 });

@@ -91,7 +91,7 @@ var PopUpConstruct = cc.Node.extend({
 
     _TAG_TXT_TIME_REQUIRE: 9966,
     _TAG_CONTENT_REQUIRE: 8766,
-    _TAG_TROOP_AMOUNT: 3223,
+    _TAG_CONTENT_OPTIONAL: 3223,
 
     ctor: function() {
         this._super();
@@ -126,7 +126,6 @@ var PopUpConstruct = cc.Node.extend({
         this._btnClose.setPosition(cc.p(this._bg.width / 2 - this._btnClose.width, this._bg.height / 2 - this._btnClose.height / 1.5));
         this.addChild(this._btnClose, 1);
         this._btnClose.addClickEventListener(function () {
-            self.setPosition(cc.p(0, -cc.winSize.height));
             self.onDisappear();
         });
 
@@ -143,7 +142,6 @@ var PopUpConstruct = cc.Node.extend({
                 case ccui.Widget.TOUCH_MOVED:
                     break;
                 case ccui.Widget.TOUCH_ENDED:
-                    self.setPosition(cc.p(0, -cc.winSize.height));
                     self.onDisappear();
                     //Thiếu tài nguyên
                     var constructEnough = (self._require.gold == 0 && self._require.elixir == 0 && self._require.darkElixir == 0 && self._require.coin == 0);
@@ -224,8 +222,6 @@ var PopUpConstruct = cc.Node.extend({
         /* Request */
         testnetwork.connector.sendUpgradeBuilding(gv.building_selected);
 
-        cc.log(this._cost.gold + " GOLD +++++");
-
         /* Update User Infor + Resource Bar */
         cf.user.editCurrentResource(cf.resType.resource_1, -this._cost.gold);
         cf.user.editCurrentResource(cf.resType.resource_2, -this._cost.elixir);
@@ -254,7 +250,6 @@ var PopUpConstruct = cc.Node.extend({
 
         /*Cập nhật cho user*/
 
-        cc.log(this._cost.gold + " GOLD +++++");
         cf.user.editCurrentResource(cf.resType.resource_1, -this._cost.gold);
         cf.user.editCurrentResource(cf.resType.resource_2, -this._cost.elixir);
         cf.user.editCurrentResource(cf.resType.resource_3, -this._cost.darkElixir);
@@ -433,10 +428,36 @@ var PopUpConstruct = cc.Node.extend({
 
     onAppear: function() {
         this._swallowTouch.setEnabled(true);
+
+        var self = this;
+        var appear = cc.Sequence.create(
+            cc.CallFunc(function()
+            {
+                self.setPosition(cc.winSize.width/2, cc.winSize.height/2);
+                self.setScale(0.75);
+                self.setVisible(true);
+                self.setOpacity(100);
+            }),
+            cc.ScaleTo(0.15, 1)
+        );
+        this.runAction(appear);
     },
 
     onDisappear: function() {
         this._swallowTouch.setEnabled(false);
+
+        var self = this;
+        var disAppear = cc.Sequence.create(
+            cc.Spawn.create(
+                cc.ScaleTo(0.15, 0.25),
+                cc.moveBy(0.15, 0, -cc.winSize.height/4)
+            ),
+            cc.CallFunc(function()
+            {
+                self.setVisible(false);
+            })
+        );
+        this.runAction(disAppear);
     },
 
     updateContent: function(id, constructType)
@@ -454,9 +475,9 @@ var PopUpConstruct = cc.Node.extend({
         }
         var b = cf.user._buildingList[Math.floor(id/100) - 1][Math.floor(id%100)];
         var level = (constructType == gv.constructType.info) ? b.getTempLevel() : b.getNextLevel();
+        this.updateDescription((b._description));
         this.updateIcon(b._buildingSTR, level, b._size, b._name, b._isActive, constructType);
         this.updateBar(b._buildingSTR, b.getTempLevel(), b._size, b._name, b._isActive, constructType);
-        this.updateDescription((b._description));
     },
 
     visibleBar: function(bool1, bool2, bool3)
@@ -930,7 +951,7 @@ var PopUpConstruct = cc.Node.extend({
             this.removeChildByTag(this._TAG_CONTENT_REQUIRE);
         if (this._constructType == gv.constructType.upgrade)
         {
-            var tmp = new PopUpConstruct.getNodeResourceRequire(gold, elixir, darkElixir, coin);
+            var tmp = new PopUpConstruct.getNodeResourceRequire_upgrade(gold, elixir, darkElixir, coin);
             tmp.attr({
                 anchorX: 0.5,
                 anchorY: 0.5,
@@ -940,37 +961,7 @@ var PopUpConstruct = cc.Node.extend({
             this.addChild(tmp, 5, this._TAG_CONTENT_REQUIRE);
         }
 
-        /* Troop Amount -- option Clan Castle*/
-        if (this.getChildByTag(this._TAG_TROOP_AMOUNT))
-            this.removeChildByTag(this._TAG_TROOP_AMOUNT);
-        var buildingId = gv.building_selected;
-        var b = cf.user._buildingList[Math.floor(buildingId/100) - 1][Math.floor(buildingId%100)];
-        if (this._constructType == gv.constructType.info && b._buildingSTR == gv.buildingSTR.clanCastle
-            && fn.getCurrentBuilding(gv.orderInUserBuildingList.clanCastle, 0).getCurrentTroopTypeVsLevel() != 0)
-        {
-
-            var tmp = new PopUpConstruct.getNodeTroopAmountClanCastle();
-            tmp.attr({
-                anchorX: 0.5,
-                anchorY: 0.5,
-                x: this._btnOk.x,
-                y: this._btnOk.y + 100
-            })
-            this.addChild(tmp, 5, this._TAG_TROOP_AMOUNT);
-        };
-
-        if (this._constructType == gv.constructType.info && b._buildingSTR == gv.buildingSTR.armyCamp_1
-        /*&& cf.user.getTroopAmount() != 0*/)
-        {
-            var tmp = new PopUpConstruct.getNodeTroopAmountArmyCamp();
-            tmp.attr({
-                anchorX: 0.5,
-                anchorY: 0.5,
-                x: this._btnOk.x,
-                y: this._btnOk.y + 100
-            })
-            this.addChild(tmp, 5, this._TAG_TROOP_AMOUNT);
-        }
+        this.updateContentOptional();
 
         /* Center Icon */
         switch(str)
@@ -1033,7 +1024,6 @@ var PopUpConstruct = cc.Node.extend({
         this.addChild(this._grass, 1, this._TAG_GRASS);
 
         /* Effect */
-        //if ((str == gv.buildingSTR.barrack_1 && level <4) || str == gv.buildingSTR.builderHut || str == gv.buildingSTR.storage_1 || str == gv.buildingSTR.storage_2) return;
         var arrNoEffect = [gv.buildingSTR.builderHut, gv.buildingSTR.storage_1, gv.buildingSTR.storage_2, gv.buildingSTR.storage_3, gv.buildingSTR.defence_1];
         if ((str == gv.buildingSTR.barrack_1 && (level <4 || level >8)) || arrNoEffect.indexOf(str) >= 0 || (str == gv.buildingSTR.lab && level <2)) return;
         if (str == gv.buildingSTR.clanCastle) return;
@@ -1052,6 +1042,71 @@ var PopUpConstruct = cc.Node.extend({
         this._effect.setPosition(- this._bg.width * this._bgScale / 4, this._bg.height * this._bgScale / 8);
         this.addChild(this._effect, 2, this._TAG_EFFECT);
     },
+    /* Content cho lính nhà bang hội, lính là trại lính, công trình mở khóa,, ..*/
+    updateContentOptional: function()
+    {
+        /* Troop Amount -- option Clan Castle*/
+        if (this.getChildByTag(this._TAG_CONTENT_OPTIONAL))
+            this.removeChildByTag(this._TAG_CONTENT_OPTIONAL);
+        var buildingId = gv.building_selected;
+        var b = cf.user._buildingList[Math.floor(buildingId/100) - 1][Math.floor(buildingId%100)];
+        if (this._constructType == gv.constructType.info && b._buildingSTR == gv.buildingSTR.clanCastle
+            && fn.getCurrentBuilding(gv.orderInUserBuildingList.clanCastle, 0).getCurrentTroopTypeVsLevel() != 0)
+        {
+            this.updateDescription("Quân đội");
+            var tmp = new PopUpConstruct.getNodeTroopAmount_info_clancastle();
+            tmp.attr({
+                anchorX: 0.5,
+                anchorY: 0.5,
+                x: this._btnOk.x,
+                y: this._btnOk.y + 100
+            })
+            this.addChild(tmp, 5, this._TAG_CONTENT_OPTIONAL);
+        };
+
+        /* Lượng lính trong trại*/
+        if (this._constructType == gv.constructType.info && b._buildingSTR == gv.buildingSTR.armyCamp_1
+            && cf.user.getTroopAmount() != 0)
+        {
+            this.updateDescription("Quân đội");
+            var tmp = new PopUpConstruct.getNodeTroopAmount_info_armyCamp();
+            tmp.attr({
+                anchorX: 0.5,
+                anchorY: 0.5,
+                x: this._btnOk.x,
+                y: this._btnOk.y + 100
+            })
+            this.addChild(tmp, 5, this._TAG_CONTENT_OPTIONAL);
+        };
+
+        /* Lính mở khóa nâng cấp nhà barrack*/
+        if (this._constructType == gv.constructType.upgrade && b._buildingSTR == gv.buildingSTR.barrack_1)
+        {
+            this.updateDescription("Mở khóa");
+            var tmp = new PopUpConstruct.getNodeTroopUnlocked_barrack_upgrade();
+            tmp.attr({
+                anchorX: 0.5,
+                anchorY: 0.5,
+                x: this._btnOk.x,
+                y: this._btnOk.y + 100
+            })
+            this.addChild(tmp, 5, this._TAG_CONTENT_OPTIONAL);
+        };
+
+        /* Mở khóa công trình khi nâng cấp nhà chính*/
+        if (this._constructType == gv.constructType.upgrade && b._buildingSTR == gv.buildingSTR.townHall)
+        {
+            this.updateDescription("Mở khóa");
+            var tmp = new PopUpConstruct.getNodeBuildingUnlocked_upgrade_townhall();
+            tmp.attr({
+                anchorX: 0.5,
+                anchorY: 0.5,
+                x: this._btnOk.x,
+                y: this._btnOk.y + 100
+            })
+            this.addChild(tmp, 5, this._TAG_CONTENT_OPTIONAL);
+        };
+    },
     updateDescription: function(description)
     {
         this._txtDescreption.visible = true;
@@ -1059,17 +1114,8 @@ var PopUpConstruct = cc.Node.extend({
     }
 })
 
-//PopUpConstruct.getOrCreate = function()
-//{
-//    if (!gv.PopUpConstruct)
-//    {
-//        gv.PopUpConstruct = new PopUpConstruct();
-//    }
-//    return gv.PopUpConstruct;
-//}
-
-/* Dành cho popUp nâng cấp công trình*/
-PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
+/* Tài nguyên yêu cầu cho popUp nâng cấp công trình*/
+PopUpConstruct.getNodeResourceRequire_upgrade = cc.Node.extend({
     txtGold: null,
     txtElixir: null,
     txtDarkElixir: null,
@@ -1178,8 +1224,8 @@ PopUpConstruct.getNodeResourceRequire = cc.Node.extend({
 
 
 })
-/* Dành cho popUp thông tin nhà bang hội*/
-PopUpConstruct.getNodeTroopAmountClanCastle = cc.Node.extend({
+/* Lượng lính trong nhà bang hội*/
+PopUpConstruct.getNodeTroopAmount_info_clancastle = cc.Node.extend({
     ctor: function()
     {
         this._super();
@@ -1191,7 +1237,7 @@ PopUpConstruct.getNodeTroopAmountClanCastle = cc.Node.extend({
         scrollView.setTouchEnabled(true);
         scrollView.setBounceEnabled(true);
         scrollView.setPosition(0, 0);
-        scrollView.width = 500;
+        scrollView.width = Math.min(troopDef * 120, cc.winSize.width*4/5);
         scrollView.height = 120;
         scrollView.setInnerContainerSize(cc.size(120 * troopDef, 120));
         scrollView.setAnchorPoint(0.5, 0.5);
@@ -1238,26 +1284,22 @@ PopUpConstruct.getNodeTroopAmountClanCastle = cc.Node.extend({
     }
 
 });
-/* Danh cho thông tin trại lính*/
-PopUpConstruct.getNodeTroopAmountArmyCamp = cc.Node.extend({
+/* Lượng lính trong trại lính*/
+PopUpConstruct.getNodeTroopAmount_info_armyCamp = cc.Node.extend({
     ctor: function()
     {
         this._super();
-        // var troopAmount = fn.getTroopHousingSpace();
-        // số lượng loại lính với level khác nhau
-        // var troopDef = fn.getUserBuilding(gv.orderInUserBuildingList.clanCastle, 0).getCurrentTroopTypeVsLevel();
         var iconWidth = 120;
         var iconHeight = 120;
         var iconTroopAmount = 0;
         for (var i=0; i < cf.clanChat.troopDonateLength; i++)
             if(cf.user.getTroopAmount(i) != 0) iconTroopAmount ++;
-        cc.log(" Ta: " + iconTroopAmount);
         var scrollView = ccui.ScrollView();
         scrollView.setDirection(ccui.ScrollView.DIR_HORIZONTAL);
         scrollView.setTouchEnabled(true);
         scrollView.setBounceEnabled(true);
         scrollView.setPosition(0, 0);
-        scrollView.width = 2 * iconWidth;
+        scrollView.width = Math.min(cf.user.getTroopUnique() * iconWidth, cc.winSize.width*3.7/5);
         scrollView.height = iconHeight;
         scrollView.setInnerContainerSize(cc.size(iconWidth * iconTroopAmount, iconHeight));
         scrollView.setAnchorPoint(0.5, 0.5);
@@ -1285,4 +1327,100 @@ PopUpConstruct.getNodeTroopAmountArmyCamp = cc.Node.extend({
             }
         }
     },
-})
+});
+/* Lính mở khóa khi nâng cấp nhà barrack*/
+PopUpConstruct.getNodeTroopUnlocked_barrack_upgrade = cc.Node.extend({
+    ctor: function()
+    {
+        this._super();
+        var iconWidth = 120;
+        var iconHeight = 120;
+        var iconTroopAmount = 1;
+        var scrollView = ccui.ScrollView();
+        scrollView.setDirection(ccui.ScrollView.DIR_HORIZONTAL);
+        scrollView.setTouchEnabled(true);
+        scrollView.setBounceEnabled(true);
+        scrollView.setPosition(0, 0);
+        scrollView.width = iconTroopAmount * iconWidth;
+        scrollView.height = iconHeight;
+        scrollView.setInnerContainerSize(cc.size(iconWidth * iconTroopAmount, iconHeight));
+        scrollView.setAnchorPoint(0.5, 0.5);
+        this.addChild(scrollView);
+
+        var building = fn.getCurrentBuilding();
+        var troopUnlocked = building._jsonConfig[building._buildingSTR][Math.min(building._level+1, building._maxLevel)]["unlockedUnit"];
+        troopUnlocked = troopUnlocked.substr(4, troopUnlocked.length-4) - 1;
+
+        var iconTroop = cc.Sprite(res.troopIconInPopUpBuilding[troopUnlocked]);
+        iconTroop.scale = 1.5;
+        iconTroop.setPosition(30 + iconTroop.width/2 + 5, 60);
+        scrollView.addChild(iconTroop);
+    },
+});
+/* Các công trình mở khóa khi nâng cấp nhà chính*/
+PopUpConstruct.getNodeBuildingUnlocked_upgrade_townhall = cc.Node.extend({
+    ctor: function()
+    {
+        this._super();
+        var iconWidth = 120;
+        var iconHeight = 120;
+        var buildingUnlockedAmount = 0;
+        var building = fn.getCurrentBuilding();
+        var buildingJSON = building._jsonConfig[building._buildingSTR][Math.min(building._level+1, building._maxLevel)];
+        for (var i=0; i < gv.building_townHall_upgrade_STR.length; i++)
+            if(buildingJSON[gv.building_townHall_upgrade_STR[i]] != 0) buildingUnlockedAmount ++;
+        var scrollView = ccui.ScrollView();
+        scrollView.setDirection(ccui.ScrollView.DIR_HORIZONTAL);
+        scrollView.setTouchEnabled(true);
+        scrollView.setBounceEnabled(true);
+        scrollView.setPosition(0, 0);
+        scrollView.width = Math.min(buildingUnlockedAmount * iconWidth, cc.winSize.width*3.5/5);
+        scrollView.height = iconHeight;
+        scrollView.setInnerContainerSize(cc.size(iconWidth * buildingUnlockedAmount, iconHeight));
+        scrollView.setAnchorPoint(0.5, 0.5);
+        this.addChild(scrollView);
+
+        var xStart = -50;
+        for (var i = 0; i < gv.building_townHall_upgrade_STR.length; i++) {
+            var buildingAmount = buildingJSON[gv.building_townHall_upgrade_STR[i]];
+            if (buildingAmount != 0)
+            {
+                var centerIcon = cc.Sprite(res.building_townHall_upgrade_icon[i]);
+                centerIcon.scale = 0.5;
+                centerIcon.setPosition(xStart + iconWidth, 60);
+                scrollView.addChild(centerIcon, 1);
+                var slot = cc.Sprite(res.upgradeBuildingGUI.iconSlot);
+                slot.setPosition(centerIcon.x, centerIcon.y);
+                scrollView.addChild(slot, 0);
+                if (res.building_townHall_upgrade_effect[i] != "none")
+                {
+                    var effect = cc.Sprite(res.building_townHall_upgrade_effect[i]);
+                    effect.scale = 0.5;
+                    effect.setPosition(centerIcon.x, (gv.building_townHall_upgrade_STR[i] == "AMC_1" ? 20 : 0 ) + centerIcon.y);
+                    scrollView.addChild(effect, 1);
+                }
+                var labelAmount = cc.LabelBMFont("x" + buildingAmount, font.fista24);
+                labelAmount.setColor(cc.color(0, 0, 0, 255));
+                labelAmount.setScale(1.2);
+                labelAmount.setPosition(centerIcon.x - 30, centerIcon.y - 30);
+                scrollView.addChild(labelAmount, 1);
+                if (cf.user.getBuildingCount(gv.building_townHall_upgrade_order[i]) == 0)
+                {
+                    var iconNew = cc.Sprite(shopGUI.iconSale);
+                    iconNew.setScale(0.65);
+                    iconNew.setAnchorPoint(1, 0);
+                    iconNew.setPosition(centerIcon.x, centerIcon.y);
+                    scrollView.addChild(iconNew, 1);
+                    var labelNew = fn.commonLabel("Mới", font.soji20, 1, 1);
+                    labelNew.setScale(0.75);
+                    labelNew.setRotation(-45);
+                    labelNew.setAnchorPoint(1, 0);
+                    labelNew.setPosition(centerIcon.x - 8, centerIcon.y + 30);
+                    scrollView.addChild(labelNew, 1);
+                }
+
+                xStart += 120;
+            }
+        }
+    },
+});

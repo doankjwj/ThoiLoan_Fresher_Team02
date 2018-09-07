@@ -19,6 +19,36 @@ gv.buildingNextBuild = null;
 gv.upgradeAble = gv.upgradeAble || {};
 gv.upgradeAble.etcToCoin = 0;
 
+/*Buiding STR các công trình, dùng để lấy số lượng nhà khi nâng cấp nhà chính*/
+gv.building_townHall_upgrade_STR =
+[
+    "BAR_1",
+    "AMC_1",
+    "LAB_1",
+    "DEF_1",
+    "WAL_1",
+    "RES_1",
+    "RES_2",
+    "RES_3",
+    "STO_1",
+    "STO_2",
+    "STO_3",
+];
+gv.building_townHall_upgrade_order =
+[
+    9,
+    8,
+    7,
+    12,
+    25,
+    4,
+    5,
+    6,
+    1,
+    2,
+    3,
+];
+
 gv.reloaded = false;
 
 gv.buildingDescription =

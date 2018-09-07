@@ -145,7 +145,7 @@
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
         gv.passwordSendToServer = "";
 
         gv.gameClient.connect();
@@ -575,8 +575,8 @@
                 self.addChild(popUp, 1, gv.tag.TAG_POPUP);
             }
 
-            self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width/2, cc.winSize.height/2);
-            self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
+            //self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width/2, cc.winSize.height/2);
+            //self.getChildByTag(gv.tag.TAG_POPUP).visible = false;
             self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.info);
             self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
 
@@ -606,8 +606,8 @@
             var townHallLevel = townHall._level;
             if(building._buildingSTR !== gv.buildingSTR.townHall) {
                 if (townHallLevel >= building._jsonConfig[building._buildingSTR][Math.min(building._level + 1, building._maxLevel)]["townHallLevelRequired"]) {
-                    self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
-                    self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
+                    //self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
+                    //self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
                     self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
                     self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
                 }
@@ -619,8 +619,8 @@
             } else if (building._level === building._maxLevel) {
                 self.popUpMessage("Đã đạt cấp tối đa");
             } else {
-                self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
-                self.getChildByTag(gv.tag.TAG_POPUP).visible = true;
+                //self.getChildByTag(gv.tag.TAG_POPUP).setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
+                //self.getChildByTag(gv.tag.TAG_POPUP).visible = false;
                 self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
                 self.getChildByTag(gv.tag.TAG_POPUP).onAppear();
             }
