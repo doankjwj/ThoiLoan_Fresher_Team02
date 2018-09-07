@@ -485,4 +485,10 @@ fn.percentage = function(current, max)
     if (current/max < 0.5)  return 1;
     if (current/max < 0.75) return 2;
     return 3;
+};
+
+/* LẤy ra housing space của đơn vị lính*/
+fn.getTroopHousingSpace = function(troopType, troopLevel)
+{
+    return gv.json.troopBase["ARM_" + troopType][troopLevel]["housingSpace"];
 }

@@ -267,7 +267,7 @@ var trainingQueueGUI = {
     slot: guiFolder + "train_troop_gui/small_icon/slot.png",
 };
 
-res.donateTroopIconArr =
+res.troopIconInPopUpBuilding =
 [
     guiFolder + "train_troop_gui/small_icon/ARM_1.png",
     guiFolder + "train_troop_gui/small_icon/ARM_2.png",

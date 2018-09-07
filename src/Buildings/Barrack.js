@@ -249,6 +249,10 @@ var Barrack = BuildingNode.extend({
         cf.user.editTroop(troopType-1, 1);
         cc.log(cf.user.getTroopAmount());
     },
+    quickFinishTrain: function()
+    {
+
+    },
     onStopTraining: function(boo)
     {
         if (!boo) boo = false;

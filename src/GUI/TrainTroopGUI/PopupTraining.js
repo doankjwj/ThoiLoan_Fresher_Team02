@@ -696,8 +696,10 @@ var PopupTraining = cc.Node.extend({
                 this.getParent()._map.addChild(troop);
                 amc._troopList.push(troop);
                 amc._troopQuantity += gv.json.troopBase["ARM_" + id]["housingSpace"];
-
             }
+
+            /* Thêm lính vào cho user*/
+            cf.user.editTroop(id, this._queueTrainingButtonList[i]._quantity);
 
             this._trainingQueueBackground.removeChildByTag(id, false);
         }

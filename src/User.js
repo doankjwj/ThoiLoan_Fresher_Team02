@@ -398,12 +398,22 @@ var User = cc.Class.extend({
     {
         this._listTroop[troopType] += amount;
     },
-    getTroopAmount: function()
+    /* Số lượng đơn vị mỗi loại quân*/
+    getTroopAmount: function(troopType)         // tính từ 0
     {
+        var troopAmount = this._listTroop[troopType];
+        if (troopType != undefined)
+        {
+            return (troopAmount);
+        };
         var troopAmount = 0;
         for (var i=0; i < this._listTroop.length; i++)
         {
             troopAmount += this._listTroop[i]
         }
+    },
+    getTroopLevel: function(troopType)          // tính từ 0
+    {
+        return this._listTroopLevel[troopType];
     }
 });
