@@ -74,10 +74,10 @@
     },
     init: function() {
         this.addLoginGUI();
-        //this.initLocalize();
     },
     test: function()
     {
+        // Demo GIT
     },
     addLoginGUI: function()
     {
