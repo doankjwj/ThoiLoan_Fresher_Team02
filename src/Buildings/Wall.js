@@ -53,8 +53,6 @@ var Wall = BuildingNode.extend({
         }
 
         if(numberOfWallBeside === 2) direction = 3;
-
-
         return direction;
 
     },
