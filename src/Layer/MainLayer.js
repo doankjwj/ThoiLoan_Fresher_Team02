@@ -1,4 +1,7 @@
-﻿var MainLayer = cc.Layer.extend({
+﻿//Quan Le Anh
+//13-11-1996
+
+var MainLayer = cc.Layer.extend({
     _map: null,
     _shop: null,
 
