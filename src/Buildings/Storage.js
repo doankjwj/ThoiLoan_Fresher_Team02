@@ -13,19 +13,44 @@ var Storage = BuildingNode.extend({
         this._buildingSTR = buildingSTR;
         this._size = gv.json.storage[this._buildingSTR][Math.max(level, 1)]["width"];
         this._jsonConfig = gv.json.storage;
-        if(this._buildingSTR === gv.buildingSTR.storage_1) {
-            this._maxLevel = gv.buildingMaxLevel.storage_1;
-            this._folder = res.folder_gold_storage;
-        } else if(this._buildingSTR === gv.buildingSTR.storage_2) {
-            this._maxLevel = gv.buildingMaxLevel.storage_2;
-            this._folder = res.folder_elixir_storage;
-        } else if(this._buildingSTR === gv.buildingSTR.storage_3) {
-            this._maxLevel = gv.buildingMaxLevel.storage_3;
-            this._folder = res.folder_dark_elixir_storage;
-        };
-        this._orderInUserBuildingList = (buildingSTR === gv.buildingSTR.storage_1) ? gv.orderInUserBuildingList.storage_1 : gv.orderInUserBuildingList.storage_2;
-        this._name = (buildingSTR === gv.buildingSTR.storage_1) ? gv.buildingName.storage_1 : gv.buildingName.storage_2;
-        this._description = (buildingSTR === gv.buildingSTR.storage_1) ? gv.buildingDescription.storage_1 : gv.buildingDescription.storage_2;
+        switch(this._buildingSTR)
+        {
+            case gv.buildingSTR.storage_1:
+                this._maxLevel = gv.buildingMaxLevel.storage_1;
+                this._folder = res.folder_gold_storage;
+                this._orderInUserBuildingList = gv.orderInUserBuildingList.storage_1;
+                this._name = gv.buildingName.storage_1;
+                this._description = gv.buildingDescription.storage_1;
+                break;
+            case gv.buildingSTR.storage_2:
+                this._maxLevel = gv.buildingMaxLevel.storage_2;
+                this._folder = res.folder_elixir_storage;
+                this._orderInUserBuildingList = gv.orderInUserBuildingList.storage_2;
+                this._name = gv.buildingName.storage_2;
+                this._description = gv.buildingDescription.storage_2;
+                break;
+            case gv.buildingSTR.storage_3:
+                this._maxLevel = gv.buildingMaxLevel.storage_3;
+                this._folder = res.folder_dark_elixir_storage;
+                this._orderInUserBuildingList = gv.orderInUserBuildingList.storage_3;
+                this._name = gv.buildingName.storage_3;
+                this._description = gv.buildingDescription.storage_3;
+                break;
+        }
+
+        //if(this._buildingSTR === gv.buildingSTR.storage_1) {
+        //    this._maxLevel = gv.buildingMaxLevel.storage_1;
+        //    this._folder = res.folder_gold_storage;
+        //} else if(this._buildingSTR === gv.buildingSTR.storage_2) {
+        //    this._maxLevel = gv.buildingMaxLevel.storage_2;
+        //    this._folder = res.folder_elixir_storage;
+        //} else if(this._buildingSTR === gv.buildingSTR.storage_3) {
+        //    this._maxLevel = gv.buildingMaxLevel.storage_3;
+        //    this._folder = res.folder_dark_elixir_storage;
+        //};
+        //this._orderInUserBuildingList = (buildingSTR === gv.buildingSTR.storage_1) ? gv.orderInUserBuildingList.storage_1 : gv.orderInUserBuildingList.storage_2;
+        //this._name = (buildingSTR === gv.buildingSTR.storage_1) ? gv.buildingName.storage_1 : gv.buildingName.storage_2;
+        //this._description = (buildingSTR === gv.buildingSTR.storage_1) ? gv.buildingDescription.storage_1 : gv.buildingDescription.storage_2;
 
         this._super(id, level, row, col, existed, isActive);
 
@@ -69,7 +94,6 @@ var Storage = BuildingNode.extend({
     {
         var maxCapacity = this.getMaxCapacity();
         var currentCapacity = this.getCurrentCapacity();
-        cc.log(this._buildingSTR + " / " + currentCapacity + " : " + maxCapacity);
         var state = fn.percentage(currentCapacity, maxCapacity);
         if (state != this._state)
         {

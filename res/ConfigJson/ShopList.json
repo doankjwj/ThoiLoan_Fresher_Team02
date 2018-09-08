@@ -60,6 +60,14 @@
         "tag": 200
       },
       {
+        "key": "STO_3",
+        "name": "Kho dầu đen",
+        "jsonConfigFile": "Storage.json",
+        "iconPath": "res/Art/GUIs/icons/shop_gui/icon/STO_3.png",
+        "priceCurrency": "gold",
+        "tag": 350
+      },
+      {
         "key": "BDH_1",
         "name": "Nhà thợ xây",
         "jsonConfigFile": "BuilderHut.json",

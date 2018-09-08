@@ -9,8 +9,10 @@ description_resource_1   ="Vàng là tài nguyên không thể thiếu để xâ
 description_resource_2   ="Những dòng chảy tự nhiên bên dưới vương quốc, mỏ dầu giúp đem chúng lên \nxây dựng quân đội"
 description_storage_1    ="Kho vàng là nơi cất trữ toàn bộ vàng của vương quốc, hãy cất giữ\nnơi này nghiêm ngặt nếu không muốn trắng tay sau 1 đêm thức dậy"
 description_storage_2    ="Cùng với kho vàng, kho dầu là nơi lưu trữ tài nguyên quan trọng của vương quốc, \nhãy nâng cấp kho dầu liên tục đẻ lưu trữ nhiều hơn những dòng dầu óng ánh"
+description_storage_3    ="Với sức mạnh của dầu đen cần phải chứa chúng trong 1 loại kho đặc biệt"
 description_laboratory   ="Nhà nâng cấp lính"
 description_clanCastle   ="Nhà bang hội là nơi giữ lính phòng thủ quan trọng"
+description_wall   ="Tường tăng cường sự an toàn cho vương quốc,giữ chân quân xâm lược\nđể các công trình phòng thủ tiêu diệt kẻ địch"
 
 troopInfo_0_name    ="Chiến binh"
 troopInfo_0_favoriteTarget  ="Tất cả"

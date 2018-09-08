@@ -45,8 +45,6 @@ var Wall = BuildingNode.extend({
             var posTmp = cc.p(pos.x + vector[i].x, pos.y + vector[i].y);
             if(posTmp.x > 40 || posTmp.y > 40 || posTmp.x < 1 || posTmp.y < 1) continue;
 
-            // cc.log(cf.map_array[posTmp.x][posTmp.y] / 100);
-
             if(Math.floor(cf.map_array[posTmp.x][posTmp.y] / 100) - 1 === gv.orderInUserBuildingList.wall) {
                 if(i === 0) direction = 1;
                 else direction = 2;

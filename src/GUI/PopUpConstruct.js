@@ -218,7 +218,6 @@ var PopUpConstruct = cc.Node.extend({
         /* Request */
         testnetwork.connector.sendUpgradeBuilding(gv.building_selected);
 
-        cc.log(this._cost.gold + " : " + this._cost.elixir);
         /* Update User Infor + Resource Bar */
         cf.user.editCurrentResource(cf.resType.resource_1, -this._cost.gold);
         cf.user.editCurrentResource(cf.resType.resource_2, -this._cost.elixir);
@@ -444,7 +443,7 @@ var PopUpConstruct = cc.Node.extend({
         }
         var b = cf.user._buildingList[Math.floor(id/100) - 1][Math.floor(id%100)];
         var level = (constructType == gv.constructType.info) ? b.getTempLevel() : b.getNextLevel();
-        this.updateDescription((b._description));
+        this.updateDescription(b._description);
         this.updateIcon(b._buildingSTR, level, b._size, b._name, b._isActive, constructType);
         this.updateBar(b._buildingSTR, b.getTempLevel(), b._size, b._name, b._isActive, constructType);
     },
@@ -476,7 +475,6 @@ var PopUpConstruct = cc.Node.extend({
         {
             case this._orderBar.bar1:
                 this.removeChild(this._bar1Icon);
-                this._bar1Icon = cc.Sprite(url);
                 this._bar1Icon = cc.Sprite(url);
                 this._bar1Icon.attr({
                     anchorX: 1,
@@ -691,6 +689,25 @@ var PopUpConstruct = cc.Node.extend({
                 preText1 = "Máu: ";
                 preText2 = "Sức chứa: ";
                 break;
+            case gv.buildingSTR.storage_3:
+                this.visibleBar(true, true, false);
+                bar1Length = gv.json.storage[str][level]["hitpoints"];
+                bar1Length2 = gv.json.storage[str][Math.min(level + 1, gv.buildingMaxLevel.storage_3)]["hitpoints"];
+                bar1MaxLength = gv.json.storage[str][gv.buildingMaxLevel.storage_3]["hitpoints"];
+                if (constructType == gv.constructType.info){
+                    bar2Length = b._currentCapacity;
+                    bar2MaxLength = gv.json.storage[str][level]["capacity"];
+                }
+                else{
+                    bar2Length = gv.json.storage[str][level]["capacity"];
+                    bar2Length2 = gv.json.storage[str][Math.min(level + 1, gv.buildingMaxLevel.storage_3)]["capacity"];
+                    bar2MaxLength = gv.json.storage[str][gv.buildingMaxLevel.storage_3]["capacity"];
+                }
+                this.replaceIconBar(this._orderBar.bar1, res.upgradeBuildingGUI.hpIcon);
+                this.replaceIconBar(this._orderBar.bar2, res.upgradeBuildingGUI.iconCapacityElixir);
+                preText1 = "Máu: ";
+                preText2 = "Sức chứa: ";
+                break;
             case gv.buildingSTR.defence_1:
                 this.visibleBar(true, true, false);
                 bar1Length = gv.json.defence[str][level]["hitpoints"];
@@ -854,6 +871,13 @@ var PopUpConstruct = cc.Node.extend({
                 darkElixir = gv.json.storage[str][level]["darkElixir"];
                 coin = 0;
                 break;
+            case gv.buildingSTR.storage_3:
+                time = gv.json.storage[str][level]["buildTime"];
+                gold = gv.json.storage[str][level]["gold"];
+                elixir = gv.json.storage[str][level]["elixir"];
+                darkElixir = gv.json.storage[str][level]["darkElixir"];
+                coin = 0;
+                break;
             case gv.buildingSTR.defence_1:
                 time = gv.json.defence[str][level]["buildTime"];
                 gold = gv.json.defence[str][level]["gold"];
@@ -953,6 +977,9 @@ var PopUpConstruct = cc.Node.extend({
                 break;
             case gv.buildingSTR.storage_2:
                 this._icon = cc.Sprite(res.folder_elixir_storage + str + "_" + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
+            case gv.buildingSTR.storage_3:
+                this._icon = cc.Sprite(res.folder_dark_elixir_storage + str + "_" + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case gv.buildingSTR.defence_1:
                 this._icon = cc.Sprite(res.folder_canon + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);

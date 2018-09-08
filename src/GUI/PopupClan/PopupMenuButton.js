@@ -134,8 +134,6 @@ var PopupMenuButton = ccui.Button.extend({
         this._clan = clan;
         this._user = user;
 
-        cc.log("POS : " + this._user._position);
-
         if(this._clan.id === cf.user._clanId) {
             var myAuthority = gv.userClanInfo.myAuthority;
             this._buttonKick.visible = (myAuthority === 1 || myAuthority === 2);

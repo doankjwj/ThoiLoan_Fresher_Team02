@@ -230,7 +230,6 @@ var SearchClan = PopupClan.extend({
         }
 
         if(gv.searchResult.byID.id !== -1) {
-            cc.log(gv.searchResult.byID.name);
             this.listClan[0].updateClanItem(new Clan(gv.searchResult.byID.id,
                 gv.searchResult.byID.flag+1,
                 gv.searchResult.byID.name,

@@ -185,7 +185,7 @@ gv.buildingName =
     townHall: "Nhà Chính",
     storage_1: "Kho vàng",
     storage_2: "Kho dầu",
-    storage_3: "Kho dầu đen",
+    storage_3: "Kho Dầu đen",
     resource_1: "Mỏ vàng",
     resource_2: "Mỏ dầu",
     resource_3: "Mỏ dầu đen",
@@ -385,6 +385,8 @@ cf.tagToItem = function(tag, lvl, posX, posY, existed){
             return new Storage(24, lvl, posX, posY, existed, false, gv.buildingSTR.storage_1);
         case 200:
             return new Storage(25, lvl, posX, posY, existed, false, gv.buildingSTR.storage_2);
+        case 350:
+            return new Storage(25, lvl, posX, posY, existed, false, gv.buildingSTR.storage_3);
         case 1100:
             return new BuilderHut(26, lvl, posX, posY, existed, false);
         case 1200:
@@ -429,6 +431,13 @@ cf.stringToItemInit = function(str, index) {
             finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
             isActive = finishTime <= currentTime;
             building = new Storage(cf.user._buildingListCount[gv.orderInUserBuildingList.storage_2], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, isActive, gv.buildingSTR.storage_2);
+            building._finishing_time = finishTime;
+            //building._isActive = (finishTime <= currentTime);
+            break;
+        case "STO_3":
+            finishTime = gv.jsonInfo["map"][str][index]["finishBuildOrUpgradeTime"];
+            isActive = finishTime <= currentTime;
+            building = new Storage(cf.user._buildingListCount[gv.orderInUserBuildingList.storage_3], gv.jsonInfo["map"][str][index]["level"], gv.jsonInfo["map"][str][index]["X"], gv.jsonInfo["map"][str][index]["Y"], true, isActive, gv.buildingSTR.storage_3);
             building._finishing_time = finishTime;
             //building._isActive = (finishTime <= currentTime);
             break;

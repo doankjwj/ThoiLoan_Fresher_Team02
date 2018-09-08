@@ -651,7 +651,6 @@ var LayerClanChat = cc.Node.extend({
         this._scrollviewUserOnline.setInnerContainerSize(this.getScrollviewInnerContainerSize(this._typeDefine.userOnlineScrollView));
 
         // Lấy vị trí cho Item theo order
-        cc.log(this._memberQuantity + " ____");
         for (var i = 0; i < this._memberQuantity; i++) {
             var pos = cc.p(this._scrollviewUserOnline.width / 2 - 6, this._scrollviewUserOnline.getInnerContainerSize().height - 10 - i * 20);
             this._listItemUserOnline[i].setPosition(pos);

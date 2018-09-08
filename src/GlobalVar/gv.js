@@ -62,6 +62,7 @@ gv.buildingDescription =
     resource_2: null,
     storage_1: null,
     storage_2: null,
+    storage_3: null,
     laboratory: null,
     clanCastle: null,
     wall: null,

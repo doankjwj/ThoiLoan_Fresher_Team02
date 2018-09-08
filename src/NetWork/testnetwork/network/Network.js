@@ -130,7 +130,7 @@ testnetwork.Connector = cc.Class.extend({
     },
     sendCheat: function( type, num)
     {
-        cc.log("Cheat: Resource " + type + " " + num);
+        cc.log("Cheat: Resource " + (type+1) + " " + ((num == cf.cheatType.full)? "FULL" : "EMPTY"));
         var pk = this.gameClient.getOutPacket(CmdSendCheat);
         pk.pack(type, num);
         this.gameClient.sendPacket(pk);

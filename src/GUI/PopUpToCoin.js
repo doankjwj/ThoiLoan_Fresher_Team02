@@ -106,7 +106,6 @@ var PopUpToCoin = cc.Node.extend({
             {
                 /* Sức chứa còn lại*/
                 var resAvaiable = cf.user.getMaxCapacityResource(i) - cf.user.getCurrentResource(i);
-                cc.log("Tài nguyên loại " + i + " có thể chứa thêm: " + resAvaiable);
                 if (resAvaiable < self._resLeak[i])
                 {
                     fr.getCurrentScreen().popUpMessage("CẦN NÂNG CẤP THÊM KHO CHỨA !")
@@ -227,7 +226,6 @@ var PopUpToCoin = cc.Node.extend({
     getNodeRequire: cc.Node.extend({
         ctor: function(resType, resAmout)
         {
-            cc.log(resType + " ::: " + resAmout);
             this._super();
             this.setScale(0.9);
             var xPos = 100;
@@ -251,7 +249,6 @@ var PopUpToCoin = cc.Node.extend({
             label.setAnchorPoint(1, 0.5);
             label.setPosition(xPos, 0);
             this.addChild(label);
-            cc.log(" ++++ ");
         }
     }),
     /* quy đổi tài nguyên sang coin tương ứng*/

@@ -87,6 +87,9 @@ var ShopItem = ccui.Button.extend({
             case gv.buildingSTR.storage_2:
                 this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.storage_2];
                 break;
+            case gv.buildingSTR.storage_3:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.storage_3];
+                break;
             case gv.buildingSTR.builderHut:
                 this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut];
                 break;
@@ -172,6 +175,9 @@ var ShopItem = ccui.Button.extend({
             case gv.buildingSTR.storage_2:
                 this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.storage_2];
                 break;
+            case gv.buildingSTR.storage_3:
+                this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.storage_3];
+                break;
             case gv.buildingSTR.builderHut:
                 this._currentQuantity = cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut];
                 break;
@@ -223,6 +229,12 @@ var ShopItem = ccui.Button.extend({
         } else if(this._priceCurrency === "coin") {
             if(cf.user._currentCapacityCoin < this._priceText) this._priceLabel.setColor(cc.color.RED);
             else this._priceLabel.setColor(cc.color.WHITE);
+        };
+
+        if (this._priceText == 0)
+        {
+            this._priceLabel.setString("MIẾN PHÍ");
+            this._priceIcon.setVisible(false);
         }
 
     },

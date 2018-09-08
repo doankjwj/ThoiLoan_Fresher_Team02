@@ -247,7 +247,6 @@ var Barrack = BuildingNode.extend({
 
         /* Tăng số lượng lính của người chơi*/
         cf.user.editTroop(troopType-1, 1);
-        cc.log(cf.user.getTroopAmount());
     },
     quickFinishTrain: function()
     {
@@ -317,7 +316,6 @@ var Barrack = BuildingNode.extend({
     {
         var index = this._troopTrainingTypeArr.indexOf(troopType);
         if (index == -1) return;
-        cc.log(troopType + " index: " + index);
         var newTroopAmount = this._troopTrainingAmountArr[index] - 1;
         if (newTroopAmount < 0) newTroopAmount = 0;
         this._troopTrainingAmountArr[index] = newTroopAmount;

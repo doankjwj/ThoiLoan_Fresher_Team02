@@ -38,6 +38,8 @@
     _subGoldButton: null,
     _addElixirButton: null,
     _subElixirButton: null,
+    _addDarkElixirButton: null,
+    _addDarkElixirButton: null,
     _addCoinButton: null,
     _subCoinButton: null,
 
@@ -76,18 +78,6 @@
     },
     test: function()
     {
-    //    Test something
-        gv.buildingDescription.townHall_1 = fr.Localization.getInstance().getText("description_townHall_1");
-        gv.buildingDescription.armyCamp_1 = fr.Localization.getInstance().getText("description_armyCamp_1");
-        gv.buildingDescription.barrack_1 = fr.Localization.getInstance().getText("description_barrack_1");
-        gv.buildingDescription.builderHut = fr.Localization.getInstance().getText("description_builderHut");
-        gv.buildingDescription.defence_1 = fr.Localization.getInstance().getText("description_defence_1");
-        gv.buildingDescription.resource_1 = fr.Localization.getInstance().getText("description_resource_1");
-        gv.buildingDescription.resource_2 = fr.Localization.getInstance().getText("description_resource_2");
-        gv.buildingDescription.storage_1 = fr.Localization.getInstance().getText("description_storage_1");
-        gv.buildingDescription.storage_2 = fr.Localization.getInstance().getText("description_storage_2");
-        gv.buildingDescription.laboratory = fr.Localization.getInstance().getText("description_laboratory");
-        gv.buildingDescription.clanCastle = fr.Localization.getInstance().getText("description_clanCastle");
     },
     addLoginGUI: function()
     {
@@ -144,7 +134,7 @@
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "quanleanh";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
         gv.passwordSendToServer = "";
 
         gv.gameClient.connect();
@@ -367,8 +357,46 @@
         this.addChild(this._addElixirButton, 1);
         this.addChild(this._subElixirButton, 1);
 
+        /* Button Dark Elixir */
+        this._addDarkElixirButton = gv.commonButton(120, 64, 70, this._subElixirButton.y - 90, "F Dark_E");
+        this._subDarkElixirButton = gv.commonButton(120, 64, 70, this._addDarkElixirButton.y - 70, "E Dark_E");
+
+        this._addDarkElixirButton.addTouchEventListener(function(sender, type) {
+            var cheatNumber = 5000000;
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    cf.user.setCurrentResource(cf.resType.resource_3, cf.user.getMaxCapacityResource(cf.resType.resource_3));
+                    testnetwork.connector.sendCheat(cf.resType.resource_3, cf.cheatType.full);
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+        }, this._addDarkElixirButton);
+        this._subDarkElixirButton.addTouchEventListener(function(sender, type) {
+            var cheatNumber = 5000000;
+            switch (type){
+                case ccui.Widget.TOUCH_BEGAN:
+                    break;
+                case ccui.Widget.TOUCH_MOVED:
+                    break;
+                case ccui.Widget.TOUCH_ENDED:
+                    cf.user.setCurrentResource(cf.resType.resource_3, 0);
+                    testnetwork.connector.sendCheat(cf.resType.resource_3, cf.cheatType.empty);
+                    break;
+                case ccui.Widget.TOUCH_CANCELED:
+                    break;
+            }
+        }, this._subDarkElixirButton);
+
+        this.addChild(this._addDarkElixirButton, 1);
+        this.addChild(this._subDarkElixirButton, 1);
+
         /* Button coin */
-        this._addCoinButton = gv.commonButton(120, 64, 70, this._subElixirButton.y - 90, "1M Coin");
+        this._addCoinButton = gv.commonButton(120, 64, 70, this._subDarkElixirButton.y - 90, "1M Coin");
         this._subCoinButton = gv.commonButton(120, 64, 70, this._addCoinButton.y - 70, "E Coin");
 
         this._addCoinButton.addTouchEventListener(function(sender, type) {

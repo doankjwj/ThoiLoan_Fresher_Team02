@@ -133,6 +133,9 @@ var User = cc.Class.extend({
     {
         var typeInBuildingList = Math.floor(id /100) - 1;
         var orderInType = id % 100;
+
+        cc.log("+++: Building Type: " + typeInBuildingList + " order: " + orderInType);
+
         var building = this._buildingList[typeInBuildingList][orderInType];
 
         switch (typeInBuildingList)

@@ -514,12 +514,6 @@ var BuildingNode = cc.Node.extend({
     },
 
     onStartBuild: function(startConstructType) {
-        //if (this._existed)
-        //    this._level ++;
-
-        /* Hiển thị*/
-        //this.getParent().getParent().showListBotButton(this._id);
-
         this._existed = true;
         this._isActive = false;
         if (startConstructType == gv.startConstructType.newConstruct) { // click xây mới/ nâng cấp mới
@@ -539,7 +533,7 @@ var BuildingNode = cc.Node.extend({
         {
             this._time_remaining = Math.floor((this._finishing_time - new Date().getTime()) / 1000);
             this._time_total = this.getTimeRequire();
-        }
+        };
 
         /* Time Bar */
         this._info_bar = cc.Sprite(res.upgradeBuildingGUI.infoBar, cc.rect(0,0, this._BAR_WIDTH, this._BAR_HEIGHT));
@@ -591,6 +585,11 @@ var BuildingNode = cc.Node.extend({
 
         this._txtName.visible = false;
 
+        if (this._time_remaining <= 0)
+        {
+            this._isActive = true;
+            this.onCompleteBuild();
+        }
     },
 
     onUpdateBuildStatus: function() {
@@ -657,8 +656,6 @@ var BuildingNode = cc.Node.extend({
             fn.getAnimation("effect_construct_levelup ", 1, 7),
             cc.CallFunc(function(){this._effect_level_up.visible = false}, this)));
 
-
-
         /* Update user infor && GUI */
         cf.user._builderFree ++;
         cf.user.updateBuilder();
@@ -713,6 +710,9 @@ var BuildingNode = cc.Node.extend({
                 break;
             case gv.buildingSTR.storage_2:
                 this._center_building = cc.Sprite(res.folder_elixir_storage + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
+            case gv.buildingSTR.storage_3:
+                this._center_building = cc.Sprite(res.folder_dark_elixir_storage + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case gv.buildingSTR.obstacle:
                 this._center_building = cc.Sprite(res.folder_obs + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
@@ -769,6 +769,9 @@ var BuildingNode = cc.Node.extend({
             case gv.buildingSTR.storage_2:
                 json = gv.json.storage;
                 break;
+            case gv.buildingSTR.storage_3:
+                json = gv.json.storage;
+                break;
             case gv.buildingSTR.defence_1:
                 json = gv.json.defence;
                 break;
@@ -820,6 +823,9 @@ var BuildingNode = cc.Node.extend({
                 break;
             case gv.buildingSTR.storage_2:
                 this._center_building = cc.Sprite(res.folder_elixir_storage + str + "_" + this.getTempLevel() + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
+            case gv.buildingSTR.storage_3:
+                this._center_building = cc.Sprite(res.folder_dark_elixir_storage + str + "_" + this.getTempLevel() + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case gv.buildingSTR.obstacle:
                 this._center_building = cc.Sprite(res.folder_obs + this.getTempLevel() + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
@@ -931,9 +937,9 @@ var BuildingNode = cc.Node.extend({
         this._listenerMove.setEnabled(false);
 
         this.locate_map_array(this);
-        this.onStartBuild(gv.startConstructType.newConstruct);
 
         this.getParent().addBuildingToUserBuildingList(this);
+        this.onStartBuild(gv.startConstructType.newConstruct);
 
         this.updateZOrder();
         gv.building_is_moved = 0;
@@ -1049,6 +1055,12 @@ var BuildingNode = cc.Node.extend({
                 coin = 0;
                 break;
             case gv.buildingSTR.storage_2:
+                gold = gv.json.storage[str][nextLevel]["gold"];
+                elixir = gv.json.storage[str][nextLevel]["elixir"];
+                darkElixir = gv.json.storage[str][nextLevel]["darkElixir"];
+                coin = 0;
+                break;
+            case gv.buildingSTR.storage_3:
                 gold = gv.json.storage[str][nextLevel]["gold"];
                 elixir = gv.json.storage[str][nextLevel]["elixir"];
                 darkElixir = gv.json.storage[str][nextLevel]["darkElixir"];

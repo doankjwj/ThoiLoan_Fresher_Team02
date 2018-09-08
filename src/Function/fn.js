@@ -105,6 +105,7 @@ fn.initLocalized= function()
     gv.buildingDescription.resource_2 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_resource_2"));
     gv.buildingDescription.storage_1 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_storage_1"));
     gv.buildingDescription.storage_2 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_storage_2"));
+    gv.buildingDescription.storage_3 = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_storage_3"));
     gv.buildingDescription.laboratory = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_laboratory"));
     gv.buildingDescription.clanCastle = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_clanCastle"));
     gv.buildingDescription.wall = fn.singleToMultiLineStr(fr.Localization.getInstance().getText("description_wall"));
@@ -288,6 +289,12 @@ fn.getPrice = function (str, level)
             price.coin = 0;
             break;
         case gv.buildingSTR.storage_2:
+            price.gold = gv.json.storage[str][level]["gold"];
+            price.elixir = gv.json.storage[str][level]["elixir"];
+            price.darkElixir = gv.json.storage[str][level]["darkElixir"];
+            price.coin = 0;
+            break;
+        case gv.buildingSTR.storage_3:
             price.gold = gv.json.storage[str][level]["gold"];
             price.elixir = gv.json.storage[str][level]["elixir"];
             price.darkElixir = gv.json.storage[str][level]["darkElixir"];

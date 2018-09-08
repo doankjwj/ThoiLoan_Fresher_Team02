@@ -47,7 +47,6 @@ var PopupTraining = cc.Node.extend({
     ctor: function (barID) {
         this._barrackID = barID;
         this._barrack = cf.user._buildingList[Math.floor(barID / 100) - 1][barID % 100];
-        cc.log("BAR Id: " + this._barrack._id);
         this._super();
         this.x = cc.winSize.width / 2;
         this.y = cc.winSize.height / 2;
@@ -80,16 +79,12 @@ var PopupTraining = cc.Node.extend({
 
     /* Tiếp tục luyện quân khi bật game*/
     onGetTrainingFromBarrack: function() {
-        cc.log("++++");
-        cc.log(this._barrackID + " ++++")
         var barrackOrder = this._barrackID % 100;
-        cc.log(barrackOrder + " ++++")
         if (!(gv.jsonInfo["map"]["BAR_1"][barrackOrder]))
             return;
         if (gv.jsonInfo["map"]["BAR_1"][barrackOrder]["startTrainingTime"] == 0)
             return;
 
-        cc.log("Resume Train");
         this.initTrainingQueue(barrackOrder);
     },
 
@@ -199,7 +194,6 @@ var PopupTraining = cc.Node.extend({
         if (!this._barrack._isActive) return;
         if (!this._isReleasable)
         {
-            cc.log(this._barrack._id);
             this._barrack.onPauseTraining(false);
             this._barrack.onPopUpFull();
             return;
@@ -630,7 +624,6 @@ var PopupTraining = cc.Node.extend({
         for (var i in this._queueTraining) {
             str += (i + ":" + this._queueTraining[i] + " ");
         }
-        cc.log(str);
     },
 
     removeAtIndex: function (id) {
