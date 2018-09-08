@@ -53,7 +53,6 @@ var PopUPMessage = cc.Node.extend({
         this.addChild(this._btnClose, 1);
 
         this._btnClose.addClickEventListener(function(){
-            self.hide();
             self.onDisappear();
         });
 
@@ -61,27 +60,36 @@ var PopUPMessage = cc.Node.extend({
 
     onAppear: function() {
         this._swallowTouch.setEnabled(true);
+
+        var self = this;
+        var appear = cc.Sequence.create(
+            cc.CallFunc(function(){
+                self.setPosition(cc.winSize.width/2, cc.winSize.height/2);
+                self.setScaleX(0.25);
+            }),
+            cc.scaleTo(0.15, 1, 1)
+        );
+        this.runAction(appear);
     },
 
     onDisappear: function() {
         this._swallowTouch.setEnabled(false);
+        this.getParent().getChildByTag(gv.tag.TAG_POPUP).onDisappear();
+
+        var self = this;
+        var disAppear = cc.Sequence.create(
+            cc.scaleTo(0.15, 0.25, 1),
+            cc.CallFunc(function(){
+                self.setPosition(cc.winSize.width/2, - cc.winSize.height/2);
+            })
+        );
+        this.runAction(disAppear);
     },
 
     setMessage: function(msg)
     {
         this._txtMessage.setString(msg);
     },
-
-    show: function()
-    {
-        this.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
-    },
-
-    hide: function()
-    {
-        this.setPosition(cc.p(cc.winSize.width/2, - cc.winSize.height/2));
-        this.getParent().getChildByTag(gv.tag.TAG_POPUP).onDisappear();
-    }
 });
 
 PopUPMessage.getOrCreate = function()

@@ -883,7 +883,6 @@
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setPosition(cc.winSize.width/2, cc.winSize.height/2);
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).visible = true;
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).setMessage(msg);
-        this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).show();
         this.getChildByTag(gv.tag.TAG_POPUP_MESSAGE).onAppear();
     },
     /* Pop UP Bằng Coin*/

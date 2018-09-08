@@ -140,14 +140,15 @@ var PopUpToCoin = cc.Node.extend({
                 ))
             }
             else
-                if (this._type = cf.constructType.build)
+                if (this._type == cf.constructType.build)
                     self._building.onCancelButton();
 
             self.hide();
         }.bind(this));
         this._buttonCancel.addClickEventListener(function(){
             self._AGREE = false;
-            self._building.onCancelButton();
+            if (self._type == cf.constructType.build)
+                self._building.onCancelButton();
             self.hide();
         }.bind(this))
     },
