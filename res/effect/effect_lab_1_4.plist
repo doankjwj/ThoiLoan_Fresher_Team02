@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>frames</key>
+        <dict>
+            <key>effect_lab_1_4 (1).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,106},{70,100}}</string>
+                <key>offset</key>
+                <string>{-49,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{76,110},{70,100}}</string>
+                <key>sourceSize</key>
+                <string>{320,320}</string>
+            </dict>
+            <key>effect_lab_1_4 (2).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{146,72},{68,100}}</string>
+                <key>offset</key>
+                <string>{-48,1}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{78,109},{68,100}}</string>
+                <key>sourceSize</key>
+                <string>{320,320}</string>
+            </dict>
+            <key>effect_lab_1_4 (3).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{146,2},{68,100}}</string>
+                <key>offset</key>
+                <string>{-48,1}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{78,109},{68,100}}</string>
+                <key>sourceSize</key>
+                <string>{320,320}</string>
+            </dict>
+            <key>effect_lab_1_4 (4).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{76,2},{68,100}}</string>
+                <key>offset</key>
+                <string>{-48,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{78,110},{68,100}}</string>
+                <key>sourceSize</key>
+                <string>{320,320}</string>
+            </dict>
+            <key>effect_lab_1_4 (5).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,2},{72,102}}</string>
+                <key>offset</key>
+                <string>{-46,2}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{78,107},{72,102}}</string>
+                <key>sourceSize</key>
+                <string>{320,320}</string>
+            </dict>
+            <key>effect_lab_1_4 (6).png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{74,106},{68,100}}</string>
+                <key>offset</key>
+                <string>{-48,1}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{78,109},{68,100}}</string>
+                <key>sourceSize</key>
+                <string>{320,320}</string>
+            </dict>
+        </dict>
+        <key>metadata</key>
+        <dict>
+            <key>format</key>
+            <integer>2</integer>
+            <key>realTextureFileName</key>
+            <string>effect_lab_1_4.png</string>
+            <key>size</key>
+            <string>{256,256}</string>
+            <key>smartupdate</key>
+            <string>$TexturePacker:SmartUpdate:02d4b9fe1c246efe932c0a68ab3b0491:1/1$</string>
+            <key>textureFileName</key>
+            <string>effect_lab_1_4.png</string>
+        </dict>
+    </dict>
+</plist>

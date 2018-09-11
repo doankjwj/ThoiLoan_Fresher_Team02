@@ -1,0 +1,89 @@
+{
+  "map": {
+    "TOW_1": [
+      {
+        "X": 20,
+        "Y": 19,
+        "level": 1,
+        "finishBuildOrUpgradeTime": "0"
+      }
+    ],
+    "STO_1": [],
+    "STO_2": [],
+    "STO_3": [],
+    "RES_1": [
+      {
+        "X": 25,
+        "Y": 19,
+        "level": 1,
+        "lastHarvestTime": "1532592342868"
+      }
+    ],
+    "RES_2": [],
+    "RES_3": [],
+    "LAB_1": [],
+    "AMC_1": [
+      {
+        "X": 20,
+        "Y": 24,
+        "level": 1,
+        "finishBuildOrUpgradeTime": "0"
+      }
+    ]
+  },
+  "BDH_1": [
+    {
+      "row": 18,
+      "col": 21
+    }
+  ],
+  "player": {
+    "name": "ThoiLoanPlayer_0",
+    "exp": 0,
+    "vipPoint": 0,
+    "coin": 1000,
+    "gold": 750,
+    "elixir": 750,
+    "darkElixir": 0,
+    "troopLevel": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "troopAmount": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+}

@@ -1,0 +1,115 @@
+{
+    "project_type": "javascript",
+    "debugMode": 1,
+    "showFPS": false,
+    "frameRate": 60,
+    "id": "gameCanvas",
+    "renderMode": 0,
+    "engineDir": "frameworks/cocos2d-html5",
+    "modules": [
+        "cocos2d",
+        "extensions",
+        "external"
+    ],
+    "jsListOrder": [
+        "src/**/*.js"
+    ],
+    "jsList": [
+        "src/User.js",
+        "src/AudioPlayer/AudioPlayer.js",
+
+        "src/Config/Config.js",
+        "src/Function/fn.js",
+        "src/GlobalVar/gv.js",
+        "src/GlobalVar/varGUI.js",
+
+        "src/Layer/MainLayer.js",
+        "src/Layer/Map.js",
+        "src/Layer/Shop/Shop.js",
+        "src/Layer/Shop/ShopCategory.js",
+        "src/Layer/Shop/ShopItem.js",
+        "src/Layer/Shop/ShopItemList.js",
+        "src/Layer/Shop/ResourceItem.js",
+        "src/Resource.js",
+
+        "src/Buildings/Building.js",
+        "src/Buildings/BuildingNode.js",
+        "src/Buildings/ArmyCamp.js",
+        "src/Buildings/Barrack.js",
+        "src/Buildings/Grass.js",
+        "src/Buildings/TownHall.js",
+        "src/Buildings/Resource.js",
+        "src/Buildings/BuilderHut.js",
+        "src/Buildings/GrassShadow.js",
+        "src/Buildings/Storage.js",
+        "src/Buildings/Defence.js",
+        "src/Buildings/Obstacle.js",
+        "src/Buildings/Canon.js",
+        "src/Buildings/Laboratory.js",
+        "src/Buildings/ClanCastle.js",
+        "src/Buildings/Wall.js",
+
+        "src/GUI/MainGUI/ResourceBar.js",
+        "src/GUI/MainGUI/BuilderBar.js",
+        "src/GUI/MainGUI/ExpBar.js",
+        "src/GUI/MainGUI/ArmyBar.js",
+        "src/GUI/MainGUI/IconActionBuilding.js",
+        "src/GUI/TrainTroopGUI/PopupTraining.js",
+        "src/GUI/TrainTroopGUI/TroopButton.js",
+
+        "src/GUI/PopUpConstruct.js",
+        "src/GUI/PopUpMessage.js",
+        "src/GUI/ResearchTroopGUI/PopUpResearchTroop.js",
+        "src/GUI/ResearchTroopGUI/ItemResearchTroop.js",
+        "src/GUI/ResearchTroopGUI/PopUpTroopInfo.js",
+
+        "src/GUI/PopUpToCoin.js",
+
+        "src/GUI/PopupClan/RadioButton.js",
+        "src/GUI/PopupClan/PopupClan.js",
+        "src/GUI/PopupClan/ChooseClanIcon.js",
+        "src/GUI/PopupClan/CreateClan.js",
+        "src/GUI/PopupClan/JoinClan.js",
+        "src/GUI/PopupClan/ClanItem.js",
+        "src/GUI/PopupClan/Clan.js",
+        "src/GUI/PopupClan/SearchClan.js",
+        "src/GUI/PopupClan/ClanDetail.js",
+        "src/GUI/PopupClan/ClanMemberList.js",
+        "src/GUI/PopupClan/UserClan.js",
+        "src/GUI/PopupClan/UserItem.js",
+        "src/GUI/PopupClan/PopupMenuButton.js",
+
+        "src/GUI/ClanChat/LayerClanChat.js",
+        "src/GUI/ClanChat/ItemUserOnline.js",
+        "src/GUI/ClanChat/ItemChat.js",
+        "src/GUI/ClanChat/ButtonTroopDonate.js",
+        "src/GUI/ClanChat/PopUpdonateTroop.js",
+        "src/GUI/ClanChat/PopUpRequestDonate.js",
+
+        "src/NetWork/framework/Utility/ClientConfig.js",
+        "src/NetWork/framework/Utility/Localization.js",
+        "src/NetWork/framework/Utility/StringUtils.js",
+        "src/NetWork/framework/Framework.js",
+        "src/NetWork/framework/GUI.js",
+        "src/NetWork/framework/PoolObject.js",
+
+        "src/NetWork/base/network/InPacketFactory.js",
+        "src/NetWork/base/network/GameClient.js",
+        "src/NetWork/base/network/GameClientListener.js",
+        "src/NetWork/base/Resource.js",
+        "src/NetWork/base/UIFactory.js",
+
+        "src/NetWork/libs/signals.js",
+        "src/NetWork/libs/md5.js",
+        "src/NetWork/libs/underscore.js",
+
+        "src/NetWork/testnetwork/network/Network.js",
+        "src/NetWork/testnetwork/network/Packet.js",
+        "src/NetWork/testnetwork/ScreenNetwork.js",
+
+        "src/TroopInfo/LogicDirection.js",
+        "src/TroopInfo/LogicPoint.js",
+        "src/TroopInfo/Troop.js",
+        "src/TroopInfo/Builder.js"
+    ]
+}
