@@ -19,12 +19,16 @@ var BuilderHut = BuildingNode.extend({
         //if (!this._isActive)
         //    this.onStartBuild(gv.startConstructType.loadConstruct);
 
-        //if (!this._existed)
-        //    this._builder = new Builder(i);
+
     },
 
     updateAnim: function()
     {
 
     },
+    onCompleteBuild: function()
+    {
+        this._super();
+        this._builder = new Builder(cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut]-1);
+    }
 })

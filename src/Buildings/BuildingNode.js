@@ -593,6 +593,8 @@ var BuildingNode = cc.Node.extend({
     },
     makeBuilderWorking: function()
     {
+        if (this._buildingSTR == gv.buildingSTR.builderHut)
+            return;
         for (var i=0; i < cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut]; i++)
         {
             var builderHut = fn.getUserBuilding(gv.orderInUserBuildingList.builderHut, i);
@@ -607,6 +609,8 @@ var BuildingNode = cc.Node.extend({
     },
     makeBuilderFree: function()
     {
+        if (this._buildingSTR == gv.buildingSTR.builderHut)
+            return;
         fn.getUserBuilding(gv.orderInUserBuildingList.builderHut, this._builderHutIndex)._builder.finishWork();
         fn.getUserBuilding(gv.orderInUserBuildingList.builderHut, this._builderHutIndex)._free = true;
         this._builderHutIndex = -1;

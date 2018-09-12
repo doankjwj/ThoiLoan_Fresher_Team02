@@ -272,6 +272,7 @@ var Resource = BuildingNode.extend({
 
     onHarvest: function(continueCollect)
     {
+        this.onRemoveTimeOut();
         this.onPlaySoundEffect();
         /* Cập nhật tài nguyên hiện tại*/
         this.onUpdateCurrentCapacity();
@@ -292,6 +293,13 @@ var Resource = BuildingNode.extend({
         cc.log("CONTINUE COLLECT: " + continueCollect);
         if (continueCollect)
             this.onStartCollect();
+    },
+    onRemoveTimeOut: function()
+    {
+        if (this._timeOutNormal)
+            clearInterval(this._timeOutNormal);
+        if (this._timeOutFull)
+            clearInterval(this._timeOutFull);
     },
     onResetCapacity: function()
     {
