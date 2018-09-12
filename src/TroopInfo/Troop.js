@@ -1,4 +1,4 @@
-var Troop = cc.Node.extend
+var     Troop = cc.Node.extend
 (
     {
         type: null,
@@ -85,6 +85,22 @@ var Troop = cc.Node.extend
             this.move();
         },
         freeToDonate: function (row, col)
+        {
+            this.targetLogicPoint = new LogicPoint(row, col);
+            this.facingDirection = this.position.getDirectionTo(this.targetLogicPoint);
+            try
+            {
+                this.stopAllActions();
+                this.unit.stopAllActions();
+            }
+            catch (e)
+            {
+                this.visualizeOnIdle();
+            }
+            this.move();
+        },
+
+        runToCC: function (row, col)
         {
             this.targetLogicPoint = new LogicPoint(row, col);
             this.facingDirection = this.position.getDirectionTo(this.targetLogicPoint);

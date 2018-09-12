@@ -525,6 +525,16 @@ var LayerClanChat = cc.Node.extend({
         this._listItemChat[index].onAddTroop(troopOrder, userDonate);
         if (userDonate == cf.user._name)
             gvGUI.popUpDonateTroop.updateStatus();
+
+        this.onRunTroopToCC(troopOrder);
+    },
+    onRunTroopToCC: function(troopOrder)
+    {
+        var castle = fn.getUserBuilding(gv.orderInUserBuildingList.clanCastle, 0);
+        var troop = new Troop(troopOrder, 40, 20, castle._id);
+        fr.getCurrentScreen()._map.addChild(troop, 20);
+        troop.released = true;
+        troop.runToCC(castle._row, castle._col);
     },
 
     /* Nhận 1 event từ server*/

@@ -256,6 +256,8 @@ var Barrack = BuildingNode.extend({
         var amc = fn.getArmyCamp();
         var troop = new Troop(troopType - 1, this._row + 2, this._col + 2, amc._id);
         this.getParent().addChild(troop);
+
+        cc.log("AMCId: " + amc._id);
         amc._troopList.push(troop);
         amc._troopQuantity += gv.json.troopBase["ARM_" + troopType]["housingSpace"];
 
