@@ -644,7 +644,6 @@ fn.upgradeListSelectedWall = function(gold, darkE) {
     testnetwork.connector.sendMultiWallsUpgrade(wallIdSendToServer.length, wallIdSendToServer);
 
 };
-};
 
 /* Kiểm tra công trình có phải nhà tài nguyên*/
 fn.buildingIsResource = function(building)
