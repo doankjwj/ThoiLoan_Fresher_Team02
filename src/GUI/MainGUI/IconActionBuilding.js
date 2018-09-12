@@ -2,7 +2,11 @@ var IconActionBuilding = ccui.Button.extend({
     _type: null,
     _txt: null,
     _price: null,
+    _priceDarkE: null,
     _priceTxt: null,
+    _iconGold: null,
+
+    _iconDarkElixir: null,
 
     _cost:
     {
@@ -60,13 +64,26 @@ var IconActionBuilding = ccui.Button.extend({
                 this._super(buildingGUI.iconRemove);
                 this._txt = cc.LabelBMFont("THU DỌN" ,font.soji20);
                 break;
+            case cf.CODE_SELECT_WALL:
+                this._super(buildingGUI.selectLine);
+                this._txt = cc.LabelBMFont("CHỌN HÀNG", font.soji20);
+                break;
             default:
                 break;
         }
 
+        this._priceDarkE = 0;
+
         this._priceTxt = cc.LabelBMFont("FREE", font.soji20);
         this.addChild(this._priceTxt, 1);
         this._priceTxt.setVisible(false);
+
+        this._iconGold = cc.Sprite(mainGUI.goldIcon);
+        this._iconDarkElixir = cc.Sprite(mainGUI.darkElixirIcon);
+
+        this._priceDarkElixirTxt = cc.LabelBMFont("FREE", font.soji20);
+        this.addChild(this._priceDarkElixirTxt, 1);
+        this._priceDarkElixirTxt.visible = false;
 
         if(type === cf.CODE_BUILDING_INSTANT) this._priceTxt.visible = true;
 
@@ -89,9 +106,25 @@ var IconActionBuilding = ccui.Button.extend({
         });
         this.addChild(this._txt,1);
 
+        this._priceDarkElixirTxt.setPosition(cc.p(this._priceTxt.x, this._priceTxt.y + this._priceTxt.height + 2));
+        this._priceDarkElixirTxt.visible = false;
+
+        this._iconDarkElixir.scale = 0.6;
+        this._iconDarkElixir.setPosition(cc.p(this._priceDarkElixirTxt.x + this._priceDarkElixirTxt.width/2 + this._iconDarkElixir.width/2*this._iconDarkElixir.scale, this._priceDarkElixirTxt.y));
+        this._iconDarkElixir.visible = false;
+        this.addChild(this._iconDarkElixir, 1);
+
+
+        this._iconGold.scale = 0.6;
+        this._iconGold.setPosition(cc.p(this._priceTxt.x + this._priceTxt.width/2 + this._iconGold.width/2*this._iconGold.scale, this._priceTxt.y));
+        this.addChild(this._iconGold, 1);
+        this._iconGold.visible = false;
+
     },
 
     updateContent: function(buildingID){
+        this._priceTxt.setColor(cc.color.WHITE);
+        this._priceDarkElixirTxt.setColor(cc.color.WHITE);
         var building = cf.user._buildingList[Math.floor(buildingID/100) - 1][buildingID%100];
         var price = Math.ceil(building._time_remaining / 60);
         this._priceTxt.setString(price.toString());
@@ -99,6 +132,26 @@ var IconActionBuilding = ccui.Button.extend({
             this._priceTxt.setColor(cc.color.RED);
         }
         else this._priceTxt.setColor(cc.color.WHITE);
+
+        if(cf.selectedWall.length !== 0) {
+
+            if(cf.user._currentCapacityGold < this._price)
+                this._priceTxt.setColor(cc.color.RED);
+            else
+                this._priceTxt.setColor(cc.color.WHITE);
+
+            if(cf.user._currentCapacityDarkElixir < this._priceDarkE)
+                this._priceDarkElixirTxt.setColor(cc.color.RED);
+            else
+                this._priceDarkElixirTxt.setColor(cc.color.WHITE);
+            
+        }
+
+        this._priceTxt.setPosition(cc.p(this.width/2, this.height - this._priceTxt.height/2));
+        this._iconGold.setPosition(cc.p(this._priceTxt.x + this._priceTxt.width/2 + this._iconGold.width/2*this._iconGold.scale, this._priceTxt.y));
+        this._priceDarkElixirTxt.setPosition(cc.p(this._priceTxt.x, this._priceTxt.y + this._priceTxt.height + 2));
+        this._iconDarkElixir.setPosition(cc.p(this._priceDarkElixirTxt.x + this._priceDarkElixirTxt.width/2 + this._iconDarkElixir.width/2*this._iconDarkElixir.scale, this._priceDarkElixirTxt.y))
+
     },
 
     updateBuilding: function(sender, type) {

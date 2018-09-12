@@ -246,7 +246,13 @@ var BuildingNode = cc.Node.extend({
                 {
                     self.onEndClick();
                     self.hideBuildingButton();
+
+                    for(var i=0; i<cf.selectedWall.length; i++) {
+                        cf.selectedWall[i].onRemoveClick();
+                    }
+
                     gv.building_is_moved = 0;
+                    cf.selectedWall.length = 0;
                     self._listenerMove.setEnabled(false);
                     //self.updateZOrder();
                     return false;
@@ -261,8 +267,9 @@ var BuildingNode = cc.Node.extend({
                         self._listenerMove.setEnabled(true);
                         self._listener.setEnabled(false);
                         self.onClick();
-                        self.setLocalZOrder(200);
+                        self.setLocalZOrder(self.getLocalZOrder() + 200);
                     };
+
 
                     var tmpPreLevel = (self._buildingSTR == gv.buildingSTR.obstacle) ? " " : " level ";
                     self._txtName.setString(self._name + tmpPreLevel + self.getTempLevel());
@@ -378,6 +385,13 @@ var BuildingNode = cc.Node.extend({
                 }
                 else
                 {
+
+                    for(var i=0; i<cf.selectedWall.length; i++) {
+                        cf.selectedWall[i].onRemoveClick();
+                    }
+
+                    cf.selectedWall.length = 0;
+
                     /*if(!self._existed) */ return false;
                     self.onEndClick();
                     this.setEnabled(false);
@@ -459,6 +473,13 @@ var BuildingNode = cc.Node.extend({
                     //self.hideBuildingButton();
                     gv.building_is_moved = 0;
                     self._red.visible = false;
+
+                    for(var i=0; i<cf.selectedWall.length; i++) {
+                        cf.selectedWall[i].onRemoveClick();
+                    }
+
+                    cf.selectedWall.length = 0;
+
                     self.updateZOrder();
                 };
                 return true;
@@ -620,6 +641,7 @@ var BuildingNode = cc.Node.extend({
     },
     makeBuilderFree: function()
     {
+        if(this._builderHutIndex === -1) return;
         fn.getUserBuilding(gv.orderInUserBuildingList.builderHut, this._builderHutIndex)._builder.finishWork();
         fn.getUserBuilding(gv.orderInUserBuildingList.builderHut, this._builderHutIndex)._free = true;
         this._builderHutIndex = -1;
@@ -682,10 +704,13 @@ var BuildingNode = cc.Node.extend({
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_construct_levelup.plist", res.folder_effect + "effect_construct_levelup.png");
         }
-        this._txt_time_remaining.visible = false;
-        this._info_bar.visible = false;
-        this._info_bar_bg.visible = false;
-        this._defence.visible = false;
+        if(this._txt_time_remaining) {
+            this._txt_time_remaining.visible = false;
+            this._info_bar.visible = false;
+            this._info_bar_bg.visible = false;
+            this._defence.visible = false;
+        }
+
         this._effect_level_up.runAction(cc.Sequence.create(cc.CallFunc(function(){this._effect_level_up.visible = true}, this),
             fn.getAnimation("effect_construct_levelup ", 1, 7),
             cc.CallFunc(function(){this._effect_level_up.visible = false}, this)));

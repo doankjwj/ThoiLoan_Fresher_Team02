@@ -68,27 +68,25 @@ var TroopButton = ccui.Button.extend({
 
     },
 
+
     onTouch: function(sender, type){
         switch (type){
             case ccui.Widget.TOUCH_BEGAN:
-                sender.scale *= 1.05;
                 break;
             case ccui.Widget.TOUCH_MOVED:
                 break;
             case ccui.Widget.TOUCH_ENDED:
-                if(cf.user._currentCapacityElixir >= sender._cost) {
-                    sender.getParent().addTroopToQueue(sender._id);
-                    cf.user._currentCapacityElixir -= sender._cost;
+                if(cf.user._currentCapacityElixir >= this._cost) {
+                    this.getParent().addTroopToQueue(this._id);
+                    cf.user._currentCapacityElixir -= this._cost;
                     cf.user.distributeResource(false, true, false);
-                     testnetwork.connector.sendTrainTroop(sender.getParent()._barrackID, sender._id);
-                    sender.updateButton();
+                    testnetwork.connector.sendTrainTroop(this.getParent()._barrackID, this._id);
+                    this.updateButton();
                 } else {
-                    sender.getParent().getParent().popUpMessage(gv.popUpMsgSTR.notEnoughResource);
+                    this.getParent().getParent().popUpMessage(gv.popUpMsgSTR.notEnoughResource);
                 }
-                sender.scale /= 1.05;
                 break;
             case ccui.Widget.TOUCH_CANCELED:
-                sender.scale /= 1.05;
                 break;
         }
     },

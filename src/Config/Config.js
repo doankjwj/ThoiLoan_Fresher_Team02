@@ -52,11 +52,14 @@ cf.CODE_TRAINING = 27071993;
 cf.CODE_BUILDING_REQUEST_DONATE = 232423;
 cf.CODE_BUILDING_CLAN = 2342343;
 cf.CODE_BUILDING_REMOVE = 42344322;
+cf.CODE_SELECT_WALL = 42344323;
 
 cf.user = null;
 
 cf.isMapMoving = false;
 cf.mapScalePre = null;      // Scale của map khi bắt đầu Touch, dùng để so sánh với kích thước lúc sau khi chạm
+
+cf.selectedWall = [];
 
 /* Shop */
 cf.shopType = {

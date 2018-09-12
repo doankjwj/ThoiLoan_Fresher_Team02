@@ -20,6 +20,7 @@ gv.CMD.PAY_COIN_THEN_BUY_ETC = 2071;
 gv.CMD.CHEAT = 2102;
 gv.CMD.SEND_INSTANT = 2005;
 gv.CMD.SEND_CANCEL = 2006;
+gv.CMD.REQUEST_UPGRADE_MULTI_WALLS = 2007;
 gv.CMD.SEND_HARVEST = 2021;
 gv.CMD.SEND_RESEARCH = 2031;
 gv.CMD.SEND_RESEARCH_FINISH_IMMIDIATELY = 2033;
@@ -64,6 +65,7 @@ gv.CMD.REQUEST_CHANGE_LEADER = 3031;
 gv.CMD.REQUEST_ADD_CO_LEADER = 3032;
 gv.CMD.REQUEST_REMOVE_CO_LEADER = 3033;
 
+
 gv.CMD.REQUEST_USER_CLAN = 3101;
 gv.CMD.RECEIVE_USER_CLAN = 3101;
 
@@ -100,6 +102,25 @@ CmdSendRequestAddCoLeader = fr.OutPacket.extend(
         }
     }
 );
+
+CmdSendUpgradeMultiWalls = fr.OutPacket.extend({
+    ctor: function () {
+        this._super();
+        this.initData(100);
+        this.setCmdId(gv.CMD.REQUEST_UPGRADE_MULTI_WALLS);
+    },
+    pack: function (len, IDs) {
+        this.packHeader();
+        this.putByte(len);
+
+        for(var i=0; i<len; i++) {
+            var id = IDs[i] % 100;
+            this.putByte(id);
+        }
+
+        this.updateSize();
+    }
+});
 
 CmdSendRequestRemoveCoLeader = fr.OutPacket.extend(
     {

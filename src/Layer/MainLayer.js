@@ -1,7 +1,4 @@
-﻿﻿//Quan Le Anh
-//13-11-1996
-
-var MainLayer = cc.Layer.extend({
+﻿﻿var MainLayer = cc.Layer.extend({
     _map: null,
     _shop: null,
 
@@ -29,6 +26,7 @@ var MainLayer = cc.Layer.extend({
     _guiButtonRequestDonate: null,
     _guiButtonClan: null,
     _guibuttonRemove: null,
+    _guiButtonSelectRowWalls: null,
 
     _popUp: null,
     _popUpResearchTroop: null,
@@ -67,6 +65,7 @@ var MainLayer = cc.Layer.extend({
     _TAG_BUTTON_REQUEST_DONATE: 42342,
     _TAG_BUTTON_CLAN: 434312,
     _TAG_BUTTON_REMOVE: 342342,
+    _TAG_BUTTON_SELECT_WALL: 342343,
 
     ctor:function () {
 
@@ -621,6 +620,13 @@ var MainLayer = cc.Layer.extend({
             self.hideListBotButton();
             fn.getCurrentBuilding().onRemoveClick();
             if (gv.building_selected === undefined) return;
+
+            var button = this._guiButtonBuildingUpgrade;
+
+            if (cf.selectedWall.length !== 0) {
+                fn.upgradeListSelectedWall(button._price, button._priceDarkE);
+                return;
+            }
             var building = cf.user._buildingList[Math.floor(gv.building_selected/100)-1][Math.floor(gv.building_selected % 100)];
             var order = (building._orderInUserBuildingList);
             var orderBuilderHut = (gv.orderInUserBuildingList.builderHut);
@@ -629,6 +635,7 @@ var MainLayer = cc.Layer.extend({
 
             var townHall = cf.user._buildingList[gv.orderInUserBuildingList.townHall][0];
             var townHallLevel = townHall._level;
+
             if(building._buildingSTR !== gv.buildingSTR.townHall) {
                 if (townHallLevel >= building._jsonConfig[building._buildingSTR][Math.min(building._level + 1, building._maxLevel)]["townHallLevelRequired"]) {
                     self.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
@@ -772,13 +779,12 @@ var MainLayer = cc.Layer.extend({
                 var popupTraining = new PopupTraining(gv.building_selected);
                 this.addChild(popupTraining, 1, gv.tag.TAG_POPUP_TRAINING*(gv.building_selected%100));
                 popupTraining.onAppear();
-
+                popupTraining.onGetTrainingFromBarrack();
             }
             else {
                 var popup = this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING);
                 popup.onAppear();
             }
-            this.getChildByTag((gv.building_selected % 100)*gv.tag.TAG_POPUP_TRAINING).onGetTrainingFromBarrack();
         }.bind(this));
 
         /*Button Request Donate */
@@ -880,6 +886,32 @@ var MainLayer = cc.Layer.extend({
             fn.getCurrentBuilding().onStartRemove(gv.startConstructType.newConstruct);
 
         }.bind(this));
+
+        this._guiButtonSelectRowWalls = new IconActionBuilding(cf.CODE_SELECT_WALL);
+        this._guiButtonSelectRowWalls.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: cc.winSize.width/2,
+            y: -cc.winSize.height/2
+        });
+        this.addChild(this._guiButtonSelectRowWalls, 2, this._TAG_BUTTON_SELECT_WALL);
+        this._guiButtonSelectRowWalls.addClickEventListener(function(){
+            self.hideListBotButton();
+
+            var wall = fn.getCurrentBuilding();
+
+            cf.selectedWall = wall.getWallList();
+
+            if(cf.selectedWall.length === 1) return;
+
+            wall._arrow.visible = false;
+            for(var i = 0; i<cf.selectedWall.length; i++) {
+                cf.selectedWall[i].onClick();
+            }
+
+            this.showListBotButton(wall._id);
+        }.bind(this));
+
     },
 
     onPopUpResearchTroop: function()
@@ -976,6 +1008,7 @@ var MainLayer = cc.Layer.extend({
         this._guiButtonRequestDonate.setPosition(cc.p(cc.winSize.width/2, -hidingY));
         this._guiButtonClan.setPosition(cc.p(cc.winSize.width/2, -hidingY));
         this._guibuttonRemove.setPosition(cc.p(cc.winSize.width/2, - hidingY));
+        this._guiButtonSelectRowWalls.setPosition(cc.p(cc.winSize.width/2, - hidingY));
         if (this._guiButtonHarvest != undefined) this._guiButtonHarvest.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -hidingY));
         if (this._guiButtonResearch != undefined) this._guiButtonResearch.setPosition(cc.p(cc.winSize.width/2 + this._guiInstantlyDone.width/2 + 2 * cf.offSetGuiResourceBar, -hidingY));
     },
@@ -983,7 +1016,10 @@ var MainLayer = cc.Layer.extend({
     showListBotButton: function(buildingID)
     {
         this._listBotButtonIsShown = true;
-        /* Infor(0) --- Upgrade(1) --- Cancel(2) --- Instance Finish(3) --- Collect(4) -- Research(5) -- Train(6) -- Request Donate(7) -- Clan GUI(8) -- Remove Obstacle (9) */
+        this._guiButtonBuildingUpgrade._priceTxt.visible = false;
+        this._guiButtonBuildingUpgrade._iconGold.visible = false;
+        this._guiButtonBuildingUpgrade._iconDarkElixir.visible = false;
+        /* Infor(0) --- Upgrade(1) --- Cancel(2) --- Instance Finish(3) --- Collect(4) -- Research(5) -- Train(6) -- Request Donate(7) -- Clan GUI(8) -- Remove Obstacle (9)  -- select Wall (10)*/
         var buildingOrder = Math.floor(buildingID/100) - 1;
         var buildingNum = buildingID % 100;
         var building = cf.user._buildingList[buildingOrder][buildingNum];
@@ -991,6 +1027,7 @@ var MainLayer = cc.Layer.extend({
         var boo = [];
         boo[0] = true;  boo[1] = true;  boo[2] = true;  boo[3] = true;  boo[4] = false;
         boo[5] = false; boo[6] = false; boo[7] = false; boo[8] = false; boo[9] = false;
+        boo[10] = false;
 
         if (building._level == building._maxLevel || !building._isActive || buildingOrder == gv.orderInUserBuildingList.builderHut) boo[1] = false;
         if (buildingOrder == gv.orderInUserBuildingList.lab && building._researching) boo[1] = false;
@@ -1036,7 +1073,38 @@ var MainLayer = cc.Layer.extend({
                 boo[1] = false;
                 boo[9] = !building._isCleaning;
                 break;
+            case gv.orderInUserBuildingList.wall:
+                boo[10] = true;
 
+        }
+
+        if(cf.selectedWall.length !== 0) {
+            boo[0] = false;
+            boo[10] = false;
+            this._guiButtonBuildingUpgrade._priceTxt.visible = true;
+            this._guiButtonBuildingUpgrade._iconGold.visible = true;
+            this._guiButtonBuildingUpgrade._iconDarkElixir.visible = true;
+            // var wall = fn.getCurrentBuilding();
+            var priceGold = 0;
+            var priceDarkElixir = 0;
+
+            for(var i=0; i<cf.selectedWall.length; i++) {
+                priceGold += cf.selectedWall[i].getUpdatePrice()[0];
+                priceDarkElixir += cf.selectedWall[i].getUpdatePrice()[1];
+            }
+            this._guiButtonBuildingUpgrade._priceTxt.setString(priceGold);
+            this._guiButtonBuildingUpgrade._priceDarkElixirTxt.setString(priceDarkElixir);
+            this._guiButtonBuildingUpgrade._price = priceGold;
+            this._guiButtonBuildingUpgrade._priceDarkE = priceDarkElixir;
+
+            if(priceDarkElixir === 0) {
+                this._guiButtonBuildingUpgrade._priceDarkElixirTxt.visible = false;
+                this._guiButtonBuildingUpgrade._iconDarkElixir.visible = false;
+            }
+            if(priceGold === 0) {
+                this._guiButtonBuildingUpgrade._priceTxt.visible = false;
+                this._guiButtonBuildingUpgrade._iconGold.visible = false;
+            }
         }
 
         this.onPopUpButton(boo, buildingID);
@@ -1044,7 +1112,7 @@ var MainLayer = cc.Layer.extend({
 
     onPopUpButton: function(boo, buildingID)
     {
-        /* Infor --- Upgrade --- Cancel --- Instance Finish --- Collect -- Research -- Train */
+        /* Infor --- Upgrade --- Cancel --- Instance Finish --- Collect -- Research -- Train -- wall */
         var popUpButtonCount = fn.getItemOccurenceInArray(boo, true);
         var y = this._guiButtonBuildingInfo.height;
         var x = cc.winSize.width/2 - popUpButtonCount/2 * this._guiButtonBuildingInfo.width;
@@ -1120,6 +1188,13 @@ var MainLayer = cc.Layer.extend({
             this._guibuttonRemove.runAction(act);
             /* Cập nhật lượng tài nguyên cho nút remove*/
             this._guibuttonRemove.updateForObstcle();
+            x += offSet;
+        }
+
+        if(boo[10]) {
+            this._guiButtonSelectRowWalls.setPosition(x, hidingY);
+            var act = cc.MoveTo(0.1, cc.p(x, y));
+            this._guiButtonSelectRowWalls.runAction(act);
             x += offSet;
         }
     },
@@ -1329,7 +1404,7 @@ var MainLayer = cc.Layer.extend({
                 break;
             case ccui.Widget.TOUCH_MOVED:
                 break;
-            case ccui.Widget.TOUCH_ENDED:
+                case ccui.Widget.TOUCH_ENDED:
                 if(this._shop === null) {
                     this._shop = new Shop();
                     this.addChild(this._shop, 10, cf.SHOP_TAG);

@@ -578,4 +578,69 @@ fn.checkAddResourceEnough = function(resArr)
     if (resArr[1] > cf.user.getAvaiableCapacity(cf.resType.resource_2)) return false;
     if (resArr[2] > cf.user.getAvaiableCapacity(cf.resType.resource_3)) return false;
     return true;
-}
+};
+
+fn.upgradeListSelectedWall = function(gold, darkE) {
+
+
+    if (cf.user._builderFree <= 0) {
+        fr.getCurrentScreen().popUpMessage("Tất cả thợ đang bận");
+        return;
+    }
+
+    if(gold > cf.user._currentCapacityGold || darkE > cf.user._currentCapacityDarkElixir) {
+
+        fr.getCurrentScreen().popUpMessage(gv.popUpMsgSTR.notEnoughResource);
+        return;
+
+    }
+
+
+    var townHall = cf.user._buildingList[gv.orderInUserBuildingList.townHall][0];
+
+    var allWallIsAtMaxLevel = true;
+    var townHallLevelRequired = 0;
+
+    for(var i=0; i<cf.selectedWall.length; i++) {
+        var wall = cf.selectedWall[i];
+        if (wall._level >= wall._maxLevel || townHall._level >= wall._jsonConfig[wall._buildingSTR][Math.min(wall._level + 1, wall._maxLevel)]["townHallLevelRequired"]) {
+            allWallIsAtMaxLevel = false;
+        }
+        townHallLevelRequired = townHallLevelRequired >  wall._jsonConfig[wall._buildingSTR][Math.min(wall._level + 1, wall._maxLevel)]["townHallLevelRequired"] ? townHallLevelRequired :  wall._jsonConfig[wall._buildingSTR][Math.min(wall._level + 1, wall._maxLevel)]["townHallLevelRequired"];
+    }
+
+    if(allWallIsAtMaxLevel) {
+        fr.getCurrentScreen().popUpMessage("Yêu cầu cấp nhà chính: " + townHallLevelRequired);
+
+        for(var i=0; i<cf.selectedWall.length; i++) {
+            cf.selectedWall[i].onRemoveClick();
+        }
+
+        cf.selectedWall.length = 0;
+
+        return;
+    }
+
+    cf.user.editCurrentResource(cf.resType.resource_1, -gold);
+    cf.user.editCurrentResource(cf.resType.resource_3, -darkE);
+
+    fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+    fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+
+    var wallIdSendToServer = [];
+
+    for(var i=0; i<cf.selectedWall.length; i++) {
+        var wall = cf.selectedWall[i];
+
+        if (wall._level < wall._maxLevel && townHall._level >= wall._jsonConfig[wall._buildingSTR][Math.min(wall._level + 1, wall._maxLevel)]["townHallLevelRequired"]) {
+            wallIdSendToServer.push(wall._id);
+            wall.onStartBuild(gv.startConstructType.newConstruct);
+        }
+
+        wall.onRemoveClick();
+
+    }
+
+    testnetwork.connector.sendMultiWallsUpgrade(wallIdSendToServer.length, wallIdSendToServer);
+
+};

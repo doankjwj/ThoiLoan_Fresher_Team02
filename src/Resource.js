@@ -276,6 +276,7 @@ var buildingGUI = {
     iconClan:               res.folder_gui_action_building + "clan_button.png",
     iconRemove:             res.folder_gui_action_building + "remove_icon.png",
     bg:                     res.folder_gui_action_building + "bg_button.png",
+    selectLine:             res.folder_gui_action_building + "select_line.png",
 
     trainIcon:              res.folder_gui_action_building + "train_icon.png",
 

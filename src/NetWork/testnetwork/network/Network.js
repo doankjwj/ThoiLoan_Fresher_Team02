@@ -353,6 +353,15 @@ testnetwork.Connector = cc.Class.extend({
         pk.pack(name);
         this.gameClient.sendPacket(pk);
 
+    },
+
+    sendMultiWallsUpgrade: function(length, IDs) {
+
+        cc.log("SEND UPGRADE MULTI WALLS");
+        var pk = this.gameClient.getOutPacket(CmdSendUpgradeMultiWalls);
+        pk.pack(length, IDs);
+        this.gameClient.sendPacket(pk);
+
     }
 
 });

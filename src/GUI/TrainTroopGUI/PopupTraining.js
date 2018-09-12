@@ -112,12 +112,13 @@ var PopupTraining = cc.Node.extend({
                 if (size === 0) this._currentTrainingTime = this._currentTrainingTimeRequired;
                 this._currentQueueLength += this.jsonTroopBase[key]["housingSpace"]*troopAmountArr[i];
                 this._timeTraining += this.jsonTroopBase[fn.getTroopString(id)]["trainingTime"]*troopAmountArr[i];
-            };
-        };
+            }
+        }
 
         var firstTroop = "ARM_" + (troopTypeArr[0]+1);
         this._currentTrainingTime = this.jsonTroopBase[firstTroop]["trainingTime"] - Math.floor((new Date().getTime() - this._barrack._startTrainingTime)/1000);
         this._timeTraining -= this.jsonTroopBase[firstTroop]["trainingTime"] + this._currentTrainingTime;
+        this._isReleasable = this._barrack.checkreleaseAble();
     },
 
     updateContent: function () {
