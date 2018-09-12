@@ -1049,10 +1049,8 @@ var PopUpConstruct = cc.Node.extend({
         if (str == gv.buildingSTR.townHall)
             this._effect = cc.Sprite("#res/Art/Effects/towhall_flame/00.png");
         if (str == gv.buildingSTR.defence_1){
-            cc.log(res.folder_canon + level + "" + res.image_postfix_1 + "0" + res.image_postfix_2);
             this._effect = cc.Sprite(res.folder_canon + level + "/" + res.image_postfix_1 + Math.floor(Math.random()*4) + res.image_postfix_2);
         }
-        cc.log(str + " ::: " + gv.buildingSTR.defence_1);
 
         this._effect.attr({
             anchorX: 0.5,

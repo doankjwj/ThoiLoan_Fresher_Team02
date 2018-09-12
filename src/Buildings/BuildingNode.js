@@ -286,6 +286,10 @@ var BuildingNode = cc.Node.extend({
                         //self._listenerMove.setEnabled(false);
                     }
                     self.getParent().getParent().showListBotButton(self._id);
+
+                    /* Thu hoạch tài nguyên nếu là nhà khai thác đang có nút hiện lên*/
+                    if (fn.checkIsResourceAndCollectable(self))
+                        self.onHarvest();
                 }
             }
         });
@@ -378,24 +382,7 @@ var BuildingNode = cc.Node.extend({
                 }
                 else
                 {
-                    /*if(!self._existed) */ return false;
-                    //self.onEndClick();
-                    //this.setEnabled(false);
-                    //self._listener.setEnabled(true);
-                    //self.hideBuildingButton();
-                    //gv.building_is_moved = 0;
-                    //self.updateZOrder();
-                    //self._red.visible = false;
-                    //if (!self.none_space(self._row, self._col, size, self._id))
-                    //{
-                    //    self._row = cf.current_r;
-                    //    self._col = cf.current_c;
-                    //    self.x = cf.tileLocation[self._row][self._col].x;
-                    //    self.y = cf.tileLocation[self._row][self._col].y - (size / 2) * cf.tileSize.height;
-                    //    self.locate_map_array(self);
-                    //    self.updateZOrder();
-                    //}
-                    //return true;
+                    return false;
                 }
             },
             onTouchMoved: function(touch, event)

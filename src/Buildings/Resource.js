@@ -2,7 +2,7 @@ var Resource = BuildingNode.extend({
     _currentCapacity: 0,
     _maxCapacity: 0,
     _productivity: null,
-    _percentPopupHarvest: 0.002,
+    _percentPopupHarvest: 0.01,
     _capacityIsFulled: false,
     _lastHarvestTime: null,
 
@@ -221,9 +221,14 @@ var Resource = BuildingNode.extend({
     /* Cập nhật tài nguyên kho hiện tại*/
     onUpdateCurrentCapacity: function()
     {
-        var timeDistance = (new Date().getTime() - this._lastHarvestTime) / 1000;
-        this._currentCapacity = Math.floor(this._productivity * fn.convertSecondToHour(timeDistance));
-        this._currentCapacity = Math.min(this._currentCapacity, this._maxCapacity);
+        if (this._isActive)
+        {
+            var timeDistance = (new Date().getTime() - this._lastHarvestTime) / 1000;
+            this._currentCapacity = Math.floor(this._productivity * fn.convertSecondToHour(timeDistance));
+            this._currentCapacity = Math.min(this._currentCapacity, this._maxCapacity);
+        }
+        else
+            this.setcurrentCapacity(0);
     },
     onSetButtonHarvestBG: function(resStatus)
     {
@@ -282,6 +287,7 @@ var Resource = BuildingNode.extend({
 
         if (continueCollect)
             this.onStartCollect();
+        cc.log(this.getCurrentCapacity() + " Curent Capacity");
     },
     onResetCapacity: function()
     {

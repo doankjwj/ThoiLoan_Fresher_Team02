@@ -482,7 +482,7 @@ var MainLayer = cc.Layer.extend({
                 {
                     building.onStartBuild(gv.startConstructType.loadConstruct);
                 };
-                if (fn.buildIsResource(building) && building._isActive)
+                if (fn.buildingIsResource(building) && building._isActive)
                     building.onStartCollect();
             }
             ;
@@ -728,7 +728,7 @@ var MainLayer = cc.Layer.extend({
         this._guiButtonHarvest.addClickEventListener(function(){
             fn.getCurrentBuilding().onRemoveClick();
             var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
-            building.onHarvest();
+            building.onHarvest(false);
         });
 
         /*Button Research */

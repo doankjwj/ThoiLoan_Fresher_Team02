@@ -581,7 +581,7 @@ fn.checkAddResourceEnough = function(resArr)
 };
 
 /* Kiểm tra công trình có phải nhà tài nguyên*/
-fn.buildIsResource = function(building)
+fn.buildingIsResource = function(building)
 {
     if (building._orderInUserBuildingList < gv.orderInUserBuildingList.resource_1 || building._orderInUserBuildingList > gv.orderInUserBuildingList.resource_3) return false;
     return true;
@@ -617,4 +617,13 @@ fn.onUpdateTimeOutCollector = function(resType)
             };
             break;
     }
+};
+
+/* Kiểm tra nhà có phải là nguyên và nút thu hoạch đang sáng*/
+fn.checkIsResourceAndCollectable = function(building)
+{
+    if (!fn.buildingIsResource(building)) return false;
+    if (!building._isActive) return false;
+    if (!building._btnHarvest.visible) return false;
+    return true;
 }
