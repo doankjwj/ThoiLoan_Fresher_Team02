@@ -290,7 +290,6 @@ var Resource = BuildingNode.extend({
             testnetwork.connector.sendHarvest(this._id);
         }
 
-        cc.log("CONTINUE COLLECT: " + continueCollect);
         if (continueCollect)
             this.onStartCollect();
     },

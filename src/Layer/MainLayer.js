@@ -149,6 +149,8 @@ var MainLayer = cc.Layer.extend({
         gv.passwordSendToServer = "";
 
         gv.gameClient.connect();
+
+        audioPlayer.play(res.sound.button_click);
     },
 
     onConnectSuccess: function()

@@ -627,3 +627,154 @@ fn.checkIsResourceAndCollectable = function(building)
     if (!building._btnHarvest.visible) return false;
     return true;
 }
+/* Phát âm thanh khi chọn 1 công trình*/
+fn.playSoundPickUp = function(buildingType)
+{
+    var audio;
+    switch (buildingType)
+    {
+        case gv.orderInUserBuildingList.townHall:
+            audio = res.sound.townhall_pickup;
+            break;
+        case gv.orderInUserBuildingList.resource_1:
+            audio = res.sound.goldmine_pickup;
+            break;
+        case gv.orderInUserBuildingList.resource_2:
+            audio = res.sound.elixirpump_pickup;
+            break;
+        case gv.orderInUserBuildingList.resource_3:
+            audio = res.sound.darkelixirdrill_pickup;
+            break;
+        case gv.orderInUserBuildingList.storage_1:
+            audio = res.sound.goldstorage_pickup;
+            break;
+        case gv.orderInUserBuildingList.storage_2:
+            audio = res.sound.elixirstorage_pickup;
+            break;
+        case gv.orderInUserBuildingList.storage_3:
+            audio = res.sound.darkelixirdrill_pickup;
+            break;
+        case gv.orderInUserBuildingList.armyCamp_1:
+            audio = res.sound.camp_pickup;
+            break;
+        case gv.orderInUserBuildingList.builderHut:
+            audio = res.sound.builderhut_pickup;
+            break;
+        case gv.orderInUserBuildingList.defence_1:
+            audio = res.sound.cannon_pickup;
+            break;
+        case gv.orderInUserBuildingList.obstacle:
+            audio = res.sound.touch_bush;
+            break;
+
+        default:
+            audio = res.sound.wall_pickup;
+            break;
+        //case gv.orderInUserBuildingList.townHall:
+        //    audio = res.sound.townhall_pickup;
+        //    break;
+        //case gv.orderInUserBuildingList.resource_1:
+        //    audio = res.sound.goldmine_pickup;
+        //    break;
+        //case gv.orderInUserBuildingList.townHall:
+        //    audio = res.sound.townhall_pickup;
+        //    break;
+        //case gv.orderInUserBuildingList.resource_1:
+        //    audio = res.sound.goldmine_pickup;
+        //case gv.orderInUserBuildingList.townHall:
+        //    audio = res.sound.townhall_pickup;
+        //    break;
+        //case gv.orderInUserBuildingList.resource_1:
+        //    audio = res.sound.goldmine_pickup;
+        //    break;
+    };
+
+    if (audio)
+        audioPlayer.play(audio);
+};
+/* Phát âm thanh khi đặt 1 công trình*/
+fn.playSoundPlace = function(buildingType)
+{
+    var audio;
+    switch (buildingType)
+    {
+        case gv.orderInUserBuildingList.townHall:
+            audio = res.sound.townhall_place;
+            break;
+        case gv.orderInUserBuildingList.resource_1:
+            audio = res.sound.goldmine_place;
+            break;
+        case gv.orderInUserBuildingList.resource_2:
+            audio = res.sound.elixirpump_place;
+            break;
+        case gv.orderInUserBuildingList.resource_3:
+            audio = res.sound.darkelixirdrill_place;
+            break;
+        case gv.orderInUserBuildingList.storage_1:
+            audio = res.sound.goldstorage_place;
+            break;
+        case gv.orderInUserBuildingList.storage_2:
+            audio = res.sound.elixirstorage_place;
+            break;
+        case gv.orderInUserBuildingList.storage_3:
+            audio = res.sound.darkelixirdrill_place;
+            break;
+        case gv.orderInUserBuildingList.armyCamp_1:
+            audio = res.sound.camp_place;
+            break;
+        case gv.orderInUserBuildingList.builderHut:
+            audio = res.sound.builderhut_place;
+            break;
+        case gv.orderInUserBuildingList.defence_1:
+            audio = res.sound.cannon_place;
+            break;
+        case gv.orderInUserBuildingList.obstacle:
+            audio = res.sound.touch_bush;
+            break;
+
+        default:
+            audio = res.sound.wall_place;
+            break;
+        //case gv.orderInUserBuildingList.townHall:
+        //    audio = res.sound.townhall_pickup;
+        //    break;
+        //case gv.orderInUserBuildingList.resource_1:
+        //    audio = res.sound.goldmine_pickup;
+        //    break;
+        //case gv.orderInUserBuildingList.townHall:
+        //    audio = res.sound.townhall_pickup;
+        //    break;
+        //case gv.orderInUserBuildingList.resource_1:
+        //    audio = res.sound.goldmine_pickup;
+        //case gv.orderInUserBuildingList.townHall:
+        //    audio = res.sound.townhall_pickup;
+        //    break;
+        //case gv.orderInUserBuildingList.resource_1:
+        //    audio = res.sound.goldmine_pickup;
+        //    break;
+    };
+
+    if (audio)
+        audioPlayer.play(audio);
+};
+
+/* Hiển thị alert tin nhắn mới*/
+fn.onAlertClanMessage = function()
+{
+    cc.log("alert Clan Message");
+    //gvGUI.layerClanChat._guiButtonClanChat._alertIcon.setVisible(true);
+    var alertAction = cc.Sequence.create(
+        cc.FadeIn(0.25),
+        cc.FadeOut(0.25)
+    );
+
+    gvGUI.layerClanChat._guiButtonClanChat._alertIcon.stopAllActions();
+    gvGUI.layerClanChat._guiButtonClanChat._alertIcon.setVisible(true);
+    gvGUI.layerClanChat._guiButtonClanChat._alertIcon.runAction(alertAction.clone().repeatForever());
+}
+/* Ngắt hiển thị alert tin nhắn mới*/
+fn.onStopAlertClanMessage = function()
+{
+    gvGUI.layerClanChat._guiButtonClanChat._alertIcon.stopAllActions();
+    gvGUI.layerClanChat._guiButtonClanChat._alertIcon.setVisible(false);
+}

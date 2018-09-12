@@ -195,6 +195,10 @@ var LayerClanChat = cc.Node.extend({
         this._guiButtonClanChat = ccui.Button(res.clanChatGUI.buttonBG);
         this._guiButtonClanChat.setAnchorPoint(0, 0.5);
         this._guiButtonClanChat.setPosition(this._bg.width + this._layerUserOnline.width - 6, this._bg.height/2);
+        this._guiButtonClanChat._alertIcon = cc.Sprite(mainGUI.alert_icon);
+        this._guiButtonClanChat._alertIcon.setPosition(35, 50);
+        this._guiButtonClanChat._alertIcon.setVisible(false);
+        this._guiButtonClanChat.addChild(this._guiButtonClanChat._alertIcon, 2);
         this.addChild(this._guiButtonClanChat, 2);
         this._guiButtonClanChat.addClickEventListener(function(){
             if (cf.user._clanId == -1) return;
@@ -218,6 +222,7 @@ var LayerClanChat = cc.Node.extend({
                 self.onDisappear();
             }
             this._isExpanded = !this._isExpanded;
+            fn.onStopAlertClanMessage();
         }.bind(this));
 
         this._iconButton = null;

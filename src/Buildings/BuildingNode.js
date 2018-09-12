@@ -286,7 +286,7 @@ var BuildingNode = cc.Node.extend({
                         //self._listenerMove.setEnabled(false);
                     }
                     self.getParent().getParent().showListBotButton(self._id);
-
+                    fn.playSoundPickUp(self._orderInUserBuildingList);
                     /* Thu hoạch tài nguyên nếu là nhà khai thác đang có nút hiện lên*/
                     if (fn.checkIsResourceAndCollectable(self))
                         self.onHarvest(true);
@@ -447,6 +447,8 @@ var BuildingNode = cc.Node.extend({
                     gv.building_is_moved = 0;
                     self._red.visible = false;
                     self.updateZOrder();
+
+                    fn.playSoundPlace(self._orderInUserBuildingList);
                 };
                 return true;
             }
@@ -528,6 +530,8 @@ var BuildingNode = cc.Node.extend({
             }
             this.onEndClick();
             this.hideBuildingButton();
+
+            audioPlayer.play(res.sound.building_contruct)
         }
         else    // đang nâng cấp dở từ server
         {
@@ -666,6 +670,7 @@ var BuildingNode = cc.Node.extend({
     },
 
     onCompleteBuild: function() {
+        audioPlayer.play(res.sound.building_finish);
         this.makeBuilderFree();
         this._isActive = true;
         this._level ++;
@@ -691,19 +696,8 @@ var BuildingNode = cc.Node.extend({
             this.onUpdateSpriteFrame();
         }
         this.updateLabelName();
-        // if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
-        //     this._lastHarvestTime = new Date().getTime();
 
         cf.user.updateWallList();
-
-        /* Cập nhật sức chứa.. nếu công trình là kho chứ */
-        // var order = this._orderInUserBuildingList;
-        // if (order == gv.orderInUserBuildingList.townHall || (order >= gv.orderInUserBuildingList.storage_1 && order <= gv.orderInUserBuildingList.storage_3))
-        // {
-        //     cf.user.updateMaxStorageSingle(this._id);
-        //     cf.user.distributeResource(true, true, true, true);
-        // };
-
     },
 
     onUpdateSpriteFrame: function()

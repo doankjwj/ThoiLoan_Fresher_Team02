@@ -239,11 +239,11 @@ var PopUpConstruct = cc.Node.extend({
         cf.user.editCurrentResource(cf.resType.resource_3, -this._cost.darkElixir);
         cf.user.editCurrentResource(cf.resType.resource_4, -this._cost.coin);
 
-        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
-        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
-        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
-        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
-
+        //this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+        //this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+        //this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+        //this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+        //
         /* Hiển thị nút xây nhanh, ..*/
         if (fn.getCurrentBuilding()._time_remaining > 0 && this._buildingSTR != gv.buildingSTR.wall)
             fr.getCurrentScreen().showListBotButton(gv.building_selected);

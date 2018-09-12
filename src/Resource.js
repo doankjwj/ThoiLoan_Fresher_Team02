@@ -262,7 +262,8 @@ var mainGUI = {
     shield:             guiFolder + "Main_Gui/shield.png",
     shop:               guiFolder + "Main_Gui/shop.png",
     trophy:             guiFolder + "Main_Gui/trophy.png",
-    trophyBgBar:        guiFolder + "Main_Gui/trophy_bg_bar.png"
+    trophyBgBar:        guiFolder + "Main_Gui/trophy_bg_bar.png",
+    alert_icon:         guiFolder + "icons/alert_icon.png",
 };
 var buildingGUI = {
     iconInfo :              res.folder_gui_action_building + "info_icon.png",
@@ -381,6 +382,34 @@ res.sound = {
     soundBackgound :    soundFolder + "theme.mp3",
     collectGold:        soundFolder + "sfx/collect_gold.mp3",
     collectElixir:      soundFolder + "sfx/collect_elixir.mp3",
+
+    building_contruct:              soundFolder + "sfx/building_contruct.mp3",
+    building_destroyed:             soundFolder + "sfx/building_destroyed.mp3",
+    building_finish:                soundFolder + "sfx/building_finish.mp3",
+    builderhut_pickup:              soundFolder + "sfx/builderhut_pickup.mp3",
+    builderhut_place:               soundFolder + "sfx/builderhut_place.mp3",
+    camp_pickup:                    soundFolder + "sfx/camp_pickup.mp3",
+    camp_place:                     soundFolder + "sfx/camp_place.mp3",
+    cannon_pickup:                  soundFolder + "sfx/cannon_pickup.mp3",
+    cannon_place:                   soundFolder + "sfx/cannon_place.mp3",
+    darkelixirdrill_pickup:         soundFolder + "sfx/darkelixirdrill_pickup.mp3",
+    darkelixirdrill_place:          soundFolder + "sfx/darkelixirdrill_place.mp3",
+    elixirpump_pickup:              soundFolder + "sfx/elixirpump_pickup.mp3",
+    elixirpump_place:               soundFolder + "sfx/elixirpump_place.mp3",
+    elixirstorage_pickup:           soundFolder + "sfx/elixirstorage_pickup.mp3",
+    elixirstorage_place:            soundFolder + "sfx/elixirstorage_place.mp3",
+    goldmine_pickup:                soundFolder + "sfx/goldmine_pickup.mp3",
+    goldmine_place:                 soundFolder + "sfx/goldmine_place.mp3",
+    goldstorage_pickup:             soundFolder + "sfx/goldstorage_pickup.mp3",
+    goldstorage_place:              soundFolder + "sfx/goldstorage_place.mp3",
+    townhall_pickup:                soundFolder + "sfx/townhall_pickup.mp3",
+    townhall_place:                 soundFolder + "sfx/townhall_place.mp3",
+    wall_pickup:                    soundFolder + "sfx/wall_pickup.mp3",
+    wall_place:                     soundFolder + "sfx/wall_place.mp3",
+
+    button_click:                   soundFolder + "sfx/button_click.mp3",
+    touch_bush:                     soundFolder + "sfx/touch_bush.mp3",
+
 };
 
 res.plist =
