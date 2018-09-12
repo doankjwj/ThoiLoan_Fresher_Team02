@@ -144,7 +144,7 @@ var MainLayer = cc.Layer.extend({
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
         cc.sys.localStorage.setItem("userName", gv.usernameSendToServer);
         gv.passwordSendToServer = "";
 
@@ -181,8 +181,8 @@ var MainLayer = cc.Layer.extend({
         cf.user.distributeResource(true, true, true);
         this.initTroops();
         this.initBuilder();
-        this.initRetainBuilding();
         this.updateGUIandUserInfo();
+        this.initRetainBuilding();
         this.test();
     },
     initTroops: function ()
@@ -458,11 +458,6 @@ var MainLayer = cc.Layer.extend({
         if (!this.getChildByTag(this._TAG_LAYER_CLAN_CHAT))
             this.addChild(gvGUI.layerClanChat, 2, this._TAG_LAYER_CLAN_CHAT);
     },
-    releaseTroop: function()
-    {
-        for(var i = 0; i<cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1].length; i++)
-            if (cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][i]._troopList != null) cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][i]._troopList.length = 0;
-    },
     initMap: function()
     {
         this._map = new Map();
@@ -486,7 +481,9 @@ var MainLayer = cc.Layer.extend({
                 if (!building._isActive)
                 {
                     building.onStartBuild(gv.startConstructType.loadConstruct);
-                }
+                };
+                if (fn.buildIsResource(building) && building._isActive)
+                    building.onStartCollect();
             }
             ;
         }
@@ -596,7 +593,7 @@ var MainLayer = cc.Layer.extend({
             var building = cf.user._buildingList[Math.floor(id/100) - 1][id%100];
             if (gv.building_selected === undefined || (building._buildingSTR == gv.buildingSTR.clanCastle && building._level == 0)) return;
             if (building._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && building._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
-                building.onHardUpdateCapacity();
+                building.onUpdateCurrentCapacity();
             if (!self.getChildByTag(gv.tag.TAG_POPUP))
             {
                 var popUp = PopUpConstruct.getOrCreate();

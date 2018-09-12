@@ -578,4 +578,43 @@ fn.checkAddResourceEnough = function(resArr)
     if (resArr[1] > cf.user.getAvaiableCapacity(cf.resType.resource_2)) return false;
     if (resArr[2] > cf.user.getAvaiableCapacity(cf.resType.resource_3)) return false;
     return true;
+};
+
+/* Kiểm tra công trình có phải nhà tài nguyên*/
+fn.buildIsResource = function(building)
+{
+    if (building._orderInUserBuildingList < gv.orderInUserBuildingList.resource_1 || building._orderInUserBuildingList > gv.orderInUserBuildingList.resource_3) return false;
+    return true;
+};
+
+/* Cập nhật lại timeout popup nút thu hoạch màu đỏ cho nhà khai thác*/
+fn.onUpdateTimeOutCollector = function(resType)
+{
+    switch (resType)
+    {
+        case cf.resType.resource_1:
+            for (var i=0; i<cf.user._buildingListCount[gv.orderInUserBuildingList.resource_1]; i++)
+            {
+                var buildingRes1 = fn.getUserBuilding(gv.orderInUserBuildingList.resource_1, i);
+                if (buildingRes1._isActive)
+                    buildingRes1.onManualSetTimeOutPopUpRedButton();
+            };
+            break;
+        case cf.resType.resource_2:
+            for (var i=0; i<cf.user._buildingListCount[gv.orderInUserBuildingList.resource_2]; i++)
+            {
+                var buildingRes2 = fn.getUserBuilding(gv.orderInUserBuildingList.resource_2, i);
+                if (buildingRes2._isActive)
+                    buildingRes2.onManualSetTimeOutPopUpRedButton();
+            };
+            break;
+        case cf.resType.resource_3:
+            for (var i=0; i<cf.user._buildingListCount[gv.orderInUserBuildingList.resource_3]; i++)
+            {
+                var buildingRes3 = fn.getUserBuilding(gv.orderInUserBuildingList.resource_3, i);
+                if (buildingRes3._isActive)
+                    buildingRes3.onManualSetTimeOutPopUpRedButton();
+            };
+            break;
+    }
 }

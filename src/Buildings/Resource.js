@@ -2,7 +2,7 @@ var Resource = BuildingNode.extend({
     _currentCapacity: 0,
     _maxCapacity: 0,
     _productivity: null,
-    _percentPopupHarvest: 0.01,
+    _percentPopupHarvest: 0.002,
     _capacityIsFulled: false,
     _lastHarvestTime: null,
 
@@ -14,6 +14,17 @@ var Resource = BuildingNode.extend({
     _resType: null,
 
     _timeRefresh: 0.25,
+
+    resStatus:
+    {
+        none: 0,
+        normal: 1,
+        full: 2,
+    },
+
+    /*time out cho đẩy lên nút thu hoạch*/
+    _timeOutNormal: null,
+    _timeOutFull: null,
 
     ctor: function(id, level, row, col, existed, isActive, buildingSTR)
     {
@@ -60,14 +71,7 @@ var Resource = BuildingNode.extend({
         this.addChild(this._effectAnim, this._center_building.getLocalZOrder() + 1);
         this._effectAnim.runAction(((this._buildingSTR == gv.buildingSTR.resource_1) ? cf.animationRes1[this.getTempLevel()].clone() : cf.animationRes2[this.getTempLevel()]).clone().repeatForever());
 
-        //if (!this._isActive)
-        //{
-        //    this.onStartBuild(gv.startConstructType.loadConstruct);
-        //}
-        //else
         if (this._isActive) this.initCapacity();
-
-        this.schedule(this.onScheduleUpdateCapacity, this._timeRefresh);
     },
     updateAnim: function()
     {
@@ -93,6 +97,22 @@ var Resource = BuildingNode.extend({
         }
     },
 
+    getMaxCapacity: function()
+    {
+        return this._maxCapacity;
+    },
+    getCurrentCapacity: function()
+    {
+        return this._currentCapacity;
+    },
+    setcurrentCapacity: function(amount)
+    {
+        this._currentCapacity = amount;
+    },
+    getProductivity: function()
+    {
+        return this._productivity;
+    },
 
     initCapacity: function()
     {
@@ -122,7 +142,7 @@ var Resource = BuildingNode.extend({
         this.addChild(this._btnHarvest, this._gui_commit_build.getLocalZOrder() + 1, this._TAG_BUTTON_HARVEST);
         var self = this;
         this._btnHarvest.addClickEventListener(function(){
-            self.onHarvest();
+            self.onHarvest(true);
         }.bind(this));
 
         /* Nền Button */
@@ -143,58 +163,90 @@ var Resource = BuildingNode.extend({
         this.addChild(this._btnHarvestBG, this._btnHarvest.getLocalZOrder() - 1, this._TAG_BUTTON_HARVEST_BG);
     },
 
-    // Schedule liên tục cho đến khi đủ phần trăm kho
-    onScheduleUpdateCapacity: function()
+    /*Bắt đầu khai thác*/
+    onStartCollect: function()
     {
-        if (!this._isActive || !this._existed) return;
+        this.onResetCapacity();
+        this.onVisibleButtonHarvest(false);
+        if (this._timeOutNormal)
+            clearInterval(this._timeOutNormal);
+        if (this._timeOutFull)
+            clearInterval(this._timeOutFull);
 
-        /* Kiểm tra sức chứa  và trạng thái button Harvest*/
-        //if (this._currentCapacity >= this._maxCapacity || this._btnHarvest.visible) return;
-        /* thời gian từ lần cuối thu hoạch hoặc lần cuối xây dựng */
+        var timeToNormal    = this.getTimeToNormal();
+        var timeToFull      = this.getTimeToFull();
+
+        var self = this;
+        this._timeOutNormal = setTimeout(function(){
+            self.onPopUpHarvestButton();
+        }, timeToNormal);
+        this._timeOutFull   = setTimeout(function(){
+            self.onSetButtonHarvestBG(self.resStatus.full);
+        }, timeToFull);
+    },
+    onVisibleButtonHarvest: function(boo)
+    {
+        this._btnHarvest.setVisible(boo);
+        this._btnHarvestBG.setVisible(boo);
+    },
+    getTimeToNormal: function()         // Thời gian để đủ phần trăm, đon vị mili giây
+    {
+        var timeToNormal = this.getMaxCapacity()*this._percentPopupHarvest/this.getProductivity()*60*60*1000 - (new Date().getTime() - this._lastHarvestTime);
+        return Math.max(0, timeToNormal);
+    },
+    getTimeToFull: function()           // Thời gian để hiển thị lên là đầy, đon vị mili giây
+    {
+        var timeToFull;
+        var resAvaiable = cf.user.getAvaiableCapacity(this._resType);
+        this.onUpdateCurrentCapacity();
+        var resToFull = resAvaiable - this.getCurrentCapacity();
+        timeToFull = resToFull/this.getProductivity()*60*60*1000;
+        return Math.max(0, timeToFull);
+    },
+
+    /* thay đổi nút thu hoạch sang đỏ khi kho chứa tương ứng thay đổi*/
+    onManualSetTimeOutPopUpRedButton: function()
+    {
+        this.onSetButtonHarvestBG(this.resStatus.normal);
+        var timeToFull      = this.getTimeToFull();
+        timeToFull      = Math.max(0, timeToFull);
+        if (this._timeOutFull)
+            clearInterval(this._timeOutFull);
+        var self = this;
+        this._timeOutFull   = setTimeout(function(){
+            self.onSetButtonHarvestBG(self.resStatus.full);
+        }, timeToFull);
+    },
+
+    /* Cập nhật tài nguyên kho hiện tại*/
+    onUpdateCurrentCapacity: function()
+    {
         var timeDistance = (new Date().getTime() - this._lastHarvestTime) / 1000;
         this._currentCapacity = Math.floor(this._productivity * fn.convertSecondToHour(timeDistance));
         this._currentCapacity = Math.min(this._currentCapacity, this._maxCapacity);
-        if (this._currentCapacity/this._maxCapacity >= this._percentPopupHarvest)
+    },
+    onSetButtonHarvestBG: function(resStatus)
+    {
+        switch (resStatus)
         {
-            this.updateButtonHarvestBG();
-            if (!this._btnHarvest.visible)
-                this.onPopUpHarvestButton();
+            case this.resStatus.normal:
+                fn.replaceSpriteImage(this._btnHarvestBG, res.folderCollectResource.bgButtonEnough)
+                break;
+            case this.resStatus.full:
+                fn.replaceSpriteImage(this._btnHarvestBG, res.folderCollectResource.bgButtonFull);
+                break;
         }
     },
-    // Cập nhật khi nhấn button thu hoạch và xem thông tin
-    onHardUpdateCapacity: function()
+    onPopUpHarvestButton: function()
     {
-        //if (!this._isActive || !this._existed) return;
-        ///* Kiểm tra sức chứa  và trạng thái button Harvest*/
-        //if (this._currentCapacity >= this._maxCapacity || this._btnHarvest.visible) return;
-        ///* thời gian từ lần cuối thu hoạch hoặc lần cuối xây dựng */
-        var timeDistance = (new Date().getTime() - this._lastHarvestTime) / 1000;
-        this._currentCapacity = Math.floor(this._productivity * fn.convertSecondToHour(timeDistance));
-        this._currentCapacity = Math.min(this._currentCapacity, this._maxCapacity);
-        if (this._currentCapacity/this._maxCapacity >= this._percentPopupHarvest)
-        {
-            this.updateButtonHarvestBG();
-            if (!this._btnHarvest.visible)
-                this.onPopUpHarvestButton();
-        }
-    },
-    updateButtonHarvestBG: function()
-    {
-        this._avaiableCapacity = cf.user.getAvaiableCapacity(this._resType);
-        if (this._avaiableCapacity >= this._currentCapacity)
+        this.onUpdateCurrentCapacity();
+        var resAvaiable = cf.user.getAvaiableCapacity(this._resType);
+        if (this.getCurrentCapacity() < resAvaiable)
             fn.replaceSpriteImage(this._btnHarvestBG, res.folderCollectResource.bgButtonEnough)
         else
             fn.replaceSpriteImage(this._btnHarvestBG, res.folderCollectResource.bgButtonFull);
 
-        this._btnHarvestBG.visible = true;
-    },
-    onPopUpHarvestButton: function()
-    {
-        if (!this._btnHarvest.visible)
-        {
-            this._btnHarvest.visible = true;
-            this._btnHarvestBG.visible = true;
-        };
+        this.onVisibleButtonHarvest(true);
 
         if (this.getParent().getParent().getChildByTag(this.getParent().getParent()._TAG_BUTTON_HARVEST))
         {
@@ -212,44 +264,36 @@ var Resource = BuildingNode.extend({
             this.getParent().getParent().getChildByTag(this.getParent().getParent()._TAG_BUTTON_HARVEST).setEnabled(false);
         }
     },
-    onHarvest: function()
+
+    onHarvest: function(continueCollect)
     {
         this.onPlaySoundEffect();
-        this.onHardUpdateCapacity();
+        /* Cập nhật tài nguyên hiện tại*/
+        this.onUpdateCurrentCapacity();
         var capacityAvaiable = cf.user.getAvaiableCapacity(this._resType);
-        var resCollectAble = Math.min(this._currentCapacity, capacityAvaiable);
+        var resCollectAble = Math.min(this.getCurrentCapacity(), capacityAvaiable);
         this.updateToUserCapacity(resCollectAble);
         this.onRunEffectCollect(resCollectAble);
-        this._currentCapacity = (capacityAvaiable >= this._currentCapacity) ? 0 : (capacityAvaiable - this._currentCapacity);
-        if (this._currentCapacity <= this._maxCapacity * this._percentPopupHarvest)
-            this.onPopDownHarvestButton();
-        if (this._currentCapacity < 0) this._currentCapacity = 0;
+        this.onPopDownHarvestButton();
+        this.onResetCapacity();
         this.onUpdateLastHarvestTime();
 
         testnetwork.connector.sendHarvest(this._id);
-    },
 
+        if (continueCollect)
+            this.onStartCollect();
+    },
+    onResetCapacity: function()
+    {
+        this.setcurrentCapacity(0);
+    },
     onPlaySoundEffect: function()
     {
         audioPlayer.play(this._buildingSTR == gv.buildingSTR.resource_1 ? res.sound.collectGold : res.sound.collectElixir);
     },
     updateToUserCapacity: function(quantity)
     {
-        switch(this._buildingSTR)
-        {
-            case gv.buildingSTR.resource_1:
-                cf.user._currentCapacityGold += quantity;
-                cf.user.distributeResource(true, false, false);
-                break;
-            case gv.buildingSTR.resource_2:
-                cf.user._currentCapacityElixir += quantity;
-                cf.user.distributeResource(false, true, false);
-                break;
-            case gv.buildingSTR.resource_3:
-                cf.user._currentCapacityDarkElixir += quantity;
-                cf.user.distributeResource(false, false, true);
-                break;
-        }
+        cf.user.editCurrentResource(this._resType, quantity);
     },
     onRunEffectCollect: function(resCollectAble)
     {
@@ -289,6 +333,8 @@ var Resource = BuildingNode.extend({
     {
         this._super();
         this.initCapacity();
-        this._lastHarvestTime = new Date().getTime();
+        this.onResetCapacity();
+        this.onUpdateLastHarvestTime();
+        this.onStartCollect();
     }
 })

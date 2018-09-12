@@ -207,11 +207,11 @@ var User = cc.Class.extend({
         if (!resType_4) resType_4 = false;
 
         if (resType_1)
-            this.distributeResourceType(gv.buildingSTR.resource_1);
+            this.distributeResourceType(cf.resType.resource_1);
         if (resType_2)
-            this.distributeResourceType(gv.buildingSTR.resource_2);
+            this.distributeResourceType(cf.resType.resource_2);
         if (resType_3)
-            this.distributeResourceType(gv.buildingSTR.resource_3);
+            this.distributeResourceType(cf.resType.resource_3);
 
         if (resType_1)
             fr.getCurrentScreen().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
@@ -229,7 +229,7 @@ var User = cc.Class.extend({
         var building = null;
         switch (resType)
         {
-            case gv.buildingSTR.resource_1:
+            case cf.resType.resource_1:
                 resCapacity = this._currentCapacityGold;
                 building = this._buildingList[gv.orderInUserBuildingList.townHall][0];
                 building._currentCapacityGold = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacityGold"]);
@@ -245,7 +245,7 @@ var User = cc.Class.extend({
                     resCapacity = Math.max(resCapacity, 0);
                 };
                 break;
-            case gv.buildingSTR.resource_2:
+            case cf.resType.resource_2:
                 resCapacity = this._currentCapacityElixir;
                 building = this._buildingList[gv.orderInUserBuildingList.townHall][0];
                 building._currentCapacityElixir = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacityElixir"]);
@@ -261,7 +261,7 @@ var User = cc.Class.extend({
                     resCapacity = Math.max(resCapacity, 0);
                 };
                 break;
-            case gv.buildingSTR.resource_3:
+            case cf.resType.resource_3:
                 resCapacity = this._currentCapacityDarkElixir;
                 building = this._buildingList[gv.orderInUserBuildingList.townHall][0];
                 building._currentCapacityDarkElixir = Math.min(resCapacity, building._jsonConfig[building._buildingSTR][building._level]["capacityDarkElixir"]);
@@ -277,25 +277,28 @@ var User = cc.Class.extend({
                     resCapacity = Math.max(resCapacity, 0);
                 };
                 break;
-        }
+        };
+
+        fn.onUpdateTimeOutCollector(resType);
     },
 
     /*getAvaiable Capacity*/
     getAvaiableCapacity: function(resType)
     {
-        switch(resType) {
-            case cf.resType.resource_1:
-                return (this._maxCapacityGold - this._currentCapacityGold);
-                break;
-            case cf.resType.resource_2:
-                return (this._maxCapacityElixir - this._currentCapacityElixir);
-                break;
-            case cf.resType.resource_3:
-                return (this._maxCapacityDarkElixir - this._currentCapacityDarkElixir);
-                break;
-            default:
-                break;
-        }
+        return (this.getMaxCapacityResource(resType) - this.getCurrentResource(resType));
+        //switch(resType) {
+        //    case cf.resType.resource_1:
+        //        return (this._maxCapacityGold - this._currentCapacityGold);
+        //        break;
+        //    case cf.resType.resource_2:
+        //        return (this._maxCapacityElixir - this._currentCapacityElixir);
+        //        break;
+        //    case cf.resType.resource_3:
+        //        return (this._maxCapacityDarkElixir - this._currentCapacityDarkElixir);
+        //        break;
+        //    default:
+        //        break;
+        //}
     },
 
     /*Lấy tài nguyên*/
