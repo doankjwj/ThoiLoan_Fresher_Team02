@@ -2,7 +2,7 @@ var Resource = BuildingNode.extend({
     _currentCapacity: 0,
     _maxCapacity: 0,
     _productivity: null,
-    _percentPopupHarvest: 0.001,
+    _percentPopupHarvest: 0.01,
     _capacityIsFulled: false,
     _lastHarvestTime: null,
 

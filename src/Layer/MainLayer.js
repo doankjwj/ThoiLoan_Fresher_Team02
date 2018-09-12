@@ -144,7 +144,7 @@ var MainLayer = cc.Layer.extend({
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
         cc.sys.localStorage.setItem("userName", gv.usernameSendToServer);
         gv.passwordSendToServer = "";
 
