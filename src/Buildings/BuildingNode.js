@@ -270,7 +270,6 @@ var BuildingNode = cc.Node.extend({
                         self.setLocalZOrder(self.getLocalZOrder() + 200);
                     };
 
-
                     var tmpPreLevel = (self._buildingSTR == gv.buildingSTR.obstacle) ? " " : " level ";
                     self._txtName.setString(self._name + tmpPreLevel + self.getTempLevel());
                     self._txtName.visible = true;
@@ -293,6 +292,10 @@ var BuildingNode = cc.Node.extend({
                         //self._listenerMove.setEnabled(false);
                     }
                     self.getParent().getParent().showListBotButton(self._id);
+                    fn.playSoundPickUp(self._orderInUserBuildingList);
+                    /* Thu hoạch tài nguyên nếu là nhà khai thác đang có nút hiện lên*/
+                    if (fn.checkIsResourceAndCollectable(self))
+                        self.onHarvest(true);
                 }
             }
         });
@@ -385,31 +388,13 @@ var BuildingNode = cc.Node.extend({
                 }
                 else
                 {
-
                     for(var i=0; i<cf.selectedWall.length; i++) {
                         cf.selectedWall[i].onRemoveClick();
                     }
 
                     cf.selectedWall.length = 0;
 
-                    /*if(!self._existed) */ return false;
-                    self.onEndClick();
-                    this.setEnabled(false);
-                    self._listener.setEnabled(true);
-                    self.hideBuildingButton();
-                    gv.building_is_moved = 0;
-                    self.updateZOrder();
-                    self._red.visible = false;
-                    if (!self.none_space(self._row, self._col, size, self._id))
-                    {
-                        self._row = cf.current_r;
-                        self._col = cf.current_c;
-                        self.x = cf.tileLocation[self._row][self._col].x;
-                        self.y = cf.tileLocation[self._row][self._col].y - (size / 2) * cf.tileSize.height;
-                        self.locate_map_array(self);
-                        self.updateZOrder();
-                    }
-                    return true;
+                    return false;
                 }
             },
             onTouchMoved: function(touch, event)
@@ -481,6 +466,8 @@ var BuildingNode = cc.Node.extend({
                     cf.selectedWall.length = 0;
 
                     self.updateZOrder();
+
+                    fn.playSoundPlace(self._orderInUserBuildingList);
                 };
                 return true;
             }
@@ -557,11 +544,13 @@ var BuildingNode = cc.Node.extend({
             // Thu hoạch nếu nhà là nhà tài nguyên
             if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3 && this._level > 0)
             {
-                this.onHarvest();
+                this.onHarvest(false);
                 this._currentCapacity = 0;
             }
             this.onEndClick();
             this.hideBuildingButton();
+
+            audioPlayer.play(res.sound.building_contruct)
         }
         else    // đang nâng cấp dở từ server
         {
@@ -627,6 +616,8 @@ var BuildingNode = cc.Node.extend({
     },
     makeBuilderWorking: function()
     {
+        if (this._buildingSTR == gv.buildingSTR.builderHut)
+            return;
         for (var i=0; i < cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut]; i++)
         {
             var builderHut = fn.getUserBuilding(gv.orderInUserBuildingList.builderHut, i);
@@ -641,7 +632,8 @@ var BuildingNode = cc.Node.extend({
     },
     makeBuilderFree: function()
     {
-        if(this._builderHutIndex === -1) return;
+        if (this._buildingSTR == gv.buildingSTR.builderHut)
+            return;
         fn.getUserBuilding(gv.orderInUserBuildingList.builderHut, this._builderHutIndex)._builder.finishWork();
         fn.getUserBuilding(gv.orderInUserBuildingList.builderHut, this._builderHutIndex)._free = true;
         this._builderHutIndex = -1;
@@ -697,6 +689,7 @@ var BuildingNode = cc.Node.extend({
     },
 
     onCompleteBuild: function() {
+        audioPlayer.play(res.sound.building_finish);
         this.makeBuilderFree();
         this._isActive = true;
         this._level ++;
@@ -725,19 +718,8 @@ var BuildingNode = cc.Node.extend({
             this.onUpdateSpriteFrame();
         }
         this.updateLabelName();
-        // if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
-        //     this._lastHarvestTime = new Date().getTime();
 
         cf.user.updateWallList();
-
-        /* Cập nhật sức chứa.. nếu công trình là kho chứ */
-        // var order = this._orderInUserBuildingList;
-        // if (order == gv.orderInUserBuildingList.townHall || (order >= gv.orderInUserBuildingList.storage_1 && order <= gv.orderInUserBuildingList.storage_3))
-        // {
-        //     cf.user.updateMaxStorageSingle(this._id);
-        //     cf.user.distributeResource(true, true, true, true);
-        // };
-
     },
 
     onUpdateSpriteFrame: function()

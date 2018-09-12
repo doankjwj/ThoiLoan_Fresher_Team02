@@ -41,7 +41,14 @@ var Obstacle = BuildingNode.extend({
         //cf.user.updateSingleBuilder();
         this.updateResource();
 
+
         this.schedule(this.onUpdateStatus, 1);
+    },
+    initEffectBlur: function()
+    {
+        var tintIn  = cc.TintTo(0.25, 255, 255, 255);
+        var tintOut = cc.TintTo(0.25, 100, 100, 100);
+        this.runAction(cc.Sequence.create(tintIn, tintOut).repeat(3));
     },
     updateResource: function()
     {
@@ -126,9 +133,20 @@ var Obstacle = BuildingNode.extend({
     {
         //this.makeBuilderFree();
         //cf.user._builderFree ++;
-        this.unlocate_map_array(this._row, this._col, this._size);
-        cf.user.updateBuilder();
-        this.getParent().removeChild(this);
+        var self = this;
+        this.runAction(cc.Sequence.create(
+            cc.scaleTo(0.15, 1.25),
+            cc.scaleTo(0.15, 1),
+            cc.CallFunc(function(){
+                self.unlocate_map_array(self._row, self._col, self._size);
+                cf.user.updateBuilder();
+                self.getParent().removeChild(self);
+            })
+        ));
+        // this.initEffectBlur();
+        // this.unlocate_map_array(this._row, this._col, this._size);
+        // cf.user.updateBuilder();
+        // this.getParent().removeChild(this);
     },
 
     makeBuilderWorking: function()

@@ -148,6 +148,8 @@
         gv.passwordSendToServer = "";
 
         gv.gameClient.connect();
+
+        audioPlayer.play(res.sound.button_click);
     },
 
     onConnectSuccess: function()
@@ -180,8 +182,14 @@
         cf.user.distributeResource(true, true, true);
         this.initTroops();
         this.initBuilder();
-        this.initRetainBuilding();
+
+        // Conflict
         this.updateGUIandUserInfo();
+        this.initRetainBuilding();
+        this.updateGUI_Builder();
+
+        // Conflict
+
         this.test();
     },
     initTroops: function ()
@@ -457,11 +465,6 @@
         if (!this.getChildByTag(this._TAG_LAYER_CLAN_CHAT))
             this.addChild(gvGUI.layerClanChat, 2, this._TAG_LAYER_CLAN_CHAT);
     },
-    releaseTroop: function()
-    {
-        for(var i = 0; i<cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1].length; i++)
-            if (cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][i]._troopList != null) cf.user._buildingList[gv.orderInUserBuildingList.armyCamp_1][i]._troopList.length = 0;
-    },
     initMap: function()
     {
         this._map = new Map();
@@ -485,7 +488,9 @@
                 if (!building._isActive)
                 {
                     building.onStartBuild(gv.startConstructType.loadConstruct);
-                }
+                };
+                if (fn.buildingIsResource(building) && building._isActive)
+                    building.onStartCollect();
             }
             ;
         }
@@ -495,9 +500,13 @@
     updateGUIandUserInfo: function()
     {
         cf.user.updateMaxStorage();
-        cf.user.updateBuilder();
+
         this._expBar.updateContent();
         this._armyBar.updateContent();
+    },
+    updateGUI_Builder: function()
+    {
+        cf.user.updateBuilder();
     },
 
     addResourceBar: function() {
@@ -595,7 +604,7 @@
             var building = cf.user._buildingList[Math.floor(id/100) - 1][id%100];
             if (gv.building_selected === undefined || (building._buildingSTR == gv.buildingSTR.clanCastle && building._level == 0)) return;
             if (building._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && building._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
-                building.onHardUpdateCapacity();
+                building.onUpdateCurrentCapacity();
             if (!self.getChildByTag(gv.tag.TAG_POPUP))
             {
                 var popUp = PopUpConstruct.getOrCreate();
@@ -738,7 +747,7 @@
         this._guiButtonHarvest.addClickEventListener(function(){
             fn.getCurrentBuilding().onRemoveClick();
             var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
-            building.onHarvest();
+            building.onHarvest(true);
         });
 
         /*Button Research */

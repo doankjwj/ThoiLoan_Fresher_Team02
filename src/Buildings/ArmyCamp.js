@@ -1,6 +1,6 @@
 var ArmyCamp = BuildingNode.extend({
     _troopQuantity: 0,
-    _troopList: null,
+    _troopList: [],
 
     ctor: function(id, level, row, col, existed, isActive)
     {

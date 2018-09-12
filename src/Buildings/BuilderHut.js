@@ -4,7 +4,6 @@ var BuilderHut = BuildingNode.extend({
 
     ctor: function(id, order, row, col, existed, isActive)
     {
-        cc.log("HERE");
         this._buildingSTR = gv.buildingSTR.builderHut;
         this._size = gv.json.builderHut[this._buildingSTR][1]["width"];
         this._jsonConfig = gv.json.builderHut;
@@ -19,10 +18,17 @@ var BuilderHut = BuildingNode.extend({
 
         //if (!this._isActive)
         //    this.onStartBuild(gv.startConstructType.loadConstruct);
+
+
     },
 
     updateAnim: function()
     {
 
     },
+    onCompleteBuild: function()
+    {
+        this._super();
+        this._builder = new Builder(cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut]-1);
+    }
 })

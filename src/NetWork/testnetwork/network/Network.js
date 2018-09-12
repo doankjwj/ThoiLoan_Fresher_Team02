@@ -34,12 +34,15 @@ testnetwork.Connector = cc.Class.extend({
                 break;
 
             case gv.CMD.BROADCAST_CHAT_TEXT:                                                    /*Nhận broadcast 1 tin nhắn text*/
+                fn.onAlertClanMessage();
                 gvGUI.layerClanChat.onReceiveChatText();
                 break;
             case gv.CMD.BROADCAST_REQUEST_DONATE:                                               /*Nhận broadcast 1 tin nhắn xin quân*/
+                fn.onAlertClanMessage();
                 gvGUI.layerClanChat.onReceiveChatDonate();
                 break;
         case gv.CMD.BROADCAST_CLAN_EVENT:                                                       /*Nhận broadcast 1 tin Sự kiện bang hội*/
+                fn.onAlertClanMessage();
                 gvGUI.layerClanChat.onReceiveEvent();
                 break;
             case gv.CMD.BROADCAST_DONATE:                                                       /*Nhận broadcast 1 tin nhắn cho quân*/

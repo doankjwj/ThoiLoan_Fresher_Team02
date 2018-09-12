@@ -239,11 +239,11 @@ var PopUpConstruct = cc.Node.extend({
         cf.user.editCurrentResource(cf.resType.resource_3, -this._cost.darkElixir);
         cf.user.editCurrentResource(cf.resType.resource_4, -this._cost.coin);
 
-        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
-        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
-        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
-        this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
-
+        //this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+        //this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
+        //this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
+        //this.getParent().getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
+        //
         /* Hiển thị nút xây nhanh, ..*/
         if (fn.getCurrentBuilding()._time_remaining > 0 && this._buildingSTR != gv.buildingSTR.wall)
             fr.getCurrentScreen().showListBotButton(gv.building_selected);
@@ -1049,10 +1049,8 @@ var PopUpConstruct = cc.Node.extend({
         if (str == gv.buildingSTR.townHall)
             this._effect = cc.Sprite("#res/Art/Effects/towhall_flame/00.png");
         if (str == gv.buildingSTR.defence_1){
-            cc.log(res.folder_canon + level + "" + res.image_postfix_1 + "0" + res.image_postfix_2);
             this._effect = cc.Sprite(res.folder_canon + level + "/" + res.image_postfix_1 + Math.floor(Math.random()*4) + res.image_postfix_2);
         }
-        cc.log(str + " ::: " + gv.buildingSTR.defence_1);
 
         this._effect.attr({
             anchorX: 0.5,
