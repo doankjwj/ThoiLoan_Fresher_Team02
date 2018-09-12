@@ -181,8 +181,14 @@ var MainLayer = cc.Layer.extend({
         cf.user.distributeResource(true, true, true);
         this.initTroops();
         this.initBuilder();
+
+        // Conflict
         this.updateGUIandUserInfo();
         this.initRetainBuilding();
+        this.updateGUI_Builder();
+
+        // Conflict
+
         this.test();
     },
     initTroops: function ()
@@ -493,9 +499,13 @@ var MainLayer = cc.Layer.extend({
     updateGUIandUserInfo: function()
     {
         cf.user.updateMaxStorage();
-        cf.user.updateBuilder();
+
         this._expBar.updateContent();
         this._armyBar.updateContent();
+    },
+    updateGUI_Builder: function()
+    {
+        cf.user.updateBuilder();
     },
 
     addResourceBar: function() {
@@ -728,7 +738,7 @@ var MainLayer = cc.Layer.extend({
         this._guiButtonHarvest.addClickEventListener(function(){
             fn.getCurrentBuilding().onRemoveClick();
             var building = cf.user._buildingList[Math.floor(gv.building_selected/100) - 1][gv.building_selected%100];
-            building.onHarvest(false);
+            building.onHarvest(true);
         });
 
         /*Button Research */

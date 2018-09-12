@@ -289,7 +289,7 @@ var BuildingNode = cc.Node.extend({
 
                     /* Thu hoạch tài nguyên nếu là nhà khai thác đang có nút hiện lên*/
                     if (fn.checkIsResourceAndCollectable(self))
-                        self.onHarvest();
+                        self.onHarvest(true);
                 }
             }
         });
@@ -523,7 +523,7 @@ var BuildingNode = cc.Node.extend({
             // Thu hoạch nếu nhà là nhà tài nguyên
             if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3 && this._level > 0)
             {
-                this.onHarvest();
+                this.onHarvest(false);
                 this._currentCapacity = 0;
             }
             this.onEndClick();

@@ -2,7 +2,7 @@ var Resource = BuildingNode.extend({
     _currentCapacity: 0,
     _maxCapacity: 0,
     _productivity: null,
-    _percentPopupHarvest: 0.01,
+    _percentPopupHarvest: 0.001,
     _capacityIsFulled: false,
     _lastHarvestTime: null,
 
@@ -277,17 +277,21 @@ var Resource = BuildingNode.extend({
         this.onUpdateCurrentCapacity();
         var capacityAvaiable = cf.user.getAvaiableCapacity(this._resType);
         var resCollectAble = Math.min(this.getCurrentCapacity(), capacityAvaiable);
-        this.updateToUserCapacity(resCollectAble);
+
         this.onRunEffectCollect(resCollectAble);
         this.onPopDownHarvestButton();
         this.onResetCapacity();
         this.onUpdateLastHarvestTime();
 
-        testnetwork.connector.sendHarvest(this._id);
+        if (resCollectAble > 0)
+        {
+            this.updateToUserCapacity(resCollectAble);
+            testnetwork.connector.sendHarvest(this._id);
+        }
 
+        cc.log("CONTINUE COLLECT: " + continueCollect);
         if (continueCollect)
             this.onStartCollect();
-        cc.log(this.getCurrentCapacity() + " Curent Capacity");
     },
     onResetCapacity: function()
     {
