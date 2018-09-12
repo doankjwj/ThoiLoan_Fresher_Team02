@@ -127,6 +127,9 @@ res.folderCollectResource =
 {
     bgButtonEnough:     guiFolder + "collect_res/collect_bg.png",
     bgButtonFull:       guiFolder + "collect_res/full_bg.png",
+    iconGold:           guiFolder + "collect_res/RES_1.png",
+    iconElixir:         guiFolder + "collect_res/RES_2.png",
+    iconDarkElixir:     guiFolder + "collect_res/RES_3.png",
 };
 
 var font = {

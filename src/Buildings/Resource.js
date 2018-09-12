@@ -341,6 +341,42 @@ var Resource = BuildingNode.extend({
 
         /* Icon tài nguyên bay lên*/
         var percent = fn.percentage(this._currentCapacity, this._maxCapacity);
+        var iconUpAmont = (percent + 2)*(percent + 2);
+        iconUpAmont = Math.max(iconUpAmont, 3);
+        var defaultHeight   = 200;
+        var defaultWidth    = 300;
+        var timeRun         = 0.5;
+        var radian          = 120;
+
+        for (var i=0; i < iconUpAmont; i++)
+        {
+            var icon;
+            switch (this._resType)
+            {
+                case cf.resType.resource_1:
+                    icon = cc.Sprite(res.folderCollectResource.iconGold);
+                    break;
+                case cf.resType.resource_2:
+                    icon = cc.Sprite(res.folderCollectResource.iconElixir);
+                    break;
+                case cf.resType.resource_3:
+                    icon = cc.Sprite(res.folderCollectResource.iconDarkElixir);
+                    break;
+            };
+            var random  = Math.random() - 0.5;
+
+            var act     = cc.Spawn.create(
+                cc.JumpBy(timeRun, 1.25*defaultWidth*random, defaultHeight + defaultHeight * random, defaultHeight + defaultHeight/2 * random, 1 ),
+                cc.FadeOut(timeRun).clone());
+            icon.setPosition(0, 0);
+            this.addChild(icon, 10, (i+2) * 2 +5);
+            icon.runAction(act.clone());
+        };
+
+        setTimeout(function(){
+            for (var i=0; i < iconUpAmont; i++)
+                this.removeChildByTag((i+2) * 2 +5);
+        }.bind(this), timeRun * 1000);
     },
     onUpdateLastHarvestTime: function(){
         this._lastHarvestTime = new Date().getTime();
