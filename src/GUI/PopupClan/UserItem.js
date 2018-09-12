@@ -32,7 +32,7 @@ var UserItem = ccui.Button.extend({
         this.addChild(line ,1);
         line.setPosition(cc.p(this._textOrder.x + 50, this._textOrder.y));
 
-        var star = cc.Sprite(folderClan + "sao sao.png");
+        var star = cc.Sprite(res.clanGUI.iconStarSmall);
         this.addChild(star, 1);
         star.setPosition(cc.p(line.x + 5 + star.width/2, line.y));
 

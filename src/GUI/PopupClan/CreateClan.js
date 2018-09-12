@@ -232,6 +232,11 @@ var CreateClan = PopupClan.extend({
                 case ccui.Widget.TOUCH_MOVED:
                     break;
                 case ccui.Widget.TOUCH_ENDED:
+                    if (cf.user.getCurrentResource(cf.resType.resource_1) < 40000)
+                    {
+                        fr.getCurrentScreen().popUpMessage("CHƯA ĐỦ TÀI NGUYÊN");
+                        return;
+                    }
                     var status = 0;
                     if (this._clanStatus) status = 0;
                     else status = 1;

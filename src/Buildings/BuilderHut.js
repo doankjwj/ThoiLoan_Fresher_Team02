@@ -1,6 +1,10 @@
 var BuilderHut = BuildingNode.extend({
+    _builder: null,
+    _free: true,
+
     ctor: function(id, order, row, col, existed, isActive)
     {
+        cc.log("HERE");
         this._buildingSTR = gv.buildingSTR.builderHut;
         this._size = gv.json.builderHut[this._buildingSTR][1]["width"];
         this._jsonConfig = gv.json.builderHut;

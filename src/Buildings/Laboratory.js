@@ -9,7 +9,7 @@ var Laboratory = BuildingNode.extend({
     _barResearchBG: null,
     _labelTimeResearchRemaining: null,
 
-    _currentTroop: null,
+    _currentTroop: null,                // bắt đầu từ 1
     _currentTroopLevel: null,
 
     ctor: function(id, level, row, col, existed, isActive)

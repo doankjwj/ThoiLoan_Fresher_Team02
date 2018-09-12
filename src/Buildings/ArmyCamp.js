@@ -68,4 +68,10 @@ var ArmyCamp = BuildingNode.extend({
     {
         return this.getMaxSpace() - this._troopQuantity;
     },
+
+    onCompleteBuild: function()
+    {
+        this._super();
+        fr.getCurrentScreen()._armyBar.updateContent();
+    }
 })

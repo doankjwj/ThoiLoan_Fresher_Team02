@@ -2,7 +2,7 @@
     "init_cfg":{
        "isLandscape": true,
        "isWindowTop": false,
-       "name": "Th?i Lo?n",
+       "name": "Thoi Loan 2",
        "width": 1280,
        "height": 720,
        "entry": "main.js",

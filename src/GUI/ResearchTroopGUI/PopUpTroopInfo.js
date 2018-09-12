@@ -124,11 +124,20 @@ var PopUpTroopInfo = cc.Node.extend({
 
         this._labelTimeNum = cc.LabelBMFont(cf.secondsToLongTime(gv.json.troop["ARM_" + this._troopOrder][this._level + 1]["researchTime"]), font.soji20);
         this._labelTimeNum.setPosition(this._grass.x, this._labelTime.y - 30);
-        this._labelTimeNum.setAnchorPoint(0.5, 0.5);
+        this._labelTimeNum.setAnchorPoint(1, 0.5);
         this._labelTimeNum.scale = 1;
         this.addChild(this._labelTimeNum, 4);
 
-        this._btnOk = ccui.Button(logInGUI.btnOk);
+        this._iconTime = cc.Sprite(res.upgradeBuildingGUI.iconTime);
+        this._iconTime.setAnchorPoint(0, 0.5);
+        this._iconTime.setScale(1.25);
+        this._iconTime.setVisible(true);
+        this._iconTime.setPosition(this._labelTimeNum.x, this._labelTimeNum.y);
+        this.addChild(this._iconTime, 4);
+
+        this._btnOk = ccui.Button();
+        var tt = logInGUI.btnOk;
+        fn.replaceButtonImageTexture(this._btnOk, tt);
         this._btnOk.setPosition(0, - this._bg.height/2 + 80);
         this._btnOk.setScaleY(2.5);
         this._btnOk.setScaleX(2);

@@ -39,7 +39,7 @@ var PopUpRequestDonate = cc.Node.extend({
         cc.eventManager.addListener(this._swallowTouch, this._colorBG);
 
         /* Message */
-        this._txtMessage = cc.LabelBMFont("Xin quân", font.soji20);
+        this._txtMessage = cc.LabelBMFont("XIN QUÂN", font.soji20);
         this._txtMessage.setAnchorPoint(cc.p(0.5, 0.5));
         this._txtMessage.setPosition(cc.p(0, this._bg.height/2 - 25));
         this.addChild(this._txtMessage);
@@ -52,7 +52,6 @@ var PopUpRequestDonate = cc.Node.extend({
         this.addChild(this._btnClose, 1);
 
         this._btnClose.addClickEventListener(function(){
-            self.hide();
             self.onDisappear();
         });
 
@@ -67,8 +66,8 @@ var PopUpRequestDonate = cc.Node.extend({
         textBG.setPosition(0, 15);
         this.addChild(textBG, 0);
         this._textField = ccui.TextField("", font.soji20);
+        this._textField.setScale(1.25);
         this._textField.setMaxLength(30);
-        this._textField.setFontSize(40);
         this._textField.setMaxLengthEnabled(true);
         this._textField.setPlaceHolder("Cho mình xin quân nhé !");
         this._textField.setColor(cc.color(0, 0, 0, 255));
@@ -76,8 +75,11 @@ var PopUpRequestDonate = cc.Node.extend({
         this.addChild(this._textField, 1);
 
         /* Button Commit */
-        this._buttonOk = ccui.Button(logInGUI.btnOk);
+        this._buttonOk = ccui.Button();
+        var tt = logInGUI.btnOk;
+        fn.replaceButtonImageTexture(this._buttonOk, tt);
         this._buttonOk.setTitleText("ĐỒNG Ý");
+        this._buttonOk.setTitleFontName("arial");;
         this._buttonOk.setTitleColor(cc.color(255, 255, 255, 255));
         this._buttonOk.setPosition(0, -80);
         this._buttonOk.setTitleFontSize(22);
@@ -85,27 +87,46 @@ var PopUpRequestDonate = cc.Node.extend({
         this.addChild(this._buttonOk, 1);
         this._buttonOk.addClickEventListener(function(){
             self.onDisappear();
-            self.hide();
             self.onRequest();
         }.bind(this));
     },
 
     onAppear: function() {
         this._swallowTouch.setEnabled(true);
+
+        var self = this;
+        var appear = cc.Sequence.create(
+            cc.CallFunc(function()
+            {
+                self.resetMsg();
+                self.setPosition(cc.winSize.width/2, cc.winSize.height/2);
+                self.setScale(0.75);
+                self.setVisible(true);
+            }),
+            cc.ScaleTo(0.15, 1)
+        );
+        this.runAction(appear);
     },
     onDisappear: function() {
         this._swallowTouch.setEnabled(false);
+
+        var self = this;
+        var disAppear = cc.Sequence.create(
+            cc.Spawn.create(
+                cc.ScaleTo(0.1, 0.25),
+                cc.moveBy(0.1, 0, -cc.winSize.height/4)
+            ),
+            cc.CallFunc(function()
+            {
+                self.setVisible(false);
+            })
+        );
+        this.runAction(disAppear);
     },
-    show: function()
+    resetMsg: function()
     {
         this._textField.setPlaceHolder("Cho mình xin quân nhé !");
         this._textField.setString("");
-        this.setPosition(cc.p(cc.winSize.width/2, cc.winSize.height/2));
-    },
-    hide: function()
-    {
-        this.setPosition(cc.p(cc.winSize.width/2, - cc.winSize.height/2));
-        this.getParent().getChildByTag(gv.tag.TAG_POPUP).onDisappear();
     },
 
     onRequest: function()

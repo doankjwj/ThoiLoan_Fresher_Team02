@@ -49,5 +49,13 @@ var TownHall = BuildingNode.extend({
             cf.animationTownHall = fn.getAnimation("effect_townhall_flame ", 1, 12);
             cf.animationTownHall.retain();
         }
+    },
+
+    onCompleteBuild: function()
+    {
+        this._super();
+        cf.user.updateMaxStorageSingle(this._id);
+        cf.user.distributeResource(true, true, true, true);
+        fr.getCurrentScreen()._expBar.updateContent();
     }
 })

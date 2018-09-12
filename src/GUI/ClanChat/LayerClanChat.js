@@ -69,7 +69,8 @@ var LayerClanChat = cc.Node.extend({
         this.addChild(buttonTabGlobal, 1);
 
         var iconClanOrder = Math.floor(Math.random() * 28) + 1;
-        this._iconClan = cc.Sprite("res/Art/Bang hoi/bieu tuong nho/" + iconClanOrder + ".png");
+        this._iconClan = cc.Sprite("res/Art/Bang hoi/icon bieu tuong/" + iconClanOrder + ".png");
+        this._iconClan.setScale(0.75);
         this._iconClan.setPosition(20, buttonTabGlobal.y - 50);
         this.addChild(this._iconClan, 1);
 
@@ -285,7 +286,7 @@ var LayerClanChat = cc.Node.extend({
 
     initClanInfo: function(){
         var iconClanOrder = Math.floor(Math.random() * 28) + 1;
-        fn.replaceSpriteImage(this._iconClan, "res/Art/Bang hoi/bieu tuong nho/" + iconClanOrder + ".png");
+        fn.replaceSpriteImage(this._iconClan, "res/Art/Bang hoi/icon bieu tuong/" + iconClanOrder + ".png");
         this._labelClanName.setString("Clan No." + iconClanOrder);
     },
     // Lấy ra độ cao của Container

@@ -176,11 +176,26 @@ var PopUpConstruct = cc.Node.extend({
         this.addChild(this._icon, 2, this._TAG_ICON);
 
         /* Time Require */
+        this._labelTimeRequire = cc.LabelBMFont("THỜI GIAN NÂNG CẤP", font.soji20);
+        this._labelTimeRequire.setAnchorPoint(cc.p(0.5, 1));
+        this._labelTimeRequire.setPosition(cc.p(this._icon.x, this._icon.y - this._icon.height * 2));
+        this.addChild(this._labelTimeRequire, 4);
+
         this._timeRequireTXT = cc.LabelBMFont("", font.soji20);
-        this._timeRequireTXT.setAnchorPoint(cc.p(0.5, 1));
-        this._timeRequireTXT.setPosition(cc.p(this._icon.x, this._icon.y - this._icon.height * 2));
+        this._timeRequireTXT.setAnchorPoint(cc.p(1, 1));
+        this._timeRequireTXT.setScale(1.25);
+        this._timeRequireTXT.setPosition(cc.p(this._icon.x, this._icon.y - this._icon.height * 4));
         this._timeRequireTXT.visible = false;
         this.addChild(this._timeRequireTXT, 4, this._TAG_TXT_TIME_REQUIRE);
+
+        this._iconTime = cc.Sprite(res.upgradeBuildingGUI.iconTime);
+        this._iconTime.setAnchorPoint(0, 1);
+        this._iconTime.setScale(1.25);
+        this._iconTime.setVisible(false);
+        this._iconTime.setPosition(cc.p(this._icon.x, this._icon.y - this._icon.height * 4));
+        this.addChild(this._iconTime, 4);
+
+
 
         /* Building Grass */
         this._grass = cc.Sprite(res.tmp_effect);
@@ -763,7 +778,7 @@ var PopUpConstruct = cc.Node.extend({
                 break;
         }
 
-        /* Nếu xem info thì bar1MaxLength = Hp */
+        /* ẩn barBG nếu là xme thông tin nhà */
         if (constructType == gv.constructType.info)
         {
             bar1MaxLength = bar1Length;
@@ -772,7 +787,10 @@ var PopUpConstruct = cc.Node.extend({
             this._bar3BG2.visible = false;
             this._bar1TXT.setString(preText1 + (bar1Length + "/" + bar1MaxLength));
             this._bar2TXT.setString(preText2 + (bar2Length + "/" + bar2MaxLength));
-            this._bar3TXT.setString(preText3 + (bar3Length + "/" + bar3MaxLength));
+            if ([gv.buildingSTR.resource_1, gv.buildingSTR.resource_2, gv.buildingSTR.resource_3].indexOf(str) == -1)
+                this._bar3TXT.setString(preText3 + (bar3Length + "/" + bar3MaxLength))
+            else
+                this._bar3TXT.setString(preText3 + (bar3Length + "/H"));
         }
         else
         {
@@ -928,11 +946,13 @@ var PopUpConstruct = cc.Node.extend({
         {
             var t = cf.secondsToLongTime(time);
             t = (t!="") ? t : "0s";
-            this._timeRequireTXT.setString("Thời gian nâng cấp\n" + t);
-            this._timeRequireTXT.visible = true;
+            this._timeRequireTXT.setString("" + t);
+            this.onVisibleTimeRequire(true);
         }
         else
-            this._timeRequireTXT.visible = false;
+        {
+            this.onVisibleTimeRequire(false);
+        }
 
         /* Resource Require */
         if (this.getChildByTag(this._TAG_CONTENT_REQUIRE))
@@ -982,7 +1002,7 @@ var PopUpConstruct = cc.Node.extend({
                 this._icon = cc.Sprite(res.folder_dark_elixir_storage + str + "_" + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case gv.buildingSTR.defence_1:
-                this._icon = cc.Sprite(res.folder_canon + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._icon = cc.Sprite(res.folder_defense_base + str + "_" + level + "_Shadow.png");
                 break;
             case gv.buildingSTR.obstacle:
                 this._icon = cc.Sprite(res.folder_obs + level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
@@ -1018,16 +1038,22 @@ var PopUpConstruct = cc.Node.extend({
         this.addChild(this._grass, 1, this._TAG_GRASS);
 
         /* Effect */
-        var arrNoEffect = [gv.buildingSTR.builderHut, gv.buildingSTR.storage_1, gv.buildingSTR.storage_2, gv.buildingSTR.storage_3, gv.buildingSTR.defence_1];
+        var arrNoEffect = [gv.buildingSTR.builderHut, gv.buildingSTR.storage_1, gv.buildingSTR.storage_2, gv.buildingSTR.storage_3];
         if ((str == gv.buildingSTR.barrack_1 && (level <4 || level >8)) || arrNoEffect.indexOf(str) >= 0 || (str == gv.buildingSTR.lab && level <2)) return;
         if (str == gv.buildingSTR.clanCastle || str === gv.buildingSTR.wall) return;
 
-        if (str != gv.buildingSTR.armyCamp_1 && str != gv.buildingSTR.townHall)
-            this._effect = cc.Sprite("res/Art/Effects/" + str + "_" + level + "_effect/00.png");
+        if (str != gv.buildingSTR.armyCamp_1 && str != gv.buildingSTR.townHall && str != gv.buildingSTR.defence_1)
+            this._effect = cc.Sprite("#res/Art/Effects/" + str + "_" + level + "_effect/00.png");
         if (str == gv.buildingSTR.armyCamp_1)
-            this._effect = cc.Sprite("res/Art/Effects/armycam_1/00.png");
+            this._effect = cc.Sprite("#res/Art/Effects/armycam_1/00.png");
         if (str == gv.buildingSTR.townHall)
-            this._effect = cc.Sprite("res/Art/Effects/towhall_flame/00.png")
+            this._effect = cc.Sprite("#res/Art/Effects/towhall_flame/00.png");
+        if (str == gv.buildingSTR.defence_1){
+            cc.log(res.folder_canon + level + "" + res.image_postfix_1 + "0" + res.image_postfix_2);
+            this._effect = cc.Sprite(res.folder_canon + level + "/" + res.image_postfix_1 + Math.floor(Math.random()*4) + res.image_postfix_2);
+        }
+        cc.log(str + " ::: " + gv.buildingSTR.defence_1);
+
         this._effect.attr({
             anchorX: 0.5,
             anchorY: (str == gv.buildingSTR.armyCamp_1) ? 0 : 0.5,
@@ -1036,6 +1062,15 @@ var PopUpConstruct = cc.Node.extend({
         this._effect.setPosition(- this._bg.width * this._bgScale / 4, this._bg.height * this._bgScale / 8);
         this.addChild(this._effect, 2, this._TAG_EFFECT);
     },
+
+    /* Hiển thị phần thời gian yêu cầu*/
+    onVisibleTimeRequire: function(boo)
+    {
+        this._labelTimeRequire.setVisible(boo);
+        this._timeRequireTXT.setVisible(boo);
+        this._iconTime.setVisible(boo);
+    },
+
     /* Content cho lính nhà bang hội, lính là trại lính, công trình mở khóa,, ..*/
     updateContentOptional: function()
     {

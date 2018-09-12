@@ -38,20 +38,6 @@ var Storage = BuildingNode.extend({
                 break;
         }
 
-        //if(this._buildingSTR === gv.buildingSTR.storage_1) {
-        //    this._maxLevel = gv.buildingMaxLevel.storage_1;
-        //    this._folder = res.folder_gold_storage;
-        //} else if(this._buildingSTR === gv.buildingSTR.storage_2) {
-        //    this._maxLevel = gv.buildingMaxLevel.storage_2;
-        //    this._folder = res.folder_elixir_storage;
-        //} else if(this._buildingSTR === gv.buildingSTR.storage_3) {
-        //    this._maxLevel = gv.buildingMaxLevel.storage_3;
-        //    this._folder = res.folder_dark_elixir_storage;
-        //};
-        //this._orderInUserBuildingList = (buildingSTR === gv.buildingSTR.storage_1) ? gv.orderInUserBuildingList.storage_1 : gv.orderInUserBuildingList.storage_2;
-        //this._name = (buildingSTR === gv.buildingSTR.storage_1) ? gv.buildingName.storage_1 : gv.buildingName.storage_2;
-        //this._description = (buildingSTR === gv.buildingSTR.storage_1) ? gv.buildingDescription.storage_1 : gv.buildingDescription.storage_2;
-
         this._super(id, level, row, col, existed, isActive);
 
         /* Init Animation If Not Exist*/
@@ -59,35 +45,11 @@ var Storage = BuildingNode.extend({
 
         /* Add Center Building */
         this.addCenterBuilding();
-
-        //if (!this._isActive)
-        //{
-        //    this.onStartBuild(gv.startConstructType.loadConstruct);
-        //}
-
     },
 
     updateAnim: function()
     {
 
-    },
-
-    /* when building is still build */
-
-    initAnimation: function()
-    {
-        var tmpLevel = this.getTempLevel();
-        if (this._buildingSTR === gv.buildingSTR.storage_1 && cf.animationRes1[tmpLevel] === null)
-        {
-            cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_res_1_" + tmpLevel + ".plist", res.folder_effect + "effect_res_1_" + tmpLevel + ".png");
-            cf.animationRes1[tmpLevel] = fn.getAnimation("effect_res_1_" + tmpLevel + " ", 1, 10);
-        }
-
-        if (this._buildingSTR === gv.buildingSTR.storage_2 && cf.animationRes2[tmpLevel] === null)
-        {
-            cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_res_2_" + tmpLevel + ".plist", res.folder_effect + "effect_res_2_" + tmpLevel + ".png");
-            cf.animationRes2[tmpLevel] = fn.getAnimation("effect_res_2_" + tmpLevel + " ", 1, 10);
-        }
     },
 
     updateImageCapacity: function()
@@ -98,7 +60,7 @@ var Storage = BuildingNode.extend({
         if (state != this._state)
         {
             this._state = state;
-            fn.replaceSpriteImage(this._center_building, this._folder + this._buildingSTR + "_" + this.getTempLevel() + "/" + res.image_postfix_1 + state + res.image_postfix_2);
+            fn.replaceSpriteWithSpriteTexture(this._center_building, this._folder + this._buildingSTR + "_" + this.getTempLevel() + "/" + res.image_postfix_1 + state + res.image_postfix_2);
         }
     },
     getMaxCapacity: function()
@@ -108,5 +70,14 @@ var Storage = BuildingNode.extend({
     getCurrentCapacity: function()
     {
         return this._currentCapacity;
+    },
+
+    onCompleteBuild: function()
+    {
+        this._super();
+        if (this._buildingSTR == gv.buildingSTR.storage_3 && this._level == 1 && cf.user._buildingListCount[gv.orderInUserBuildingList.storage_3] == 1)
+            cf.user.editCurrentResource(cf.resType.resource_3, gv.json.initGame["player"]["darkElixir"]);
+        cf.user.updateMaxStorageSingle(this._id);
+        cf.user.distributeResource(true, true, true, true);
     }
 })

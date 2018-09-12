@@ -1,5 +1,5 @@
-var mapFolder           = "res/Art/Map/";
-var buildingsFolder     = "res/Art/Buildings/";
+var mapFolder           = "#res/Art/Map/";
+var buildingsFolder     = "#res/Art/Buildings/";
 var folder_effect       = "res/effect/";
 var fontFolder          = "res/Art/Fonts/";
 var guiFolder           = "res/Art/GUIs/";
@@ -7,12 +7,14 @@ var jsonFolder          = "res/ConfigJson/";
 var researchTroopFolder = "res/Art/GUIs/research_troop/";
 var researchTroopFolderTroopIcon            = "res/Art/GUIs/upgrade_troop/icon/";
 var researchTroopFolderTroopIconSmall       = "res/Art/GUIs/upgrade_troop/small_icon/";
-var logInFolder                             = "res/Art/LoginGui/";
+var logInFolder                             = "#res/Art/LoginGui/";
 var folderUpgradeBuildingGUI                = guiFolder + "upgrade_building_gui/";
 var troopIconFolder         = guiFolder + "train_troop_gui/icon/";
 var soundFolder             = "res/Sounds/";
 var folderClanChat          = "res/Art/GUIs/Chat/";
 var folderClan              = "res/Art/Bang hoi/";
+var plistFolder             = "res/res_plist/";
+var EffectsFolder           = "#res/Art/Effects/"
 
 var res = {
     image_postfix_1: "idle/image000",
@@ -23,7 +25,6 @@ var res = {
     bgBotLeft:      mapFolder + "1_0001_Layer-1.png",
     bgTopRight:     mapFolder + "1_0002_Layer-4.png",
     bgBotRight:     mapFolder + "1_0003_Layer-2.png",
-    builderHut:     buildingsFolder + "builderHut/idle/image0000.png",
 
     armyCampJson:       jsonFolder + "ArmyCamp.json",
     barrackJson:        jsonFolder + "Barrack.json",
@@ -41,6 +42,7 @@ var res = {
     clanCastleJson:     jsonFolder + "ClanCastle.json",
     wallJson:           jsonFolder + "Wall.json",
 
+    builderHut:     buildingsFolder + "builderHut/idle/image0000.png",
     folder_builder_hut:         buildingsFolder + "builderHut/",
     folder_army_camp:           buildingsFolder + "armyCamp/",
     folder_barrack:             buildingsFolder + "barrack/",
@@ -58,7 +60,7 @@ var res = {
     folder_clan_castle:         buildingsFolder + "clan_castle/",
     folder_wall:                buildingsFolder + "wall/",
 
-    folder_gui_action_building:     guiFolder + "Action_Building_Icon/",
+    folder_gui_action_building:     "res/Art/GUIs/" + "Action_Building_Icon/",
     folder_gui_build:               guiFolder + "/upgrade_building_gui/",
     folder_gui_main:                guiFolder + "Main_Gui/",
     folder_gui_collect_res:         guiFolder + "collect_res/",
@@ -70,12 +72,61 @@ var res = {
     map_obj:            mapFolder + "map_obj_bg/",
 
     folder_troop_animation: "res/Art/Troops/",
+    folder_builder_animation: "res/Art/builder_working/",
 
     popUp : {
         bg:             guiFolder + "upgrade_building_gui/BG.png",
         btnClose:       guiFolder + "upgrade_building_gui/close.png",
         btnOk:          guiFolder + "upgrade_building_gui/button.png",
     }
+};
+
+/*Plist Default*/
+res.plist=
+{
+    bang_hoi                            : plistFolder + "bang_hoi.plist",
+    building_army_camp                  : plistFolder + "building_army_camp.plist",
+    building_barrack                    : plistFolder + "building_barrack.plist",
+    building_builder_hut                : plistFolder + "building_builder_hut.plist",
+    building_clan_castle                : plistFolder + "building_clan_castle.plist",
+    building_dark_elixir_collector      : plistFolder + "building_dark_elixir_collector.plist",
+    building_dark_elixir_storage        : plistFolder + "building_dark_elixir_storage.plist",
+    building_defence_1                  : plistFolder + "building_defence_1.plist",
+    building_defence_base                  : plistFolder + "building_defence_base.plist",
+    building_elixir_collector                  : plistFolder + "building_elixir_collector.plist",
+    building_elixir_storage                  : plistFolder + "building_elixir_storage.plist",
+    building_gold_mine                  : plistFolder + "building_gold_mine.plist",
+    building_gold_storage                  : plistFolder + "building_gold_storage.plist",
+    building_laboratory                  : plistFolder + "building_laboratory.plist",
+    building_obstacle                  : plistFolder + "building_obstacle.plist",
+    building_tow_hall                  : plistFolder + "building_tow_hall.plist",
+    building_wall                  : plistFolder + "building_wall.plist",
+    effects_first_image                  : plistFolder + "effects_first_image.plist",
+    gui_action_building_icon                  : plistFolder + "gui_action_building_icon.plist",
+    gui_chat                  : plistFolder + "gui_chat.plist",
+    gui_collect_res                  : plistFolder + "gui_collect_res.plist",
+    gui_icons                  : plistFolder + "gui_icons.plist",
+    gui_main_gui                  : plistFolder + "gui_main_gui.plist",
+    gui_research_troop                  : plistFolder + "gui_research_troop.plist",
+    gui_shop_gui                  : plistFolder + "gui_shop_gui.plist",
+    gui_train_troop_gui                  : plistFolder + "gui_train_troop_gui.plist",
+    gui_upgrade_building_gui                  : plistFolder + "gui_upgrade_building_gui.plist",
+    gui_upgrade_troop_icon_1_3                  : plistFolder + "gui_upgrade_troop_icon_1_3.plist",
+    gui_upgrade_troop_icon_4_6                  : plistFolder + "gui_upgrade_troop_icon_4_6.plist",
+    gui_upgrade_troop_icon_7_9                  : plistFolder + "gui_upgrade_troop_icon_7_9.plist",
+    gui_upgrade_troop_icon_10_16_17                  : plistFolder + "gui_upgrade_troop_icon_10_16_17.plist",
+    gui_upgrade_troop_small_icon                  : plistFolder + "gui_upgrade_troop_small_icon.plist",
+    log_in_gui                  : plistFolder + "log_in_gui.plist",
+    map_corner_1                  : plistFolder + "map_corner_1.plist",
+    map_corner_2                  : plistFolder + "map_corner_2.plist",
+    map_obj_bg                  : plistFolder + "map_obj_bg.plist",
+};
+
+/*GUI cho thu hoạch*/
+res.folderCollectResource =
+{
+    bgButtonEnough:     guiFolder + "collect_res/collect_bg.png",
+    bgButtonFull:       guiFolder + "collect_res/full_bg.png",
 };
 
 var font = {
@@ -106,7 +157,7 @@ res.researchTroopGUI =
     bgTransparent:      researchTroopFolder + "nen trong.png",
     slost:              researchTroopFolder + "slost.png",
     grass:              researchTroopFolderTroopIcon + "troop_bg.png",
-    iconCoin:           guiFolder + "pop_up/G.png",
+    iconCoin:           guiFolder + "Main_Gui/g_icon.png",
 };
 res.clanChatGUI = {
     barDonateTroopBG:           folderClanChat + "1_0001_Layer-1.png",
@@ -188,7 +239,6 @@ var mainGUI = {
     bgBar1:             guiFolder + "Main_Gui/bg_bar_1.png",
     bgBar2:             guiFolder + "Main_Gui/bg_bar_2.png",
     bgBar3:             guiFolder + "Main_Gui/bg_bar_3.png",
-    bgBar4:             guiFolder + "Main_Gui/bg_bar_4.png",
     bgExp:              guiFolder + "Main_Gui/bg_exp.png",
     bgSlider:           guiFolder + "Main_Gui/bg_slider.png",
     builderIcon:        guiFolder + "Main_Gui/builder_icon.png",
@@ -203,7 +253,6 @@ var mainGUI = {
     gIcon:              guiFolder + "Main_Gui/g_icon.png",
     goldBar:            guiFolder + "Main_Gui/gold_bar.png",
     goldIcon:           guiFolder + "Main_Gui/gold_icon.png",
-    home:               guiFolder + "Main_Gui/home.png",
     iconExp:            guiFolder + "Main_Gui/ic_exp.png",
     inventory:          guiFolder + "Main_Gui/kho.png",
     lvlUp:              guiFolder + "Main_Gui/level_up.png",
@@ -224,7 +273,7 @@ var buildingGUI = {
     instant:                res.folder_gui_action_building + "quick_finish.png",
     iconResearch:           res.folder_gui_action_building + "research_icon.png",
     iconRequestDonate:      res.folder_gui_action_building + "request_troop_button.png",
-    iconClan:               "res/Art/Bang hoi/icon bang hoi.png",
+    iconClan:               res.folder_gui_action_building + "clan_button.png",
     iconRemove:             res.folder_gui_action_building + "remove_icon.png",
     bg:                     res.folder_gui_action_building + "bg_button.png",
 
@@ -301,6 +350,7 @@ res.upgradeBuildingGUI = {
     iconElixir:     folderUpgradeBuildingGUI + "small/BUFF_ELIXIR.png",
     iconDarkElixir: folderUpgradeBuildingGUI + "small/BUFF_DARK.png",
     iconCoin:       folderUpgradeBuildingGUI + "small/2.png",
+    iconTime:       folderUpgradeBuildingGUI + "small/TIME.png",
 
     iconCapacityGold:       upgradeBuildingGUI_Small + "Gold_Capacity_Icon.png",
     iconCapacityElixir:     upgradeBuildingGUI_Small + "Elixir_Capacity_Icon.png",
@@ -422,13 +472,13 @@ res.building_townHall_upgrade_icon =
 ];
 res.building_townHall_upgrade_effect =
 [
-    "res/Art/Effects/BAR_1_4_effect/00.png",
-    "res/Art/Effects/armycam_1/00.png",
-    "res/Art/Effects/LAB_1_2_effect/00.png",
+    EffectsFolder + "BAR_1_4_effect/00.png",
+    EffectsFolder + "armycam_1/00.png",
+    EffectsFolder + "LAB_1_2_effect/00.png",
     res.folder_canon + "1/idle/image0002.png",
     "none",
-    "res/Art/Effects/RES_1_1_effect/00.png",
-    "res/Art/Effects/RES_2_1_effect/00.png",
+    EffectsFolder + "RES_1_1_effect/00.png",
+    EffectsFolder + "RES_2_1_effect/00.png",
     "none",
     "none",
     "none",
@@ -447,5 +497,5 @@ var g_preload= [
     "res/Localize/en.txt",
     "res/Localize/vi",
     "res/Localize/vi.txt",
-
+    res.plist,
 ];

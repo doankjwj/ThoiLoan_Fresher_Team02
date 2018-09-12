@@ -90,7 +90,7 @@
         "key": "WAL_1",
         "name": "Tường",
         "jsonConfigFile": "Wall.json",
-        "iconPath": "res/Art/Buildings/wall/WAL_1_1/WAL_1_1/idle/image0003.png",
+        "iconPath": "#res/Art/Buildings/wall/WAL_1_1/WAL_1_1/idle/image0003.png",
         "priceCurrency": "gold",
         "tag": 2500
       }

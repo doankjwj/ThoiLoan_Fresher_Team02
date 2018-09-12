@@ -83,15 +83,70 @@ fn.loadJson = function ()
                                    {
                                        gv.json.troopAnimation["ARM_" + i + "_" + j] = data;
                                    });
-            }
+            };
+    cc.loader.loadJson(res.folder_builder_animation + "info.json", function (error, data)
+    {
+        gv.json.builder = data;
+    })
 };
-
-/* Load file plist*/
+/* Load file troop plist*/
 fn.loadPlist = function (troopNameWithLevel)
 {
-    cc.spriteFrameCache.addSpriteFrames("res/Art/Troops/" + troopNameWithLevel + "/" + troopNameWithLevel + ".plist");
+    cc.spriteFrameCache.addSpriteFrames(res.plist[troopNameWithLevel]);
     gv.plist[troopNameWithLevel] = true;
 };
+fn.loadBuilderPlist = function ()
+{
+    cc.spriteFrameCache.addSpriteFrames("res/Art/builder_working/builder.plist");
+    gv.plist.builder = true;
+};
+///* Load file plist*/
+//fn.loadPlist = function (troopNameWithLevel)
+//{
+//    cc.spriteFrameCache.addSpriteFrames("res/Art/Troops/" + troopNameWithLevel + "/" + troopNameWithLevel + ".plist");
+//    gv.plist[troopNameWithLevel] = true;
+//};
+
+/* Load plist toàn bộ*/
+fn.initPlist = function()
+{
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "bang_hoi.plist", plistFolder + "bang_hoi.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "building_army_camp.plist", plistFolder + "building_army_camp.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "building_barrack.plist", plistFolder + "building_barrack.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "building_builder_hut.plist", plistFolder + "building_builder_hut.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "building_clan_castle.plist", plistFolder + "building_clan_castle.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "building_dark_elixir_collector.plist", plistFolder + "building_dark_elixir_collector.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "building_dark_elixir_storage.plist", plistFolder + "building_dark_elixir_storage.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "building_defence_1.plist", plistFolder + "building_defence_1.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "building_defence_base.plist", plistFolder + "building_defence_base.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "building_elixir_collector.plist", plistFolder + "building_elixir_collector.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "building_elixir_storage.plist", plistFolder + "building_elixir_storage.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "building_gold_mine.plist", plistFolder + "building_gold_mine.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "building_gold_storage.plist", plistFolder + "building_gold_storage.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "building_laboratory.plist", plistFolder + "building_laboratory.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "building_obstacle.plist", plistFolder + "building_obstacle.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "building_tow_hall.plist", plistFolder + "building_tow_hall.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "building_wall.plist", plistFolder + "building_wall.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "effects_first_image.plist", plistFolder + "effects_first_image.png");
+    //cc.spriteFrameCache.addSpriteFrames(plistFolder + "gui_action_building_icon.plist", plistFolder + "gui_action_building_icon.png");
+    //cc.spriteFrameCache.addSpriteFrames(plistFolder + "gui_chat.plist", plistFolder + "gui_chat.png");
+    //cc.spriteFrameCache.addSpriteFrames(plistFolder + "gui_collect_res.plist", plistFolder + "gui_collect_res.png");
+    //cc.spriteFrameCache.addSpriteFrames(plistFolder + "gui_icons.plist", plistFolder + "gui_icons.png");
+    //cc.spriteFrameCache.addSpriteFrames(plistFolder + "gui_main_gui.plist", plistFolder + "gui_main_gui.png");
+    //cc.spriteFrameCache.addSpriteFrames(res.plist.gui_research_troop);
+    //cc.spriteFrameCache.addSpriteFrames(plistFolder + "gui_shop_gui.plist", plistFolder + "gui_shop_gui.png");
+    //cc.spriteFrameCache.addSpriteFrames(res.plist.gui_train_troop_gui);
+    //cc.spriteFrameCache.addSpriteFrames(plistFolder + "gui_upgrade_building_gui.plist", plistFolder + "gui_upgrade_building_gui.png");
+    //cc.spriteFrameCache.addSpriteFrames(res.plist.gui_upgrade_troop_icon_1_3);
+    //cc.spriteFrameCache.addSpriteFrames(res.plist.gui_upgrade_troop_icon_4_6);
+    //cc.spriteFrameCache.addSpriteFrames(res.plist.gui_upgrade_troop_icon_7_9);
+    //cc.spriteFrameCache.addSpriteFrames(res.plist.gui_upgrade_troop_icon_10_16_17);
+    //cc.spriteFrameCache.addSpriteFrames(res.plist.gui_upgrade_troop_small_icon);
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "log_in_gui.plist", plistFolder + "log_in_gui.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "map_corner_1.plist", plistFolder + "map_corner_1.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "map_corner_2.plist", plistFolder + "map_corner_2.png");
+    cc.spriteFrameCache.addSpriteFrames(plistFolder + "map_obj_bg.plist", plistFolder + "map_obj_bg.png");
+}
 
 /* Init Localized*/
 fn.initLocalized= function()
@@ -232,7 +287,6 @@ fn.getAnimation = function (str, n1, n2)
         var frame = cc.spriteFrameCache.getSpriteFrame(str + "(" + i + ").png");
         arr_effect.push(frame)
     }
-
     return cc.Animate(new cc.Animation(arr_effect, cf.time_refresh))
 };                              // Barack + ArmyCamp + ..
 /* Shop */
@@ -444,10 +498,27 @@ fn.replaceSpriteImage= function(sprite, url){
     var textture = cc.textureCache.addImage(url);
     sprite.setTexture(textture);
 };
+/* Replace Sprite Texture*/
+fn.replaceSpriteWithSpriteTexture= function(sprite, url){
+    if (url[0] == "#");
+    url = url.substr(1, url.length-1);
+    sprite.setSpriteFrame(url);
+};
 /* Replace button Image*/
 fn.replaceButtonImage= function(button, url){
     button.loadTextures(url, url);
-}
+};
+/* Replace Button Image Sprite*/
+fn.replaceButtonImageTexture= function(button, url){
+    if (url[0] == "#");
+    url = url.substr(1, url.length-1);
+    button.loadTextures(url, url, url, ccui.Widget.PLIST_TEXTURE);
+};
+/* Get sprite Frame*/
+fn.getSpriteFrame= function(url)
+{
+    return (cc.spriteFrameCache.getSpriteFrame(url));
+};
 
 /* Tính tổng 1 mảng */
 fn.sumArr = function(arr, length)
@@ -498,4 +569,13 @@ fn.percentage = function(current, max)
 fn.getTroopHousingSpace = function(troopType)           // từ 1
 {
     return gv.json.troopBase["ARM_" + troopType]["housingSpace"];
+};
+
+/* Kiểm tra tài nguyên cho vào có chứa đủ*/
+fn.checkAddResourceEnough = function(resArr)
+{
+    if (resArr[0] > cf.user.getAvaiableCapacity(cf.resType.resource_1)) return false;
+    if (resArr[1] > cf.user.getAvaiableCapacity(cf.resType.resource_2)) return false;
+    if (resArr[2] > cf.user.getAvaiableCapacity(cf.resType.resource_3)) return false;
+    return true;
 }

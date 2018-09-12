@@ -1,4 +1,4 @@
-﻿//Quan Le Anh
+﻿﻿//Quan Le Anh
 //13-11-1996
 
 var MainLayer = cc.Layer.extend({
@@ -15,6 +15,8 @@ var MainLayer = cc.Layer.extend({
     _resBarDarkElixir: null,
     _resBarCoin: null,
     _builderBar: null,
+    _expBar: null,
+    _armyBar: null,
 
     // GUI Button && Pop Up
     _guiButtonBuildingInfo: null,
@@ -42,7 +44,6 @@ var MainLayer = cc.Layer.extend({
     _addElixirButton: null,
     _subElixirButton: null,
     _addDarkElixirButton: null,
-    _addDarkElixirButton: null,
     _addCoinButton: null,
     _subCoinButton: null,
 
@@ -59,7 +60,6 @@ var MainLayer = cc.Layer.extend({
     _TAG_BG: 242342,
     _TAG_LOGO: 738271,
     _TAG_USERNAME_FIELD: 30000,
-    _TAG_PASSWORD_FIELD: 30001,
     _TAG_LOGIN_BUTTON  : 30002,
     _TAG_BUTTON_HARVEST: 63721,
     _TAG_BUTTON_RESEARCH: 34231,
@@ -81,6 +81,8 @@ var MainLayer = cc.Layer.extend({
     test: function()
     {
         // Demo GIT
+        //var builder = new Builder(0);
+        //builder.startWork(fn.getUserBuilding(gv.orderInUserBuildingList.townHall, 0));
     },
     addLoginGUI: function()
     {
@@ -117,7 +119,12 @@ var MainLayer = cc.Layer.extend({
         this._usernameField .y = size.height/2;
         this.addChild(this._usernameField, 1, this._TAG_USERNAME_FIELD);
 
-        this._btnLogin = ccui.Button(res.clanGUI.buttonXemLai);
+        if (cc.sys.localStorage.getItem("userName") != null)
+            this._usernameField.setString(cc.sys.localStorage.getItem("userName"));
+
+        this._btnLogin = new ccui.Button();
+        var tt = "res/Art/Bang hoi/button _xem lai.png";
+        this._btnLogin.loadTextures(tt, tt, tt, ccui.Widget.PLIST_TEXTURE);
         this._btnLogin.setTitleText("Đăng Nhập");
         this._btnLogin.setTitleFontName(font.soji12);
         this._btnLogin.setTitleFontSize(14);
@@ -137,7 +144,8 @@ var MainLayer = cc.Layer.extend({
         cc.log("================= " + "Start Connect");
 
         gv.usernameSendToServer = this._usernameField.string;
-        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "doannd2";
+        if(gv.usernameSendToServer === "") gv.usernameSendToServer = "admin";
+        cc.sys.localStorage.setItem("userName", gv.usernameSendToServer);
         gv.passwordSendToServer = "";
 
         gv.gameClient.connect();
@@ -147,7 +155,6 @@ var MainLayer = cc.Layer.extend({
     {
         cc.log("================= " + "Connect Success => Send Handshake");
         this.removeChildByTag(this._TAG_USERNAME_FIELD);
-        this.removeChildByTag(this._TAG_PASSWORD_FIELD);
         this.removeChildByTag(this._TAG_LOGIN_BUTTON);
         this.removeChildByTag(this._TAG_BG);
         this.removeChildByTag(this._TAG_LOGO);
@@ -171,13 +178,12 @@ var MainLayer = cc.Layer.extend({
         this.initUser();
         this.initMainGUI();
         this.initMap();
-        this.initRetainBuilding();
-        //this.initRetainTraining();
-        this.updateGUIandUserInfo();
         cf.user.distributeResource(true, true, true);
         this.initTroops();
-
-        //testnetwork.connector.sendPayCoinToBuyETC(200, 200, 0);
+        this.initBuilder();
+        this.initRetainBuilding();
+        this.updateGUIandUserInfo();
+        this.test();
     },
     initTroops: function ()
     {
@@ -213,6 +219,13 @@ var MainLayer = cc.Layer.extend({
                 theChosenArmyCamp._troopQuantity += gv.json.troopBase["ARM_" + (i + 1)]["housingSpace"];
             }
     },
+    initBuilder: function()
+    {
+        for (var i=0; i<cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut]; i++)
+        {
+            cf.user._buildingList[gv.orderInUserBuildingList.builderHut][i]._builder = new Builder(i);
+        }
+    },
 
     initGameSound: function()
     {
@@ -230,12 +243,11 @@ var MainLayer = cc.Layer.extend({
     },
     initMainGUI: function() {
         this.addShopButton();
-        //this.addSettingButton();
-        //this.addInventoryButton();
         this.addBuildingButtons();
         this.addResourceBar();
-        this.addUserBar();
         this.addBuilderBar();
+        this.addExpBar();
+        this.addArmyBar();
 
         this._popUp = new PopUpConstruct();
         this._popUp.setPosition(cc.p(cc.winSize.width /2, - cc.winSize.height));
@@ -244,19 +256,12 @@ var MainLayer = cc.Layer.extend({
         this.addClanChatGUI();
     },
 
-    updateResourceBar: function() {
-        this.getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
-        this.getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
-        this.getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
-        this.getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
-    },
-
     addCheatButton: function() {
 
         var self = this;
 
         /* Button Restart & Reset */
-        this._resetUserButton = gv.commonButton(120, 64, 70, cc.winSize.height-100, "Reset");
+        this._resetUserButton = gv.commonButton(120, 64, 70, cc.winSize.height-150, "Reset");
         this._resetUserButton.addClickEventListener(function()
         {
             //this.releaseTroop();
@@ -287,7 +292,7 @@ var MainLayer = cc.Layer.extend({
         this.addChild(this._restartGameButton, 1);
 
         /* Button Gold */
-        this._addGoldButton = gv.commonButton(120, 64, 70, cc.winSize.height-200, "F Gold");
+        this._addGoldButton = gv.commonButton(120, 64, 70, cc.winSize.height-230, "F Gold");
         this._subGoldButton = gv.commonButton(120, 64, 70, this._addGoldButton.y - 70, "E Gold");
 
         this._addGoldButton.addTouchEventListener(function(sender, type) {
@@ -323,7 +328,7 @@ var MainLayer = cc.Layer.extend({
         this.addChild(this._subGoldButton, 1);
 
         /* Button Elixir */
-        this._addElixirButton = gv.commonButton(120, 64, 70, this._subGoldButton.y - 90, "F Elixir");
+        this._addElixirButton = gv.commonButton(120, 64, 70, this._subGoldButton.y - 70, "F Elixir");
         this._subElixirButton = gv.commonButton(120, 64, 70, this._addElixirButton.y - 70, "E Elixir");
 
         this._addElixirButton.addTouchEventListener(function(sender, type) {
@@ -361,7 +366,7 @@ var MainLayer = cc.Layer.extend({
         this.addChild(this._subElixirButton, 1);
 
         /* Button Dark Elixir */
-        this._addDarkElixirButton = gv.commonButton(120, 64, 70, this._subElixirButton.y - 90, "F Dark_E");
+        this._addDarkElixirButton = gv.commonButton(120, 64, 70, this._subElixirButton.y - 70, "F Dark_E");
         this._subDarkElixirButton = gv.commonButton(120, 64, 70, this._addDarkElixirButton.y - 70, "E Dark_E");
 
         this._addDarkElixirButton.addTouchEventListener(function(sender, type) {
@@ -400,7 +405,7 @@ var MainLayer = cc.Layer.extend({
 
         /* Button coin */
         this._addCoinButton = gv.commonButton(120, 64, 70, this._subDarkElixirButton.y - 90, "1M Coin");
-        this._subCoinButton = gv.commonButton(120, 64, 70, this._addCoinButton.y - 70, "E Coin");
+        this._subCoinButton = gv.commonButton(120, 64, 200, this._addCoinButton.y, "E Coin");
 
         this._addCoinButton.addTouchEventListener(function(sender, type) {
             var cheatNumber = 5000000;
@@ -488,27 +493,12 @@ var MainLayer = cc.Layer.extend({
 
     },
 
-    initRetainTraining: function()
-    {
-        /*Khởi tạo content cho popup khi vào game*/
-        for (var i=0; i < cf.user._buildingListCount[gv.orderInUserBuildingList.armyCamp_1]; i++)
-        {
-            var barrrack = fn.getUserBuilding(gv.orderInUserBuildingList.armyCamp_1, i);
-            if (barrrack._isActive)
-            {
-                var popupTraining = new PopupTraining(barrrack._id);
-                popupTraining.setPosition(0, -cc.winSize.height);
-                this.addChild(popupTraining, 1, gv.tag.TAG_POPUP_TRAINING*(barrrack._id%100));
-                popupTraining.onResumeTrainingFromServer();
-            }
-        }
-
-    },
-
     updateGUIandUserInfo: function()
     {
         cf.user.updateMaxStorage();
         cf.user.updateBuilder();
+        this._expBar.updateContent();
+        this._armyBar.updateContent();
     },
 
     addResourceBar: function() {
@@ -552,6 +542,20 @@ var MainLayer = cc.Layer.extend({
         );
 
         this.addChild(this._builderBar, 1, gv.tag.TAG_BUILDER_BAR);
+    },
+
+    addExpBar: function()
+    {
+        this._expBar = new ExpBar();
+        this._expBar.setPosition(this._expBar._iconExpBG.width, cc.winSize.height - this._expBar._iconExpBG.height/1.5);
+        this.addChild(this._expBar, 1);
+    },
+
+    addArmyBar: function()
+    {
+        this._armyBar = new ArmyBar();
+        this._armyBar.setPosition(cc.winSize.width/4, cc.winSize.height - 60);
+        this.addChild(this._armyBar, 1);
     },
     addShopButton: function(){
         var title = cc.LabelBMFont.create('CỬA HÀNG',  font.soji20);
@@ -662,14 +666,24 @@ var MainLayer = cc.Layer.extend({
             if(order === orderBuilderHut) return;
             if(building._isActive) return;
             var price = fn.getPrice(building._buildingSTR, building._level+1);
-            cf.user._currentCapacityCoin += price.coin/2;
-            cf.user._currentCapacityGold += price.gold/2;
-            cf.user._currentCapacityElixir += price.elixir/2;
-            cf.user._currentCapacityDarkElixir += price.darkElixir/2;
-            self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_COIN).updateStatus();
-            self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR).updateStatus();
-            self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_ELIXIR).updateStatus();
-            self.getChildByTag(gv.tag.TAG_RESOURCE_BAR_GOLD).updateStatus();
+            if (!fn.checkAddResourceEnough(price.gold/2, price.elixir/2,price.darkElixir/2))
+            {
+                fr.getCurrentScreen().popUpMessage("CẦN NÂNG CẤP THÊM KHO CHỨA");
+                return;
+            };
+            var goldEarn    = Math.floor(price.gold/2);
+            var elixirEarn  = Math.floor(price.elixir/2);
+            var darkElixirEarn  = Math.floor(price.darkElixir/2);
+            var coinEarn    = Math.floor(price.coin/2);
+            var sGold       = (goldEarn > 0) ? (goldEarn + " Vàng") : " ";
+            var sElixir     = (elixirEarn > 0) ? (elixirEarn + " Dầu Hồng") : " ";
+            var sDarkElixir = (darkElixirEarn > 0) ? (darkElixirEarn + " Dầu đen") : " ";
+            var sCoin       = (coinEarn > 0) ? (coinEarn + " Coin") : "";
+            fr.getCurrentScreen().popUpMessage("Nhận lại: " + sGold + sElixir + sDarkElixir + sCoin);
+            cf.user.editCurrentResource(cf.resType.resource_1, goldEarn);
+            cf.user.editCurrentResource(cf.resType.resource_2, elixirEarn);
+            cf.user.editCurrentResource(cf.resType.resource_3, darkElixirEarn);
+            cf.user.editCurrentResource(cf.resType.resource_4, coinEarn);
             testnetwork.connector.sendCancel(Math.floor(gv.building_selected/100) - 1, gv.building_selected%100);
             building.onCancelBuild();
         }.bind(this));
@@ -870,7 +884,8 @@ var MainLayer = cc.Layer.extend({
 
     onPopUpResearchTroop: function()
     {
-        this.removeChild(this._popUpResearchTroop);
+        if (this.getChildByTag(gv.tag.TAG_POPUP_RESEARCH_TROOP))
+            this.removeChildByTag(gv.tag.TAG_POPUP_RESEARCH_TROOP);
         var researching = cf.user._buildingList[gv.orderInUserBuildingList.lab][0]._researching;
         var troopOrder = cf.user._buildingList[gv.orderInUserBuildingList.lab][0]._currentTroop;
         this._popUpResearchTroop = new PopUpResearchTroop(researching, troopOrder);
@@ -889,7 +904,7 @@ var MainLayer = cc.Layer.extend({
         }
         //this._popUpRequestDonate.setPosition(cc.winSize.width/2, cc.winSize.height/2);
         //this.addChild(this._popUpRequestDonate, 1);
-        this._popUpRequestDonate.show();
+        //this._popUpRequestDonate.show();
         this._popUpRequestDonate.onAppear();
     },
     onPopUpTroopInfo: function(troopOrder)
@@ -929,7 +944,6 @@ var MainLayer = cc.Layer.extend({
           if (!this.getChildByTag(tag))
               this.addChild(gvGUI.popUpToCoin, 1, tag);
 
-        cc.log(">>>>> " + building._buildingSTR);
         gvGUI.popUpToCoin.updateCoin(resLeak, type, building);
         gvGUI.popUpToCoin.show();
     },
@@ -1013,6 +1027,7 @@ var MainLayer = cc.Layer.extend({
                 if (building._isTraining) boo[1] = false;
                 break;
             case gv.orderInUserBuildingList.clanCastle:
+                if (building._isActive && building._level ==0) boo[1] = false;
                 if (building._isActive && building._level > 0 && cf.user._clanId != -1) boo[7] = true;
                 if (building._isActive && building._level > 0) boo[8] = true;
                 break;
@@ -1129,40 +1144,10 @@ var MainLayer = cc.Layer.extend({
         var harvestAble = building._currentCapacity > 0;
         this._guiButtonHarvest.setBright(harvestAble);
         this._guiButtonHarvest.setEnabled(harvestAble);
+
         var actMoveUp = cc.MoveTo(0.1, cc.p(x, y));
         this._guiButtonHarvest.runAction(actMoveUp);
 
-    },
-
-    //Exp, Trophy, Username, UserInfo
-    addUserBar: function() {
-        var userName = cc.LabelBMFont(cf.user._name, font.soji20);
-        userName.setAnchorPoint(cc.p(0, 1));
-        userName.setPosition(cc.p(cf.offSetGuiResourceBar, cc.winSize.height - cf.offSetGuiResourceBar));
-        this.addChild(userName, 1)
-    },
-
-    addSettingButton: function() {
-        var shopButton = this.getChildByTag(cf.SHOP_BUTTON_TAG);
-        var settingButton = new ccui.Button();
-        settingButton.scale = 1.5;
-        settingButton.loadTextures(mainGUI.setting, mainGUI.setting);
-        settingButton.setAnchorPoint(cc.p(0.5, 0.5));
-        settingButton.setPosition(cc.p(cc.winSize.width - settingButton.width/2*settingButton.scale - 5 , shopButton.y + shopButton.height/2*shopButton.scale + settingButton.height/2*settingButton.scale));
-        this.addChild(settingButton, 1, cf.SETTING_BUTTON_TAG);
-        settingButton.addTouchEventListener(this.openSetting, this);
-    },
-
-    addInventoryButton: function(){
-
-        var settingButton = this.getChildByTag(cf.SETTING_BUTTON_TAG);
-        var inventoryButton = new ccui.Button();
-        inventoryButton.scale = 1.5;
-        inventoryButton.loadTextures(mainGUI.inventory, mainGUI.inventory);
-        inventoryButton.setAnchorPoint(cc.p(0.5, 0.5));
-        inventoryButton.setPosition(cc.p(cc.winSize.width - inventoryButton.width/2*inventoryButton.scale - 5 , settingButton.y + settingButton.height/2*settingButton.scale + inventoryButton.height/2*inventoryButton.scale));
-        this.addChild(inventoryButton, 1, cf.INVENTORY_BUTTON_TAG);
-        inventoryButton.addTouchEventListener(this.openInventory, this);
     },
 
     repositioning: function(){
@@ -1181,6 +1166,9 @@ var MainLayer = cc.Layer.extend({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             swallowTouches: false,
             onTouchBegan: function(touch, event) {
+                gv.mapMove.beganX = touch.getLocation().x;
+                gv.mapMove.beganY = touch.getLocation().y;
+
                 dis = cc.p(0,0);
                 var target = event.getCurrentTarget();
                 var locationInNode = target.convertToNodeSpace(touch.getLocation());
@@ -1211,7 +1199,14 @@ var MainLayer = cc.Layer.extend({
                 return true;
             },
             onTouchEnded: function(touch, event) {
+                gv.mapMove.endX = touch.getLocation().x;
+                gv.mapMove.endY = touch.getLocation().y;
+
+                if (gv.mapMove.maxTouch < 2)
+                    self.moveMapAny(cc.p(gv.mapMove.endX - gv.mapMove.beganX, gv.mapMove.endY - gv.mapMove.beganY));
                 cf.isMapMoving = false;
+
+                gv.mapMove.maxTouch = 0;
 
                 var building = fn.getCurrentBuilding();
                 if (building == null) return;
@@ -1232,32 +1227,25 @@ var MainLayer = cc.Layer.extend({
                     }
                     return;
                 }
-                //else
-                //{
-                //    self.onEndClick();
-                //    self.hideBuildingButton();
-                //    gv.building_is_moved = 0;
-                //    self._listenerMove.setEnabled(false);
-                //    //self.updateZOrder();
-                //    return false;
-                //}
-                //
-                //
-                //
-                //gv.touchEndedLocation = touch.getLocation();
-                //if (fn.getCurrentBuilding() != null)
-                //{
-                //    if (self.distance(gv.touchBeganLocation, gv.touchEndedLocation) <= 10 && !fn.getCurrentBuilding()._listener.isEnabled())
-                //    {
-                //        fn.getCurrentBuilding().onRemoveClick();
-                //    }
-                //}
-                //
-
                 return true;
             }
         })
         cc.eventManager.addListener(this._listenerOnMoveMap, this);
+    },
+
+    /* di chuyển bản đồ thêm 1 đoạn từ lúc nhả tay*/
+    moveMapAny: function(p)
+    {
+        this._map.stopAllActions();
+        var newX = this._map.x + p.x/4;
+        var newY = this._map.y + p.y/4;
+
+        newX = fn.boundary(0, cc.winSize.width - this._map._width * this._map.scale, newX);
+        newY = fn.boundary(0, cc.winSize.height - this._map._height * this._map.scale, newY);
+
+        var moveAny = cc.MoveTo(0.5, newX, newY, 2);
+        //moveAny.setSpeed(0.5);
+        this._map.runAction(moveAny);
     },
     distance: function(p, q, x) {
         if(!x) x = 0;
@@ -1278,6 +1266,7 @@ var MainLayer = cc.Layer.extend({
             },
             onTouchesMoved: function(touches, event) {
                 if (touches.length > 1) cf.isMapMoving = true;
+                gv.mapMove.maxTouch = Math.max(gv.mapMove.maxTouch, touches.length);
                 if (touches.length != 2) {
                     if (!self._listenerOnMoveMap.isEnabled()) self._listenerOnMoveMap.setEnabled(true);
                     return;
@@ -1303,6 +1292,7 @@ var MainLayer = cc.Layer.extend({
                 self._listenerOnMoveMap.setEnabled(true);
                 touchCount --;
                 if (touchCount == 0) {
+                    gv.mapMove.maxTouch = 0;
                     self.updateMapScale(disOld, disNew);
                     disOld = null;
                 }
@@ -1349,48 +1339,6 @@ var MainLayer = cc.Layer.extend({
                 break;
             case ccui.Widget.TOUCH_CANCELED:
                 sender.setScale(sender.scale/1.1);
-                break;
-        }
-    },
-
-    openSetting: function(sender, type){
-        if(cf.isDeciding) return;
-        switch (type){
-            case ccui.Widget.TOUCH_BEGAN:
-                sender.setScale(sender.scale*1.1);
-                cc.log("Open setting");
-                break;
-            case ccui.Widget.TOUCH_MOVED:
-                cc.log("moved");
-                break;
-            case ccui.Widget.TOUCH_ENDED:
-                sender.setScale(sender.scale/1.1);
-                cc.log("ended");
-                break;
-            case ccui.Widget.TOUCH_CANCELED:
-                sender.setScale(sender.scale/1.1);
-                cc.log("canceled");
-                break;
-        }
-    },
-
-    openInventory: function(sender, type) {
-        if(cf.isDeciding) return;
-        switch (type){
-            case ccui.Widget.TOUCH_BEGAN:
-                sender.setScale(sender.scale*1.1);
-                cc.log("Open inventory");
-                break;
-            case ccui.Widget.TOUCH_MOVED:
-                cc.log("moved");
-                break;
-            case ccui.Widget.TOUCH_ENDED:
-                sender.setScale(sender.scale/1.1);
-                cc.log("ended");
-                break;
-            case ccui.Widget.TOUCH_CANCELED:
-                sender.setScale(sender.scale/1.1);
-                cc.log("canceled");
                 break;
         }
     },

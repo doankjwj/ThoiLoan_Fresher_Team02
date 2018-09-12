@@ -20,6 +20,7 @@ var Map = cc.Node.extend({
         this._width = (this._bgBotLeft.width + this._bgBotRight.width)*cf.bgSCALE;
         this._height = (this._bgBotLeft.height + this._bgTopLeft.height)*cf.bgSCALE;
         this.initTileLocation();
+
         this.addBuildingFromServer();
         //this.add_building();
     },

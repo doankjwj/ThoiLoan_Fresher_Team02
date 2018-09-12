@@ -206,23 +206,37 @@ var Barrack = BuildingNode.extend({
         this._remainTrainingTime = this._finishTrainingTime - new Date().getTime();
         if (this._remainTrainingTime <= 0)
         {
-            this.releaseTroop();
-            if (this.getCurrentTroop() == null)
-                this.onStopTraining();
+            if (this.checkreleaseAble())
+            {
+                this.releaseTroop();
+                if (this.getCurrentTroop() == null)
+                    this.onStopTraining();
+                else
+                {
+                    this.loadNewTrain(this._trainType.newTrain);
+                    if (this._currentTrainingTroop != this.getCurrentTroop())
+                        fn.replaceSpriteImage(this._iconTroop, guiFolder + "train_troop_gui/small_icon/ARM_" + (this.getCurrentTroop()+1) + ".png");
+                    this._currentTrainingTroop = this.getCurrentTroop();
+                }
+                this._barTraining.setTextureRect(cc.rect(0, 0, 0, 18));
+            }
             else
             {
-                this.loadNewTrain(this._trainType.newTrain);
-                if (this._currentTrainingTroop != this.getCurrentTroop())
-                    fn.replaceSpriteImage(this._iconTroop, guiFolder + "train_troop_gui/small_icon/ARM_" + (this.getCurrentTroop()+1) + ".png");
-                this._currentTrainingTroop = this.getCurrentTroop();
+                this.onPopUpFull();
+                this.onPauseTraining(false);
             }
-            this._barTraining.setTextureRect(cc.rect(0, 0, 0, 18));
         }
         else
         {
             this._labelTrainingTime.setString(cf.secondsToLongTime(Math.floor(this._remainTrainingTime / 1000)));
             this._barTraining.setTextureRect(cc.rect(0, 0, (this._requireTrainingTime - this._remainTrainingTime) / this._requireTrainingTime * 69, 18));
         }
+    },
+    checkreleaseAble: function()
+    {
+        var housingSpaceAvaiable = cf.user.getMaxTroopHousingSpace() - cf.user.getCurrentTroopHousingSpace();
+        if (fn.getTroopHousingSpace(this.getCurrentTroop() + 1) > housingSpaceAvaiable) return false;
+        return true;
     },
     releaseTroop: function()
     {

@@ -111,6 +111,7 @@ gv.json =
     troopAnimation: null,
     clanCastle: null,
     wall: null,
+    builder: null,
 };
 gv.plist =
     {

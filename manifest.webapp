@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "name": "ThoiLoan",
-  "description": "ThoiLoan",
+  "name": "ThoiLoanFresher",
+  "description": "ThoiLoanFresher",
   "launch_path": "/index.html",
   "icons": {
     "128": "/res/icon.png"

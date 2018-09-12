@@ -134,8 +134,6 @@ var User = cc.Class.extend({
         var typeInBuildingList = Math.floor(id /100) - 1;
         var orderInType = id % 100;
 
-        cc.log("+++: Building Type: " + typeInBuildingList + " order: " + orderInType);
-
         var building = this._buildingList[typeInBuildingList][orderInType];
 
         switch (typeInBuildingList)
@@ -283,16 +281,16 @@ var User = cc.Class.extend({
     },
 
     /*getAvaiable Capacity*/
-    getAvaiableCapacity: function(resSTR)
+    getAvaiableCapacity: function(resType)
     {
-        switch(resSTR) {
-            case gv.buildingSTR.resource_1:
+        switch(resType) {
+            case cf.resType.resource_1:
                 return (this._maxCapacityGold - this._currentCapacityGold);
                 break;
-            case gv.buildingSTR.resource_2:
+            case cf.resType.resource_2:
                 return (this._maxCapacityElixir - this._currentCapacityElixir);
                 break;
-            case gv.buildingSTR.resource_3:
+            case cf.resType.resource_3:
                 return (this._maxCapacityDarkElixir - this._currentCapacityDarkElixir);
                 break;
             default:
@@ -355,6 +353,7 @@ var User = cc.Class.extend({
     /* Thêm res hiện tại 1 giá trị*/
     editCurrentResource: function(resType, resAmount)
     {
+        if (resAmount == 0) return;
         switch (resType)
         {
             case cf.resType.resource_1:
@@ -408,6 +407,7 @@ var User = cc.Class.extend({
     editTroop: function(troopType, amount)
     {
         this._listTroop[troopType] += amount;
+        fr.getCurrentScreen()._armyBar.updateContent();
     },
     /* Số lượng đơn vị mỗi loại quân*/
     getTroopAmount: function(troopType)         // tính từ 0
@@ -438,7 +438,7 @@ var User = cc.Class.extend({
     /* Housing Space của lính hiện tại*/
     getCurrentTroopHousingSpace: function(troopType)   // tính từ 0
     {
-        if (troopType)
+        if (troopType != null)
             return (this._listTroop[troopType] * fn.getTroopHousingSpace(troopType+1));
         var currentTroopHousingSpace = 0;
         for (var i=0; i<this._listTroop.length; i++)

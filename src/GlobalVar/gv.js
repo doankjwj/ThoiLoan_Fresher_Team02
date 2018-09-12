@@ -7,7 +7,19 @@ gv.buildingMove =
 {
     currentRow : null,
     currentCol : null,
+
+
 };
+/* Map Move*/
+gv.mapMove =
+{
+    beganX: null,
+    beganY: null,
+    endX: null,
+    endY: null,
+    maxTouch: 0,
+};
+
 /* Lưu điểm đầu và cuối của lần di chuyển map*/
 gv.touchBeganLocation = null;
 gv.touchEndedLocation = null;
@@ -94,7 +106,8 @@ gv.troopStr = {
 };
 gv.troopName = ["Đấu Sĩ", "Pháp Sư", "Ăn Trộm", "Khổng Lồ"];
 gv.troopMaxLevel = [4, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4];
-gv.troopAvaiable = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 ,0 , 1 ,1]
+gv.troopAvaiable = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 ,0 , 1 ,1];
+gv.troopAvaiableAmount = 4;
 gv.clanChatEventManager = {
     chatStatusUpdated: false,
     userOnlineUpdated: false

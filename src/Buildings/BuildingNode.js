@@ -66,6 +66,8 @@ var BuildingNode = cc.Node.extend({
 
     _nextPos: null,
 
+    _builderHutIndex: -1,
+
     ctor: function(id, level, row, col, existed, isActive) {
         this._super();
         this.scale = cf.SCALE;
@@ -199,6 +201,7 @@ var BuildingNode = cc.Node.extend({
         /* Add event listener */
 
         this.initListener();
+
     },
     /* Trả về thứ tự của loại nhà trong danh sách công trình*/
     getBuildingType: function()
@@ -271,9 +274,18 @@ var BuildingNode = cc.Node.extend({
                     cf.current_c = self._col;
                     gv.building_selected = self._id;
                     gv.building_is_moved = self._id;
+
+                    /*Kiểm tra là nhà bang hội level 0 thif pop Up nâng cấp*/
+                    if (self._buildingSTR == gv.buildingSTR.clanCastle && self._level == 0 && self._isActive)
+                    {
+                        var root = fr.getCurrentScreen();
+                        root.getChildByTag(gv.tag.TAG_POPUP).updateContent(gv.building_selected, gv.constructType.upgrade);
+                        root.getChildByTag(gv.tag.TAG_POPUP).onAppear();
+                        self.onRemoveClick();
+                        //self._listener.setEnabled(true);
+                        //self._listenerMove.setEnabled(false);
+                    }
                     self.getParent().getParent().showListBotButton(self._id);
-
-
                 }
             }
         });
@@ -514,6 +526,7 @@ var BuildingNode = cc.Node.extend({
     },
 
     onStartBuild: function(startConstructType) {
+        this.makeBuilderWorking();
         this._existed = true;
         this._isActive = false;
         if (startConstructType == gv.startConstructType.newConstruct) { // click xây mới/ nâng cấp mới
@@ -591,6 +604,26 @@ var BuildingNode = cc.Node.extend({
             this.onCompleteBuild();
         }
     },
+    makeBuilderWorking: function()
+    {
+        for (var i=0; i < cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut]; i++)
+        {
+            var builderHut = fn.getUserBuilding(gv.orderInUserBuildingList.builderHut, i);
+            if (builderHut._free)
+            {
+                builderHut._free = false;
+                builderHut._builder.startWork(this);
+                this._builderHutIndex = i;
+                return;
+            }
+        }
+    },
+    makeBuilderFree: function()
+    {
+        fn.getUserBuilding(gv.orderInUserBuildingList.builderHut, this._builderHutIndex)._builder.finishWork();
+        fn.getUserBuilding(gv.orderInUserBuildingList.builderHut, this._builderHutIndex)._free = true;
+        this._builderHutIndex = -1;
+    },
 
     onUpdateBuildStatus: function() {
         if (this._isActive)
@@ -642,6 +675,7 @@ var BuildingNode = cc.Node.extend({
     },
 
     onCompleteBuild: function() {
+        this.makeBuilderFree();
         this._isActive = true;
         this._level ++;
         if (cf.animationConstructLevelUp == null)
@@ -666,18 +700,19 @@ var BuildingNode = cc.Node.extend({
             this.onUpdateSpriteFrame();
         }
         this.updateLabelName();
-        if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
-            this._lastHarvestTime = new Date().getTime();
+        // if (this._orderInUserBuildingList >= gv.orderInUserBuildingList.resource_1 && this._orderInUserBuildingList <= gv.orderInUserBuildingList.resource_3)
+        //     this._lastHarvestTime = new Date().getTime();
 
         cf.user.updateWallList();
 
-        /* Cập nhật sức chứa nếu công trình là kho chứ */
-        var order = this._orderInUserBuildingList;
-        if (order == gv.orderInUserBuildingList.townHall || order == gv.orderInUserBuildingList.storage_1 || order == gv.orderInUserBuildingList.storage_2 || order == gv.orderInUserBuildingList.storage_3)
-        {
-            cf.user.updateMaxStorageSingle(this._id);
-            cf.user.distributeResource(true, true, true, true);
-        };
+        /* Cập nhật sức chứa.. nếu công trình là kho chứ */
+        // var order = this._orderInUserBuildingList;
+        // if (order == gv.orderInUserBuildingList.townHall || (order >= gv.orderInUserBuildingList.storage_1 && order <= gv.orderInUserBuildingList.storage_3))
+        // {
+        //     cf.user.updateMaxStorageSingle(this._id);
+        //     cf.user.distributeResource(true, true, true, true);
+        // };
+
     },
 
     onUpdateSpriteFrame: function()
@@ -706,7 +741,9 @@ var BuildingNode = cc.Node.extend({
                 this._center_building = cc.Sprite(res.folder_elixir_collector + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case gv.buildingSTR.storage_1:
+                cc.log("GET It")
                 this._center_building = cc.Sprite(res.folder_gold_storage + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                cc.log("FAIL");
                 break;
             case gv.buildingSTR.storage_2:
                 this._center_building = cc.Sprite(res.folder_elixir_storage + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
@@ -910,25 +947,37 @@ var BuildingNode = cc.Node.extend({
             this.onEndClick();
             this.hideBuildingButton();
             this.checkResource();
-
+            var normalBuild = true;
             gv.buildingNextBuild = this._id;
-            var constructEnough = (this._require.gold == 0 && this._require.elixir == 0 && this._require.darkElixir == 0 && this._require.coin == 0);
-            if (!constructEnough)
+            if (this._cost.coin > cf.user.getCurrentResource(cf.resType.resource_4))
             {
-                var coinRequire = 0;
-                coinRequire += Math.ceil(this._require.gold/1000) + Math.ceil(this._require.elixir/1000) + Math.ceil(this._require.darkElixir/50) + this._require.coin;
-                gv.upgradeAble.etcToCoin = coinRequire;
-
-                var root = this.getParent().getParent();
-                root.onPopUpToCoin([this._require.gold, this._require.elixir, this._require.darkElixir], cf.constructType.build, this);
-                return;
+                fr.getCurrentScreen().popUpMessage("CHƯA ĐỦ TÀI NGUYÊN");
+                normalBuild = false;
+                this.onCancelButton();
             }
-            gv.building_is_moved = 0;
-            gv.building_selected = this._id;
+            else
+            {
+                var constructEnough = (this._require.gold == 0 && this._require.elixir == 0 && this._require.darkElixir == 0);
+                if (!constructEnough)
+                {
+                    var coinRequire = 0;
+                    coinRequire += Math.ceil(this._require.gold/1000) + Math.ceil(this._require.elixir/1000) + Math.ceil(this._require.darkElixir/50) + this._require.coin;
+                    gv.upgradeAble.etcToCoin = coinRequire;
 
-            this._existed = true;
-            this.onBuild();
-        }
+                    var root = this.getParent().getParent();
+                    root.onPopUpToCoin([this._require.gold, this._require.elixir, this._require.darkElixir], cf.constructType.build, this);
+                    //normalBuild = false;
+                    return;
+                }
+            }
+
+            if (normalBuild)
+                this.onBuild();
+            //this._existed = true;
+        };
+
+        gv.building_is_moved = 0;
+        gv.building_selected = this._id;
     },
     onBuild: function()
     {
@@ -938,6 +987,8 @@ var BuildingNode = cc.Node.extend({
 
         this.locate_map_array(this);
 
+        testnetwork.connector.sendBuild(this._id, this._row, this._col);
+
         this.getParent().addBuildingToUserBuildingList(this);
         this.onStartBuild(gv.startConstructType.newConstruct);
 
@@ -945,7 +996,6 @@ var BuildingNode = cc.Node.extend({
         gv.building_is_moved = 0;
         cf.isDeciding = false;
         //this.updateResource();
-        testnetwork.connector.sendBuild(this._id, this._row, this._col);
 
         cf.user.editCurrentResource(cf.resType.resource_1, -this._cost.gold);
         cf.user.editCurrentResource(cf.resType.resource_2, -this._cost.elixir);
@@ -1136,6 +1186,10 @@ var BuildingNode = cc.Node.extend({
         for (var i = r; i < r + size; i++)
             for (var j = c; j < c + size; j++)
                 cf.map_array[i][j] = b._id;
+
+        if (this._builderHutIndex != -1)
+            fn.getUserBuilding(gv.orderInUserBuildingList.builderHut, this._builderHutIndex)._builder.startWork(this);
+
     },
 
     check_out_of_map: function(row, col, size) {

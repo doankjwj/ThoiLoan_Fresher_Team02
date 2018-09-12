@@ -7,6 +7,8 @@ var Obstacle = BuildingNode.extend({
     _timeRequire: null,
     _timeFinish: null,
 
+    _builderHutIndex: -1,
+
     ctor: function(id, type, row, col, existed, isActive)
     {
         this._buildingSTR = gv.buildingSTR.obstacle;
@@ -23,6 +25,7 @@ var Obstacle = BuildingNode.extend({
 
     onStartRemove: function(constructionType)
     {
+        //this.makeBuilderWorking();
         this._isCleaning = true;
         this.initTimeGUI();
         this._timeRequire = this.getTimeRequire();
@@ -121,9 +124,31 @@ var Obstacle = BuildingNode.extend({
     },
     onCompleteRemove: function()
     {
+        //this.makeBuilderFree();
         //cf.user._builderFree ++;
         this.unlocate_map_array(this._row, this._col, this._size);
         cf.user.updateBuilder();
         this.getParent().removeChild(this);
-    }
+    },
+
+    makeBuilderWorking: function()
+    {
+        for (var i=0; i < cf.user._buildingListCount[gv.orderInUserBuildingList.builderHut]; i++)
+        {
+            var builderHut = fn.getUserBuilding(gv.orderInUserBuildingList.builderHut, i);
+            if (builderHut._free)
+            {
+                builderHut._free = false;
+                builderHut._builder.startWork(this);
+                this._builderHutIndex = i;
+                return;
+            }
+        }
+    },
+    makeBuilderFree: function()
+    {
+        fn.getUserBuilding(gv.orderInUserBuildingList.builderHut, this._builderHutIndex)._builder.finishWork();
+        fn.getUserBuilding(gv.orderInUserBuildingList.builderHut, this._builderHutIndex)._free = true;
+        this._builderHutIndex = -1;
+    },
 });

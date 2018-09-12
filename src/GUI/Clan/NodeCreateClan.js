@@ -82,7 +82,7 @@ var NodeCreateClan = cc.Node.extend({
         this.addChild(this._textFieldDescription, 1);
 
         this._iconOrder = (Math.floor(Math.random() * 28 + 1));
-        var clanIcon = cc.Sprite(folderClan + "bieu tuong nho/" + this._iconOrder + ".png");
+        var clanIcon = cc.Sprite(folderClan + "icon bieu tuong/" + this._iconOrder + ".png");
         clanIcon.scale = 2;
         clanIcon.setPosition(anchorXXX + 200, 120);
         this.addChild(clanIcon, 1);

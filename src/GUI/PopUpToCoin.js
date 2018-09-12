@@ -57,7 +57,9 @@ var PopUpToCoin = cc.Node.extend({
         this.addChild(labelMessage);
 
         /* Button Đồng ý*/
-        this._buttonOk = ccui.Button(res.clanGUI.buttonXemLai);
+        var ttOk = "res/Art/Bang hoi/button _xem lai.png";
+        this._buttonOk = ccui.Button();
+        this._buttonOk.loadTextures(ttOk, ttOk, ttOk, ccui.Widget.PLIST_TEXTURE);
         //this._buttonOk.setTitleText("COIN");
         //this._buttonOk.setTitleFontName(font.soji12);
         this._buttonOk.scale = 1.5;
@@ -77,7 +79,9 @@ var PopUpToCoin = cc.Node.extend({
 
 
         /* Button Hủy*/
-        this._buttonCancel = ccui.Button(res.clanGUI.buttonTraThu);
+        var ttCancel = "res/Art/Bang hoi/button _ tra thu.png"
+        this._buttonCancel = ccui.Button();
+        this._buttonCancel.loadTextures(ttCancel, ttCancel, ttCancel, ccui.Widget.PLIST_TEXTURE);
         //this._buttonCancel.setTitleText("HỦY BỎ");
         //this._buttonCancel.setTitleFontName(font.soji20);
         this._buttonCancel.scale = 1.5;
@@ -131,7 +135,7 @@ var PopUpToCoin = cc.Node.extend({
                         cf.user.editCurrentResource(cf.resType.resource_4, -self.converter(self._resLeak));
                         testnetwork.connector.sendPayCoinToBuyETC(self._resLeak[0], self._resLeak[1], self._resLeak[2]);
                     }),
-                    cc.DelayTime(1),
+                    cc.DelayTime(0.25),
                     cc.CallFunc(function()
                     {
                         self.onCommitBuy();

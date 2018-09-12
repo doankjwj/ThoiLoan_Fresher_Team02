@@ -117,6 +117,7 @@ var PopUpResearchTroop = cc.Node.extend({
         this.addChild(this._labelTime, this._bgWhite.getLocalZOrder() + 1);
 
         this._txtTimeRemaining = cc.LabelBMFont("Time Remaining: ", font.soji20);
+        this._txtTimeRemaining.setAnchorPoint(1, 0.5)
         this._txtTimeRemaining.setPosition(cc.p(this._greenArrow.x, this._greenArrow.y - 24));
         this._txtTimeRemaining.visible = false;
         this.addChild(this._txtTimeRemaining, this._greenArrow.getLocalZOrder() + 1);
@@ -197,10 +198,10 @@ var PopUpResearchTroop = cc.Node.extend({
             ),
             cc.CallFunc(function()
             {
-                self.setVisible(false);
+                self.getParent().removeChild(self);
             })
         );
-        this.runAction(disAppear);
+        this.runAction(disAppear.clone());
     },
 
     initContent: function()
