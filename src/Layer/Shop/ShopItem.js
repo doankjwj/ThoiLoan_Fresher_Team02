@@ -122,7 +122,8 @@ var ShopItem = ccui.Button.extend({
 
         if(this._key !== gv.buildingSTR.builderHut) this._priceText = this._jsonConfig[this._configItem["key"]]["1"][this._configItem["priceCurrency"]];
         else {
-            this._priceText = this._jsonConfig[this._configItem["key"]][(this._currentQuantity + 1).toString()][this._configItem["priceCurrency"]];
+            var str = (this._currentQuantity < 5 ? (this._currentQuantity + 1): 5).toString();
+            this._priceText = this._jsonConfig[this._configItem["key"]][str][this._configItem["priceCurrency"]];
         }
 
         this._priceLabel = cc.LabelBMFont(this._priceText.toString(), font.soji20);

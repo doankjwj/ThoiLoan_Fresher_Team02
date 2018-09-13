@@ -155,6 +155,16 @@ var PopupTraining = cc.Node.extend({
                 }
                 else button._costText.setColor(cc.color.WHITE);
             }
+            if(i > 4) {
+
+                button.setTouchEnabled(false);
+                button.setEnabled(false);
+                button.setBright(false);
+                var act = cc.tintTo(0, 127.5, 127.5, 127.5);
+                act.retain();
+                button._troopIcon.runAction(act.clone());
+
+            }
         }
 
         var b = this._currentQueueLength > this.getAvailableSlot();
