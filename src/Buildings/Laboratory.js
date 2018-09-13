@@ -184,7 +184,7 @@ var Laboratory = BuildingNode.extend({
         this.initAnimation();
             if (this.getTempLevel() > 1) this._effectAnim.visible = true;
             this._effectAnim.stopAllActions();
-            this._effectAnim.runAction(cf.animationLab[this.getTempLevel()].clone().repeatForever());
+        this._effectAnim.runAction(cf.animationLab[Math.min(5, this.getTempLevel())].clone().repeatForever());
     },
 
     initAnimation: function()

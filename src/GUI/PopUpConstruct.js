@@ -1042,6 +1042,7 @@ var PopUpConstruct = cc.Node.extend({
         if ((str == gv.buildingSTR.barrack_1 && (level <4 || level >8)) || arrNoEffect.indexOf(str) >= 0 || (str == gv.buildingSTR.lab && level <2)) return;
         if (str == gv.buildingSTR.clanCastle || str === gv.buildingSTR.wall) return;
 
+        if (str == gv.buildingSTR.lab) level = Math.min(gv.buildingMaxLevel.lab, 5);
         if (str != gv.buildingSTR.armyCamp_1 && str != gv.buildingSTR.townHall && str != gv.buildingSTR.defence_1)
             this._effect = cc.Sprite("#res/Art/Effects/" + str + "_" + level + "_effect/00.png");
         if (str == gv.buildingSTR.armyCamp_1)
